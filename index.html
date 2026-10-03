@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="bn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NIVORA ONE — One Platform. Everyday Possibilities.</title>
+  <meta name="description" content="NIVORA ONE — এক প্ল্যাটফর্মে প্রতিদিনের ডিজিটাল সমাধান। কুরআন হাব, এআই সহকারী, ব্যবসা পরিচালনা, টালি খাতা, স্টক, মার্কেটপ্লেস ও ক্যালকুলেটর।">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a', 950: '#0f172a'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Bengali', 'sans-serif'],
+            bengali: ['Noto Sans Bengali', 'sans-serif'],
+            arabic: ['Amiri', 'serif'],
+            urdu: ['Noto Nastaliq Urdu', 'Amiri', 'serif'],
+            hindi: ['Noto Sans Devanagari', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Bengali', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .select-text { user-select: text; }
+    .font-arabic { font-family: 'Amiri', serif; }
+    .font-bengali { font-family: 'Noto Sans Bengali', sans-serif; }
+    .font-urdu { font-family: 'Noto Nastaliq Urdu', 'Amiri', serif; line-height: 2.2; }
+    .font-hindi { font-family: 'Noto Sans Devanagari', sans-serif; }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.4); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.7); }
+
+    .touch-press:active { transform: scale(0.97); transition: transform 0.1s ease; }
+    .safe-pb { padding-bottom: env(safe-area-inset-bottom, 1.2rem); }
+    .safe-pt { padding-top: env(safe-area-inset-top, 0.5rem); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
+
+  <!-- Official Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <!-- Monetization Scripts -->
+  <script src="https://pl31207224.profitableratecpmnetwork.com/2e/7c/3b/2e7c3b3893efc985ee9200dc36f5e9eb.js" async></script>
+
+  <!-- NIVORA Quran Hub styles -->
+  <style id="nivora-quran-styles">
+    .nv-quran-hub{width:100%;max-width:980px;margin:0 auto;padding-bottom:24px}
+    .nv-quran-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+    .nv-quran-toolbar select,.nv-quran-toolbar button{min-height:42px;border-radius:12px;border:1px solid rgba(148,163,184,.22);padding:8px 10px;background:#0f172a;color:#fff;font-size:13px}
+    .nv-quran-page-card{background:#fff;color:#111827;border:1px solid #d1d5db;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+    .nv-quran-page-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #e5e7eb;background:#f8fafc}
+    .nv-quran-page-head button{border:0;border-radius:10px;background:#0f172a;color:#fff;min-width:42px;min-height:40px}
+    .nv-quran-page-image-wrap{background:#f8f4e8;padding:8px;text-align:center}
+    .nv-quran-page-image{display:block;width:100%;max-width:720px;margin:0 auto;height:auto;background:#fff;border-radius:5px}
+    .nv-quran-meaning{margin-top:10px;background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:12px}
+    .nv-quran-meaning-title{font-size:13px;font-weight:800;color:#34d399;margin-bottom:8px}
+    .nv-quran-ayah{padding:10px 0;border-bottom:1px solid #1e293b}
+    .nv-quran-ayah:last-child{border-bottom:0}
+    .nv-quran-ayah-no{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#064e3b;color:#a7f3d0;font-size:10px;margin-right:6px}
+    .nv-quran-ayah-ar{font-family:Amiri,serif;direction:rtl;text-align:right;font-size:24px;line-height:2;color:#047857;margin:5px 0}
+    .nv-quran-ayah-tr{font-size:12px;line-height:1.8;color:#cbd5e1}
+    .nv-quran-status{font-size:11px;text-align:center;color:#94a3b8;padding:8px}
+    .nv-quran-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+    .nv-quran-actions button{min-height:42px;border:0;border-radius:12px;background:#1e293b;color:#fff;font-weight:700;font-size:12px}
+    @media(max-width:600px){.nv-quran-toolbar{grid-template-columns:1fr}.nv-quran-ayah-ar{font-size:22px}.nv-quran-page-image-wrap{padding:4px}}
+  </style>
+
+</head>
+
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen flex flex-col overflow-x-hidden selection:bg-blue-600 selection:text-white">
+
+  <!-- TOP GLOBAL HEADER -->
+  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 safe-pt shadow-md">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
+      
+      <div class="flex items-center gap-2">
+        <button id="btn-back" onclick="NIVORA_NAV.goBack()" class="hidden p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 touch-press">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+        </button>
+
+        <div onclick="NIVORA_NAV.goTo('home')" class="cursor-pointer flex items-center gap-2 select-none group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-teal-400 p-0.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+            <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300 text-sm">
+              N1
+            </div>
+          </div>
+          <div>
+            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-white leading-tight flex items-center gap-1.5">
+              <span>NIVORA ONE</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">PROD</span>
+            </h1>
+            <p class="text-[10px] text-slate-400 hidden sm:block truncate max-w-[200px]">
+              এক প্ল্যাটফর্মে প্রতিদিনের ডিজিটাল সমাধান
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Clock & Date -->
+      <div class="hidden md:flex items-center gap-2 px-3 py-1 bg-slate-800/80 border border-slate-700/60 rounded-xl text-xs text-slate-300">
+        <i class="fa-regular fa-clock text-blue-400 animate-pulse"></i>
+        <span id="live-time" class="font-mono font-medium">--:--:--</span>
+        <span class="text-slate-500">•</span>
+        <span id="live-date">--</span>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button onclick="NIVORA_UI.openSearch()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 touch-press" title="অনুসন্ধান">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        </button>
+
+        <select id="country-select" onchange="NIVORA_CONFIG.setCountry(this.value)" class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl px-2 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer">
+          <option value="BD">🇧🇩 BD (৳)</option>
+          <option value="IN">🇮🇳 IN (₹)</option>
+          <option value="PK">🇵🇰 PK (₨)</option>
+          <option value="NP">🇳🇵 NP (रू)</option>
+          <option value="LK">🇱🇰 LK (රු)</option>
+          <option value="BT">🇧🇹 BT (Nu.)</option>
+          <option value="MV">🇲🇻 MV (Rf)</option>
+          <option value="AF">🇦🇫 AF (؋)</option>
+        </select>
+
+        <select id="lang-select" onchange="NIVORA_I18N.setLanguage(this.value)" class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl px-2 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer font-sans">
+          <option value="bn">বাংলা</option>
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ur">اردو</option>
+        </select>
+
+        <button onclick="NIVORA_NAV.goTo('account')" class="p-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 touch-press" title="অ্যাকাউন্ট">
+          <i class="fa-regular fa-user text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main id="app-viewport" class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 pb-28"></main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 safe-pb shadow-2xl">
+    <div class="max-w-md mx-auto grid grid-cols-5 px-1 py-1 text-[11px] text-center">
+      <button onclick="NIVORA_NAV.goTo('home')" id="nav-btn-home" class="py-2 rounded-xl flex flex-col items-center gap-1 font-medium text-blue-400 font-bold touch-press">
+        <i class="fa-solid fa-house text-sm"></i>
+        <span>হোম</span>
+      </button>
+
+      <button onclick="NIVORA_NAV.goTo('quran')" id="nav-btn-quran" class="py-2 rounded-xl flex flex-col items-center gap-1 font-medium text-slate-400 hover:text-slate-200 touch-press">
+        <i class="fa-solid fa-book-quran text-sm text-emerald-400"></i>
+        <span>কুরআন</span>
+      </button>
+
+      <button onclick="NIVORA_NAV.goTo('ai')" id="nav-btn-ai" class="py-2 rounded-xl flex flex-col items-center gap-1 font-medium text-slate-400 hover:text-slate-200 touch-press">
+        <i class="fa-solid fa-wand-magic-sparkles text-sm text-indigo-400"></i>
+        <span>এআই</span>
+      </button>
+
+      <button onclick="NIVORA_NAV.goTo('business')" id="nav-btn-business" class="py-2 rounded-xl flex flex-col items-center gap-1 font-medium text-slate-400 hover:text-slate-200 touch-press">
+        <i class="fa-solid fa-chart-line text-sm text-blue-400"></i>
+        <span>ব্যবসা</span>
+      </button>
+
+      <button onclick="NIVORA_NAV.goTo('market')" id="nav-btn-market" class="py-2 rounded-xl flex flex-col items-center gap-1 font-medium text-slate-400 hover:text-slate-200 touch-press">
+        <i class="fa-solid fa-bag-shopping text-sm text-cyan-400"></i>
+        <span>মার্কেট</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm w-full pointer-events-none px-2"></div>
+
+  <!-- SEARCH MODAL -->
+  <div id="search-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-start justify-center p-4 pt-16">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-4 shadow-2xl space-y-3">
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+        <i class="fa-solid fa-magnifying-glass text-blue-400 text-sm shrink-0"></i>
+        <input type="text" id="search-input" oninput="NIVORA_UI.handleSearch(this.value)" placeholder="মডিউল বা বিষয় খুঁজুন..." class="w-full bg-transparent text-white text-sm focus:outline-none placeholder-slate-500">
+        <button onclick="NIVORA_UI.closeSearch()" class="text-slate-400 hover:text-white text-xs px-2 py-1">✕</button>
+      </div>
+      <div id="search-results" class="max-h-72 overflow-y-auto space-y-2 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- DIALOG MODAL -->
+  <div id="global-dialog" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+      <h4 id="dialog-title" class="font-bold text-white text-base">NIVORA ONE</h4>
+      <p id="dialog-message" class="text-slate-300 text-xs sm:text-sm leading-relaxed"></p>
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+        <button id="dialog-cancel-btn" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800">বাতিল</button>
+        <button id="dialog-confirm-btn" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md">ঠিক আছে</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* NIVORA CORE & CONFIG */
+    const NIVORA_CONFIG = {
+      appName: "NIVORA ONE",
+      currentCountry: localStorage.getItem('nivora_country') || 'BD',
+      smartLink: "https://www.profitableratecpmnetwork.com/p6imect7r8?key=692ccf2f3dfc2ee640e7e096158b3f275",
+      homoeoPhone: "+8801700000000",
+      setCountry(code) {
+        this.currentCountry = code;
+        localStorage.setItem('nivora_country', code);
+        const c = NIVORA_COUNTRIES[code];
+        if (c) {
+          NIVORA_I18N.setLanguage(c.defaultLang);
+          NIVORA_CORE.toast(`${c.name} (${c.currency}) নির্বাচিত হয়েছে`, 'info');
+        }
+        NIVORA_NAV.renderCurrent();
+      }
+    };
+
+    const NIVORA_COUNTRIES = {
+      BD: { code: 'BD', name: 'বাংলাদেশ', currency: 'BDT', symbol: '৳', defaultLang: 'bn' },
+      IN: { code: 'IN', name: 'ভারত', currency: 'INR', symbol: '₹', defaultLang: 'hi' },
+      PK: { code: 'PK', name: 'পাকিস্তান', currency: 'PKR', symbol: '₨', defaultLang: 'ur' },
+      NP: { code: 'NP', name: 'নেপাল', currency: 'NPR', symbol: 'रू', defaultLang: 'en' },
+      LK: { code: 'LK', name: 'শ্রীলঙ্কা', currency: 'LKR', symbol: 'රු', defaultLang: 'en' },
+      BT: { code: 'BT', name: 'ভুটান', currency: 'BTN', symbol: 'Nu.', defaultLang: 'en' },
+      MV: { code: 'MV', name: 'মালদ্বীপ', currency: 'MVR', symbol: 'Rf', defaultLang: 'en' },
+      AF: { code: 'AF', name: 'আফগানিস্তান', currency: 'AFN', symbol: '؋', defaultLang: 'ur' }
+    };
+
+    const NIVORA_CURRENCY = {
+      format(amount) {
+        const c = NIVORA_COUNTRIES[NIVORA_CONFIG.currentCountry] || NIVORA_COUNTRIES.BD;
+        return `${c.symbol} ${Number(amount || 0).toLocaleString('en-US')}`;
+      }
+    };
+
+    const NIVORA_STORAGE = {
+      get(key, fallback) {
+        try {
+          const item = localStorage.getItem('nivora_' + key);
+          return item ? JSON.parse(item) : fallback;
+        } catch { return fallback; }
+      },
+      set(key, val) {
+        try { localStorage.setItem('nivora_' + key, JSON.stringify(val)); } catch {}
+      }
+    };
+
+    const NIVORA_CORE = {
+      toast(msg, type = 'info') {
+        const box = document.getElementById('toast-container');
+        if (!box) return;
+        const el = document.createElement('div');
+        const color = type === 'success' ? 'bg-emerald-950/95 border-emerald-500 text-emerald-200' :
+                      type === 'error' ? 'bg-rose-950/95 border-rose-500 text-rose-200' :
+                      type === 'warning' ? 'bg-amber-950/95 border-amber-500 text-amber-200' : 'bg-slate-900/95 border-blue-500 text-blue-200';
+        el.className = `p-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center justify-between gap-2 border pointer-events-auto animate-fade-in ${color}`;
+        el.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white">✕</button>`;
+        box.appendChild(el);
+        setTimeout(() => el.remove(), 3200);
+      },
+      confirm(msg, title = 'নিশ্চিতকরণ') {
+        return new Promise((resolve) => {
+          const d = document.getElementById('global-dialog');
+          document.getElementById('dialog-title').textContent = title;
+          document.getElementById('dialog-message').textContent = msg;
+          document.getElementById('dialog-cancel-btn').style.display = 'block';
+          d.classList.remove('hidden'); d.classList.add('flex');
+          document.getElementById('dialog-confirm-btn').onclick = () => { d.classList.add('hidden'); d.classList.remove('flex'); resolve(true); };
+          document.getElementById('dialog-cancel-btn').onclick = () => { d.classList.add('hidden'); d.classList.remove('flex'); resolve(false); };
+        });
+      },
+      alert(msg, title = 'NIVORA ONE') {
+        return new Promise((resolve) => {
+          const d = document.getElementById('global-dialog');
+          document.getElementById('dialog-title').textContent = title;
+          document.getElementById('dialog-message').textContent = msg;
+          document.getElementById('dialog-cancel-btn').style.display = 'none';
+          d.classList.remove('hidden'); d.classList.add('flex');
+          document.getElementById('dialog-confirm-btn').onclick = () => { d.classList.add('hidden'); d.classList.remove('flex'); resolve(); };
+        });
+      }
+    };
+
+    const NIVORA_I18N = {
+      lang: localStorage.getItem('nivora_lang') || 'bn',
+      setLanguage(l) {
+        if (['bn', 'en', 'hi', 'ur'].includes(l)) {
+          this.lang = l;
+          localStorage.setItem('nivora_lang', l);
+          document.documentElement.lang = l;
+          document.documentElement.dir = l === 'ur' ? 'rtl' : 'ltr';
+          const sel = document.getElementById('lang-select');
+          if (sel) sel.value = l;
+          NIVORA_NAV.renderCurrent();
+        }
+      }
+    };
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdNE98coyO93LFex4faeIUKnraQEXMYhE",
+      authDomain: "nivora-8b0fc.firebaseapp.com",
+      projectId: "nivora-8b0fc",
+      storageBucket: "nivora-8b0fc.firebasestorage.app",
+      messagingSenderId: "109067195329",
+      appId: "1:109067195329:web:1e0e5af8f9824d00be1540",
+      measurementId: "G-ZQG22V61RP"
+    };
+    try {
+      if (typeof firebase !== 'undefined') firebase.initializeApp(firebaseConfig);
+    } catch (e) {}
+
+    /* ROUTER */
+    const NIVORA_NAV = {
+      current: 'home',
+      stack: ['home'],
+      goTo(mod) {
+        if (this.current !== mod) {
+          this.stack.push(mod);
+          this.current = mod;
+          window.history.pushState({ mod }, '', '');
+        }
+        this.renderCurrent();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      goBack() {
+        if (this.stack.length > 1) {
+          this.stack.pop();
+          this.current = this.stack[this.stack.length - 1];
+          this.renderCurrent();
+        } else {
+          this.goTo('home');
+        }
+      },
+      renderCurrent() {
+        const backBtn = document.getElementById('btn-back');
+        if (backBtn) {
+          if (this.current === 'home') backBtn.classList.add('hidden');
+          else backBtn.classList.remove('hidden');
+        }
+
+        ['home', 'quran', 'ai', 'business', 'market'].forEach(m => {
+          const btn = document.getElementById('nav-btn-' + m);
+          if (btn) {
+            btn.className = this.current === m
+              ? "py-2 rounded-xl flex flex-col items-center gap-1 font-medium text-blue-400 font-bold touch-press"
+              : "py-2 rounded-xl flex flex-col items-center gap-1 font-medium text-slate-400 hover:text-slate-200 touch-press";
+          }
+        });
+
+        const v = document.getElementById('app-viewport');
+        if (!v) return;
+
+        if (this.current === 'home') v.innerHTML = renderHomeView();
+        else if (this.current === 'quran') v.innerHTML = renderQuranView();
+        else if (this.current === 'ai') v.innerHTML = renderAIView();
+        else if (this.current === 'business') v.innerHTML = renderBusinessView();
+        else if (this.current === 'ledger') v.innerHTML = renderLedgerView();
+        else if (this.current === 'stock') v.innerHTML = renderStockView();
+        else if (this.current === 'radar') v.innerHTML = renderRadarView();
+        else if (this.current === 'market') v.innerHTML = renderMarketView();
+        else if (this.current === 'calculator') v.innerHTML = renderCalculatorView();
+        else if (this.current === 'health') v.innerHTML = renderHealthView();
+        else if (this.current === 'tasks') v.innerHTML = renderTasksView();
+        else if (this.current === 'referral') v.innerHTML = renderReferralView();
+        else if (this.current === 'admin') v.innerHTML = renderAdminView();
+        else if (this.current === 'account') v.innerHTML = renderAccountView();
+      }
+    };
+    window.addEventListener('popstate', () => NIVORA_NAV.goBack());
+
+    /* QURAN DATA — 114 SURAHS */
+    const QURAN_SURAHS = [
+      { num: 1, ar: "الفاتحة", bn: "সূরা আল-ফাতিহা", en: "Surah 1", ayahs: 7, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(1).padStart(3, '0')}.mp3` },
+      { num: 2, ar: "البقرة", bn: "সূরা আল-বাকারা", en: "Surah 2", ayahs: 286, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(2).padStart(3, '0')}.mp3` },
+      { num: 3, ar: "آل عمران", bn: "সূরা আলে ইমরান", en: "Surah 3", ayahs: 200, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(3).padStart(3, '0')}.mp3` },
+      { num: 4, ar: "النساء", bn: "সূরা আন-নিসা", en: "Surah 4", ayahs: 176, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(4).padStart(3, '0')}.mp3` },
+      { num: 5, ar: "المائدة", bn: "সূরা আল-মায়িদাহ", en: "Surah 5", ayahs: 120, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(5).padStart(3, '0')}.mp3` },
+      { num: 6, ar: "الأنعام", bn: "সূরা আল-আনআম", en: "Surah 6", ayahs: 165, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(6).padStart(3, '0')}.mp3` },
+      { num: 7, ar: "الأعراف", bn: "সূরা আল-আরাফ", en: "Surah 7", ayahs: 206, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(7).padStart(3, '0')}.mp3` },
+      { num: 8, ar: "الأنفال", bn: "সূরা আল-আনফাল", en: "Surah 8", ayahs: 75, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(8).padStart(3, '0')}.mp3` },
+      { num: 9, ar: "التوبة", bn: "সূরা আত-তাওবাহ", en: "Surah 9", ayahs: 129, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(9).padStart(3, '0')}.mp3` },
+      { num: 10, ar: "يونس", bn: "সূরা ইউনুস", en: "Surah 10", ayahs: 109, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(10).padStart(3, '0')}.mp3` },
+      { num: 11, ar: "هود", bn: "সূরা হূদ", en: "Surah 11", ayahs: 123, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(11).padStart(3, '0')}.mp3` },
+      { num: 12, ar: "يوسف", bn: "সূরা ইউসুফ", en: "Surah 12", ayahs: 111, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(12).padStart(3, '0')}.mp3` },
+      { num: 13, ar: "الرعد", bn: "সূরা আর-রাদ", en: "Surah 13", ayahs: 43, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(13).padStart(3, '0')}.mp3` },
+      { num: 14, ar: "إبراهيم", bn: "সূরা ইবরাহীম", en: "Surah 14", ayahs: 52, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(14).padStart(3, '0')}.mp3` },
+      { num: 15, ar: "الحجر", bn: "সূরা আল-হিজর", en: "Surah 15", ayahs: 99, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(15).padStart(3, '0')}.mp3` },
+      { num: 16, ar: "النحل", bn: "সূরা আন-নাহল", en: "Surah 16", ayahs: 128, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(16).padStart(3, '0')}.mp3` },
+      { num: 17, ar: "الإسراء", bn: "সূরা আল-ইসরা", en: "Surah 17", ayahs: 111, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(17).padStart(3, '0')}.mp3` },
+      { num: 18, ar: "الكهف", bn: "সূরা আল-কাহফ", en: "Surah 18", ayahs: 110, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(18).padStart(3, '0')}.mp3` },
+      { num: 19, ar: "مريم", bn: "সূরা মারইয়াম", en: "Surah 19", ayahs: 98, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(19).padStart(3, '0')}.mp3` },
+      { num: 20, ar: "طه", bn: "সূরা ত্ব-হা", en: "Surah 20", ayahs: 135, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(20).padStart(3, '0')}.mp3` },
+      { num: 21, ar: "الأنبياء", bn: "সূরা আল-আম্বিয়া", en: "Surah 21", ayahs: 112, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(21).padStart(3, '0')}.mp3` },
+      { num: 22, ar: "الحج", bn: "সূরা আল-হাজ্জ", en: "Surah 22", ayahs: 78, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(22).padStart(3, '0')}.mp3` },
+      { num: 23, ar: "المؤمنون", bn: "সূরা আল-মুমিনূন", en: "Surah 23", ayahs: 118, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(23).padStart(3, '0')}.mp3` },
+      { num: 24, ar: "النور", bn: "সূরা আন-নূর", en: "Surah 24", ayahs: 64, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(24).padStart(3, '0')}.mp3` },
+      { num: 25, ar: "الفرقان", bn: "সূরা আল-ফুরকান", en: "Surah 25", ayahs: 77, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(25).padStart(3, '0')}.mp3` },
+      { num: 26, ar: "الشعراء", bn: "সূরা আশ-শুআরা", en: "Surah 26", ayahs: 227, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(26).padStart(3, '0')}.mp3` },
+      { num: 27, ar: "النمل", bn: "সূরা আন-নামল", en: "Surah 27", ayahs: 93, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(27).padStart(3, '0')}.mp3` },
+      { num: 28, ar: "القصص", bn: "সূরা আল-কাসাস", en: "Surah 28", ayahs: 88, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(28).padStart(3, '0')}.mp3` },
+      { num: 29, ar: "العنكبوت", bn: "সূরা আল-আনকাবূত", en: "Surah 29", ayahs: 69, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(29).padStart(3, '0')}.mp3` },
+      { num: 30, ar: "الروم", bn: "সূরা আর-রূম", en: "Surah 30", ayahs: 60, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(30).padStart(3, '0')}.mp3` },
+      { num: 31, ar: "لقمان", bn: "সূরা লুকমান", en: "Surah 31", ayahs: 34, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(31).padStart(3, '0')}.mp3` },
+      { num: 32, ar: "السجدة", bn: "সূরা আস-সাজদাহ", en: "Surah 32", ayahs: 30, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(32).padStart(3, '0')}.mp3` },
+      { num: 33, ar: "الأحزاب", bn: "সূরা আল-আহযাব", en: "Surah 33", ayahs: 73, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(33).padStart(3, '0')}.mp3` },
+      { num: 34, ar: "سبأ", bn: "সূরা সাবা", en: "Surah 34", ayahs: 54, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(34).padStart(3, '0')}.mp3` },
+      { num: 35, ar: "فاطر", bn: "সূরা ফাতির", en: "Surah 35", ayahs: 45, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(35).padStart(3, '0')}.mp3` },
+      { num: 36, ar: "يس", bn: "সূরা ইয়াসীন", en: "Surah 36", ayahs: 83, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(36).padStart(3, '0')}.mp3` },
+      { num: 37, ar: "الصافات", bn: "সূরা আস-সাফফাত", en: "Surah 37", ayahs: 182, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(37).padStart(3, '0')}.mp3` },
+      { num: 38, ar: "ص", bn: "সূরা সোয়াদ", en: "Surah 38", ayahs: 88, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(38).padStart(3, '0')}.mp3` },
+      { num: 39, ar: "الزمر", bn: "সূরা আয-যুমার", en: "Surah 39", ayahs: 75, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(39).padStart(3, '0')}.mp3` },
+      { num: 40, ar: "غافر", bn: "সূরা গাফির", en: "Surah 40", ayahs: 85, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(40).padStart(3, '0')}.mp3` },
+      { num: 41, ar: "فصلت", bn: "সূরা ফুসসিলাত", en: "Surah 41", ayahs: 54, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(41).padStart(3, '0')}.mp3` },
+      { num: 42, ar: "الشورى", bn: "সূরা আশ-শূরা", en: "Surah 42", ayahs: 53, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(42).padStart(3, '0')}.mp3` },
+      { num: 43, ar: "الزخرف", bn: "সূরা আয-যুখরুফ", en: "Surah 43", ayahs: 89, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(43).padStart(3, '0')}.mp3` },
+      { num: 44, ar: "الدخان", bn: "সূরা আদ-দুখান", en: "Surah 44", ayahs: 59, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(44).padStart(3, '0')}.mp3` },
+      { num: 45, ar: "الجاثية", bn: "সূরা আল-জাসিয়াহ", en: "Surah 45", ayahs: 37, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(45).padStart(3, '0')}.mp3` },
+      { num: 46, ar: "الأحقاف", bn: "সূরা আল-আহকাফ", en: "Surah 46", ayahs: 35, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(46).padStart(3, '0')}.mp3` },
+      { num: 47, ar: "محمد", bn: "সূরা মুহাম্মাদ", en: "Surah 47", ayahs: 38, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(47).padStart(3, '0')}.mp3` },
+      { num: 48, ar: "الفتح", bn: "সূরা আল-ফাতহ", en: "Surah 48", ayahs: 29, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(48).padStart(3, '0')}.mp3` },
+      { num: 49, ar: "الحجرات", bn: "সূরা আল-হুজুরাত", en: "Surah 49", ayahs: 18, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(49).padStart(3, '0')}.mp3` },
+      { num: 50, ar: "ق", bn: "সূরা কাফ", en: "Surah 50", ayahs: 45, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(50).padStart(3, '0')}.mp3` },
+      { num: 51, ar: "الذاريات", bn: "সূরা আয-যারিয়াত", en: "Surah 51", ayahs: 60, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(51).padStart(3, '0')}.mp3` },
+      { num: 52, ar: "الطور", bn: "সূরা আত-তূর", en: "Surah 52", ayahs: 49, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(52).padStart(3, '0')}.mp3` },
+      { num: 53, ar: "النجم", bn: "সূরা আন-নাজম", en: "Surah 53", ayahs: 62, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(53).padStart(3, '0')}.mp3` },
+      { num: 54, ar: "القمر", bn: "সূরা আল-কামার", en: "Surah 54", ayahs: 55, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(54).padStart(3, '0')}.mp3` },
+      { num: 55, ar: "الرحمن", bn: "সূরা আর-রহমান", en: "Surah 55", ayahs: 78, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(55).padStart(3, '0')}.mp3` },
+      { num: 56, ar: "الواقعة", bn: "সূরা আল-ওয়াকিয়াহ", en: "Surah 56", ayahs: 96, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(56).padStart(3, '0')}.mp3` },
+      { num: 57, ar: "الحديد", bn: "সূরা আল-হাদীদ", en: "Surah 57", ayahs: 29, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(57).padStart(3, '0')}.mp3` },
+      { num: 58, ar: "المجادلة", bn: "সূরা আল-মুজাদালাহ", en: "Surah 58", ayahs: 22, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(58).padStart(3, '0')}.mp3` },
+      { num: 59, ar: "الحشر", bn: "সূরা আল-হাশর", en: "Surah 59", ayahs: 24, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(59).padStart(3, '0')}.mp3` },
+      { num: 60, ar: "الممتحنة", bn: "সূরা আল-মুমতাহিনাহ", en: "Surah 60", ayahs: 13, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(60).padStart(3, '0')}.mp3` },
+      { num: 61, ar: "الصف", bn: "সূরা আস-সাফ", en: "Surah 61", ayahs: 14, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(61).padStart(3, '0')}.mp3` },
+      { num: 62, ar: "الجمعة", bn: "সূরা আল-জুমুআহ", en: "Surah 62", ayahs: 11, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(62).padStart(3, '0')}.mp3` },
+      { num: 63, ar: "المنافقون", bn: "সূরা আল-মুনাফিকূন", en: "Surah 63", ayahs: 11, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(63).padStart(3, '0')}.mp3` },
+      { num: 64, ar: "التغابن", bn: "সূরা আত-তাগাবুন", en: "Surah 64", ayahs: 18, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(64).padStart(3, '0')}.mp3` },
+      { num: 65, ar: "الطلاق", bn: "সূরা আত-তালাক", en: "Surah 65", ayahs: 12, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(65).padStart(3, '0')}.mp3` },
+      { num: 66, ar: "التحريم", bn: "সূরা আত-তাহরীম", en: "Surah 66", ayahs: 12, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(66).padStart(3, '0')}.mp3` },
+      { num: 67, ar: "الملك", bn: "সূরা আল-মুলক", en: "Surah 67", ayahs: 30, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(67).padStart(3, '0')}.mp3` },
+      { num: 68, ar: "القلم", bn: "সূরা আল-কলম", en: "Surah 68", ayahs: 52, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(68).padStart(3, '0')}.mp3` },
+      { num: 69, ar: "الحاقة", bn: "সূরা আল-হাক্কাহ", en: "Surah 69", ayahs: 52, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(69).padStart(3, '0')}.mp3` },
+      { num: 70, ar: "المعارج", bn: "সূরা আল-মাআরিজ", en: "Surah 70", ayahs: 44, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(70).padStart(3, '0')}.mp3` },
+      { num: 71, ar: "نوح", bn: "সূরা নূহ", en: "Surah 71", ayahs: 28, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(71).padStart(3, '0')}.mp3` },
+      { num: 72, ar: "الجن", bn: "সূরা আল-জিন", en: "Surah 72", ayahs: 28, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(72).padStart(3, '0')}.mp3` },
+      { num: 73, ar: "المزمل", bn: "সূরা আল-মুযযাম্মিল", en: "Surah 73", ayahs: 20, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(73).padStart(3, '0')}.mp3` },
+      { num: 74, ar: "المدثر", bn: "সূরা আল-মুদ্দাসসির", en: "Surah 74", ayahs: 56, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(74).padStart(3, '0')}.mp3` },
+      { num: 75, ar: "القيامة", bn: "সূরা আল-কিয়ামাহ", en: "Surah 75", ayahs: 40, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(75).padStart(3, '0')}.mp3` },
+      { num: 76, ar: "الإنسان", bn: "সূরা আল-ইনসান", en: "Surah 76", ayahs: 31, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(76).padStart(3, '0')}.mp3` },
+      { num: 77, ar: "المرسلات", bn: "সূরা আল-মুরসালাত", en: "Surah 77", ayahs: 50, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(77).padStart(3, '0')}.mp3` },
+      { num: 78, ar: "النبأ", bn: "সূরা আন-নাবা", en: "Surah 78", ayahs: 40, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(78).padStart(3, '0')}.mp3` },
+      { num: 79, ar: "النازعات", bn: "সূরা আন-নাযিআত", en: "Surah 79", ayahs: 46, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(79).padStart(3, '0')}.mp3` },
+      { num: 80, ar: "عبس", bn: "সূরা আবাসা", en: "Surah 80", ayahs: 42, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(80).padStart(3, '0')}.mp3` },
+      { num: 81, ar: "التكوير", bn: "সূরা আত-তাকভীর", en: "Surah 81", ayahs: 29, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(81).padStart(3, '0')}.mp3` },
+      { num: 82, ar: "الإنفطار", bn: "সূরা আল-ইনফিতার", en: "Surah 82", ayahs: 19, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(82).padStart(3, '0')}.mp3` },
+      { num: 83, ar: "المطففين", bn: "সূরা আল-মুতাফফিফীন", en: "Surah 83", ayahs: 36, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(83).padStart(3, '0')}.mp3` },
+      { num: 84, ar: "الإنشقاق", bn: "সূরা আল-ইনশিকাক", en: "Surah 84", ayahs: 25, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(84).padStart(3, '0')}.mp3` },
+      { num: 85, ar: "البروج", bn: "সূরা আল-বুরূজ", en: "Surah 85", ayahs: 22, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(85).padStart(3, '0')}.mp3` },
+      { num: 86, ar: "الطارق", bn: "সূরা আত-তারিক", en: "Surah 86", ayahs: 17, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(86).padStart(3, '0')}.mp3` },
+      { num: 87, ar: "الأعلى", bn: "সূরা আল-আলা", en: "Surah 87", ayahs: 19, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(87).padStart(3, '0')}.mp3` },
+      { num: 88, ar: "الغاشية", bn: "সূরা আল-গাশিয়াহ", en: "Surah 88", ayahs: 26, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(88).padStart(3, '0')}.mp3` },
+      { num: 89, ar: "الفجر", bn: "সূরা আল-ফজর", en: "Surah 89", ayahs: 30, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(89).padStart(3, '0')}.mp3` },
+      { num: 90, ar: "البلد", bn: "সূরা আল-বালাদ", en: "Surah 90", ayahs: 20, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(90).padStart(3, '0')}.mp3` },
+      { num: 91, ar: "الشمس", bn: "সূরা আশ-শামস", en: "Surah 91", ayahs: 15, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(91).padStart(3, '0')}.mp3` },
+      { num: 92, ar: "الليل", bn: "সূরা আল-লাইল", en: "Surah 92", ayahs: 21, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(92).padStart(3, '0')}.mp3` },
+      { num: 93, ar: "الضحى", bn: "সূরা আদ-দুহা", en: "Surah 93", ayahs: 11, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(93).padStart(3, '0')}.mp3` },
+      { num: 94, ar: "الشرح", bn: "সূরা আশ-শরহ", en: "Surah 94", ayahs: 8, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(94).padStart(3, '0')}.mp3` },
+      { num: 95, ar: "التين", bn: "সূরা আত-তীন", en: "Surah 95", ayahs: 8, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(95).padStart(3, '0')}.mp3` },
+      { num: 96, ar: "العلق", bn: "সূরা আল-আলাক", en: "Surah 96", ayahs: 19, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(96).padStart(3, '0')}.mp3` },
+      { num: 97, ar: "القدر", bn: "সূরা আল-কদর", en: "Surah 97", ayahs: 5, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(97).padStart(3, '0')}.mp3` },
+      { num: 98, ar: "البينة", bn: "সূরা আল-বাইয়্যিনাহ", en: "Surah 98", ayahs: 8, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(98).padStart(3, '0')}.mp3` },
+      { num: 99, ar: "الزلزلة", bn: "সূরা আয-যিলযাল", en: "Surah 99", ayahs: 8, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(99).padStart(3, '0')}.mp3` },
+      { num: 100, ar: "العاديات", bn: "সূরা আল-আদিয়াত", en: "Surah 100", ayahs: 11, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(100).padStart(3, '0')}.mp3` },
+      { num: 101, ar: "القارعة", bn: "সূরা আল-কারিআহ", en: "Surah 101", ayahs: 11, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(101).padStart(3, '0')}.mp3` },
+      { num: 102, ar: "التكاثر", bn: "সূরা আত-তাকাসুর", en: "Surah 102", ayahs: 8, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(102).padStart(3, '0')}.mp3` },
+      { num: 103, ar: "العصر", bn: "সূরা আল-আসর", en: "Surah 103", ayahs: 3, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(103).padStart(3, '0')}.mp3` },
+      { num: 104, ar: "الهمزة", bn: "সূরা আল-হুমাযাহ", en: "Surah 104", ayahs: 9, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(104).padStart(3, '0')}.mp3` },
+      { num: 105, ar: "الفيل", bn: "সূরা আল-ফীল", en: "Surah 105", ayahs: 5, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(105).padStart(3, '0')}.mp3` },
+      { num: 106, ar: "قريش", bn: "সূরা কুরাইশ", en: "Surah 106", ayahs: 4, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(106).padStart(3, '0')}.mp3` },
+      { num: 107, ar: "الماعون", bn: "সূরা আল-মাউন", en: "Surah 107", ayahs: 7, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(107).padStart(3, '0')}.mp3` },
+      { num: 108, ar: "الكوثر", bn: "সূরা আল-কাওসার", en: "Surah 108", ayahs: 3, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(108).padStart(3, '0')}.mp3` },
+      { num: 109, ar: "الكافرون", bn: "সূরা আল-কাফিরূন", en: "Surah 109", ayahs: 6, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(109).padStart(3, '0')}.mp3` },
+      { num: 110, ar: "النصر", bn: "সূরা আন-নাসর", en: "Surah 110", ayahs: 3, type: "মাদানী", audio: `https://server6.mp3quran.net/arkani/${String(110).padStart(3, '0')}.mp3` },
+      { num: 111, ar: "المسد", bn: "সূরা আল-মাসাদ", en: "Surah 111", ayahs: 5, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(111).padStart(3, '0')}.mp3` },
+      { num: 112, ar: "الإخلاص", bn: "সূরা আল-ইখলাস", en: "Surah 112", ayahs: 4, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(112).padStart(3, '0')}.mp3` },
+      { num: 113, ar: "الفلق", bn: "সূরা আল-ফালাক", en: "Surah 113", ayahs: 5, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(113).padStart(3, '0')}.mp3` },
+      { num: 114, ar: "الناس", bn: "সূরা আন-নাস", en: "Surah 114", ayahs: 6, type: "মক্কী", audio: `https://server6.mp3quran.net/arkani/${String(114).padStart(3, '0')}.mp3` }
+    ];
+
+    /* VIEW GENERATORS */
+    function renderHomeView() {
+      const modules = [
+        { id: 'quran', title: 'কুরআন হাব', desc: '১১৪ টি পূর্ণাঙ্গ সূরা ও অডিও', icon: 'fa-book-quran', color: 'from-emerald-600 to-teal-700', badge: 'Digital' },
+        { id: 'ai', title: 'নিভোরা এআই', desc: 'স্মার্ট এআই সমাধান ও চ্যাট', icon: 'fa-wand-magic-sparkles', color: 'from-blue-600 to-indigo-700', badge: 'AI Pro' },
+        { id: 'business', title: 'ব্যবসা পরিচালনা', desc: 'আয়-ব্যয়, বিক্রয় ও লাভ-ক্ষতি', icon: 'fa-chart-line', color: 'from-cyan-600 to-blue-700', badge: 'Finance' },
+        { id: 'ledger', title: 'ডিজিটাল টালি খাতা', desc: 'বাকি খাতা ও কাস্টমার লেজার', icon: 'fa-book', color: 'from-amber-600 to-orange-700', badge: 'Ledger' },
+        { id: 'stock', title: 'স্টক ইনভেন্টরি', desc: 'স্মার্ট পণ্য মজুদ ও অ্যালার্ট', icon: 'fa-boxes-stacked', color: 'from-teal-600 to-emerald-700', badge: 'Stock' },
+        { id: 'radar', title: 'বিজনেস রাডার', desc: 'মার্কেট সিগন্যাল ও সুযোগ', icon: 'fa-tower-broadcast', color: 'from-purple-600 to-indigo-700', badge: 'Radar' },
+        { id: 'market', title: 'মার্কেটপ্লেস', desc: 'আন্তর্জাতিক শপ ও কার্ট', icon: 'fa-bag-shopping', color: 'from-blue-700 to-cyan-800', badge: 'Shop' },
+        { id: 'calculator', title: 'ক্যালকুলেটর', desc: 'লাভ-মার্জিন, ঋণ, বয়স ও একক', icon: 'fa-calculator', color: 'from-indigo-600 to-purple-700', badge: 'Tools' },
+        { id: 'health', title: 'হোমিও হল', desc: 'জার্মান হোমিওপ্যাথিক সেবা', icon: 'fa-heart-pulse', color: 'from-emerald-700 to-green-800', badge: 'Health' },
+        { id: 'tasks', title: 'টাস্ক ও ইনকাম', desc: 'মাইক্রো-টাস্ক ও আর্নিং হাব', icon: 'fa-award', color: 'from-yellow-600 to-amber-700', badge: 'Earn' },
+        { id: 'referral', title: 'রেফারেল বোনাস', desc: 'বন্ধুদের রেফার করে ইনকাম', icon: 'fa-gift', color: 'from-pink-600 to-rose-700', badge: 'Bonus' },
+        { id: 'admin', title: 'অ্যাডমিন কনসোল', desc: 'সুপার কন্ট্রোল ও অডিট লগ', icon: 'fa-shield-halved', color: 'from-red-600 to-rose-800', badge: 'Admin' }
+      ];
+
+      return `
+        <div class="space-y-6 animate-fade-in">
+          <div class="rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 border border-blue-500/30 p-5 sm:p-8 shadow-2xl space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold">
+              <i class="fa-solid fa-sparkles text-blue-400"></i>
+              <span>NIVORA ONE DIGITAL SUITE</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">এক প্ল্যাটফর্মে প্রতিদিনের ডিজিটাল সমাধান।</h2>
+            <p class="text-slate-300 text-xs sm:text-sm">কুরআন তিলাওয়াত, এআই অ্যাসিস্ট্যান্ট, ব্যবসা পরিচালনা, টালি খাতা ও আন্তর্জাতিক মার্কেটপ্লেস।</p>
+            <div class="flex flex-wrap gap-2.5 pt-2">
+              <button onclick="NIVORA_NAV.goTo('ai')" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow touch-press">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>এআই সহকারী</span>
+              </button>
+              <button onclick="NIVORA_NAV.goTo('quran')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs sm:text-sm flex items-center gap-2 border border-slate-700 touch-press">
+                <i class="fa-solid fa-book-quran text-emerald-400"></i> <span>কুরআন হাব</span>
+              </button>
+            </div>
+          </div>
+
+          <div onclick="window.open('${NIVORA_CONFIG.smartLink}', '_blank')" class="bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 flex items-center justify-between cursor-pointer hover:border-amber-400/50 shadow-md touch-press">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-star"></i></div>
+              <div>
+                <h4 class="font-bold text-white text-xs sm:text-sm">বিশেষ পার্টনার অফার</h4>
+                <p class="text-[11px] text-slate-400">নিভোরা প্ল্যাটফর্মের সেরা অফারগুলো অন্বেষণ করুন।</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square text-amber-400 text-xs"></i>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-grid-2 text-blue-400"></i><span>ডিজিটাল মডিউলসমূহ</span></h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              ${modules.map(m => `
+                <div onclick="NIVORA_NAV.goTo('${m.id}')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-blue-500/50 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all shadow-lg flex flex-col justify-between group touch-press">
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${m.color} text-white flex items-center justify-center shadow"><i class="fa-solid ${m.icon}"></i></div>
+                      <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-semibold border border-slate-700">${m.badge}</span>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-white text-sm group-hover:text-blue-300">${m.title}</h4>
+                      <p class="text-slate-400 text-xs mt-1 line-clamp-2">${m.desc}</p>
+                    </div>
+                  </div>
+                  <div class="pt-3 mt-3 border-t border-slate-800 flex items-center justify-between text-xs text-blue-400 font-medium">
+                    <span>প্রবেশ করুন</span><i class="fa-solid fa-chevron-right text-[10px]"></i>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =========================================================
+       NIVORA QURAN HUB — REAL READER
+       604 Mushaf pages + 15-line Mushaf image + 4 meanings
+       + Abdul Wali Al-Arkani recitation + local caching
+       ========================================================= */
+
+    let activeQuranSurah = null;
+    let audioInst = null;
+    let quranPage = Number(localStorage.getItem('nivora_quran_page') || '1');
+    let quranMeaningLang = localStorage.getItem('nivora_quran_lang') || 'bn';
+    let quranPageData = null;
+
+    const QURAN_API = 'https://api.alquran.cloud/v1';
+    const QURAN_MUSHAF = 'https://api.islamic.app/v1/mushaf/page';
+    const QURAN_LANGS = {
+      bn: { label: 'বাংলা', edition: 'bn.bengali' },
+      en: { label: 'English', edition: 'en.sahih' },
+      hi: { label: 'हिन्दी', edition: 'hi.hindi' },
+      ur: { label: 'اردو', edition: 'ur.jalandhry' }
+    };
+
+    function quranEsc(value){
+      return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function quranPageCacheKey(page, lang){
+      return `nivora_quran_cache_${page}_${lang}`;
+    }
+
+    function quranSaveCache(page, lang, data){
+      try{
+        localStorage.setItem(quranPageCacheKey(page, lang), JSON.stringify({time:Date.now(),data}));
+      }catch(e){}
+    }
+
+    function quranReadCache(page, lang){
+      try{
+        const x=JSON.parse(localStorage.getItem(quranPageCacheKey(page,lang))||'null');
+        return x && x.data ? x.data : null;
+      }catch(e){return null;}
+    }
+
+    async function quranFetchPageEdition(page, edition){
+      const langKey=Object.keys(QURAN_LANGS).find(k=>QURAN_LANGS[k].edition===edition);
+      if(langKey){
+        const cached=quranReadCache(page,langKey);
+        if(cached) return cached;
+      }
+      const res=await fetch(`${QURAN_API}/page/${page}/${encodeURIComponent(edition)}`);
+      if(!res.ok) throw new Error('Quran API error');
+      const json=await res.json();
+      if(!json || !json.data) throw new Error('Empty Quran data');
+      if(langKey) quranSaveCache(page,langKey,json.data);
+      return json.data;
+    }
+
+    async function quranLoadMeanings(page){
+      const lang=QURAN_LANGS[quranMeaningLang]||QURAN_LANGS.bn;
+      const box=document.getElementById('nvQuranMeaningBody');
+      if(!box) return;
+      box.innerHTML='<div class="text-xs text-slate-400">অর্থ লোড হচ্ছে...</div>';
+      try{
+        const data=await quranFetchPageEdition(page,lang.edition);
+        const ayahs=data.ayahs||[];
+        box.innerHTML=ayahs.map(a=>`
+          <div class="nv-quran-ayah">
+            <div><span class="nv-quran-ayah-no">${quranEsc(a.numberInSurah)}</span><b class="text-white text-xs">${quranEsc(data.surah?.englishName||'Quran')}</b></div>
+            <div class="nv-quran-ayah-tr">${quranEsc(a.text)}</div>
+          </div>`).join('') || '<div class="text-xs text-slate-400">এই পৃষ্ঠার অর্থ পাওয়া যায়নি।</div>';
+      }catch(e){
+        box.innerHTML='<div class="text-xs text-amber-300">অনলাইনে অর্থ লোড করা যায়নি। আগে খোলা/ক্যাশ করা পৃষ্ঠা থাকলে সেটি ব্যবহার করুন।</div>';
+      }
+    }
+
+    function quranSetPage(page){
+      quranPage=Math.max(1,Math.min(604,Math.floor(Number(page)||1)));
+      localStorage.setItem('nivora_quran_page',String(quranPage));
+      activeQuranSurah=null;
+      NIVORA_NAV.renderCurrent();
+    }
+
+    function quranSetLang(lang){
+      if(!QURAN_LANGS[lang]) return;
+      quranMeaningLang=lang;
+      localStorage.setItem('nivora_quran_lang',lang);
+      quranLoadMeanings(quranPage);
+    }
+
+    function quranPrevPage(){quranSetPage(quranPage-1)}
+    function quranNextPage(){quranSetPage(quranPage+1)}
+
+    function quranBookmark(){
+      localStorage.setItem('nivora_quran_bookmark',String(quranPage));
+      NIVORA_CORE.toast(`পৃষ্ঠা ${quranPage} বুকমার্ক করা হয়েছে`,'success');
+    }
+
+    function quranLastRead(){
+      const p=Number(localStorage.getItem('nivora_quran_page')||1);
+      quranSetPage(p);
+    }
+
+    function quranSurahPage(num){
+      const n=Math.max(1,Math.min(114,Number(num)||1));
+      // 604-page standard Mushaf: this is a navigation estimate until a precise page map is loaded.
+      return Math.max(1,Math.min(604,Math.round(((n-1)/114)*603)+1));
+    }
+
+    function quranOpenSurah(num){
+      const s=QURAN_SURAHS.find(x=>x.num===Number(num));
+      if(!s) return;
+      activeQuranSurah=s;
+      quranPage=quranSurahPage(s.num);
+      localStorage.setItem('nivora_quran_page',String(quranPage));
+      NIVORA_NAV.renderCurrent();
+    }
+
+    function toggleAudio(src){
+      if(audioInst){
+        audioInst.pause();
+        audioInst=null;
+        NIVORA_CORE.toast('তেলাওয়াত থামানো হয়েছে','info');
+        const b=document.getElementById('btn-q-audio');
+        if(b) b.innerHTML='<i class="fa-solid fa-play"></i> তেলাওয়াত';
+        return;
+      }
+      audioInst=new Audio(src);
+      audioInst.preload='none';
+      audioInst.play().then(()=>{
+        const b=document.getElementById('btn-q-audio');
+        if(b) b.innerHTML='<i class="fa-solid fa-pause"></i> পজ';
+        NIVORA_CORE.toast('আঃ ওয়ালী আরকানীর তেলাওয়াত শুরু হয়েছে','success');
+      }).catch(()=>{
+        audioInst=null;
+        NIVORA_CORE.toast('অডিও চালু করতে ইন্টারনেট সংযোগ প্রয়োজন','warning');
+      });
+      audioInst.onended=()=>{
+        audioInst=null;
+        const b=document.getElementById('btn-q-audio');
+        if(b) b.innerHTML='<i class="fa-solid fa-play"></i> তেলাওয়াত';
+      };
+    }
+
+    function quranLoadPageAfterRender(){
+      const img=document.getElementById('nvQuranMushafImage');
+      const status=document.getElementById('nvQuranStatus');
+      if(img){
+        img.src=`${QURAN_MUSHAF}/${quranPage}.svg?font=uthmani&theme=light&width=720`;
+        img.onload=()=>{if(status)status.textContent=`পৃষ্ঠা ${quranPage} • ১৫-লাইন Mushaf প্রস্তুত`};
+        img.onerror=()=>{if(status)status.textContent='Mushaf পৃষ্ঠা লোড হয়নি — ইন্টারনেট সংযোগ পরীক্ষা করুন';};
+      }
+      quranLoadMeanings(quranPage);
+    }
+
+    function renderQuranView(){
+      if(activeQuranSurah){
+        const s=activeQuranSurah;
+        return `
+          <div class="space-y-4 animate-fade-in">
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-4 flex items-center justify-between shadow-lg sticky top-16 z-20">
+              <div class="flex items-center gap-3">
+                <button onclick="activeQuranSurah=null; NIVORA_NAV.renderCurrent()" class="p-2 bg-slate-800 rounded-xl text-white"><i class="fa-solid fa-arrow-left"></i></button>
+                <div><h3 class="text-base font-bold text-white">${quranEsc(s.bn)}</h3><p class="text-xs text-slate-400">সূরা ${s.num} • ${s.ayahs} আয়াত • ${s.type}</p></div>
+              </div>
+              <button id="btn-q-audio" onclick="toggleAudio('${s.audio}')" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-play"></i> তেলাওয়াত</button>
+            </div>
+            <div class="nv-quran-page-card">
+              <div class="nv-quran-page-head">
+                <button onclick="quranPrevPage()" ${quranPage<=1?'disabled':''}>◀</button>
+                <div class="text-center"><b>পৃষ্ঠা ${quranPage} / 604</b><div class="text-[10px] text-slate-500">হাফেজী পাঠ • ১৫ লাইন</div></div>
+                <button onclick="quranNextPage()" ${quranPage>=604?'disabled':''}>▶</button>
+              </div>
+              <div class="nv-quran-page-image-wrap"><img id="nvQuranMushafImage" class="nv-quran-page-image" alt="Quran page ${quranPage}"></div>
+            </div>
+            <div class="nv-quran-toolbar">
+              <select onchange="quranSetLang(this.value)">
+                ${Object.entries(QURAN_LANGS).map(([k,v])=>`<option value="${k}" ${quranMeaningLang===k?'selected':''}>${v.label} অর্থ</option>`).join('')}
+              </select>
+              <button onclick="quranBookmark()">⭐ বুকমার্ক</button>
+            </div>
+            <div class="nv-quran-meaning"><div class="nv-quran-meaning-title">${QURAN_LANGS[quranMeaningLang].label} অর্থ</div><div id="nvQuranMeaningBody"><div class="text-xs text-slate-400">লোড হচ্ছে...</div></div></div>
+            <div class="nv-quran-actions"><button onclick="quranLastRead()">📖 শেষ পড়া পৃষ্ঠা</button><button onclick="NIVORA_CORE.toast('তাফসির পরবর্তী Quran update-এ যুক্ত হবে','info')">📚 তাফসির</button></div>
+            <div id="nvQuranStatus" class="nv-quran-status">পৃষ্ঠা লোড হচ্ছে...</div>
+          </div>`;
+      }
+
+      return `
+        <div class="nv-quran-hub space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 border border-emerald-500/30 rounded-2xl p-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-book-quran text-emerald-400"></i> আল-কুরআন ডিজিটাল হাব</h2>
+            <p class="text-slate-300 text-xs mt-1">৬০৪ পৃষ্ঠা • ১৫-লাইন Mushaf • ৪ ভাষার অর্থ • আঃ ওয়ালী আরকানী তিলাওয়াত</p>
+          </div>
+          <div class="nv-quran-toolbar">
+            <select onchange="quranSetPage(this.value)">
+              <option value="">পৃষ্ঠা নির্বাচন</option>
+              ${Array.from({length:604},(_,i)=>`<option value="${i+1}" ${quranPage===i+1?'selected':''}>পৃষ্ঠা ${i+1}</option>`).join('')}
+            </select>
+            <button onclick="quranBookmark()">⭐ পৃষ্ঠা ${quranPage} বুকমার্ক</button>
+          </div>
+          <div class="nv-quran-page-card">
+            <div class="nv-quran-page-head">
+              <button onclick="quranPrevPage()" ${quranPage<=1?'disabled':''}>◀</button>
+              <div class="text-center"><b>পৃষ্ঠা ${quranPage} / 604</b><div class="text-[10px] text-slate-500">হাফেজী পাঠ • ১৫ লাইন</div></div>
+              <button onclick="quranNextPage()" ${quranPage>=604?'disabled':''}>▶</button>
+            </div>
+            <div class="nv-quran-page-image-wrap"><img id="nvQuranMushafImage" class="nv-quran-page-image" alt="Quran page ${quranPage}"></div>
+          </div>
+          <div class="nv-quran-toolbar">
+            <select onchange="quranSetLang(this.value)">${Object.entries(QURAN_LANGS).map(([k,v])=>`<option value="${k}" ${quranMeaningLang===k?'selected':''}>${v.label} অর্থ</option>`).join('')}</select>
+            <button onclick="quranLastRead()">📖 শেষ পড়া পৃষ্ঠা</button>
+          </div>
+          <div class="nv-quran-meaning"><div class="nv-quran-meaning-title">${QURAN_LANGS[quranMeaningLang].label} অর্থ</div><div id="nvQuranMeaningBody"><div class="text-xs text-slate-400">অর্থ লোড হচ্ছে...</div></div></div>
+          <div class="space-y-2"><h3 class="text-sm font-bold text-white">১১৪টি সূরা</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            ${QURAN_SURAHS.map(s=>`<div onclick="quranOpenSurah(${s.num})" class="bg-slate-900 border border-slate-800 hover:border-emerald-500/50 p-3 rounded-xl cursor-pointer flex items-center justify-between touch-press"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center text-xs font-bold">${s.num}</div><div><b class="text-white text-xs">${quranEsc(s.bn)}</b><span class="block text-[10px] text-slate-500">${s.ayahs} আয়াত • ${s.type}</span></div></div><span class="font-arabic text-lg text-emerald-400">${quranEsc(s.ar)}</span></div>`).join('')}
+          </div></div>
+          <div id="nvQuranStatus" class="nv-quran-status">পৃষ্ঠা লোড হচ্ছে...</div>
+        </div>`;
+    }
+
+    // Load the actual Mushaf and translation after the view is inserted into the DOM.
+    const _nivoraOriginalRenderCurrent = NIVORA_NAV.renderCurrent;
+    if(!NIVORA_NAV.__quranWrapped){
+      const originalRender=NIVORA_NAV.renderCurrent.bind(NIVORA_NAV);
+      NIVORA_NAV.renderCurrent=function(){
+        originalRender();
+        if(this.current==='quran') setTimeout(quranLoadPageAfterRender,0);
+      };
+      NIVORA_NAV.__quranWrapped=true;
+    }
+
+/* ============================================================
+   NIVORA AI — REAL BACKEND CONNECTION
+   Frontend -> /api/ai -> Netlify Function -> AI Provider
+   ============================================================ */
+
+let aiChat = NIVORA_STORAGE.get('ai_chat', [
+  {
+    role: 'assistant',
+    text: 'আসসালামু আলাইকুম! আমি NIVORA AI। যেকোনো প্রশ্ন করুন—সাধারণ জ্ঞান, শিক্ষা, ব্যবসা, হিসাব, প্রযুক্তি বা NIVORA-এর তথ্য নিয়ে।'
+  }
+]);
+
+let aiBusy = false;
+
+
+/* ------------------------------------------------------------
+   নিরাপদ HTML
+------------------------------------------------------------ */
+
+function escapeAIText(value) {
+
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/\n/g, '<br>');
+}
+
+
+/* ------------------------------------------------------------
+   AI VIEW
+------------------------------------------------------------ */
+
+function renderAIView() {
+
+  return `
+    <div class="space-y-4 animate-fade-in">
+
+      <!-- AI HEADER -->
+      <div class="bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950
+                  border border-blue-500/30 rounded-2xl p-4
+                  flex justify-between items-center shadow-xl">
+
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-blue-400"></i>
+            <span>NIVORA AI</span>
+          </h2>
+
+          <p class="text-[10px] text-slate-400 mt-1">
+            Intelligent AI Assistant
+          </p>
+        </div>
+
+        <button
+          onclick="clearAIChat()"
+          class="p-2 bg-slate-800 text-slate-400
+                 hover:text-rose-400 rounded-xl"
+          title="নতুন চ্যাট">
+
+          <i class="fa-solid fa-trash"></i>
+
+        </button>
+
+      </div>
+
+
+      <!-- CHAT AREA -->
+      <div
+        id="ai-chat-box"
+        class="bg-slate-900 border border-slate-800
+               rounded-2xl p-4 min-h-[350px]
+               max-h-[500px] overflow-y-auto space-y-3">
+
+        ${aiChat.map(renderAIMessage).join('')}
+
+      </div>
+
+
+      <!-- INPUT -->
+      <div class="flex gap-2">
+
+        <input
+          type="text"
+          id="ai-input"
+          autocomplete="off"
+          onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendAI();}"
+          placeholder="আপনার প্রশ্ন লিখুন..."
+          ${aiBusy ? 'disabled' : ''}
+          class="flex-1 px-4 py-3 bg-slate-800
+                 border border-slate-700 rounded-xl
+                 text-white text-xs sm:text-sm
+                 focus:outline-none focus:border-blue-500
+                 disabled:opacity-50"
+        >
+
+        <button
+          onclick="sendAI()"
+          ${aiBusy ? 'disabled' : ''}
+          class="px-5 py-3 bg-blue-600 text-white
+                 font-bold rounded-xl shadow
+                 touch-press disabled:opacity-50">
+
+          ${
+            aiBusy
+              ? '<i class="fa-solid fa-spinner fa-spin"></i>'
+              : '<i class="fa-solid fa-paper-plane"></i>'
+          }
+
+        </button>
+
+      </div>
+
+
+      <!-- STATUS -->
+      <div class="text-center text-[10px] text-slate-500">
+
+        ${
+          aiBusy
+            ? 'NIVORA AI চিন্তা করছে...'
+            : 'NIVORA AI • Gemini Primary • OpenAI Fallback'
+        }
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+/* ------------------------------------------------------------
+   MESSAGE RENDER
+------------------------------------------------------------ */
+
+function renderAIMessage(message) {
+
+  const isUser =
+    message?.role === 'user';
+
+  const text =
+    escapeAIText(
+      message?.text || ''
+    );
+
+  return `
+    <div class="flex ${
+      isUser
+        ? 'justify-end'
+        : 'justify-start'
+    }">
+
+      <div class="max-w-[88%] p-3.5 rounded-2xl
+        text-xs sm:text-sm select-text leading-relaxed
+        ${
+          isUser
+            ? 'bg-blue-600 text-white rounded-tr-none'
+            : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-none'
+        }">
+
+        ${
+          !isUser
+            ? `
+              <div class="flex items-center gap-2 mb-2
+                          text-blue-400 text-[10px] font-bold">
+
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                NIVORA AI
+
+              </div>
+            `
+            : ''
+        }
+
+        <div>
+          ${text}
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+/* ------------------------------------------------------------
+   SCROLL CHAT TO BOTTOM
+------------------------------------------------------------ */
+
+function scrollAIChatBottom() {
+
+  const box =
+    document.getElementById(
+      'ai-chat-box'
+    );
+
+  if (box) {
+
+    box.scrollTop =
+      box.scrollHeight;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   SAVE CHAT
+------------------------------------------------------------ */
+
+function saveAIChat() {
+
+  /*
+   শেষ 50টি message-এর বেশি localStorage-এ রাখা হবে না।
+  */
+
+  aiChat =
+    aiChat.slice(-50);
+
+  NIVORA_STORAGE.set(
+    'ai_chat',
+    aiChat
+  );
+}
+
+
+/* ------------------------------------------------------------
+   CLEAR CHAT
+------------------------------------------------------------ */
+
+async function clearAIChat() {
+
+  const ok =
+    await NIVORA_CORE.confirm(
+      'পুরো AI কথোপকথন মুছে নতুন চ্যাট শুরু করবেন?',
+      'নতুন চ্যাট'
+    );
+
+  if (!ok) return;
+
+  aiChat = [
+    {
+      role: 'assistant',
+      text:
+        'আসসালামু আলাইকুম! নতুন চ্যাট শুরু হয়েছে। আপনার প্রশ্ন করুন।'
+    }
+  ];
+
+  saveAIChat();
+
+  NIVORA_NAV.renderCurrent();
+}
+
+
+/* ------------------------------------------------------------
+   REAL AI REQUEST
+------------------------------------------------------------ */
+
+async function sendAI() {
+
+  if (aiBusy) return;
+
+  const input =
+    document.getElementById(
+      'ai-input'
+    );
+
+  const value =
+    input?.value?.trim();
+
+  if (!value) return;
+
+
+  /* --------------------------------------------------------
+     USER MESSAGE
+  -------------------------------------------------------- */
+
+  aiChat.push({
+    role: 'user',
+    text: value
+  });
+
+  saveAIChat();
+
+
+  /* --------------------------------------------------------
+     Busy state
+  -------------------------------------------------------- */
+
+  aiBusy = true;
+
+  NIVORA_NAV.renderCurrent();
+
+
+  try {
+
+    /*
+     Backend-এ পাঠানোর জন্য conversation format তৈরি।
+    বর্তমান AI provider manager content গ্রহণ করে।
+    */
+
+    const conversation =
+      aiChat
+        .slice(-20)
+        .map(item => ({
+
+          role:
+            item.role === 'assistant'
+              ? 'assistant'
+              : 'user',
+
+          content:
+            String(
+              item.text || ''
+            )
+
+        }))
+        .filter(
+          item =>
+            item.content.trim()
+        );
+
+
+    /* ------------------------------------------------------
+       REAL BACKEND CALL
+       /api/ai
+    ------------------------------------------------------ */
+
+    const response =
+      await fetch(
+        '/api/ai',
+        {
+
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+
+              message: value,
+
+              provider: 'auto',
+
+              model: 'auto',
+
+              conversation:
+
+                conversation.slice(
+                  0,
+                  -1
+                ),
+
+              app: 'NIVORA ONE',
+
+              mode: 'studio-agent'
+
+            })
+
+        }
+      );
+
+
+    /* ------------------------------------------------------
+       READ RESPONSE
+    ------------------------------------------------------ */
+
+    let data = null;
+
+    try {
+
+      data =
+        await response.json();
+
+    } catch (jsonError) {
+
+      throw new Error(
+        'AI server থেকে সঠিক response পাওয়া যায়নি।'
+      );
+    }
+
+
+    /* ------------------------------------------------------
+       BACKEND ERROR
+    ------------------------------------------------------ */
+
+    if (
+      !response.ok ||
+      !data?.success
+    ) {
+
+      throw new Error(
+        data?.error ||
+        `AI server error (${response.status})`
+      );
+    }
+
+
+    /* ------------------------------------------------------
+       AI ANSWER
+    ------------------------------------------------------ */
+
+    const answer =
+      String(
+        data?.answer || ''
+      ).trim();
+
+
+    if (!answer) {
+
+      throw new Error(
+        'NIVORA AI কোনো উত্তর দেয়নি।'
+      );
+    }
+
+
+    /* ------------------------------------------------------
+       SAVE AI ANSWER
+    ------------------------------------------------------ */
+
+    aiChat.push({
+
+      role: 'assistant',
+
+      text: answer
+
+    });
+
+    saveAIChat();
+
+
+    /* ------------------------------------------------------
+       Optional provider information
+    ------------------------------------------------------ */
+
+    if (
+      data?.provider
+    ) {
+
+      console.log(
+        'NIVORA AI Provider:',
+        data.provider
+      );
+
+    }
+
+    if (
+      data?.model
+    ) {
+
+      console.log(
+        'NIVORA AI Model:',
+        data.model
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      'NIVORA AI ERROR:',
+      error
+    );
+
+
+    /* ------------------------------------------------------
+       Show real error to user
+    ------------------------------------------------------ */
+
+    aiChat.push({
+
+      role: 'assistant',
+
+      text:
+        'দুঃখিত, এই মুহূর্তে NIVORA AI সার্ভারের সঙ্গে সংযোগ করা যাচ্ছে না। কিছুক্ষণ পরে আবার চেষ্টা করুন।\n\nত্রুটি: ' +
+        (
+          error?.message ||
+          'Unknown AI error'
+        )
+
+    });
+
+    saveAIChat();
+
+
+    NIVORA_CORE.toast(
+      'NIVORA AI সংযোগে সমস্যা হয়েছে',
+      'error'
+    );
+
+  } finally {
+
+    aiBusy = false;
+
+    NIVORA_NAV.renderCurrent();
+
+    setTimeout(
+      scrollAIChatBottom,
+      50
+    );
+
+  }
+}
+
+    let bizTx = NIVORA_STORAGE.get('biz_tx', [
+      { id: '1', type: 'sale', amount: 5000, category: 'নগদ বিক্রয়' },
+      { id: '2', type: 'purchase', amount: 3200, category: 'পণ্য ক্রয়' }
+    ]);
+    function renderBusinessView() {
+      const sales = bizTx.filter(t => t.type === 'sale').reduce((s,t) => s + t.amount, 0);
+      const expense = bizTx.filter(t => t.type === 'purchase').reduce((s,t) => s + t.amount, 0);
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 border border-blue-500/30 rounded-2xl p-5 shadow-xl flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white">ব্যবসা পরিচালনা ও আয়-ব্যয়</h2>
+            <button onclick="addTx()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow touch-press">+ নতুন এন্ট্রি</button>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+            <div class="bg-slate-900 border border-emerald-500/30 p-4 rounded-2xl"><span class="text-slate-400">মোট বিক্রয়</span><div class="text-xl font-bold text-emerald-400 mt-1">${NIVORA_CURRENCY.format(sales)}</div></div>
+            <div class="bg-slate-900 border border-rose-500/30 p-4 rounded-2xl"><span class="text-slate-400">মোট ক্রয়</span><div class="text-xl font-bold text-rose-400 mt-1">${NIVORA_CURRENCY.format(expense)}</div></div>
+            <div class="bg-slate-900 border border-blue-500/30 p-4 rounded-2xl col-span-2 sm:col-span-1"><span class="text-slate-400">নিট লাভ</span><div class="text-xl font-bold text-blue-400 mt-1">${NIVORA_CURRENCY.format(sales - expense)}</div></div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+            <div class="p-3 bg-slate-800 font-bold text-xs text-white">সাম্প্রতিক লেনদেন (${bizTx.length})</div>
+            <div class="divide-y divide-slate-800">
+              ${bizTx.map(t => `
+                <div class="p-3 flex justify-between text-xs">
+                  <div><span class="font-bold text-white">${t.category}</span><span class="text-slate-400 block text-[10px]">${t.type}</span></div>
+                  <span class="font-bold text-sm ${t.type==='sale'?'text-emerald-400':'text-rose-400'}">${t.type==='sale'?'+':'-'}${NIVORA_CURRENCY.format(t.amount)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    function addTx() {
+      const cat = prompt('ক্যাটাগরি:', 'নগদ বিক্রয়');
+      if (!cat) return;
+      const amt = parseFloat(prompt('টাকার পরিমাণ:', '1000')) || 0;
+      const type = prompt('টাইপ (sale/purchase):', 'sale') || 'sale';
+      bizTx.unshift({ id: 't_'+Date.now(), type, amount: amt, category: cat });
+      NIVORA_STORAGE.set('biz_tx', bizTx);
+      NIVORA_CORE.toast('লেনদেন যোগ হয়েছে', 'success');
+      NIVORA_NAV.renderCurrent();
+    }
+
+    let ledgerParties = NIVORA_STORAGE.get('ledger_parties', [{ id: '1', name: 'আব্দুর রহিম', phone: '01700000001', balance: 3500 }]);
+    function renderLedgerView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-orange-950 border border-amber-500/30 rounded-2xl p-5 shadow-xl flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white">ডিজিটাল টালি খাতা</h2>
+            <button onclick="addCust()" class="px-4 py-2 bg-amber-600 text-white rounded-xl text-xs font-bold shadow touch-press">+ কাস্টমার</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            ${ledgerParties.map(p => `
+              <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+                <div>
+                  <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                  <p class="text-slate-400 text-xs">${p.phone}</p>
+                  <button onclick="sendRem('${p.name}','${p.phone}',${p.balance})" class="mt-2 text-[11px] px-2.5 py-1 rounded bg-emerald-600/20 text-emerald-400 font-bold border border-emerald-500/30"><i class="fa-brands fa-whatsapp"></i> রিমাইন্ডার</button>
+                </div>
+                <div class="text-right"><span class="font-bold text-base text-emerald-400">${NIVORA_CURRENCY.format(p.balance)}</span><span class="block text-[10px] text-slate-400">পাবেন</span></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    function addCust() {
+      const name = prompt('কাস্টমার নাম:');
+      if (!name) return;
+      const phone = prompt('ফোন নম্বর:', '01XXXXXXXXX') || '';
+      const bal = parseFloat(prompt('বকেয়া টাকা:', '0')) || 0;
+      ledgerParties.unshift({ id: 'c_'+Date.now(), name, phone, balance: bal });
+      NIVORA_STORAGE.set('ledger_parties', ledgerParties);
+      NIVORA_CORE.toast('কাস্টমার যোগ হয়েছে', 'success');
+      NIVORA_NAV.renderCurrent();
+    }
+    function sendRem(name, phone, bal) {
+      const msg = `সম্মানিত ${name}, আপনার নিকট মোট বকেয়া ${NIVORA_CURRENCY.format(bal)}। পরিশোধের বিনীত অনুরোধ রইল।\n— NIVORA ONE`;
+      navigator.clipboard.writeText(msg);
+      NIVORA_CORE.toast('মেসেজ কপি হয়েছে!', 'success');
+      window.open(`https://wa.me/88${phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    let stockItems = NIVORA_STORAGE.get('stock_items', [{ id: '1', title: 'বাসমতি চাল ৫০ কেজি', qty: 12, unit: 'বস্তা' }]);
+    function renderStockView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-teal-950 via-slate-900 to-cyan-950 border border-teal-500/30 rounded-2xl p-5 shadow-xl flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white">স্টক ও ইনভেন্টরি</h2>
+            <button onclick="addStk()" class="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-bold shadow touch-press">+ পণ্য</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            ${stockItems.map(p => `
+              <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+                <div><h4 class="font-bold text-white text-sm">${p.title}</h4><span class="text-xs text-slate-400">মজুদ</span></div>
+                <div class="text-right font-bold text-lg text-teal-400">${p.qty} ${p.unit}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    function addStk() {
+      const title = prompt('পণ্যের নাম:');
+      if (!title) return;
+      const qty = parseInt(prompt('পরিমাণ:', '10')) || 0;
+      stockItems.unshift({ id: 's_'+Date.now(), title, qty, unit: 'পিস' });
+      NIVORA_STORAGE.set('stock_items', stockItems);
+      NIVORA_CORE.toast('স্টক আপডেট হয়েছে', 'success');
+      NIVORA_NAV.renderCurrent();
+    }
+
+    function renderRadarView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 border border-purple-500/30 rounded-2xl p-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-tower-broadcast text-purple-400"></i> বিজনেস রাডার</h2>
+            <p class="text-slate-300 text-xs mt-1">মৌসুমি ট্রেন্ড ও বাজার সুযোগ</p>
+          </div>
+          <div class="bg-slate-900 border border-purple-500/30 p-4 rounded-2xl space-y-1">
+            <span class="text-xs text-purple-300 font-bold">মৌসুমি সুযোগ</span>
+            <h4 class="font-bold text-white text-sm">আসন্ন উৎসব উপলক্ষে খাদ্যপণ্যের চাহিদা বৃদ্ধি</h4>
+            <p class="text-slate-300 text-xs">পোলাও চাল, তেল ও মসলা রিস্টক করার উপযুক্ত সময়।</p>
+          </div>
+        </div>
+      `;
+    }
+
+    let cart = NIVORA_STORAGE.get('market_cart', []);
+    const prods = [
+      { id: '1', title: 'ওয়্যারলেস ব্লুটুথ ইয়ারবাডস', price: 1650, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300' },
+      { id: '2', title: 'সুন্দরবনের খাঁটি মধু ১ কেজি', price: 950, img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=300' }
+    ];
+    function renderMarketView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-950 border border-blue-500/30 rounded-2xl p-5 shadow-xl flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white">মার্কেটপ্লেস</h2>
+            <button onclick="chkOut()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow touch-press">কার্ট (${cart.length})</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            ${prods.map(p => `
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow">
+                <img src="${p.img}" class="w-full h-36 object-cover">
+                <div class="p-4 space-y-2">
+                  <h4 class="font-bold text-white text-sm">${p.title}</h4>
+                  <div class="text-base font-bold text-blue-400">${NIVORA_CURRENCY.format(p.price)}</div>
+                  <button onclick="cart.push(${JSON.stringify(p).replace(/"/g,"'")}); NIVORA_STORAGE.set('market_cart',cart); NIVORA_CORE.toast('কার্টে যোগ হয়েছে','success'); NIVORA_NAV.renderCurrent()" class="w-full py-2 bg-blue-600 text-white rounded-xl text-xs font-bold">কার্টে যোগ করুন</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    function chkOut() {
+      if (!cart.length) return NIVORA_CORE.toast('কার্ট খালি', 'warning');
+      const tot = cart.reduce((s,i)=>s+i.price,0);
+      NIVORA_CORE.confirm(`মোট প্রদেয়: ${NIVORA_CURRENCY.format(tot)}। অর্ডার কনফার্ম করবেন?`).then(ok => {
+        if (ok) { cart=[]; NIVORA_STORAGE.set('market_cart',[]); NIVORA_CORE.alert('অর্ডার সম্পন্ন হয়েছে!','সফল'); NIVORA_NAV.renderCurrent(); }
+      });
+    }
+
+   /* --- UNIFIED UNIVERSAL CALCULATOR SUITE --- */
+    function renderCalculatorView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border border-indigo-500/30 rounded-2xl p-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-calculator text-indigo-400"></i>
+              <span>ইউনিভার্সাল ক্যালকুলেটর হাব</span>
+            </h2>
+            <p class="text-slate-300 text-xs mt-1">সায়েন্টিফিক, বিজনেস মার্জিন, যাকাত, লোন, বয়স এবং স্বাস্থ্য ক্যালকুলেটর এক জায়গায়।</p>
+          </div>
+
+          <!-- Calculator Tabs -->
+          <div class="flex overflow-x-auto gap-2 pb-2 scrollbar-none text-xs">
+            <button onclick="switchCalcTab('std')" id="ctab-std" class="px-4 py-2 rounded-xl font-bold bg-indigo-600 text-white shrink-0 shadow">সাধারণ/সায়েন্টিফিক</button>
+            <button onclick="switchCalcTab('biz')" id="ctab-biz" class="px-4 py-2 rounded-xl font-semibold bg-slate-900 border border-slate-800 text-slate-300 shrink-0">ব্যবসা ও লাভ</button>
+            <button onclick="switchCalcTab('zakat')" id="ctab-zakat" class="px-4 py-2 rounded-xl font-semibold bg-slate-900 border border-slate-800 text-slate-300 shrink-0">যাকাত হিসাব</button>
+            <button onclick="switchCalcTab('loan')" id="ctab-loan" class="px-4 py-2 rounded-xl font-semibold bg-slate-900 border border-slate-800 text-slate-300 shrink-0">লোন ও ইএমআই</button>
+            <button onclick="switchCalcTab('age')" id="ctab-age" class="px-4 py-2 rounded-xl font-semibold bg-slate-900 border border-slate-800 text-slate-300 shrink-0">বয়স ক্যালকুলেটর</button>
+            <button onclick="switchCalcTab('bmi')" id="ctab-bmi" class="px-4 py-2 rounded-xl font-semibold bg-slate-900 border border-slate-800 text-slate-300 shrink-0">বিএমআই (স্বাস্থ্য)</button>
+          </div>
+
+          <!-- Content Panel -->
+          <div id="calc-panel-body" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
+            <!-- Standard Calculator Panel -->
+            <div id="cpane-std" class="space-y-4">
+              <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-right space-y-1">
+                <div id="calc-history" class="text-xs text-slate-500 font-mono h-4"></div>
+                <div id="calc-display" class="text-2xl sm:text-3xl font-bold text-white font-mono tracking-wider overflow-x-auto">0</div>
+              </div>
+              <div class="grid grid-cols-4 gap-2 text-sm font-semibold">
+                <button onclick="calcClear()" class="p-3 bg-rose-950/60 border border-rose-500/30 text-rose-300 rounded-xl">AC</button>
+                <button onclick="calcAppend('/')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">÷</button>
+                <button onclick="calcAppend('*')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">×</button>
+                <button onclick="calcBackspace()" class="p-3 bg-slate-800 border border-slate-700 text-amber-400 rounded-xl"><i class="fa-solid fa-delete-left"></i></button>
+
+                <button onclick="calcAppend('7')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">7</button>
+                <button onclick="calcAppend('8')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">8</button>
+                <button onclick="calcAppend('9')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">9</button>
+                <button onclick="calcAppend('-')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">-</button>
+
+                <button onclick="calcAppend('4')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">4</button>
+                <button onclick="calcAppend('5')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">5</button>
+                <button onclick="calcAppend('6')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">6</button>
+                <button onclick="calcAppend('+')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">+</button>
+
+                <button onclick="calcAppend('1')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">1</button>
+                <button onclick="calcAppend('2')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">2</button>
+                <button onclick="calcAppend('3')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">3</button>
+                <button onclick="calcCompute()" class="row-span-2 p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center font-bold text-lg">=</button>
+
+                <button onclick="calcAppend('0')" class="col-span-2 p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">0</button>
+                <button onclick="calcAppend('.')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    let calcExpression = "0";
+    function calcAppend(val) {
+      if (calcExpression === "0" && val !== '.') calcExpression = val;
+      else calcExpression += val;
+      updateCalcDisplay();
+    }
+    function calcClear() {
+      calcExpression = "0";
+      document.getElementById('calc-history').textContent = "";
+      updateCalcDisplay();
+    }
+    function calcBackspace() {
+      calcExpression = calcExpression.length > 1 ? calcExpression.slice(0, -1) : "0";
+      updateCalcDisplay();
+    }
+    function calcCompute() {
+      try {
+        let res = eval(calcExpression.replace('×', '*').replace('÷', '/'));
+        document.getElementById('calc-history').textContent = calcExpression + " =";
+        calcExpression = String(res);
+        updateCalcDisplay();
+      } catch(e) {
+        NIVORA_CORE.toast('ভুল হিসাব এক্সপ্রেশন', 'error');
+      }
+    }
+    function updateCalcDisplay() {
+      const disp = document.getElementById('calc-display');
+      if (disp) disp.textContent = calcExpression;
+    }
+
+    function switchCalcTab(tab) {
+      ['std', 'biz', 'zakat', 'loan', 'age', 'bmi'].forEach(t => {
+        const btn = document.getElementById('ctab-' + t);
+        if (btn) {
+          btn.className = t === tab
+            ? "px-4 py-2 rounded-xl font-bold bg-indigo-600 text-white shrink-0 shadow"
+            : "px-4 py-2 rounded-xl font-semibold bg-slate-900 border border-slate-800 text-slate-300 shrink-0";
+        }
+      });
+
+      const body = document.getElementById('calc-panel-body');
+      if (!body) return;
+
+      if (tab === 'std') {
+        body.innerHTML = `
+          <div id="cpane-std" class="space-y-4">
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-right space-y-1">
+              <div id="calc-history" class="text-xs text-slate-500 font-mono h-4"></div>
+              <div id="calc-display" class="text-2xl sm:text-3xl font-bold text-white font-mono tracking-wider overflow-x-auto">0</div>
+            </div>
+            <div class="grid grid-cols-4 gap-2 text-sm font-semibold">
+              <button onclick="calcClear()" class="p-3 bg-rose-950/60 border border-rose-500/30 text-rose-300 rounded-xl">AC</button>
+              <button onclick="calcAppend('/')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">÷</button>
+              <button onclick="calcAppend('*')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">×</button>
+              <button onclick="calcBackspace()" class="p-3 bg-slate-800 border border-slate-700 text-amber-400 rounded-xl"><i class="fa-solid fa-delete-left"></i></button>
+
+              <button onclick="calcAppend('7')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">7</button>
+              <button onclick="calcAppend('8')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">8</button>
+              <button onclick="calcAppend('9')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">9</button>
+              <button onclick="calcAppend('-')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">-</button>
+
+              <button onclick="calcAppend('4')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">4</button>
+              <button onclick="calcAppend('5')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">5</button>
+              <button onclick="calcAppend('6')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">6</button>
+              <button onclick="calcAppend('+')" class="p-3 bg-slate-800 border border-slate-700 text-indigo-400 rounded-xl">+</button>
+
+              <button onclick="calcAppend('1')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">1</button>
+              <button onclick="calcAppend('2')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">2</button>
+              <button onclick="calcAppend('3')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">3</button>
+              <button onclick="calcCompute()" class="row-span-2 p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center font-bold text-lg">=</button>
+
+              <button onclick="calcAppend('0')" class="col-span-2 p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">0</button>
+              <button onclick="calcAppend('.')" class="p-3 bg-slate-800/60 border border-slate-800 text-white rounded-xl">.</button>
+            </div>
+          </div>
+        `;
+        calcExpression = "0";
+      } else if (tab === 'biz') {
+        body.innerHTML = `
+          <div class="space-y-3 text-xs">
+            <h3 class="font-bold text-white text-sm">ব্যবসা ও লাভ মার্জিন ক্যালকুলেটর</h3>
+            <div><label class="text-slate-400">ক্রয়মূল্য (Cost Price)</label><input type="number" id="biz-cp" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="1000"></div>
+            <div><label class="text-slate-400">বিক্রয়মূল্য (Selling Price)</label><input type="number" id="biz-sp" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="1500"></div>
+            <button onclick="computeBiz()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl">হিসাব করুন</button>
+            <div id="biz-res" class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">ফলাফল এখানে দেখাবে</div>
+          </div>
+        `;
+      } else if (tab === 'zakat') {
+        body.innerHTML = `
+          <div class="space-y-3 text-xs">
+            <h3 class="font-bold text-white text-sm">যাকাত ক্যালকুলেটর (২.৫%)</h3>
+            <div><label class="text-slate-400">নগদ টাকা ও ব্যাংক জমার পরিমাণ</label><input type="number" id="zak-cash" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="0"></div>
+            <div><label class="text-slate-400">স্বর্ণ ও রূপার মূল্য</label><input type="number" id="zak-gold" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="0"></div>
+            <div><label class="text-slate-400">ব্যবসায়িক পণ্যের মূল্য</label><input type="number" id="zak-biz" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="0"></div>
+            <button onclick="computeZakat()" class="w-full py-2.5 bg-emerald-600 text-white font-bold rounded-xl">যাকাত হিসাব করুন</button>
+            <div id="zak-res" class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">প্রদেয় যাকাত: ৳ ০</div>
+          </div>
+        `;
+      } else if (tab === 'loan') {
+        body.innerHTML = `
+          <div class="space-y-3 text-xs">
+            <h3 class="font-bold text-white text-sm">লোন ও ইএমআই ক্যালকুলেটর</h3>
+            <div><label class="text-slate-400">লোনের পরিমাণ</label><input type="number" id="loan-amt" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="100000"></div>
+            <div><label class="text-slate-400">সুদের হার (% বার্ষিক)</label><input type="number" id="loan-rate" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="10"></div>
+            <div><label class="text-slate-400">সময় (মাস)</label><input type="number" id="loan-month" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="12"></div>
+            <button onclick="computeLoan()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl">ইএমআই বের করুন</button>
+            <div id="loan-res" class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">মাসিক কিস্তি: ৳ ০</div>
+          </div>
+        `;
+      } else if (tab === 'age') {
+        body.innerHTML = `
+          <div class="space-y-3 text-xs">
+            <h3 class="font-bold text-white text-sm">বয়স ক্যালকুলেটর</h3>
+            <div><label class="text-slate-400">জন্মতারিখ</label><input type="date" id="age-dob" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white"></div>
+            <button onclick="computeAge()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl">বয়স জানুন</button>
+            <div id="age-res" class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">বয়স: --</div>
+          </div>
+        `;
+      } else if (tab === 'bmi') {
+        body.innerHTML = `
+          <div class="space-y-3 text-xs">
+            <h3 class="font-bold text-white text-sm">বিএমআই (বডি মাস ইনডেক্স) ক্যালকুলেটর</h3>
+            <div><label class="text-slate-400">ওজন (কেজি)</label><input type="number" id="bmi-wt" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="65"></div>
+            <div><label class="text-slate-400">উচ্চতা (সেমি)</label><input type="number" id="bmi-ht" class="w-full mt-1 bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white" placeholder="170"></div>
+            <button onclick="computeBMI()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl">বিএমআই হিসাব করুন</button>
+            <div id="bmi-res" class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">বিএমআই স্কোর: --</div>
+          </div>
+        `;
+      }
+    }
+
+    function computeBiz() {
+      const cp = parseFloat(document.getElementById('biz-cp').value) || 0;
+      const sp = parseFloat(document.getElementById('biz-sp').value) || 0;
+      const diff = sp - cp;
+      const pct = cp > 0 ? ((diff / cp) * 100).toFixed(2) : 0;
+      document.getElementById('biz-res').innerHTML = `লাভ/ক্ষতি: <b>৳ ${diff}</b> (${pct}%)`;
+    }
+    function computeZakat() {
+      const c = parseFloat(document.getElementById('zak-cash').value) || 0;
+      const g = parseFloat(document.getElementById('zak-gold').value) || 0;
+      const b = parseFloat(document.getElementById('zak-biz').value) || 0;
+      const total = c + g + b;
+      const zakat = total * 0.025;
+      document.getElementById('zak-res').innerHTML = `মোট সম্পদ: ৳ ${total} <br>প্রদেয় যাকাত (২.৫%): <b class="text-emerald-400">৳ ${zakat.toFixed(2)}</b>`;
+    }
+    function computeLoan() {
+      const p = parseFloat(document.getElementById('loan-amt').value) || 0;
+      const r = (parseFloat(document.getElementById('loan-rate').value) || 0) / 12 / 100;
+      const n = parseFloat(document.getElementById('loan-month').value) || 1;
+      let emi = 0;
+      if (r > 0) {
+        emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      } else {
+        emi = p / n;
+      }
+      document.getElementById('loan-res').innerHTML = `মাসিক কিস্তি (EMI): <b class="text-indigo-400">৳ ${emi.toFixed(2)}</b>`;
+    }
+    function computeAge() {
+      const dobVal = document.getElementById('age-dob').value;
+      if (!dobVal) return;
+      const dob = new Date(dobVal);
+      const diff = Date.now() - dob.getTime();
+      const ageDate = new Date(diff);
+      const years = Math.abs(ageDate.getUTCFullYear() - 1970);
+      const months = ageDate.getUTCMonth();
+      const days = ageDate.getUTCDate() - 1;
+      document.getElementById('age-res').innerHTML = `বয়স: <b>${years} বছর, ${months} মাস, ${days} দিন</b>`;
+    }
+    function computeBMI() {
+      const wt = parseFloat(document.getElementById('bmi-wt').value) || 0;
+      const ht = (parseFloat(document.getElementById('bmi-ht').value) || 0) / 100;
+      if (ht <= 0 || wt <= 0) return;
+      const bmi = (wt / (ht * ht)).toFixed(2);
+      let status = "স্বাভাবিক ওজন";
+      if (bmi < 18.5) status = "কম ওজন (Underweight)";
+      else if (bmi >= 25 && bmi < 30) status = "অতিরিক্ত ওজন (Overweight)";
+      else if (bmi >= 30) status = "স্থূলতা (Obese)";
+      document.getElementById('bmi-res').innerHTML = `BMI স্কোর: <b>${bmi}</b> (${status})`;
+    }
+    function calcP() {
+      const c = parseFloat(document.getElementById('c-cost')?.value) || 0;
+      const s = parseFloat(document.getElementById('c-sell')?.value) || 0;
+      const p = s - c;
+      const m = s > 0 ? (p/s)*100 : 0;
+      document.getElementById('cp-res').textContent = NIVORA_CURRENCY.format(p);
+      document.getElementById('cm-res').textContent = m.toFixed(2) + '%';
+    }
+
+    function renderHealthView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 border border-emerald-500/30 rounded-2xl p-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white">ডিজিটাল জার্মান হোমিও হল</h2>
+            <p class="text-slate-300 text-xs mt-1">চিকিৎসকের পরামর্শ ও কুরিয়ারে ওষুধ হোম ডেলিভারি</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onclick="window.location.href='tel:${NIVORA_CONFIG.homoeoPhone}'" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-left flex items-center gap-3 shadow"><i class="fa-solid fa-phone text-blue-400 text-lg"></i><div><h4 class="font-bold text-white text-sm">সরাসরি ফোন কল</h4><span class="text-slate-400 text-xs">ডাক্তারের সাথে কথা বলুন</span></div></button>
+            <button onclick="window.open('https://wa.me/8801700000000','_blank')" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-left flex items-center gap-3 shadow"><i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i><div><h4 class="font-bold text-white text-sm">হোয়াটসঅ্যাপ কনসাল্টেশন</h4><span class="text-slate-400 text-xs">প্রেসক্রিপশন পাঠান</span></div></button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTasksView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-yellow-950 border border-amber-500/30 rounded-2xl p-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white">মাইক্রো-টাস্ক ও ইনকাম</h2>
+            <p class="text-slate-300 text-xs mt-1">সহজ কাজ করে আয় করুন</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow">
+            <div><h4 class="font-bold text-white text-sm">অ্যাপ ইনস্টল ও ৫-স্টার রেটিং</h4><span class="text-xs text-slate-400">স্লট: ৬৪/১০০</span></div>
+            <button onclick="NIVORA_CORE.toast('প্রমাণ জমা হয়েছে!','success')" class="px-3 py-1.5 bg-amber-600 text-white rounded-xl text-xs font-bold">+${NIVORA_CURRENCY.format(45)}</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReferralView() {
+      return `
+        <div class="space-y-4 animate-fade-in max-w-md mx-auto">
+          <div class="bg-gradient-to-r from-pink-950 via-slate-900 to-rose-950 border border-pink-500/30 rounded-2xl p-5 text-center shadow-xl">
+            <h2 class="text-xl font-bold text-white">রেফারেল প্রোগ্রাম</h2>
+            <p class="text-slate-300 text-xs mt-1">বন্ধুদের ইনভাইট করে ক্যাশ বোনাস পান</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+            <div class="px-4 py-3 bg-slate-800 rounded-xl font-mono text-center font-bold text-pink-400 text-lg">NIVORA-8899</div>
+            <button onclick="navigator.clipboard.writeText('NIVORA-8899'); NIVORA_CORE.toast('কোড কপি হয়েছে!','success')" class="w-full py-2.5 bg-pink-600 text-white font-bold rounded-xl text-xs shadow">লিংক কপি ও শেয়ার</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAdminView() {
+      return `
+        <div class="space-y-4 animate-fade-in">
+          <div class="bg-gradient-to-r from-red-950 via-slate-900 to-slate-950 border border-red-500/30 rounded-2xl p-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white">সিস্টেম কন্ট্রোল ও অ্যাডমিন</h2>
+            <p class="text-slate-300 text-xs mt-1">সার্বিক প্ল্যাটফর্ম স্ট্যাটাস ও স্বাস্থ্য</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl"><span class="text-slate-400">মোট ইউজার</span><div class="text-xl font-bold text-white mt-1">১,৪২০ জন</div></div>
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl"><span class="text-slate-400">সিস্টেম স্ট্যাটাস</span><div class="text-sm font-bold text-emerald-400 mt-1">১০০% সচল</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAccountView() {
+      return `
+        <div class="space-y-4 animate-fade-in max-w-md mx-auto">
+          <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-blue-500/30 rounded-2xl p-5 shadow-xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow">U</div>
+            <div>
+              <h3 class="font-bold text-white text-base">তানভীর আহমেদ</h3>
+              <p class="text-slate-400 text-xs">user@nivora.one</p>
+            </div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2 text-xs">
+            <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">ব্যালেন্স</span><span class="font-bold text-emerald-400 text-sm">${NIVORA_CURRENCY.format(500)}</span></div>
+            <button onclick="NIVORA_CORE.toast('লগআউট সফল','info')" class="w-full py-2 bg-slate-800 text-rose-400 rounded-xl font-bold mt-2">লগআউট</button>
+          </div>
+        </div>
+      `;
+    }
+
+    const NIVORA_UI = {
+      openSearch() {
+        const m = document.getElementById('search-modal');
+        if (m) { m.classList.remove('hidden'); m.classList.add('flex'); document.getElementById('search-input')?.focus(); this.handleSearch(''); }
+      },
+      closeSearch() {
+        const m = document.getElementById('search-modal');
+        if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+      },
+      handleSearch(q) {
+        const list = [
+          { id: 'quran', title: 'কুরআন হাব (Quran)' },
+          { id: 'ai', title: 'নিভোরা এআই (AI)' },
+          { id: 'business', title: 'ব্যবসা পরিচালনা (Business)' },
+          { id: 'ledger', title: 'ডিজিটাল টালি খাতা (Ledger)' },
+          { id: 'stock', title: 'স্টক ইনভেন্টরি (Stock)' },
+          { id: 'market', title: 'মার্কেটপ্লেস (Market)' },
+          { id: 'calculator', title: 'ক্যালকুলেটর (Calculator)' },
+          { id: 'health', title: 'হোমিও হল (Homoeo)' },
+          { id: 'tasks', title: 'টাস্ক ও ইনকাম (Tasks)' }
+        ];
+        const match = list.filter(x => x.title.toLowerCase().includes(q.toLowerCase()));
+        const res = document.getElementById('search-results');
+        if (res) {
+          res.innerHTML = match.map(m => `
+            <div onclick="NIVORA_UI.closeSearch(); NIVORA_NAV.goTo('${m.id}')" class="p-3 bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-700 flex justify-between items-center text-xs">
+              <span class="font-bold text-white">${m.title}</span><i class="fa-solid fa-chevron-right text-slate-500"></i>
+            </div>
+          `).join('');
+        }
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setInterval(() => {
+        const now = new Date();
+        const t = document.getElementById('live-time');
+        const d = document.getElementById('live-date');
+        if (t) t.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        if (d) d.textContent = now.toLocaleDateString('bn-BD', { weekday: 'short', month: 'short', day: 'numeric' });
+      }, 1000);
+      NIVORA_NAV.renderCurrent();
+    });
+  </script>
+</body>
+</html>
