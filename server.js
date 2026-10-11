@@ -1,202 +1,158 @@
-// ============================================================
-// NIVORA ONE — Secure AI Backend Server
-// File: backend/server.js
-// ============================================================
+```javascript
+'use strict';
 
-require("dotenv").config();
-
-const express = require("express");
-const cors = require("cors");
-
-const {
-  generateAIResponse
-} = require("./services/aiProviderManager");
+const express = require('express');
+const path = require('path');
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
-// ------------------------------------------------------------
-// Middleware
-// ------------------------------------------------------------
+app.disable('x-powered-by');
 
-app.use(
-  cors({
-    origin: true,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-  })
-);
+app.use(express.json({ limit: '1mb' }));
 
-app.use(
-  express.json({
-    limit: "2mb"
-  })
-);
+app.use(express.urlencoded({
+  extended: false,
+  limit: '1mb'
+}));
 
-// ------------------------------------------------------------
 // Basic health check
-// ------------------------------------------------------------
-
-app.get("/", (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({
-    success: true,
-    app: "NIVORA ONE AI Backend",
-    status: "online",
-    endpoint: "/api/ai"
+    ok: true,
+    service: 'NIVORA ONE',
+    paymentApi: 'available-but-not-configured',
+    time: new Date().toISOString()
   });
 });
 
-app.get("/health", (req, res) => {
+// Payment summary
+app.get('/api/payments/summary', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+
   res.json({
-    success: true,
-    status: "healthy",
-    service: "NIVORA ONE AI Backend"
+    todayCollection: 0,
+    successful: 0,
+    pending: 0,
+    refundedAmount: 0,
+    currency: 'BDT',
+    configured: false,
+    message: 'Payment gateway is not configured.'
   });
 });
 
-// ------------------------------------------------------------
-// AI API
-// ------------------------------------------------------------
+// Transaction list
+app.get('/api/payments/transactions', (req, res) => {
+  res.set('Cache-Control', 'no-store');
 
-app.post("/api/ai", async (req, res) => {
-  try {
-    const {
-      message,
-      prompt,
-      systemInstruction,
-      provider = "auto",
-      model = "auto",
-      conversation = [],
-      app = "NIVORA ONE",
-      mode = "studio-agent"
-    } = req.body || {};
+  res.json({
+    transactions: [],
+    configured: false,
+    message: 'No transaction database is connected yet.'
+  });
+});
 
-    // --------------------------------------------------------
-    // Accept either "message" or "prompt"
-    // --------------------------------------------------------
+// Create payment session.
+// Real payment creation must be connected to an approved gateway.
+app.post('/api/payments/create', (req, res) => {
+  const { amount, currency, orderId, method } = req.body || {};
 
-    const userMessage =
-      typeof message === "string" && message.trim()
-        ? message.trim()
-        : typeof prompt === "string" && prompt.trim()
-        ? prompt.trim()
-        : "";
-
-    if (!userMessage) {
-      return res.status(400).json({
-        success: false,
-        error: "AI message is required."
-      });
-    }
-
-    // --------------------------------------------------------
-    // Limit conversation size for safety/performance
-    // --------------------------------------------------------
-
-    const safeConversation = Array.isArray(conversation)
-      ? conversation.slice(-20)
-      : [];
-
-    // --------------------------------------------------------
-    // AI request
-    // --------------------------------------------------------
-
-    const result = await generateAIResponse({
-      message: userMessage,
-      systemInstruction:
-        typeof systemInstruction === "string"
-          ? systemInstruction
-          : "",
-      provider,
-      model,
-      conversation: safeConversation,
-      app,
-      mode
-    });
-
-    // --------------------------------------------------------
-    // Normalize provider response
-    // --------------------------------------------------------
-
-    const answer =
-      result?.answer ??
-      result?.response ??
-      result?.text ??
-      result?.output ??
-      result?.content ??
-      "";
-
-    if (!answer || !String(answer).trim()) {
-      return res.status(502).json({
-        success: false,
-        error: "AI provider returned an empty response."
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      answer: String(answer),
-      provider: result?.provider || "unknown",
-      model: result?.model || model || "auto"
-    });
-  } catch (error) {
-    console.error("NIVORA AI ERROR:", error);
-
-    const statusCode =
-      Number.isInteger(error?.statusCode) &&
-      error.statusCode >= 400 &&
-      error.statusCode <= 599
-        ? error.statusCode
-        : 500;
-
-    return res.status(statusCode).json({
-      success: false,
-      error:
-        error?.message ||
-        "NIVORA AI server could not process the request."
+  if (
+    typeof amount !== 'number' ||
+    !Number.isFinite(amount) ||
+    amount <= 0 ||
+    amount > 10000000
+  ) {
+    return res.status(400).json({
+      ok: false,
+      error: 'INVALID_AMOUNT',
+      message: 'Enter a valid payment amount.'
     });
   }
+
+  if (
+    typeof orderId !== 'string' ||
+    !orderId.trim() ||
+    orderId.length > 120
+  ) {
+    return res.status(400).json({
+      ok: false,
+      error: 'INVALID_ORDER_ID',
+      message: 'A valid order ID is required.'
+    });
+  }
+
+  const allowedMethods = [
+    'bkash',
+    'nagad',
+    'rocket',
+    'card',
+    'bank',
+    'qr',
+    'international',
+    'cod'
+  ];
+
+  if (
+    typeof method !== 'string' ||
+    !allowedMethods.includes(method.toLowerCase())
+  ) {
+    return res.status(400).json({
+      ok: false,
+      error: 'INVALID_PAYMENT_METHOD',
+      message: 'Unsupported payment method.'
+    });
+  }
+
+  if (currency && !['BDT', 'USD', 'EUR'].includes(currency)) {
+    return res.status(400).json({
+      ok: false,
+      error: 'INVALID_CURRENCY',
+      message: 'Unsupported currency.'
+    });
+  }
+
+  // Do not pretend a payment has been created or completed.
+  return res.status(503).json({
+    ok: false,
+    error: 'PAYMENT_GATEWAY_NOT_CONFIGURED',
+    message:
+      'Real payments are unavailable until an approved payment gateway is connected.'
+  });
 });
 
-// ------------------------------------------------------------
-// 404 handler
-// ------------------------------------------------------------
+// Refund endpoint.
+// Must be implemented with gateway verification, authorization,
+// database checks and duplicate-refund protection before use.
+app.post('/api/payments/refund', (req, res) => {
+  return res.status(503).json({
+    ok: false,
+    error: 'REFUND_SERVICE_NOT_CONFIGURED',
+    message:
+      'Refunds are disabled until secure gateway integration and admin authorization are configured.'
+  });
+});
+
+// Serve the frontend when it is deployed alongside this server.
+app.use(express.static(path.join(__dirname)));
 
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: "NIVORA backend route not found."
-  });
-});
-
-// ------------------------------------------------------------
-// Global error handler
-// ------------------------------------------------------------
-
-app.use((error, req, res, next) => {
-  console.error("GLOBAL SERVER ERROR:", error);
-
-  if (res.headersSent) {
-    return next(error);
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({
+      ok: false,
+      error: 'API_ROUTE_NOT_FOUND'
+    });
   }
 
-  res.status(500).json({
-    success: false,
-    error: "Internal NIVORA server error."
+  res.status(404).send('Page not found');
+});
+
+// Do not start a listener when imported as a serverless function.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`NIVORA ONE server running on port ${PORT}`);
   });
-});
+}
 
-// ------------------------------------------------------------
-// Start server
-// ------------------------------------------------------------
-
-app.listen(PORT, () => {
-  console.log("==============================================");
-  console.log("NIVORA ONE AI Backend");
-  console.log("==============================================");
-  console.log(`Server running on port: ${PORT}`);
-  console.log(`Health: http://localhost:${PORT}/health`);
-  console.log(`AI API: http://localhost:${PORT}/api/ai`);
-  console.log("==============================================");
-});
+module.exports = app;
+```
