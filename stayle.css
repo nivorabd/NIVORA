@@ -1,0 +1,59 @@
+/**
+ * NIVORA ONE - International E-Commerce & Tracking Ecosystem
+ * Main Stylesheet
+ */
+
+/* Tailwind CSS imports & custom base styling */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Global Selection & Font Enhancements */
+body {
+    background-color: #020617;
+    color: #f8fafc;
+    font-family: 'Inter', sans-serif;
+    user-select: none;
+    overflow: hidden;
+}
+
+/* Custom Smooth Transition Utilities */
+.transition-all-custom {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Glassmorphism Effects */
+.glass-panel {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+/* Glow Shadow Effects */
+.glow-cyan {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+}
+
+.glow-emerald {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
