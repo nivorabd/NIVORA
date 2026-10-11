@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<title>NIVORA ONE — Admin & Role Permission</title>
+<style>
+:root{--bg:#09111f;--panel:#111b2d;--panel2:#17243a;--line:#293951;--text:#eef4ff;--muted:#94a3ba;--green:#18b957;--red:#e05252;--blue:#4d83e8}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#08101d,#0e1829);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Bengali",sans-serif}
+.app{display:grid;grid-template-columns:265px 1fr;min-height:100vh}.side{background:#0b1424;border-right:1px solid var(--line);padding:20px 14px}.brand{display:flex;gap:11px;align-items:center;padding:6px 10px 25px}.logo{width:42px;height:42px;background:#19bc5c;border-radius:12px;display:grid;place-items:center;font-weight:900;font-size:21px}.brand b{font-size:18px}.brand small{display:block;color:var(--muted);margin-top:2px}.nav button{width:100%;border:0;background:transparent;color:#b9c5d7;text-align:left;padding:12px;border-radius:10px;margin:2px 0;font-size:14px}.nav button:hover,.nav button.active{background:#1b2a42;color:#fff}.group{font-size:11px;color:#71819b;font-weight:800;padding:12px 10px 6px;letter-spacing:.7px}
+.main{padding:25px;max-width:1250px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}h1{margin:0;font-size:27px}.sub{color:var(--muted);margin-top:5px}.badge{border:1px solid #30435f;background:#122038;border-radius:99px;padding:8px 12px;font-size:12px;color:#aebdd2}
+.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}.card{background:rgba(17,27,45,.9);border:1px solid var(--line);border-radius:17px;padding:20px}.card h2{margin:0 0 7px;font-size:18px}.card p{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:17px}.stat{background:#111d31;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:23px}.stat span{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}input,select{background:#0b1525;color:#fff;border:1px solid #2b3d57;border-radius:9px;padding:11px 12px;outline:none}input:focus,select:focus{border-color:var(--green)}.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--green);color:#fff;font-weight:750}.btn.blue{background:#245fbf}.btn.red{background:#8a2e2e}.btn.gray{background:#26364f}.btn.small{padding:7px 10px;font-size:12px}
+table{width:100%;border-collapse:collapse;min-width:760px}th,td{border-bottom:1px solid #26354b;padding:12px 10px;text-align:left;font-size:13px}th{color:#9fb0c7;font-size:11px;text-transform:uppercase;letter-spacing:.4px}td{color:#d6dfec}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px}
+.role{display:flex;align-items:center;justify-content:space-between;padding:13px;border:1px solid #293951;background:#0d1728;border-radius:11px;margin:8px 0}.role strong{display:block}.role small{color:var(--muted)}.pill{font-size:11px;padding:4px 8px;border-radius:99px;background:#123b24;color:#65dd91}.pill.admin{background:#3d2b10;color:#ffc96b}.pill.staff{background:#1b3150;color:#8db9ff}
+.check{accent-color:var(--green);width:17px;height:17px}.perm-grid{display:grid;grid-template-columns:1fr 100px 100px 100px 100px;gap:0}.perm-grid>div{padding:11px;border-bottom:1px solid #27374f;font-size:13px}.perm-head{color:#9fb0c7;font-size:11px!important;font-weight:800}.center{text-align:center}
+.notice{padding:12px 14px;border-radius:11px;background:#10263d;border:1px solid #254b6c;color:#bcd6ee;font-size:13px;margin:13px 0}.footer{text-align:center;color:#697991;font-size:12px;padding:25px}
+.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:18px;z-index:5}.modal.show{display:grid}.box{width:min(600px,100%);background:#111b2d;border:1px solid #2d405b;border-radius:17px;padding:20px}.close{float:right;border:0;background:none;color:#aab8cb;font-size:24px}.form{display:grid;gap:11px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:12px;color:#afbdd0;margin-bottom:5px;display:block}
+.toast{position:fixed;right:17px;bottom:17px;background:#18263b;border:1px solid #344964;padding:12px 15px;border-radius:11px;display:none;z-index:10}.toast.show{display:block}
+@media(max-width:850px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line)}.nav{display:grid;grid-template-columns:repeat(2,1fr)}.group{grid-column:1/-1}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.top{align-items:flex-start;gap:12px;flex-direction:column}}
+@media(max-width:520px){.nav{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+ <div class="brand"><div class="logo">N</div><div><b>NIVORA ONE</b><small>Admin & Access Control</small></div></div>
+ <div class="group">ADMINISTRATION</div>
+ <div class="nav">
+  <button class="active" onclick="page('dashboard',this)">📊 Dashboard</button>
+  <button onclick="page('users',this)">👥 Users</button>
+  <button onclick="page('roles',this)">🛡️ Roles</button>
+  <button onclick="page('permissions',this)">🔐 Permissions</button>
+ </div>
+ <div class="group">SECURITY</div>
+ <div class="nav">
+  <button onclick="page('logs',this)">📜 Activity Logs</button>
+  <button onclick="page('sessions',this)">🟢 Sessions</button>
+  <button onclick="page('settings',this)">⚙️ Admin Settings</button>
+ </div>
+</aside>
+
+<main class="main">
+<div class="top"><div><h1 id="title">Admin Dashboard</h1><div class="sub" id="sub">NIVORA ONE-এর ব্যবহারকারী, Role ও Permission নিয়ন্ত্রণ করুন</div></div><div class="badge">● Role Based Access Control</div></div>
+
+<section id="dashboard" class="page active">
+ <div class="stats">
+  <div class="stat"><b id="userCount">6</b><span>Total Users</span></div><div class="stat"><b>6</b><span>Roles</span></div><div class="stat"><b>32</b><span>Permissions</span></div><div class="stat"><b>2</b><span>Active Sessions</span></div>
+ </div>
+ <div class="grid">
+  <div class="card"><h2>👑 System Roles</h2><p>প্রতিটি Role-এর কাজ ও ক্ষমতা আলাদা রাখা হয়েছে।</p>
+   <div class="role"><div><strong>Super Admin</strong><small>পূর্ণ সিস্টেম নিয়ন্ত্রণ</small></div><span class="pill admin">FULL ACCESS</span></div>
+   <div class="role"><div><strong>Admin</strong><small>ব্যবসা পরিচালনা</small></div><span class="pill admin">HIGH</span></div>
+   <div class="role"><div><strong>Manager</strong><small>অপারেশন ও রিপোর্ট</small></div><span class="pill">MEDIUM</span></div>
+   <div class="role"><div><strong>Staff</strong><small>নির্দিষ্ট কাজ</small></div><span class="pill staff">LIMITED</span></div>
+   <div class="role"><div><strong>Cashier</strong><small>POS ও Sales</small></div><span class="pill staff">POS</span></div>
+   <div class="role"><div><strong>Warehouse Staff</strong><small>Stock ও Warehouse</small></div><span class="pill staff">STOCK</span></div>
+  </div>
+  <div class="card"><h2>⚡ Quick Actions</h2><p>Admin-এর সাধারণ কাজ দ্রুত সম্পন্ন করুন।</p>
+   <div class="actions">
+    <button class="btn" onclick="openUser()">+ Add User</button>
+    <button class="btn blue" onclick="page('roles')">Manage Roles</button>
+    <button class="btn gray" onclick="page('permissions')">Permission Matrix</button>
+    <button class="btn red" onclick="revoke()">Revoke All Sessions</button>
+   </div>
+   <div class="notice">🔒 গুরুত্বপূর্ণ: বাস্তব অ্যাপে Permission অবশ্যই Backend/API-তে যাচাই করতে হবে। শুধু HTML/JavaScript দিয়ে নিরাপত্তা নিশ্চিত করা যায় না।</div>
+  </div>
+ </div>
+</section>
+
+<section id="users" class="page">
+ <div class="card"><h2>👥 User Management</h2><p>ব্যবহারকারীর Role, Status ও Access পরিচালনা করুন।</p>
+  <div class="toolbar"><input id="search" placeholder="নাম/ইমেইল খুঁজুন..." oninput="renderUsers()"><button class="btn" onclick="openUser()">+ Add User</button></div>
+  <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="userRows"></tbody></table></div>
+ </div>
+</section>
+
+<section id="roles" class="page">
+ <div class="card"><h2>🛡️ Role Management</h2><p>Role তৈরি করে প্রতিটি Role-এর Permission নির্ধারণ করুন।</p>
+  <div class="toolbar"><button class="btn" onclick="openRole()">+ Create New Role</button></div>
+  <div class="table-wrap"><table><thead><tr><th>Role</th><th>Description</th><th>Users</th><th>Access Level</th><th>Action</th></tr></thead><tbody>
+   <tr><td><b>Super Admin</b></td><td>সম্পূর্ণ সিস্টেম নিয়ন্ত্রণ</td><td>1</td><td>Full</td><td><button class="btn small gray" onclick="editRole('Super Admin')">Manage</button></td></tr>
+   <tr><td><b>Admin</b></td><td>ব্যবসা পরিচালনা</td><td>1</td><td>High</td><td><button class="btn small gray" onclick="editRole('Admin')">Manage</button></td></tr>
+   <tr><td><b>Manager</b></td><td>Operations & Reports</td><td>1</td><td>Medium</td><td><button class="btn small gray" onclick="editRole('Manager')">Manage</button></td></tr>
+   <tr><td><b>Staff</b></td><td>Limited operational access</td><td>1</td><td>Limited</td><td><button class="btn small gray" onclick="editRole('Staff')">Manage</button></td></tr>
+   <tr><td><b>Cashier</b></td><td>POS & Sales</td><td>1</td><td>POS</td><td><button class="btn small gray" onclick="editRole('Cashier')">Manage</button></td></tr>
+   <tr><td><b>Warehouse Staff</b></td><td>Inventory & Warehouse</td><td>1</td><td>Stock</td><td><button class="btn small gray" onclick="editRole('Warehouse Staff')">Manage</button></td></tr>
+  </tbody></table></div>
+ </div>
+</section>
+
+<section id="permissions" class="page">
+ <div class="card"><h2>🔐 Permission Matrix</h2><p>Role অনুযায়ী View, Create, Edit ও Delete ক্ষমতা নির্ধারণ করুন।</p>
+  <div class="toolbar"><select id="roleSelect" onchange="syncRole()"><option>Super Admin</option><option>Admin</option><option>Manager</option><option>Staff</option><option>Cashier</option><option>Warehouse Staff</option></select><button class="btn" onclick="savePerm()">Save Permissions</button></div>
+  <div class="perm-grid" id="permGrid"></div>
+ </div>
+</section>
+
+<section id="logs" class="page">
+ <div class="card"><h2>📜 Activity Logs</h2><p>কে কখন কী পরিবর্তন করেছে তার Audit Trail।</p>
+ <div class="table-wrap"><table><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Module</th><th>Result</th></tr></thead><tbody>
+ <tr><td>আজ 19:30</td><td>Admin</td><td>Updated Product</td><td>Products</td><td><span class="pill">Success</span></td></tr>
+ <tr><td>আজ 19:18</td><td>Cashier</td><td>Created Invoice</td><td>POS</td><td><span class="pill">Success</span></td></tr>
+ <tr><td>আজ 18:55</td><td>Manager</td><td>Stock Transfer</td><td>Inventory</td><td><span class="pill">Success</span></td></tr>
+ </tbody></table></div></div>
+</section>
+
+<section id="sessions" class="page">
+ <div class="card"><h2>🟢 Active Sessions</h2><p>সন্দেহজনক বা পুরোনো session revoke করুন।</p>
+ <div class="role"><div><strong>Super Admin — Current Browser</strong><small>Active now</small></div><span class="pill">CURRENT</span></div>
+ <div class="role"><div><strong>Manager — Android</strong><small>Recently active</small></div><button class="btn red small" onclick="toast('Session revoked')">Revoke</button></div>
+ <button class="btn red" onclick="revoke()">Revoke All Other Sessions</button>
+ </div>
+</section>
+
+<section id="settings" class="page">
+ <div class="grid">
+  <div class="card"><h2>⚙️ Admin Settings</h2><p>নিরাপত্তা নীতিমালা নির্ধারণ করুন।</p>
+   <div class="role"><strong>Require 2FA for Admins</strong><input type="checkbox" class="check" checked></div>
+   <div class="role"><strong>Login Activity Alerts</strong><input type="checkbox" class="check" checked></div>
+   <div class="role"><strong>Force Password Rotation</strong><input type="checkbox" class="check"></div>
+   <div class="role"><strong>Allow Multiple Sessions</strong><input type="checkbox" class="check" checked></div>
+  </div>
+  <div class="card"><h2>🚨 High-Risk Actions</h2><p>গুরুত্বপূর্ণ কাজের আগে অতিরিক্ত verification রাখা উচিত।</p>
+   <div class="actions"><button class="btn red" onclick="toast('Demo: database backup request')">Backup Database</button><button class="btn red" onclick="revoke()">Revoke All Sessions</button></div>
+  </div>
+ </div>
+</section>
+<div class="footer">NIVORA ONE • Admin Panel & Role Based Access Control • Frontend Demo</div>
+</main></div>
+
+<div id="modal" class="modal"><div class="box"><button class="close" onclick="closeModal()">×</button><h2 id="modalTitle">Add User</h2><div id="modalBody"></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const users=[
+ {name:"NIVORA Owner",email:"owner@nivora.one",role:"Super Admin",status:"Active"},
+ {name:"Business Admin",email:"admin@nivora.one",role:"Admin",status:"Active"},
+ {name:"Operations Manager",email:"manager@nivora.one",role:"Manager",status:"Active"},
+ {name:"Store Staff",email:"staff@nivora.one",role:"Staff",status:"Active"},
+ {name:"POS Cashier",email:"cashier@nivora.one",role:"Cashier",status:"Active"},
+ {name:"Warehouse Staff",email:"warehouse@nivora.one",role:"Warehouse Staff",status:"Active"}
+];
+const modules=["Dashboard","E-Commerce Store","Products","Categories","Suppliers","Customers","Purchases","Sales / POS","Online Orders","Inventory","Warehouse","Stock Transfer","Expenses","Income","Profit / Loss","Accounts","Ledger Book","Reports","Barcode / QR","AI Analytics","Delivery","Returns & Refunds","Marketing","Payments","Notifications","Support","Users","Roles","Settings"];
+const defaultPerm={view:true,create:true,edit:true,del:true};
+function page(id,btn){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");const names={dashboard:["Admin Dashboard","NIVORA ONE-এর ব্যবহারকারী, Role ও Permission নিয়ন্ত্রণ করুন"],users:["User Management","ব্যবহারকারী ও Access পরিচালনা করুন"],roles:["Role Management","Role তৈরি ও পরিচালনা করুন"],permissions:["Permission Matrix","Role অনুযায়ী ক্ষমতা নির্ধারণ করুন"],logs:["Activity Logs","সিস্টেমের Audit Trail"],sessions:["Session Management","Active sessions নিয়ন্ত্রণ করুন"],settings:["Admin Settings","সিস্টেম নিরাপত্তা নীতি"]};document.getElementById("title").textContent=names[id][0];document.getElementById("sub").textContent=names[id][1];if(id==="users")renderUsers();if(id==="permissions")renderPerm();}
+function renderUsers(){let q=(document.getElementById("search")?.value||"").toLowerCase();document.getElementById("userRows").innerHTML=users.filter(u=>(u.name+u.email+u.role).toLowerCase().includes(q)).map((u,i)=>`<tr><td><b>${u.name}</b></td><td>${u.email}</td><td>${u.role}</td><td><span class="pill">${u.status}</span></td><td><button class="btn small gray" onclick="editUser(${i})">Edit</button> <button class="btn small red" onclick="removeUser(${i})">Disable</button></td></tr>`).join("");}
+function renderPerm(){let role=document.getElementById("roleSelect").value;let saved=JSON.parse(localStorage.getItem("nivora_perm_"+role)||"null")||{};document.getElementById("permGrid").innerHTML=`<div class="perm-head">MODULE</div><div class="perm-head center">VIEW</div><div class="perm-head center">CREATE</div><div class="perm-head center">EDIT</div><div class="perm-head center">DELETE</div>`+modules.map((m,i)=>{let p=saved[m]||defaultPerm;return `<div>${m}</div><div class="center"><input class="check p-${i}" data-k="view" type="checkbox" ${p.view?"checked":""}></div><div class="center"><input class="check p-${i}" data-k="create" type="checkbox" ${p.create?"checked":""}></div><div class="center"><input class="check p-${i}" data-k="edit" type="checkbox" ${p.edit?"checked":""}></div><div class="center"><input class="check p-${i}" data-k="del" type="checkbox" ${p.del?"checked":""}></div>`}).join("");}
+function syncRole(){renderPerm()}
+function savePerm(){let role=document.getElementById("roleSelect").value,obj={};modules.forEach((m,i)=>{obj[m]={};document.querySelectorAll(".p-"+i).forEach(x=>obj[m][x.dataset.k]=x.checked)});localStorage.setItem("nivora_perm_"+role,JSON.stringify(obj));toast(role+" permissions saved (demo)")}
+function openUser(edit=-1){document.getElementById("modalTitle").textContent=edit<0?"Add User":"Edit User";document.getElementById("modalBody").innerHTML=`<div class="form"><div class="row"><div><label>Name</label><input id="mName" placeholder="Full Name"></div><div><label>Email</label><input id="mEmail" placeholder="email@example.com"></div></div><div><label>Role</label><select id="mRole"><option>Super Admin</option><option>Admin</option><option>Manager</option><option>Staff</option><option>Cashier</option><option>Warehouse Staff</option></select></div><button class="btn" onclick="saveUser(${edit})">${edit<0?"Create User":"Save Changes"}</button></div>`;document.getElementById("modal").classList.add("show");if(edit>=0){mName.value=users[edit].name;mEmail.value=users[edit].email;mRole.value=users[edit].role}}
+function saveUser(i){let u={name:mName.value.trim(),email:mEmail.value.trim(),role:mRole.value,status:"Active"};if(!u.name||!u.email)return toast("Name ও Email দিন");if(i<0)users.push(u);else users[i]=u;closeModal();renderUsers();toast(i<0?"User created":"User updated")}
+function editUser(i){openUser(i)}function removeUser(i){users[i].status="Disabled";renderUsers();toast("User disabled")}function openRole(){document.getElementById("modalTitle").textContent="Create New Role";document.getElementById("modalBody").innerHTML=`<div class="form"><div><label>Role Name</label><input id="roleName" placeholder="যেমন: Sales Manager"></div><div><label>Description</label><input id="roleDesc" placeholder="Role-এর কাজ"></div><button class="btn" onclick="createRole()">Create Role</button></div>`;document.getElementById("modal").classList.add("show")}function createRole(){if(!roleName.value.trim())return toast("Role Name দিন");closeModal();toast("Role '"+roleName.value+"' তৈরি হয়েছে (demo)")}function editRole(r){document.getElementById("roleSelect").value=r;page("permissions");renderPerm()}function closeModal(){document.getElementById("modal").classList.remove("show")}function revoke(){toast("All other sessions revoked (demo)")}function toast(s){let t=document.getElementById("toast");t.textContent=s;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}renderUsers();
+</script>
+</body>
+</html>

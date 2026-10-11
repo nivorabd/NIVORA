@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মাল্টিমোডাল ইউনিভার্সাল এআই সহকারী</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 15px; }
+        .main-container { max-width: 650px; background: #fff; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #1a73e8; text-align: center; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #5f6368; font-size: 13px; margin-bottom: 15px; }
+        
+        .chat-box { height: 400px; border: 1px solid #dadce0; border-radius: 8px; padding: 15px; overflow-y: scroll; background: #f8f9fa; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .message { padding: 10px 14px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-wrap: break-word; }
+        .user-message { background: #1a73e8; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ai-message { background: #e8f0fe; color: #202124; align-self: flex-start; border-bottom-left-radius: 2px; white-space: pre-wrap; }
+        
+        .preview-area { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; font-size: 13px; color: #5f6368; }
+        .preview-thumbnail { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+
+        .input-area { display: flex; flex-direction: column; gap: 8px; }
+        .input-controls { display: flex; gap: 8px; align-items: center; }
+        textarea { flex: 1; height: 45px; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; resize: none; font-size: 14px; outline: none; }
+        textarea:focus { border-color: #1a73e8; }
+        
+        .action-btns { display: flex; gap: 6px; }
+        .icon-btn { background: #f1f3f4; border: 1px solid #dadce0; color: #3c4043; padding: 10px 12px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+        .icon-btn:hover { background: #e8eaed; }
+        .icon-btn.recording { background: #fee2e2; color: #dc2626; border-color: #fca5a5; animation: pulse 1.5s infinite; }
+        
+        button.send-btn { background: #1a73e8; color: white; border: none; padding: 0 18px; height: 45px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button.send-btn:hover { background: #1557b0; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h2>💡 ইউনিভার্সাল মাল্টিমোডাল এআই হাব</h2>
+        <p class="subtitle">লেখা, ছবি, ফাইল বা ভয়েস দিয়ে যেকোনো সমস্যার সমাধান নিন</p>
+        
+        <div id="chatBox" class="chat-box">
+            <div class="message ai-message">নমস্কার! আমি প্রস্তুত আছি। আপনি লিখে, ছবি বা ফাইল আপলোড করে কিংবা মাইক্রোফোন ব্যবহার করে আপনার যেকোনো সমস্যা আমাকে জানাতে পারেন।</div>
+        </div>
+
+        <!-- ফাইল বা ইমেজ প্রিভিউ দেখানোর জায়গা -->
+        <div id="previewContainer" class="preview-area" style="display:none;">
+            <img id="imagePreview" class="preview-thumbnail" style="display:none;" />
+            <span id="fileNameDisplay"></span>
+            <button onclick="clearAttachment()" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold;">✕ মুছুন</button>
+        </div>
+
+        <div class="input-area">
+            <div class="input-controls">
+                <textarea id="userInput" placeholder="আপনার সমস্যা বা প্রশ্ন লিখুন..." onkeydown="checkEnter(event)"></textarea>
+                
+                <div class="action-btns">
+                    <!-- ইমেজ বা ফাইল আপলোড বাটন -->
+                    <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelect(event)" accept="image/*,video/*,audio/*,.pdf,.txt,.doc,.docx">
+                    <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="ছবি বা ফাইল আপলোড করুন">📎</button>
+                    
+                    <!-- ভয়েস রেকর্ডিং বাটন (Speech to Text) -->
+                    <button id="micBtn" class="icon-btn" onclick="toggleSpeechRecognition()" title="মুখে বলুন">🎤</button>
+                </div>
+
+                <button class="send-btn" onclick="sendToAI()">পাঠান</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'YOUR_GEMINI_API_KEY'; // এখানে আপনার এপিআই কি বসাবেন
+        let attachedFile = null; // ফাইল বা ইমেজ ডাটা স্টোর করার জন্য
+
+        // ফাইল বা ইমেজ সিলেক্ট করার ফাংশন
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            attachedFile = file;
+            const previewContainer = document.getElementById('previewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+            previewContainer.style.display = 'flex';
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    fileNameDisplay.innerText = file.name;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = 'none';
+                fileNameDisplay.innerText = `সংযুক্ত ফাইল: ${file.name}`;
+            }
+        }
+
+        // এটাচমেন্ট রিমুভ করা
+        function clearAttachment() {
+            attachedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('fileNameDisplay').innerText = '';
+        }
+
+        // ব্রাউজারের নিজস্ব Speech Recognition (ভয়েস থেকে লেখা)
+        let recognition;
+        let isRecording = false;
+        function toggleSpeechRecognition() {
+            const micBtn = document.getElementById('micBtn');
+            const userInput = document.getElementById('userInput');
+
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('আপনার ব্রাউজার ভয়েস রেকর্ডিং সাপোর্ট করে না। দয়া করে Google Chrome ব্যবহার করুন।');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (isRecording) {
+                recognition.stop();
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.lang = 'bn-BD'; // বাংলা ভাষা
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                isRecording = true;
+                micBtn.classList.add('recording');
+                micBtn.title = "শোনা হচ্ছে... থামতে আবার ক্লিক করুন";
+            };
+
+            recognition.onresult = function(event) {
+                const speechToText = event.results[0][0].transcript;
+                userInput.value += (userInput.value ? ' ' : '') + speechToText;
+            };
+
+            recognition.onerror = function() {
+                stopMicState();
+            };
+
+            recognition.onend = function() {
+                stopMicState();
+            };
+
+            recognition.start();
+        }
+
+        function stopMicState() {
+            isRecording = false;
+            const micBtn = document.getElementById('micBtn');
+            micBtn.classList.remove('recording');
+            micBtn.title = "মুখে বলুন";
+        }
+
+        // ফাইলকে Base64 এ রূপান্তর করার হেল্পার ফাংশন
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                // @ts-ignore
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // এআই এর কাছে রিকোয়েস্ট পাঠানোর মূল ফাংশন
+        async function sendToAI() {
+            const inputField = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            const userText = inputField.value.trim();
+
+            if (!userText && !attachedFile) {
+                alert('দয়া করে কিছু লিখুন অথবা কোনো ফাইল/ছবি যুক্ত করুন!');
+                return;
+            }
+
+            // চ্যাটবক্সে ইউজারের মেসেজ বা এটাচমেন্ট প্রদর্শন
+            let userHtmlContent = escapeHtml(userText);
+            if (attachedFile) {
+                if (attachedFile.type.startsWith('image/')) {
+                    const localUrl = URL.createObjectURL(attachedFile);
+                    userHtmlContent += `<br><img src="${localUrl}" style="max-width:150px; border-radius:4px; margin-top:5px;">`;
+                } else {
+                    userHtmlContent += `<br>📁 <i>[ফাইল: ${attachedFile.name}]</i>`;
+                }
+            }
+
+            chatBox.innerHTML += `<div class="message user-message">${userHtmlContent}</div>`;
+            inputField.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const loadingId = 'loading-' + Date.now();
+            chatBox.innerHTML += `<div id="${loadingId}" class="message ai-message">বিশ্লেষণ করে সমাধান তৈরি করা হচ্ছে...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const systemPersona = "আপনি একজন অত্যন্ত জ্ঞানী ও বহুমুখী এআই এক্সপার্ট। ব্যবহারকারী যেকোনো টেক্সট, ছবি বা ফাইল দিলে তা নিখুঁতভাবে বিশ্লেষণ করে বাংলায় গঠনমূলক সমাধান দেবেন।";
+
+            try {
+                let partsArray = [{ text: systemPersona + "\n\n ব্যবহারকারী: " + (userText || "এই ফাইল বা ছবি সম্পর্কে বিস্তারিত বলুন।") }];
+
+                // যদি কোনো ফাইল বা ইমেজ যুক্ত করা হয়ে থাকে, তা জেমিনির মাল্টিমোডাল ফরম্যাটে যুক্ত করা
+                if (attachedFile) {
+                    const base64Data = await fileToBase64(attachedFile);
+                    partsArray.push({
+                        inline_data: {
+                            mime_type: attachedFile.type || "application/octet-stream",
+                            data: base64Data
+                        }
+                    });
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ role: "user", parts: partsArray }]
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById(loadingId).remove();
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    chatBox.innerHTML += `<div class="message ai-message">${escapeHtml(aiReply)}</div>`;
+                } else {
+                    chatBox.innerHTML += `<div class="message ai-message">দুঃখিত, এই মুহূর্তে উত্তর পাওয়া যায়নি। আবার চেষ্টা করুন।</div>`;
+                }
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `<div class="message ai-message">সার্ভার কানেক্ট করতে সমস্যা হয়েছে। ইন্টারনেট কানেকশন চেক করুন।</div>`;
+            }
+
+            clearAttachment();
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendToAI();
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+        }
+    </script>
+
+</body>
+</html>

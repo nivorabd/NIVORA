@@ -1,0 +1,887 @@
+
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIVORA ONE — Ultimate Quran Hub</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { DEFAULT: '#d4af37', light: '#fcf6ba', dark: '#aa771c' }
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=SolaimanLipi&display=swap');
+
+        body { font-family: 'SolaimanLipi', sans-serif; background-color: #030712; color: #f3f4f6; margin: 0; padding: 0; }
+        .arabic-text { font-family: 'Amiri', serif; }
+        .gold-gradient { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+
+        /* Hafezi Mushaf Styling */
+        .hafezi-shell { background: #0b1725; border: 1px solid #8f7130; border-radius: 18px; padding: 12px; box-shadow: 0 12px 35px #0008; }
+        .hafezi-page { position: relative; max-width: 650px; min-height: 55vh; margin: auto; padding: 20px; background: #fffaf0; color: #17251d; border: 7px double #b99a51; border-radius: 5px; box-shadow: inset 0 0 0 2px #e7d6a5, 0 8px 22px #0007; }
+        .hafezi-arabic { font-family: 'Amiri', serif; font-size: 24px; line-height: 2.2; text-align: justify; text-align-last: center; direction: rtl; color: #17251d; }
+        
+        .tasbih-ring { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(145deg, #1e293b, #0f172a); border: 4px solid #d4af37; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 25px rgba(212,175,55,0.2); margin: 0 auto; transition: transform 0.1s; }
+        .tasbih-ring:active { transform: scale(0.95); }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+
+    <!-- HEADER & CALENDARS -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-3 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center justify-between w-full md:w-auto">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="text-amber-400 text-xl focus:outline-none lg:hidden"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="text-base md:text-lg font-bold gold-gradient tracking-wide flex items-center gap-2">
+                        <i class="fa-solid fa-quran"></i> NIVORA ONE
+                    </h1>
+                </div>
+                <div id="liveClock" class="text-xs bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-amber-300 lg:hidden">সময় লোড হচ্ছে...</div>
+            </div>
+
+            <!-- Arabic, Bengali, English Calendars -->
+            <div class="flex flex-wrap items-center justify-center gap-2 text-xs bg-slate-950/80 border border-slate-800 px-4 py-1.5 rounded-xl text-slate-300">
+                <span id="engDate" class="flex items-center gap-1"><i class="fa-solid fa-calendar text-amber-400"></i> --</span>
+                <span class="text-slate-600">|</span>
+                <span id="bngDate" class="flex items-center gap-1"><i class="fa-solid fa-calendar-days text-amber-400"></i> --</span>
+                <span class="text-slate-600">|</span>
+                <span id="hijriDate" class="flex items-center gap-1 arabic-text text-amber-300">--</span>
+            </div>
+
+            <div class="hidden lg:block text-xs bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-amber-300" id="liveClockDesktop">সময় লোড হচ্ছে...</div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 relative max-w-7xl mx-auto w-full">
+
+        <!-- SIDEBAR MENU -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-900 border-r border-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static flex flex-col pt-16 lg:pt-0">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center lg:hidden">
+                <span class="font-bold text-amber-400">মেনু বার</span>
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-3 space-y-1.5 text-sm">
+                <button onclick="showSection('audioSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-amber-300 bg-slate-800/60"><i class="fa-solid fa-headphones w-6 text-amber-400"></i> সরাসরি অডিও তিলাওয়াত</button>
+                <button onclick="showSection('hafeziSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-300"><i class="fa-solid fa-book-open w-6 text-amber-400"></i> হাফেজি কুরআন (৬০৪ পৃষ্ঠা)</button>
+                <button onclick="showSection('quranHubSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-300"><i class="fa-solid fa-book-quran w-6 text-amber-400"></i> সূরা ও আয়াত ভিত্তিক হাব</button>
+                <button onclick="showSection('tafsirSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-300"><i class="fa-solid fa-scroll w-6 text-amber-400"></i> তরজমা ও তাফসির</button>
+                <button onclick="showSection('hadithSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-300"><i class="fa-solid fa-feather w-6 text-amber-400"></i> ৪০ হাদিস (অর্থসহ)</button>
+                <button onclick="showSection('tasbihSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-300"><i class="fa-solid fa-circle-dot w-6 text-amber-400"></i> ডিজিটাল তাসবিহ</button>
+                <button onclick="showSection('prayerSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-300"><i class="fa-solid fa-mosque w-6 text-amber-400"></i> নামাজের সময়সূচী</button>
+                <button onclick="showSection('qiblaSection')" class="nav-btn w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-300"><i class="fa-solid fa-compass w-6 text-amber-400"></i> কিবলা কম্পাস</button>
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT AREA (Clean & Scrollable) -->
+        <main class="flex-1 min-w-0 p-4 md:p-6 overflow-y-auto">
+
+            <!-- 1. AUDIO DOWNLOAD & RECITATION SECTION -->
+            <section id="audioSection" class="content-section space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-headphones mr-2"></i> সরাসরি ডাউনলোডযোগ্য অডিও তিলাওয়াত</h2>
+                    <p class="text-sm text-slate-400 mb-5">যেকোনো সূরা সরাসরি শুনুন এবং সরাসরি ডাউনলোড লিংকের মাধ্যমে ডিভাইসে সংরক্ষণ করুন।</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">সূরা নির্বাচন করুন</label>
+                            <select id="audioSurahSelect" onchange="updateAudioPlayer()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-white text-sm"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">ক্বারী নির্বাচন করুন</label>
+                            <select id="audioReciterSelect" onchange="updateAudioPlayer()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-white text-sm">
+                                <option value="ar.alafasy">মিশারি রাশিদ আল-আফাসি</option>
+                                <option value="ar.abdulbasit">আব্দুল বাসিদ আবদুস সামাদ</option>
+                                <option value="ar.minshawi">মুহাম্মদ সিদ্দিক আল-মিনশাবি</option>
+                                <option value="ar.sudais">আব্দুর রহমান আল-সুদাইস</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 border border-amber-500/30 rounded-xl p-4 space-y-3">
+                        <div id="audioTitleDisplay" class="font-bold text-amber-300 text-sm">সূরা আল-ফাতিহা</div>
+                        <audio id="mainAudio" controls class="w-full"></audio>
+                        <div class="pt-2">
+                            <a id="downloadAudioLink" href="#" download class="inline-block bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition">
+                                <i class="fa-solid fa-download mr-1"></i> সরাসরি এমপি৩ ডাউনলোড করুন
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. HAFEZI MUSHAF (604 PAGES) SECTION -->
+            <section id="hafeziSection" class="content-section hidden space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-book-open mr-2"></i> হাফেজি কুরআন শরীফ (৬০৪ পৃষ্ঠা)</h2>
+                    <p class="text-sm text-slate-400 mb-4">ঐতিহ্যবাহী সুন্দর ডিজাইনের ৬০৪ পৃষ্ঠার মুসহাফ সরাসরি পড়ুন।</p>
+
+                    <div class="flex items-center justify-between gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800 mb-4">
+                        <button onclick="changeHafeziPage(-1)" class="bg-slate-800 text-amber-300 px-3 py-2 rounded-lg text-xs"><i class="fa-solid fa-chevron-right"></i> আগের পৃষ্ঠা</button>
+                        <select id="hafeziPageJump" onchange="loadHafeziPage(this.value)" class="bg-slate-800 border border-slate-700 rounded-lg p-2 text-white text-xs"></select>
+                        <button onclick="changeHafeziPage(1)" class="bg-slate-800 text-amber-300 px-3 py-2 rounded-lg text-xs">পরের পৃষ্ঠা <i class="fa-solid fa-chevron-left"></i></button>
+                    </div>
+
+                    <div class="hafezi-shell">
+                        <div id="hafeziContainer" class="hafezi-page">
+                            <div class="text-center text-slate-500 py-20">পৃষ্ঠা লোড হচ্ছে...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. SURAH & AYAH QURAN HUB -->
+            <section id="quranHubSection" class="content-section hidden space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-book-quran mr-2"></i> আয়াত ও সূরা ভিত্তিক কুরআন হাব</h2>
+                    <p class="text-sm text-slate-400 mb-4">নির্বাচিত সূরার প্রতিটি আয়াতের আরবি পাঠ ও বাংলা অর্থ।</p>
+                    <select id="hubSurahSelect" onchange="loadHubAyahs(this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-white text-sm mb-4"></select>
+                    <div id="hubAyahsContainer" class="space-y-4 pr-1"></div>
+                </div>
+            </section>
+
+            <!-- 4. TAFSIR & TARJOMA SECTION -->
+            <section id="tafsirSection" class="content-section hidden space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-scroll mr-2"></i> কুরআন তরজমা ও তাফসির</h2>
+                    <p class="text-sm text-slate-400 mb-4">কুরআনের আয়াত ও সূরার বাংলা তাফসির।</p>
+                    <select id="tafsirSurahSelect" onchange="loadTafsir(this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-white text-sm mb-4"></select>
+                    <div id="tafsirDisplay" class="bg-slate-950 p-5 rounded-xl border border-slate-800 text-slate-200 text-sm leading-relaxed"></div>
+                </div>
+            </section>
+
+            <!-- 5. 40 HADITH SECTION -->
+            <section id="hadithSection" class="content-section hidden space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-feather mr-2"></i> ৪০ হাদিস (অর্থসহ)</h2>
+                    <p class="text-sm text-slate-400 mb-4">ইমাম নববি (রহ.) সংকলিত ৪০টি গুরুত্বপূর্ণ হাদিস।</p>
+                    <div id="hadithContainer" class="space-y-4"></div>
+                </div>
+            </section>
+
+            <!-- 6. TASBIH COUNTER -->
+            <section id="tasbihSection" class="content-section hidden space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl text-center">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-circle-dot mr-2"></i> ডিজিটাল তাসবিহ কাউন্টার</h2>
+                    <p class="text-sm text-slate-400 mb-6">জিকির করুন এবং নিচের বৃত্তে ট্যাপ করুন।</p>
+                    <div class="tasbih-ring my-8" onclick="incrementTasbih()">
+                        <div>
+                            <span id="tasbihCount" class="text-4xl font-bold text-amber-300">0</span>
+                            <div class="text-xs text-slate-400 mt-1">ট্যাপ করুন</div>
+                        </div>
+                    </div>
+                    <button onclick="resetTasbih()" class="bg-red-950/60 hover:bg-red-900 text-red-200 border border-red-800 px-5 py-2 rounded-xl text-sm font-bold">রিস্টার্ট</button>
+                </div>
+            </section>
+
+            <!-- 7. LOCAL PRAYER TIMES -->
+            <section id="prayerSection" class="content-section hidden space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-mosque mr-2"></i> স্থানীয় নামাজের সময়সূচী</h2>
+                    <div class="flex gap-3 mb-4">
+                        <input type="text" id="cityNameInput" value="Dhaka" placeholder="শহরের নাম (उदा: Dhaka, Chittagong)" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-white text-sm">
+                        <button onclick="fetchPrayerTimes()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 rounded-xl text-sm">খুঁজুন</button>
+                    </div>
+                    <div id="prayerResults" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+                </div>
+            </section>
+
+            <!-- 8. QIBLA COMPASS -->
+            <section id="qiblaSection" class="content-section hidden space-y-5">
+                <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl text-center">
+                    <h2 class="text-xl font-bold text-amber-300 mb-2"><i class="fa-solid fa-compass mr-2"></i> কিবলা নির্ণয়</h2>
+                    <div class="relative w-56 h-56 mx-auto flex items-center justify-center rounded-full border-4 border-amber-500/40 bg-slate-950 shadow-2xl my-6">
+                        <div id="compassNeedle" class="absolute w-2 h-28 bg-gradient-to-t from-red-600 to-amber-400 rounded-full transition-transform duration-300 origin-bottom"></div>
+                        <i class="fa-solid fa-kaaba text-2xl text-amber-300"></i>
+                    </div>
+                    <button onclick="initCompass()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-3 rounded-xl text-sm">কম্পাস সেন্সর চালু করুন</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        const surahsList = [
+            {number: 1, name: "আল-ফাতিহা", en: "Al-Fatihah"}, {number: 2, name: "আল-বাকারা", en: "Al-Baqarah"},
+            {number: 3, name: "আলে ইমরান", en: "Ali 'Imran"}, {number: 4, name: "আন-নিসা", en: "An-Nisa"},
+            {number: 36, name: "ইয়াসিন", en: "Ya-Sin"}, {number: 55, name: "আর-রহমান", en: "Ar-Rahman"},
+            {number: 56, name: "আল-ওয়াকিয়া", en: "Al-Waqi'ah"}, {number: 67, name: "আল-মুলক", en: "Al-Mulk"},
+            {number: 112, name: "আল-ইখলাস", en: "Al-Ikhlas"}, {number: 114, name: "আন-নাস", en: "An-Nas"}
+        ];
+
+        function initApp() {
+            const dropdowns = ['audioSurahSelect', 'hubSurahSelect', 'tafsirSurahSelect'];
+            dropdowns.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerHTML = surahsList.map(s => `<option value="${s.number}">${s.number}. ${s.name} (${s.en})</option>`).join('');
+            });
+
+            const pageSelect = document.getElementById('hafeziPageJump');
+            if(pageSelect) {
+                let html = '';
+                for(let i=1; i<=604; i++) html += `<option value="${i}">পৃষ্ঠা ${i}</option>`;
+                pageSelect.innerHTML = html;
+            }
+
+            updateAudioPlayer();
+            loadHafeziPage(1);
+            loadHubAyahs(1);
+            loadTafsir(1);
+            loadHadiths();
+            fetchPrayerTimes();
+            updateCalendars();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function showSection(secId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(secId).classList.remove('hidden');
+            if(window.innerWidth < 1024) toggleSidebar();
+        }
+
+        // Calendars & Clock
+        function updateCalendars() {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString('bn-BD');
+            document.getElementById('liveClockDesktop').innerText = now.toLocaleTimeString('bn-BD');
+            document.getElementById('engDate').innerHTML = `<i class="fa-solid fa-calendar text-amber-400"></i> ${now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`;
+            document.getElementById('bngDate').innerHTML = `<i class="fa-solid fa-calendar-days text-amber-400"></i> ${now.toLocaleDateString('bn-BD', {month:'long', day:'numeric', year:'numeric'})}`;
+            try {
+                document.getElementById('hijriDate').innerText = new Intl.DateTimeFormat('en-US-u-ca-islamic', {day:'numeric', month:'long', year:'numeric'}).format(now);
+            } catch(e) { document.getElementById('hijriDate').innerText = "১৪৪৫ হিজরি"; }
+        }
+        setInterval(updateCalendars, 1000);
+
+        // 1. Audio Player
+        function updateAudioPlayer() {
+            const sNum = document.getElementById('audioSurahSelect').value.padStart(3, '0');
+            const reciter = document.getElementById('audioReciterSelect').value;
+            let url = `https://server8.mp3quran.net/afs/${sNum}.mp3`;
+            if(reciter === 'ar.abdulbasit') url = `https://server7.mp3quran.net/basit/Sura_Qurana_${sNum}.mp3`;
+            
+            document.getElementById('mainAudio').src = url;
+            document.getElementById('downloadAudioLink').href = url;
+            document.getElementById('audioTitleDisplay').innerText = `সূরা: ${document.getElementById('audioSurahSelect').selectedOptions[0].text}`;
+        }
+
+        // 2. Hafezi Page
+        let currentPage = 1;
+        async function loadHafeziPage(pNum) {
+            currentPage = parseInt(pNum);
+            document.getElementById('hafeziPageJump').value = currentPage;
+            const container = document.getElementById('hafeziContainer');
+            container.innerHTML = `<div class="text-center text-slate-500 py-16">পৃষ্ঠা ${currentPage} লোড হচ্ছে...</div>`;
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/page/${currentPage}/quran-uthmani`);
+                const data = await res.json();
+                if(data.code === 200) {
+                    let html = `<div class="hafezi-arabic">`;
+                    data.data.ayahs.forEach(a => {
+                        html += `${a.text} <span class="inline-flex items-center justify-center w-6 h-6 border border-amber-600 rounded-full text-xs text-amber-800 mx-1">${a.numberInSurah}</span> `;
+                    });
+                    html += `</div>`;
+                    container.innerHTML = html;
+                }
+            } catch(e) { container.innerHTML = `<div class="text-center text-red-400 py-10">লোড ব্যর্থ হয়েছে।</div>`; }
+        }
+        function changeHafeziPage(dir) {
+            if(currentPage + dir >= 1 && currentPage + dir <= 604) loadHafeziPage(currentPage + dir);
+        }
+
+        // 3. Hub Ayahs
+        async function loadHubAyahs(sNum) {
+            const container = document.getElementById('hubAyahsContainer');
+            container.innerHTML = `<div class="text-center text-slate-500 py-10">লোড হচ্ছে...</div>`;
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/surah/${sNum}/editions/quran-uthmani,bn.bengali`);
+                const data = await res.json();
+                if(data.code === 200) {
+                    let aAr = data.data[0].ayahs, aBn = data.data[1].ayahs, html = '';
+                    for(let i=0; i<aAr.length; i++) {
+                        html += `<div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2"><div class="text-xs text-amber-400 font-bold">আয়াত ${aAr[i].numberInSurah}</div><div class="arabic-text text-xl text-right text-amber-100">${aAr[i].text}</div><div class="text-sm text-slate-300 border-t border-slate-900 pt-2">${aBn[i].text}</div></div>`;
+                    }
+                    container.innerHTML = html;
+                }
+            } catch(e) { container.innerHTML = `<div class="text-center text-red-400 py-10">ত্রুটি ঘটেছে।</div>`; }
+        }
+
+        // 4. Tafsir
+        function loadTafsir(sNum) {
+            const sObj = surahsList.find(s => s.number == sNum);
+            document.getElementById('tafsirDisplay').innerHTML = `<h3 class="font-bold text-amber-300 text-base mb-2">সূরা ${sObj ? sObj.name : ''} - তাফসীর</h3><p>এই সূরার মূল লক্ষ্য হলো মানুষের অন্তরে ঈমানের আলো প্রজ্জ্বলিত করা এবং সঠিক জীবনবিধান শিক্ষা দেওয়া। বিস্তারিত তাফসীর ইবনে কাসির দ্রষ্টব্য।</p>`;
+        }
+
+        // 5. 40 Hadith
+        function loadHadiths() {
+            const list = [
+                {no: 1, ar: "إنما الأعمال بالنيات...", bn: "নিশ্চয়ই সমস্ত কাজ নিয়তের উপর নির্ভরশীল। (বুখারি)"},
+                {no: 2, ar: "بني الإسلام على خمس...", bn: "ইসলাম পাঁচটি ভিত্তির উপর প্রতিষ্ঠিত... (বুখারি ও মুসলিম)"}
+            ];
+            document.getElementById('hadithContainer').innerHTML = list.map(h => `<div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2"><div class="text-xs text-amber-400 font-bold">হাদিস নং ${h.no}</div><div class="arabic-text text-lg text-right text-amber-100">${h.ar}</div><div class="text-sm text-slate-300">${h.bn}</div></div>`).join('');
+        }
+
+        // 6. Tasbih
+        let tCount = 0;
+        function incrementTasbih() { tCount++; document.getElementById('tasbihCount').innerText = tCount; }
+        function resetTasbih() { tCount = 0; document.getElementById('tasbihCount').innerText = tCount; }
+
+        // 7. Prayer Times
+        async function fetchPrayerTimes() {
+            const city = document.getElementById('cityNameInput').value || 'Dhaka';
+            try {
+                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Bangladesh&method=1`);
+                const data = await res.json();
+                if(data.code === 200) {
+                    const t = data.data.timings;
+                    document.getElementById('prayerResults').innerHTML = `
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center"><div class="text-xs text-slate-400">ফজর</div><div class="text-base font-bold text-amber-300">${t.Fajr}</div></div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center"><div class="text-xs text-slate-400">যোহর</div><div class="text-base font-bold text-amber-300">${t.Dhuhr}</div></div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center"><div class="text-xs text-slate-400">আসর</div><div class="text-base font-bold text-amber-300">${t.Asr}</div></div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center"><div class="text-xs text-slate-400">মাগরিব</div><div class="text-base font-bold text-amber-300">${t.Maghrib}</div></div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center"><div class="text-xs text-slate-400">এশা</div><div class="text-base font-bold text-amber-300">${t.Isha}</div></div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center"><div class="text-xs text-slate-400">সূর্যোদয়</div><div class="text-base font-bold text-amber-300">${t.Sunrise}</div></div>
+                    `;
+                }
+            } catch(e) { alert('নামাজের সময় আনতে সমস্যা হয়েছে।'); }
+        }
+
+        // 8. Compass
+        function initCompass() {
+            if(window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', e => {
+                    if(e.alpha !== null) document.getElementById('compassNeedle').style.transform = `rotate(${e.alpha}deg)`;
+                });
+                alert('কম্পাস সেন্সর সক্রিয় হয়েছে।');
+            } else { alert('কম্পাস সমর্থিত নয়।'); }
+        }
+
+        window.onload = initApp;
+    </script>
+```html
+<!-- NIVORA ONE: Online + Offline Quran Audio -->
+<style>
+.n1-player {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid #ccd8ce;
+  background: #f7fbf7;
+  color: #183022;
+  font-family: Arial, sans-serif;
+}
+.n1-player h2 { margin-top: 0; }
+.n1-player .grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+.n1-player label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.n1-player select,
+.n1-player button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px;
+  border-radius: 9px;
+  border: 1px solid #b8c8ba;
+  font-size: 15px;
+  margin: 4px 0;
+}
+.n1-player button {
+  background: #146c43;
+  color: white;
+  border: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.n1-player button.alt { background: #354b3c; }
+.n1-player button:disabled { opacity: .55; }
+.n1-player audio { width: 100%; margin: 12px 0; }
+.n1-player .status {
+  padding: 12px;
+  background: #e5f2e8;
+  border-radius: 9px;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+}
+.n1-player progress { width: 100%; height: 20px; }
+.n1-player .note { font-size: 13px; line-height: 1.7; }
+@media(max-width:520px) {
+  .n1-player .grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<section class="n1-player" id="n1AudioApp">
+  <h2>📖 NIVORA ONE — কুরআন অডিও</h2>
+  <p>অনলাইনে শুনুন, প্রয়োজনীয় সূরা ডাউনলোড করুন, পরে অফলাইনে চালান।</p>
+
+  <div class="grid">
+    <div>
+      <label for="n1Qari">ক্বারি</label>
+      <select id="n1Qari">
+        <option value="afasy">মিশারি রাশিদ আল-আফাসি</option>
+        <option value="abdulbasit">আবদুল বাসিত আবদুস সামাদ</option>
+        <option value="husary">মাহমুদ আল-হুসারি</option>
+        <option value="minshawi">মুহাম্মদ সিদ্দিক আল-মিনশাওয়ি</option>
+        <option value="arkani">আবদুল ওয়ালী আল-আরকানি — উৎস প্রয়োজন</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="n1Surah">সূরা</label>
+      <select id="n1Surah"></select>
+    </div>
+
+    <div>
+      <label for="n1Ayah">আয়াত</label>
+      <select id="n1Ayah"></select>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <button id="n1Online">▶ অনলাইনে চালান</button>
+    <button id="n1Offline" class="alt">▶ অফলাইন কপি চালান</button>
+    <button id="n1Download">⬇ সম্পূর্ণ নির্বাচিত সূরা ডাউনলোড</button>
+    <button id="n1Next" class="alt">পরের আয়াত ▶</button>
+    <button id="n1Delete" class="alt">সংরক্ষিত সূরা মুছুন</button>
+    <button id="n1Stop" class="alt">■ বন্ধ করুন</button>
+  </div>
+
+  <audio id="n1AudioElement" controls preload="none"></audio>
+  <progress id="n1Progress" value="0" max="100"></progress>
+  <div id="n1Status" class="status" role="status">
+    প্রস্তুত। সূরা নির্বাচন করুন।
+  </div>
+  <p class="note">
+    ডাউনলোড করা অডিও এই ব্রাউজারের স্থানীয় স্টোরেজে রাখা হয়।
+    ব্রাউজারের ডেটা মুছে ফেললে সংরক্ষিত ফাইলও মুছে যেতে পারে।
+    প্রথমবার ডাউনলোডের জন্য ইন্টারনেট প্রয়োজন।
+  </p>
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  const API = "https://api.alquran.cloud/v1/";
+
+  const surahNames = [
+    "আল-ফাতিহা","আল-বাকারা","আলে ইমরান","আন-নিসা",
+    "আল-মায়িদা","আল-আনআম","আল-আরাফ","আল-আনফাল",
+    "আত-তাওবা","ইউনুস","হুদ","ইউসুফ","আর-রাদ",
+    "ইবরাহিম","আল-হিজর","আন-নাহল","আল-ইসরা","আল-কাহফ",
+    "মারইয়াম","ত্বা-হা","আল-আম্বিয়া","আল-হজ্জ","আল-মুমিনুন",
+    "আন-নূর","আল-ফুরকান","আশ-শুআরা","আন-নামল","আল-কাসাস",
+    "আল-আনকাবুত","আর-রূম","লুকমান","আস-সাজদা","আল-আহযাব",
+    "সাবা","ফাতির","ইয়াসিন","আস-সাফফাত","সোয়াদ","আয-যুমার",
+    "গাফির","ফুসসিলাত","আশ-শূরা","আয-যুখরুফ","আদ-দুখান",
+    "আল-জাসিয়া","আল-আহকাফ","মুহাম্মদ","আল-ফাতহ","আল-হুজুরাত",
+    "ক্বাফ","আয-যারিয়াত","আত-তূর","আন-নাজম","আল-কামার",
+    "আর-রহমান","আল-ওয়াকিয়া","আল-হাদিদ","আল-মুজাদালা",
+    "আল-হাশর","আল-মুমতাহিনা","আস-সাফ","আল-জুমুআ",
+    "আল-মুনাফিকুন","আত-তাগাবুন","আত-তালাক","আত-তাহরিম",
+    "আল-মুলক","আল-কলম","আল-হাক্কাহ","আল-মাআরিজ","নূহ",
+    "আল-জিন","আল-মুযযাম্মিল","আল-মুদ্দাসসির","আল-কিয়ামাহ",
+    "আল-ইনসান","আল-মুরসালাত","আন-নাবা","আন-নাযিআত","আবাসা",
+    "আত-তাকভির","আল-ইনফিতার","আল-মুতাফফিফিন","আল-ইনশিকাক",
+    "আল-বুরুজ","আত-তারিক","আল-আলা","আল-গাশিয়াহ","আল-ফজর",
+    "আল-বালাদ","আশ-শামস","আল-লাইল","আদ-দুহা","আল-ইনশিরাহ",
+    "আত-তিন","আল-আলাক","আল-কদর","আল-বাইয়্যিনাহ","আয-যিলযাল",
+    "আল-আদিয়াত","আল-কারিআহ","আত-তাকাসুর","আল-আসর","আল-হুমাযাহ",
+    "আল-ফিল","কুরাইশ","আল-মাউন","আল-কাওসার","আল-কাফিরুন",
+    "আন-নাসর","আল-মাসাদ","আল-ইখলাস","আল-ফালাক","আন-নাস"
+  ];
+
+  const edition = {
+    afasy: "ar.alafasy",
+    abdulbasit: "ar.abdulbasit",
+    husary: "ar.husary",
+    minshawi: "ar.minshawi"
+  };
+
+  let currentAyahs = [];
+  let dbPromise = null;
+  let downloadCancelled = false;
+  let playQueue = [];
+  let queueIndex = 0;
+  let activeObjectURL = null;
+
+  function say(message) {
+    $("n1Status").textContent = message;
+  }
+
+  function selected() {
+    return {
+      qari: $("n1Qari").value,
+      surah: Number($("n1Surah").value),
+      ayah: Number($("n1Ayah").value)
+    };
+  }
+
+  function makeKey(qari, surah, ayah) {
+    return qari + ":" + surah + ":" + ayah;
+  }
+
+  function populateSurahs() {
+    surahNames.forEach((name, i) => {
+      const option = document.createElement("option");
+      option.value = String(i + 1);
+      option.textContent = (i + 1) + " — " + name;
+      $("n1Surah").appendChild(option);
+    });
+    loadAyahOptions();
+  }
+
+  async function fetchAudioList(surah, qari) {
+    const editionId = edition[qari];
+
+    if (!editionId) {
+      throw new Error(
+        "এই ক্বারির জন্য যাচাইকৃত অডিও API যুক্ত করা হয়নি।"
+      );
+    }
+
+    const response = await fetch(
+      API + "surah/" + surah + "/" + editionId
+    );
+
+    if (!response.ok) {
+      throw new Error("অডিও সার্ভার থেকে তথ্য পাওয়া যায়নি।");
+    }
+
+    const json = await response.json();
+    const ayahs = json.data && json.data.ayahs;
+
+    if (!Array.isArray(ayahs) || !ayahs.length) {
+      throw new Error("এই সূরার অডিও তালিকা খালি।");
+    }
+
+    return ayahs.map((ayah, i) => ({
+      number: i + 1,
+      url: ayah.audio || null
+    }));
+  }
+
+  async function loadAyahOptions() {
+    const surah = Number($("n1Surah").value || 1);
+    const qari = $("n1Qari").value;
+    const select = $("n1Ayah");
+
+    select.replaceChildren();
+    say("আয়াতের তালিকা লোড হচ্ছে…");
+
+    try {
+      const list = await fetchAudioList(surah, qari);
+      currentAyahs = list;
+
+      list.forEach(item => {
+        const option = document.createElement("option");
+        option.value = String(item.number);
+        option.textContent = "আয়াত " + item.number;
+        select.appendChild(option);
+      });
+
+      say(
+        "সূরা " + surah + " প্রস্তুত। মোট " +
+        list.length + " আয়াতের অডিও তালিকা পাওয়া গেছে।"
+      );
+    } catch (error) {
+      currentAyahs = [];
+      say(error.message);
+    }
+  }
+
+  function openDB() {
+    if (dbPromise) return dbPromise;
+
+    dbPromise = new Promise((resolve, reject) => {
+      if (!("indexedDB" in window)) {
+        reject(new Error("এই ব্রাউজারে IndexedDB সমর্থিত নয়।"));
+        return;
+      }
+
+      const request = indexedDB.open("NivoraAudioOfflineV2", 1);
+
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains("audio")) {
+          db.createObjectStore("audio", { keyPath: "key" });
+        }
+      };
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    return dbPromise;
+  }
+
+  async function getSaved(key) {
+    const db = await openDB();
+
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction("audio", "readonly");
+      const req = tx.objectStore("audio").get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function saveBlob(key, blob) {
+    const db = await openDB();
+
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction("audio", "readwrite");
+      tx.objectStore("audio").put({
+        key: key,
+        blob: blob,
+        savedAt: Date.now()
+      });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
+    });
+  }
+
+  async function playUrl(url) {
+    if (!url) throw new Error("এই আয়াতের অডিও URL পাওয়া যায়নি।");
+
+    const audio = $("n1AudioElement");
+    if (activeObjectURL) {
+      URL.revokeObjectURL(activeObjectURL);
+      activeObjectURL = null;
+    }
+
+    audio.src = url;
+    await audio.play();
+  }
+
+  async function playOnline() {
+    const s = selected();
+
+    try {
+      if (!currentAyahs.length) {
+        currentAyahs = await fetchAudioList(s.surah, s.qari);
+      }
+
+      const item = currentAyahs[s.ayah - 1];
+      if (!item) throw new Error("আয়াতের অডিও পাওয়া যায়নি।");
+
+      playQueue = currentAyahs;
+      queueIndex = s.ayah - 1;
+
+      await playUrl(item.url);
+      say("অনলাইনে সূরা " + s.surah + ", আয়াত " + s.ayah + " চলছে।");
+    } catch (error) {
+      say("অনলাইন প্লে ব্যর্থ: " + error.message);
+    }
+  }
+
+  async function playOffline() {
+    const s = selected();
+
+    try {
+      const item = await getSaved(makeKey(s.qari, s.surah, s.ayah));
+
+      if (!item || !item.blob) {
+        throw new Error(
+          "এই আয়াত ডাউনলোড করা নেই। ইন্টারনেট চালু করে ডাউনলোড করুন।"
+        );
+      }
+
+      const audio = $("n1AudioElement");
+
+      if (activeObjectURL) URL.revokeObjectURL(activeObjectURL);
+      activeObjectURL = URL.createObjectURL(item.blob);
+      audio.src = activeObjectURL;
+      await audio.play();
+
+      say("সংরক্ষিত অফলাইন অডিও চলছে।");
+    } catch (error) {
+      say("অফলাইন প্লে ব্যর্থ: " + error.message);
+    }
+  }
+
+  async function downloadSurah() {
+    const s = selected();
+
+    if (!confirm(
+      "নির্বাচিত ক্বারির সম্পূর্ণ সূরার অডিও ডাউনলোড করবেন? " +
+      "এতে ডেটা ও স্টোরেজ লাগবে।"
+    )) return;
+
+    downloadCancelled = false;
+    $("n1Progress").value = 0;
+    $("n1Download").disabled = true;
+
+    try {
+      if (!currentAyahs.length) {
+        currentAyahs = await fetchAudioList(s.surah, s.qari);
+      }
+
+      const valid = currentAyahs.filter(x => x.url);
+      if (!valid.length) throw new Error("ডাউনলোডযোগ্য অডিও পাওয়া যায়নি।");
+
+      let completed = 0;
+      let skipped = 0;
+
+      for (const item of valid) {
+        if (downloadCancelled) break;
+
+        const key = makeKey(s.qari, s.surah, item.number);
+        const existing = await getSaved(key);
+
+        if (existing && existing.blob && existing.blob.size > 0) {
+          skipped++;
+          completed++;
+          $("n1Progress").value =
+            Math.round(completed / valid.length * 100);
+          continue;
+        }
+
+        say(
+          "ডাউনলোড হচ্ছে: সূরা " + s.surah +
+          ", আয়াত " + item.number + " (" +
+          (completed + 1) + "/" + valid.length + ")"
+        );
+
+        const response = await fetch(item.url);
+        if (!response.ok) {
+          throw new Error("আয়াত " + item.number + " ডাউনলোড ব্যর্থ।");
+        }
+
+        const blob = await response.blob();
+        if (!blob.size) {
+          throw new Error("আয়াত " + item.number + " ফাইল খালি।");
+        }
+
+        await saveBlob(key, blob);
+
+        completed++;
+        $("n1Progress").value =
+          Math.round(completed / valid.length * 100);
+      }
+
+      if (downloadCancelled) {
+        say("ডাউনলোড থামানো হয়েছে। ইতিমধ্যে সংরক্ষিত আয়াতগুলো থাকবে।");
+      } else {
+        say(
+          "সূরা " + s.surah + " ডাউনলোড সম্পন্ন। মোট " +
+          completed + " আয়াত; আগে থেকে থাকা " + skipped +
+          " আয়াত বাদ দেওয়া হয়েছে।"
+        );
+      }
+    } catch (error) {
+      say(
+        "ডাউনলোড ব্যর্থ: " + error.message +
+        " স্টোরেজ, ইন্টারনেট ও সার্ভার অনুমতি পরীক্ষা করুন।"
+      );
+    } finally {
+      $("n1Download").disabled = false;
+    }
+  }
+
+  async function deleteSurah() {
+    const s = selected();
+
+    if (!confirm(
+      "এই ক্বারি ও সূরার সংরক্ষিত অডিও মুছে ফেলবেন?"
+    )) return;
+
+    try {
+      const db = await openDB();
+
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction("audio", "readwrite");
+        const store = tx.objectStore("audio");
+        const request = store.openCursor();
+
+        request.onsuccess = () => {
+          const cursor = request.result;
+          if (!cursor) return;
+
+          const key = String(cursor.key);
+          const prefix = s.qari + ":" + s.surah + ":";
+
+          if (key.startsWith(prefix)) cursor.delete();
+          cursor.continue();
+        };
+
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+      });
+
+      say("নির্বাচিত সূরার সংরক্ষিত অডিও মুছে ফেলা হয়েছে।");
+    } catch (error) {
+      say("মুছতে সমস্যা হয়েছে: " + error.message);
+    }
+  }
+
+  async function playNext() {
+    const s = selected();
+    const next = s.ayah + 1;
+
+    if (next > currentAyahs.length) {
+      say("এই সূরার শেষ আয়াত পর্যন্ত পৌঁছেছেন।");
+      return;
+    }
+
+    $("n1Ayah").value = String(next);
+    await playOnline();
+  }
+
+  $("n1Surah").addEventListener("change", loadAyahOptions);
+  $("n1Qari").addEventListener("change", loadAyahOptions);
+  $("n1Online").addEventListener("click", playOnline);
+  $("n1Offline").addEventListener("click", playOffline);
+  $("n1Download").addEventListener("click", downloadSurah);
+  $("n1Delete").addEventListener("click", deleteSurah);
+  $("n1Next").addEventListener("click", playNext);
+
+  $("n1Stop").addEventListener("click", () => {
+    const audio = $("n1AudioElement");
+    audio.pause();
+    audio.currentTime = 0;
+    say("তিলাওয়াত বন্ধ করা হয়েছে।");
+  });
+
+  $("n1AudioElement").addEventListener("ended", () => {
+    say("নির্বাচিত অডিও শেষ হয়েছে। পরের আয়াত শুনতে বাটন চাপুন।");
+  });
+
+  populateSurahs();
+})();
+</script>
+<!-- End NIVORA ONE Online + Offline Quran Audio -->
+```
+</body>
+</html>
+      

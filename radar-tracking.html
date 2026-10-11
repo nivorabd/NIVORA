@@ -1,0 +1,701 @@
+```html
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>NIVORA ONE — Radar Tracking</title>
+
+<style>
+:root {
+  --bg:#07111f;
+  --panel:#101d30;
+  --panel2:#14243a;
+  --border:#263850;
+  --text:#e7efff;
+  --muted:#8da2bd;
+  --green:#36e0ad;
+  --blue:#52a8ff;
+  --yellow:#ffc857;
+  --red:#ff6b7a;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+.app { max-width:1450px; margin:auto; padding:18px; }
+header {
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:14px; margin-bottom:20px;
+}
+.brand { display:flex; align-items:center; gap:12px; }
+.logo {
+  width:48px; height:48px; display:grid; place-items:center;
+  border-radius:15px; color:#04131c; font-size:25px;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+}
+h1 { font-size:clamp(20px,4vw,29px); margin:0; }
+.sub { color:var(--muted); font-size:13px; margin-top:5px; }
+.clock { color:var(--green); font-size:13px; }
+.grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.card {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:16px; padding:17px; min-width:0;
+}
+.stat-label { color:var(--muted); font-size:13px; }
+.stat-value { font-size:28px; font-weight:750; margin:8px 0; }
+.stat-note { color:var(--muted); font-size:12px; }
+.green { color:var(--green); }
+.blue { color:var(--blue); }
+.yellow { color:var(--yellow); }
+.red { color:var(--red); }
+.section-title {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; flex-wrap:wrap; margin:0 0 14px;
+}
+h2 { font-size:17px; margin:0; }
+.main-grid {
+  display:grid; grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);
+  gap:14px; margin-top:15px;
+}
+.radar {
+  min-height:310px; position:relative; overflow:hidden;
+  border-radius:14px; border:1px solid #214b54;
+  background:
+    radial-gradient(circle at center,rgba(54,224,173,.10),transparent 65%),
+    #06141f;
+  display:flex; align-items:center; justify-content:center;
+}
+.radar-circle {
+  position:absolute; width:min(78%,290px); aspect-ratio:1;
+  border:1px solid rgba(54,224,173,.34); border-radius:50%;
+}
+.radar-circle.c2 { width:55%; }
+.radar-circle.c3 { width:30%; }
+.radar::before,.radar::after {
+  content:""; position:absolute; background:rgba(54,224,173,.2);
+}
+.radar::before { width:1px; height:100%; }
+.radar::after { width:100%; height:1px; }
+.sweep {
+  position:absolute; width:min(78%,290px); aspect-ratio:1;
+  border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 270deg,rgba(54,224,173,.22) 360deg);
+  animation:spin 7s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.radar-center {
+  z-index:2; text-align:center; background:#0a2028;
+  border:1px solid #28615a; padding:12px 15px; border-radius:12px;
+}
+.radar-center strong { color:var(--green); display:block; }
+.radar-center small { color:var(--muted); }
+.radar-dot {
+  position:absolute; z-index:3; width:9px; height:9px;
+  border-radius:50%; background:var(--green);
+  box-shadow:0 0 14px var(--green);
+}
+.form-grid {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;
+}
+.field { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.field.full { grid-column:1/-1; }
+label { font-size:12px; color:var(--muted); }
+input,select,textarea {
+  width:100%; min-width:0; padding:11px 12px; border-radius:10px;
+  border:1px solid var(--border); background:#091626; color:var(--text);
+  outline:none;
+}
+input:focus,select:focus,textarea:focus { border-color:var(--green); }
+textarea { min-height:75px; resize:vertical; }
+.btn {
+  border:1px solid var(--border); border-radius:10px; padding:10px 13px;
+  background:var(--panel2); color:var(--text); font-size:13px;
+}
+.btn.primary { background:var(--green); color:#062019; border-color:var(--green); font-weight:750; }
+.btn.danger { color:var(--red); }
+.btn:hover { filter:brightness(1.12); }
+.actions { display:flex; gap:8px; flex-wrap:wrap; }
+.toolbar {
+  display:grid; grid-template-columns:minmax(160px,2fr) repeat(2,minmax(120px,1fr));
+  gap:9px; margin-bottom:12px;
+}
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:780px; }
+th,td { padding:12px 10px; border-bottom:1px solid var(--border); text-align:left; font-size:13px; }
+th { color:var(--muted); font-weight:600; white-space:nowrap; }
+td { overflow-wrap:anywhere; }
+.badge {
+  display:inline-block; border-radius:99px; padding:5px 9px;
+  font-size:11px; white-space:nowrap;
+}
+.status-ok { color:var(--green); background:#123a32; }
+.status-watch { color:var(--yellow); background:#493817; }
+.status-risk { color:var(--red); background:#471f2a; }
+.status-other { color:var(--blue); background:#172e4a; }
+.alert-list { display:flex; flex-direction:column; gap:10px; }
+.alert-item {
+  border:1px solid var(--border); background:#0b1929;
+  border-radius:11px; padding:12px; font-size:13px;
+}
+.alert-item strong { display:block; margin-bottom:4px; }
+.empty { padding:25px; text-align:center; color:var(--muted); }
+.small { color:var(--muted); font-size:12px; line-height:1.7; }
+footer { padding:22px 0 8px; text-align:center; color:var(--muted); font-size:12px; }
+#notice { margin:0 0 12px; font-size:13px; color:var(--green); }
+@media(max-width:850px) {
+  .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .main-grid { grid-template-columns:1fr; }
+}
+@media(max-width:520px) {
+  .app { padding:12px; }
+  .form-grid { grid-template-columns:1fr; }
+  .field.full { grid-column:auto; }
+  .toolbar { grid-template-columns:1fr; }
+  .stat-value { font-size:24px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .sweep { animation:none; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+  <div class="brand">
+    <div class="logo">⌁</div>
+    <div>
+      <h1>NIVORA ONE <span class="green">RADAR</span></h1>
+      <div class="sub">স্মার্ট ট্র্যাকিং ও মনিটরিং সেন্টার</div>
+    </div>
+  </div>
+  <div>
+    <div class="clock" id="clock">সময় লোড হচ্ছে...</div>
+    <div class="sub">ম্যানুয়াল রেকর্ড ট্র্যাকিং</div>
+  </div>
+</header>
+
+<div id="notice" role="status" aria-live="polite"></div>
+
+<section class="grid">
+  <div class="card">
+    <div class="stat-label">মোট ট্র্যাকিং রেকর্ড</div>
+    <div class="stat-value blue" id="totalCount">0</div>
+    <div class="stat-note">সংরক্ষিত রেকর্ড</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">স্বাভাবিক অবস্থায়</div>
+    <div class="stat-value green" id="normalCount">0</div>
+    <div class="stat-note">Status: Normal</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">পর্যবেক্ষণ প্রয়োজন</div>
+    <div class="stat-value yellow" id="watchCount">0</div>
+    <div class="stat-note">Status: Watch</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">জরুরি সতর্কতা</div>
+    <div class="stat-value red" id="riskCount">0</div>
+    <div class="stat-note">Status: Critical</div>
+  </div>
+</section>
+
+<div class="main-grid">
+  <section class="card">
+    <div class="section-title">
+      <h2>◉ রাডার ভিউ</h2>
+      <span class="badge status-other">ভিজ্যুয়াল ড্যাশবোর্ড</span>
+    </div>
+    <div class="radar" aria-label="সাজানো রাডার অ্যানিমেশন; বাস্তব অবস্থান নির্দেশ করে না">
+      <div class="radar-circle"></div>
+      <div class="radar-circle c2"></div>
+      <div class="radar-circle c3"></div>
+      <div class="sweep"></div>
+      <div class="radar-dot" style="top:29%;left:64%"></div>
+      <div class="radar-dot" style="top:65%;left:35%;background:#52a8ff;box-shadow:0 0 12px #52a8ff"></div>
+      <div class="radar-center">
+        <strong>TRACKING HUB</strong>
+        <small id="radarSummary">0টি রেকর্ড</small>
+      </div>
+    </div>
+    <p class="small">
+      নোট: এই রাডারের অ্যানিমেশনটি শুধু UI প্রদর্শন। এটি GPS, স্যাটেলাইট,
+      যানবাহন বা পণ্যের বাস্তব অবস্থান শনাক্ত করছে না।
+    </p>
+  </section>
+
+  <section class="card">
+    <div class="section-title">
+      <h2 id="formTitle">＋ নতুন ট্র্যাকিং রেকর্ড</h2>
+    </div>
+    <form id="trackingForm">
+      <input type="hidden" id="editId">
+      <div class="form-grid">
+        <div class="field">
+          <label for="itemName">রেকর্ড/পণ্যের নাম *</label>
+          <input id="itemName" maxlength="100" required placeholder="যেমন: চালের স্টক">
+        </div>
+        <div class="field">
+          <label for="category">ধরন</label>
+          <select id="category">
+            <option value="product">পণ্য / স্টক</option>
+            <option value="order">অর্ডার</option>
+            <option value="vehicle">যানবাহন</option>
+            <option value="task">কাজ / টাস্ক</option>
+            <option value="asset">অন্যান্য সম্পদ</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="reference">রেফারেন্স / আইডি</label>
+          <input id="reference" maxlength="80" placeholder="যেমন: PRD-1001">
+        </div>
+        <div class="field">
+          <label for="status">বর্তমান অবস্থা</label>
+          <select id="status">
+            <option value="normal">স্বাভাবিক</option>
+            <option value="watch">পর্যবেক্ষণ</option>
+            <option value="critical">জরুরি</option>
+            <option value="pending">অপেক্ষমাণ</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="quantity">পরিমাণ</label>
+          <input id="quantity" type="number" min="0" step="any" value="0">
+        </div>
+        <div class="field">
+          <label for="unit">একক</label>
+          <input id="unit" maxlength="30" placeholder="পিস / কেজি / লিটার">
+        </div>
+        <div class="field">
+          <label for="location">স্থান / বিভাগ</label>
+          <input id="location" maxlength="120" placeholder="যেমন: গুদাম-১">
+        </div>
+        <div class="field">
+          <label for="dueDate">পরবর্তী তারিখ</label>
+          <input id="dueDate" type="date">
+        </div>
+        <div class="field full">
+          <label for="notes">বিবরণ / নোট</label>
+          <textarea id="notes" maxlength="1000" placeholder="প্রয়োজনীয় তথ্য লিখুন..."></textarea>
+        </div>
+        <div class="field full">
+          <div class="actions">
+            <button class="btn primary" type="submit" id="saveBtn">রেকর্ড সংরক্ষণ</button>
+            <button class="btn" type="button" id="resetBtn">ফর্ম পরিষ্কার</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+
+<section class="card" style="margin-top:15px">
+  <div class="section-title">
+    <h2>▤ ট্র্যাকিং রেকর্ড</h2>
+    <div class="actions">
+      <button class="btn" id="exportBtn" type="button">CSV Export</button>
+      <button class="btn" id="backupBtn" type="button">JSON Backup</button>
+      <button class="btn" id="importBtn" type="button">JSON Import</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input id="search" placeholder="নাম, আইডি বা স্থান খুঁজুন...">
+    <select id="filterStatus">
+      <option value="all">সব অবস্থা</option>
+      <option value="normal">স্বাভাবিক</option>
+      <option value="watch">পর্যবেক্ষণ</option>
+      <option value="critical">জরুরি</option>
+      <option value="pending">অপেক্ষমাণ</option>
+    </select>
+    <select id="filterCategory">
+      <option value="all">সব ধরন</option>
+      <option value="product">পণ্য / স্টক</option>
+      <option value="order">অর্ডার</option>
+      <option value="vehicle">যানবাহন</option>
+      <option value="task">কাজ / টাস্ক</option>
+      <option value="asset">অন্যান্য সম্পদ</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>নাম / আইডি</th>
+          <th>ধরন</th>
+          <th>পরিমাণ</th>
+          <th>স্থান</th>
+          <th>অবস্থা</th>
+          <th>তারিখ</th>
+          <th>অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody id="recordRows"></tbody>
+    </table>
+  </div>
+  <div id="emptyState" class="empty">এখনো কোনো রেকর্ড নেই। উপরের ফর্ম দিয়ে প্রথম রেকর্ড যোগ করুন।</div>
+</section>
+
+<section class="card" style="margin-top:15px">
+  <div class="section-title">
+    <h2>⚠ সতর্কতা ও ফলো-আপ</h2>
+    <span class="small">রেকর্ডের অবস্থা ও তারিখ অনুযায়ী</span>
+  </div>
+  <div id="alerts" class="alert-list">
+    <div class="empty">এখনো কোনো সতর্কতা নেই।</div>
+  </div>
+</section>
+
+<footer>
+  NIVORA ONE Radar Tracking · Browser-based starter module
+  <br>বাস্তব GPS, ক্লাউড সিঙ্ক ও স্বয়ংক্রিয় ব্যবসায়িক স্টক সংযোগের জন্য API প্রয়োজন।
+</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'nivora_one_radar_records_v1';
+  const $ = id => document.getElementById(id);
+  const statusNames = {
+    normal: 'স্বাভাবিক',
+    watch: 'পর্যবেক্ষণ',
+    critical: 'জরুরি',
+    pending: 'অপেক্ষমাণ'
+  };
+  const categoryNames = {
+    product: 'পণ্য / স্টক',
+    order: 'অর্ডার',
+    vehicle: 'যানবাহন',
+    task: 'কাজ / টাস্ক',
+    asset: 'অন্যান্য সম্পদ'
+  };
+
+  let records = loadRecords();
+
+  function loadRecords() {
+    try {
+      const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      return Array.isArray(value) ? value.filter(item =>
+        item && typeof item.id === 'string' &&
+        typeof item.name === 'string'
+      ) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveRecords() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      return true;
+    } catch (e) {
+      notice('ডেটা সংরক্ষণ করা যায়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করুন।', true);
+      return false;
+    }
+  }
+
+  function notice(message, isError) {
+    $('notice').textContent = message;
+    $('notice').style.color = isError ? 'var(--red)' : 'var(--green)';
+  }
+
+  function safe(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    })[ch]);
+  }
+
+  function dateLabel(value) {
+    if (!value) return '—';
+    const parts = value.split('-');
+    return parts.length === 3 ? parts.reverse().join('-') : value;
+  }
+
+  function statusClass(status) {
+    if (status === 'normal') return 'status-ok';
+    if (status === 'watch') return 'status-watch';
+    if (status === 'critical') return 'status-risk';
+    return 'status-other';
+  }
+
+  function renderStats() {
+    $('totalCount').textContent = records.length;
+    $('normalCount').textContent = records.filter(r => r.status === 'normal').length;
+    $('watchCount').textContent = records.filter(r => r.status === 'watch').length;
+    $('riskCount').textContent = records.filter(r => r.status === 'critical').length;
+    $('radarSummary').textContent = records.length + 'টি রেকর্ড';
+  }
+
+  function renderRows() {
+    const query = $('search').value.trim().toLowerCase();
+    const wantedStatus = $('filterStatus').value;
+    const wantedCategory = $('filterCategory').value;
+
+    const filtered = records.filter(r => {
+      const searchable = [r.name, r.reference, r.location, r.notes]
+        .join(' ').toLowerCase();
+      return (!query || searchable.includes(query)) &&
+        (wantedStatus === 'all' || r.status === wantedStatus) &&
+        (wantedCategory === 'all' || r.category === wantedCategory);
+    });
+
+    $('recordRows').innerHTML = filtered.map(r => `
+      <tr>
+        <td><strong>${safe(r.name)}</strong><br>
+          <span class="small">${safe(r.reference || 'কোনো আইডি নেই')}</span>
+        </td>
+        <td>${safe(categoryNames[r.category] || r.category)}</td>
+        <td>${safe(r.quantity)} ${safe(r.unit || '')}</td>
+        <td>${safe(r.location || '—')}</td>
+        <td><span class="badge ${statusClass(r.status)}">${safe(statusNames[r.status] || r.status)}</span></td>
+        <td>${safe(dateLabel(r.dueDate))}</td>
+        <td>
+          <div class="actions">
+            <button class="btn edit-btn" data-id="${safe(r.id)}" type="button">এডিট</button>
+            <button class="btn danger delete-btn" data-id="${safe(r.id)}" type="button">ডিলিট</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    $('emptyState').style.display = filtered.length ? 'none' : 'block';
+  }
+
+  function renderAlerts() {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const todayISO = today.getFullYear() + '-' +
+      String(today.getMonth()+1).padStart(2,'0') + '-' +
+      String(today.getDate()).padStart(2,'0');
+
+    const alerts = records.filter(r =>
+      r.status === 'critical' ||
+      r.status === 'watch' ||
+      (r.dueDate && r.dueDate <= todayISO)
+    );
+
+    if (!alerts.length) {
+      $('alerts').innerHTML = '<div class="empty">কোনো সতর্কতা নেই।</div>';
+      return;
+    }
+
+    $('alerts').innerHTML = alerts.map(r => {
+      let title = statusNames[r.status] || 'ফলো-আপ';
+      let description = r.name;
+      if (r.status === 'critical') title = 'জরুরি: ' + title;
+      if (r.dueDate && r.dueDate <= todayISO) {
+        description += ' — তারিখ: ' + dateLabel(r.dueDate);
+      }
+      return `<div class="alert-item">
+        <strong class="${r.status === 'critical' ? 'red' : 'yellow'}">${safe(title)}</strong>
+        ${safe(description)}
+        ${r.notes ? '<div class="small">' + safe(r.notes) + '</div>' : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function render() {
+    renderStats();
+    renderRows();
+    renderAlerts();
+  }
+
+  function resetForm() {
+    $('trackingForm').reset();
+    $('editId').value = '';
+    $('quantity').value = '0';
+    $('formTitle').textContent = '＋ নতুন ট্র্যাকিং রেকর্ড';
+    $('saveBtn').textContent = 'রেকর্ড সংরক্ষণ';
+  }
+
+  $('trackingForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const name = $('itemName').value.trim();
+    const quantity = Number($('quantity').value);
+
+    if (!name) {
+      notice('রেকর্ডের নাম লিখুন।', true);
+      return;
+    }
+    if (!Number.isFinite(quantity) || quantity < 0) {
+      notice('পরিমাণ শূন্য বা তার বেশি হতে হবে।', true);
+      return;
+    }
+
+    const editId = $('editId').value;
+    const oldRecord = records.find(r => r.id === editId);
+
+    const item = {
+      id: oldRecord ? oldRecord.id :
+        (crypto.randomUUID ? crypto.randomUUID() :
+          'radar-' + Date.now() + '-' + Math.random().toString(16).slice(2)),
+      name: name,
+      category: $('category').value,
+      reference: $('reference').value.trim(),
+      status: $('status').value,
+      quantity: quantity,
+      unit: $('unit').value.trim(),
+      location: $('location').value.trim(),
+      dueDate: $('dueDate').value,
+      notes: $('notes').value.trim(),
+      createdAt: oldRecord ? oldRecord.createdAt : new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const previous = records.slice();
+    if (oldRecord) {
+      records = records.map(r => r.id === editId ? item : r);
+    } else {
+      records.unshift(item);
+    }
+
+    if (!saveRecords()) {
+      records = previous;
+      return;
+    }
+
+    resetForm();
+    render();
+    notice(oldRecord ? 'রেকর্ড আপডেট হয়েছে।' : 'নতুন রেকর্ড সংরক্ষিত হয়েছে।');
+  });
+
+  $('recordRows').addEventListener('click', function (event) {
+    const button = event.target.closest('button[data-id]');
+    if (!button) return;
+    const id = button.dataset.id;
+    const record = records.find(r => r.id === id);
+    if (!record) return;
+
+    if (button.classList.contains('edit-btn')) {
+      $('editId').value = record.id;
+      $('itemName').value = record.name;
+      $('category').value = record.category;
+      $('reference').value = record.reference || '';
+      $('status').value = record.status;
+      $('quantity').value = record.quantity;
+      $('unit').value = record.unit || '';
+      $('location').value = record.location || '';
+      $('dueDate').value = record.dueDate || '';
+      $('notes').value = record.notes || '';
+      $('formTitle').textContent = '✎ রেকর্ড সম্পাদনা';
+      $('saveBtn').textContent = 'পরিবর্তন সংরক্ষণ';
+      $('itemName').focus();
+      window.scrollTo({top:0, behavior:'smooth'});
+      notice('রেকর্ড সম্পাদনার জন্য ফর্মে নেওয়া হয়েছে।');
+    }
+
+    if (button.classList.contains('delete-btn')) {
+      if (!confirm('এই রেকর্ডটি মুছে ফেলবেন?')) return;
+      const previous = records.slice();
+      records = records.filter(r => r.id !== id);
+      if (!saveRecords()) {
+        records = previous;
+        return;
+      }
+      render();
+      notice('রেকর্ড মুছে ফেলা হয়েছে।');
+    }
+  });
+
+  $('resetBtn').addEventListener('click', resetForm);
+  $('search').addEventListener('input', renderRows);
+  $('filterStatus').addEventListener('change', renderRows);
+  $('filterCategory').addEventListener('change', renderRows);
+
+  function downloadFile(name, content, type) {
+    const blob = new Blob([content], {type:type});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  $('exportBtn').addEventListener('click', function () {
+    const header = ['name','category','reference','status','quantity','unit','location','dueDate','notes'];
+    const rows = records.map(r => header.map(k =>
+      '"' + String(r[k] == null ? '' : r[k]).replace(/"/g,'""') + '"'
+    ).join(','));
+    const csv = '\uFEFF' + header.join(',') + '\r\n' + rows.join('\r\n');
+    downloadFile('nivora-radar-records.csv', csv, 'text/csv;charset=utf-8');
+    notice('CSV ফাইল তৈরি হয়েছে।');
+  });
+
+  $('backupBtn').addEventListener('click', function () {
+    downloadFile(
+      'nivora-radar-backup.json',
+      JSON.stringify(records, null, 2),
+      'application/json;charset=utf-8'
+    );
+    notice('JSON ব্যাকআপ ডাউনলোড শুরু হয়েছে।');
+  });
+
+  $('importBtn').addEventListener('click', () => $('importFile').click());
+
+  $('importFile').addEventListener('change', async function () {
+    const file = this.files && this.files[0];
+    if (!file) return;
+
+    try {
+      const imported = JSON.parse(await file.text());
+      if (!Array.isArray(imported) || imported.length > 10000) {
+        throw new Error('ফাইলের ফরম্যাট সঠিক নয়।');
+      }
+
+      const valid = imported.every(r =>
+        r && typeof r.name === 'string' &&
+        typeof r.id === 'string' &&
+        ['normal','watch','critical','pending'].includes(r.status) &&
+        ['product','order','vehicle','task','asset'].includes(r.category) &&
+        Number.isFinite(Number(r.quantity)) && Number(r.quantity) >= 0
+      );
+
+      if (!valid) throw new Error('কিছু রেকর্ডের তথ্য বা ফরম্যাট সঠিক নয়।');
+      if (!confirm('বর্তমান রেকর্ডের পরিবর্তে ব্যাকআপের রেকর্ড বসাবেন?')) return;
+
+      const previous = records;
+      records = imported;
+      if (!saveRecords()) {
+        records = previous;
+        return;
+      }
+      render();
+      notice('ব্যাকআপ থেকে রেকর্ড ইমপোর্ট হয়েছে।');
+    } catch (error) {
+      notice(error.message || 'JSON ফাইল পড়া যায়নি।', true);
+    } finally {
+      this.value = '';
+    }
+  });
+
+  function updateClock() {
+    $('clock').textContent = new Date().toLocaleString('bn-BD', {
+      weekday:'long', year:'numeric', month:'long',
+      day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'
+    });
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  render();
+})();
+</script>
+</body>
+</html>
+```

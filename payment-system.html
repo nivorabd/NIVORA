@@ -1,0 +1,1742 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NIVORA ONE — Payment System</title>
+
+<meta name="description"
+      content="NIVORA ONE Secure Payment System — Bangladesh and International Payments">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+}
+
+body{
+    font-family:
+        "Noto Sans Bengali",
+        Inter,
+        sans-serif;
+    background:#020617;
+    color:#e2e8f0;
+}
+
+button,
+input,
+select{
+    font-family:inherit;
+}
+
+.glass{
+    background:rgba(15,23,42,.82);
+    border:1px solid rgba(148,163,184,.15);
+    backdrop-filter:blur(16px);
+}
+
+.card{
+    background:#0f172a;
+    border:1px solid #1e293b;
+    border-radius:20px;
+}
+
+.btn{
+    transition:.2s ease;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.hidden-page{
+    display:none;
+}
+
+.active-page{
+    display:block;
+}
+
+.nav-active{
+    background:#1e293b;
+    color:#38bdf8;
+}
+
+.modal-bg{
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(5px);
+}
+
+input:focus,
+select:focus{
+    outline:none;
+    border-color:#38bdf8;
+    box-shadow:0 0 0 2px rgba(56,189,248,.15);
+}
+
+::-webkit-scrollbar{
+    width:5px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#334155;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NIVORA ONE PAYMENT SYSTEM
+     FRONTEND ONLY
+     NEVER PLACE SECRET PAYMENT KEYS HERE
+========================================================= -->
+
+<div class="min-h-screen pb-24">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-40 glass">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+
+            <div class="flex items-center justify-between gap-3">
+
+                <div>
+                    <div class="text-xl font-extrabold text-white">
+                        NIVORA <span class="text-sky-400">ONE</span>
+                    </div>
+
+                    <div class="text-xs text-slate-400">
+                        Secure Payment Center
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+
+                    <button
+                        onclick="showPage('transactions')"
+                        class="btn px-3 py-2 rounded-xl bg-slate-800 text-slate-200 text-sm">
+                        🔔
+                    </button>
+
+                    <button
+                        onclick="showPage('settings')"
+                        class="btn px-3 py-2 rounded-xl bg-slate-800 text-slate-200 text-sm">
+                        ⚙️
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-4 py-5">
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section id="page-dashboard" class="active-page">
+
+            <div class="mb-5">
+
+                <h1 class="text-2xl font-bold text-white">
+                    Payment Dashboard
+                </h1>
+
+                <p class="text-sm text-slate-400 mt-1">
+                    NIVORA ONE-এর পেমেন্ট কার্যক্রম এক জায়গা থেকে পরিচালনা করুন।
+                </p>
+
+            </div>
+
+
+            <!-- WARNING -->
+            <div class="card p-4 mb-5 border-amber-500/20">
+
+                <div class="flex gap-3">
+
+                    <div class="text-2xl">
+                        🔐
+                    </div>
+
+                    <div>
+
+                        <div class="font-bold text-amber-300">
+                            Secure Payment Architecture
+                        </div>
+
+                        <p class="text-sm text-slate-400 mt-1 leading-6">
+                            Payment secret key কখনো এই HTML বা browser-এর JavaScript-এ
+                            রাখা যাবে না। Payment request Secure Backend API-এর মাধ্যমে
+                            Gateway-তে পাঠাতে হবে।
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STAT CARDS -->
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+
+                <div class="card p-4">
+                    <div class="text-xs text-slate-400">
+                        Today's Collection
+                    </div>
+
+                    <div class="text-xl font-bold text-white mt-2">
+                        ৳0.00
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-1">
+                        Backend data required
+                    </div>
+                </div>
+
+
+                <div class="card p-4">
+                    <div class="text-xs text-slate-400">
+                        Successful
+                    </div>
+
+                    <div class="text-xl font-bold text-emerald-400 mt-2">
+                        0
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-1">
+                        Verified transactions
+                    </div>
+                </div>
+
+
+                <div class="card p-4">
+                    <div class="text-xs text-slate-400">
+                        Pending
+                    </div>
+
+                    <div class="text-xl font-bold text-amber-400 mt-2">
+                        0
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-1">
+                        Awaiting confirmation
+                    </div>
+                </div>
+
+
+                <div class="card p-4">
+                    <div class="text-xs text-slate-400">
+                        Refunds
+                    </div>
+
+                    <div class="text-xl font-bold text-rose-400 mt-2">
+                        ৳0.00
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-1">
+                        Verified refunds
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- PAYMENT METHODS -->
+
+            <div class="card p-5 mb-5">
+
+                <div class="flex items-center justify-between mb-4">
+
+                    <div>
+
+                        <h2 class="font-bold text-white">
+                            Payment Methods
+                        </h2>
+
+                        <p class="text-xs text-slate-400 mt-1">
+                            যে পেমেন্ট পদ্ধতিগুলো Backend-এ সক্রিয় করা হয়েছে
+                        </p>
+
+                    </div>
+
+                    <span class="text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-400">
+                        Configuration
+                    </span>
+
+                </div>
+
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+
+                    <button
+                        onclick="openPayment('bKash')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">📱</div>
+
+                        <div class="font-bold">
+                            bKash
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Bangladesh
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        onclick="openPayment('Nagad')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">💳</div>
+
+                        <div class="font-bold">
+                            Nagad
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Bangladesh
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        onclick="openPayment('Rocket')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">🚀</div>
+
+                        <div class="font-bold">
+                            Rocket
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Bangladesh
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        onclick="openPayment('Card')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">💳</div>
+
+                        <div class="font-bold">
+                            Card
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Visa / Mastercard
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        onclick="openPayment('Bank')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">🏦</div>
+
+                        <div class="font-bold">
+                            Bank Transfer
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Bangladesh / International
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        onclick="openPayment('QR')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">▦</div>
+
+                        <div class="font-bold">
+                            QR Payment
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Gateway QR
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        onclick="openPayment('International')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">🌍</div>
+
+                        <div class="font-bold">
+                            International
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Supported gateways
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        onclick="openPayment('COD')"
+                        class="btn p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-left">
+
+                        <div class="text-2xl mb-2">📦</div>
+
+                        <div class="font-bold">
+                            Cash on Delivery
+                        </div>
+
+                        <div class="text-xs text-slate-400 mt-1">
+                            Marketplace orders
+                        </div>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="grid md:grid-cols-3 gap-3">
+
+                <button
+                    onclick="showPage('transactions')"
+                    class="card p-5 text-left hover:border-sky-500/40">
+
+                    <div class="text-2xl mb-3">📋</div>
+
+                    <div class="font-bold">
+                        Transactions
+                    </div>
+
+                    <div class="text-xs text-slate-400 mt-1">
+                        Payment history ও status দেখুন
+                    </div>
+
+                </button>
+
+
+                <button
+                    onclick="showPage('refunds')"
+                    class="card p-5 text-left hover:border-sky-500/40">
+
+                    <div class="text-2xl mb-3">↩️</div>
+
+                    <div class="font-bold">
+                        Refund Center
+                    </div>
+
+                    <div class="text-xs text-slate-400 mt-1">
+                        Refund request ও reconciliation
+                    </div>
+
+                </button>
+
+
+                <button
+                    onclick="showPage('reports')"
+                    class="card p-5 text-left hover:border-sky-500/40">
+
+                    <div class="text-2xl mb-3">📊</div>
+
+                    <div class="font-bold">
+                        Payment Reports
+                    </div>
+
+                    <div class="text-xs text-slate-400 mt-1">
+                        Daily / Monthly / Yearly reports
+                    </div>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= TRANSACTIONS ================= -->
+
+        <section id="page-transactions" class="hidden-page">
+
+            <div class="flex items-center justify-between mb-5">
+
+                <div>
+
+                    <h1 class="text-2xl font-bold">
+                        Transactions
+                    </h1>
+
+                    <p class="text-sm text-slate-400">
+                        Verified transaction records
+                    </p>
+
+                </div>
+
+                <button
+                    onclick="showPage('dashboard')"
+                    class="btn px-4 py-2 rounded-xl bg-slate-800">
+                    ← Back
+                </button>
+
+            </div>
+
+
+            <div class="card p-4 mb-4">
+
+                <div class="grid md:grid-cols-4 gap-3">
+
+                    <input
+                        id="transactionSearch"
+                        oninput="filterTransactions()"
+                        class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700"
+                        placeholder="Transaction ID খুঁজুন">
+
+                    <select
+                        id="transactionStatus"
+                        onchange="filterTransactions()"
+                        class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700">
+
+                        <option value="all">
+                            সব Status
+                        </option>
+
+                        <option value="success">
+                            Successful
+                        </option>
+
+                        <option value="pending">
+                            Pending
+                        </option>
+
+                        <option value="failed">
+                            Failed
+                        </option>
+
+                        <option value="refunded">
+                            Refunded
+                        </option>
+
+                    </select>
+
+                    <select
+                        class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700">
+
+                        <option>
+                            সব Gateway
+                        </option>
+
+                        <option>
+                            bKash
+                        </option>
+
+                        <option>
+                            Nagad
+                        </option>
+
+                        <option>
+                            Card
+                        </option>
+
+                        <option>
+                            Bank
+                        </option>
+
+                    </select>
+
+                    <button
+                        onclick="loadTransactions()"
+                        class="btn px-4 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 font-semibold">
+
+                        Refresh
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card overflow-hidden">
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full text-sm">
+
+                        <thead class="bg-slate-900">
+
+                            <tr class="text-left text-slate-400">
+
+                                <th class="p-4">
+                                    Transaction
+                                </th>
+
+                                <th class="p-4">
+                                    Customer
+                                </th>
+
+                                <th class="p-4">
+                                    Method
+                                </th>
+
+                                <th class="p-4">
+                                    Amount
+                                </th>
+
+                                <th class="p-4">
+                                    Status
+                                </th>
+
+                                <th class="p-4">
+                                    Date
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="transactionTable">
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="p-8 text-center text-slate-500">
+
+                                    কোনো transaction data এখনো Backend থেকে আসেনি।
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= REFUNDS ================= -->
+
+        <section id="page-refunds" class="hidden-page">
+
+            <div class="flex items-center justify-between mb-5">
+
+                <div>
+
+                    <h1 class="text-2xl font-bold">
+                        Refund Center
+                    </h1>
+
+                    <p class="text-sm text-slate-400">
+                        Refund অবশ্যই Backend verification-এর মাধ্যমে হবে।
+                    </p>
+
+                </div>
+
+                <button
+                    onclick="showPage('dashboard')"
+                    class="btn px-4 py-2 rounded-xl bg-slate-800">
+                    ← Back
+                </button>
+
+            </div>
+
+
+            <div class="card p-5">
+
+                <h2 class="font-bold mb-4">
+                    Request Refund
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-4">
+
+                    <div>
+
+                        <label class="text-sm text-slate-400">
+                            Transaction ID
+                        </label>
+
+                        <input
+                            id="refundTransaction"
+                            class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700"
+                            placeholder="TXN-XXXXXXXX">
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm text-slate-400">
+                            Refund Amount
+                        </label>
+
+                        <input
+                            id="refundAmount"
+                            type="number"
+                            min="0"
+                            class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700"
+                            placeholder="0.00">
+
+                    </div>
+
+                </div>
+
+
+                <div class="mt-4">
+
+                    <label class="text-sm text-slate-400">
+                        Reason
+                    </label>
+
+                    <textarea
+                        id="refundReason"
+                        rows="4"
+                        class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700"
+                        placeholder="Refund-এর কারণ লিখুন"></textarea>
+
+                </div>
+
+
+                <button
+                    onclick="requestRefund()"
+                    class="btn mt-4 px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 font-semibold">
+
+                    Submit Refund Request
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= REPORTS ================= -->
+
+        <section id="page-reports" class="hidden-page">
+
+            <div class="flex items-center justify-between mb-5">
+
+                <div>
+
+                    <h1 class="text-2xl font-bold">
+                        Payment Reports
+                    </h1>
+
+                    <p class="text-sm text-slate-400">
+                        Reconciliation ও financial reporting
+                    </p>
+
+                </div>
+
+                <button
+                    onclick="showPage('dashboard')"
+                    class="btn px-4 py-2 rounded-xl bg-slate-800">
+                    ← Back
+                </button>
+
+            </div>
+
+
+            <div class="grid md:grid-cols-3 gap-4 mb-5">
+
+                <div class="card p-5">
+
+                    <div class="text-sm text-slate-400">
+                        Daily
+                    </div>
+
+                    <div class="text-2xl font-bold mt-2">
+                        ৳0.00
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-2">
+                        Backend report required
+                    </div>
+
+                </div>
+
+
+                <div class="card p-5">
+
+                    <div class="text-sm text-slate-400">
+                        Monthly
+                    </div>
+
+                    <div class="text-2xl font-bold mt-2">
+                        ৳0.00
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-2">
+                        Backend report required
+                    </div>
+
+                </div>
+
+
+                <div class="card p-5">
+
+                    <div class="text-sm text-slate-400">
+                        Yearly
+                    </div>
+
+                    <div class="text-2xl font-bold mt-2">
+                        ৳0.00
+                    </div>
+
+                    <div class="text-xs text-slate-500 mt-2">
+                        Backend report required
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card p-5">
+
+                <h2 class="font-bold mb-4">
+                    Reconciliation
+                </h2>
+
+                <div class="space-y-3 text-sm">
+
+                    <div class="flex justify-between border-b border-slate-800 pb-3">
+                        <span class="text-slate-400">
+                            Gateway Collection
+                        </span>
+
+                        <span>
+                            ৳0.00
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-slate-800 pb-3">
+                        <span class="text-slate-400">
+                            Database Recorded
+                        </span>
+
+                        <span>
+                            ৳0.00
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">
+                            Difference
+                        </span>
+
+                        <span class="text-emerald-400">
+                            ৳0.00
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= SETTINGS ================= -->
+
+        <section id="page-settings" class="hidden-page">
+
+            <div class="flex items-center justify-between mb-5">
+
+                <div>
+
+                    <h1 class="text-2xl font-bold">
+                        Gateway Settings
+                    </h1>
+
+                    <p class="text-sm text-slate-400">
+                        Payment gateway configuration
+                    </p>
+
+                </div>
+
+                <button
+                    onclick="showPage('dashboard')"
+                    class="btn px-4 py-2 rounded-xl bg-slate-800">
+                    ← Back
+                </button>
+
+            </div>
+
+
+            <div class="card p-5 mb-4">
+
+                <div class="flex gap-3">
+
+                    <div class="text-2xl">
+                        🔒
+                    </div>
+
+                    <div>
+
+                        <div class="font-bold text-emerald-400">
+                            Secret Key Protection
+                        </div>
+
+                        <p class="text-sm text-slate-400 mt-1 leading-6">
+
+                            Secret API Key, Merchant Secret, Webhook Secret,
+                            Encryption Key ইত্যাদি Frontend-এ রাখা যাবে না।
+
+                            এগুলো Secure Backend Environment Variable বা Secret Manager-এ থাকবে।
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card p-5">
+
+                <h2 class="font-bold mb-5">
+                    Gateway Configuration
+                </h2>
+
+
+                <div class="space-y-4">
+
+                    <div>
+
+                        <label class="text-sm text-slate-400">
+                            Bangladesh Gateway
+                        </label>
+
+                        <select
+                            class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700">
+
+                            <option>
+                                Select Gateway
+                            </option>
+
+                            <option>
+                                SSLCommerz
+                            </option>
+
+                            <option>
+                                bKash
+                            </option>
+
+                            <option>
+                                Nagad
+                            </option>
+
+                            <option>
+                                Custom Gateway API
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm text-slate-400">
+                            International Gateway
+                        </label>
+
+                        <select
+                            class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700">
+
+                            <option>
+                                Select Gateway
+                            </option>
+
+                            <option>
+                                Stripe
+                            </option>
+
+                            <option>
+                                PayPal
+                            </option>
+
+                            <option>
+                                Other Supported Gateway
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm text-slate-400">
+                            Currency
+                        </label>
+
+                        <select
+                            class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700">
+
+                            <option>
+                                BDT — ৳
+                            </option>
+
+                            <option>
+                                USD — $
+                            </option>
+
+                            <option>
+                                INR — ₹
+                            </option>
+
+                            <option>
+                                PKR — ₨
+                            </option>
+
+                            <option>
+                                NPR — रू
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm text-slate-400">
+                            Environment
+                        </label>
+
+                        <select
+                            id="environment"
+                            class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700">
+
+                            <option value="sandbox">
+                                Sandbox / Test
+                            </option>
+
+                            <option value="production">
+                                Production
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        onclick="saveSettings()"
+                        class="btn w-full px-5 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 font-semibold">
+
+                        Save Gateway Settings
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="fixed bottom-0 left-0 right-0 z-40 glass">
+
+        <div class="max-w-7xl mx-auto px-3 py-2">
+
+            <div class="grid grid-cols-4 gap-2">
+
+                <button
+                    onclick="showPage('dashboard')"
+                    id="nav-dashboard"
+                    class="nav-active rounded-xl py-2 text-xs">
+
+                    <div class="text-lg">
+                        🏠
+                    </div>
+
+                    Dashboard
+
+                </button>
+
+
+                <button
+                    onclick="showPage('transactions')"
+                    id="nav-transactions"
+                    class="rounded-xl py-2 text-xs">
+
+                    <div class="text-lg">
+                        📋
+                    </div>
+
+                    Transactions
+
+                </button>
+
+
+                <button
+                    onclick="showPage('refunds')"
+                    id="nav-refunds"
+                    class="rounded-xl py-2 text-xs">
+
+                    <div class="text-lg">
+                        ↩️
+                    </div>
+
+                    Refunds
+
+                </button>
+
+
+                <button
+                    onclick="showPage('settings')"
+                    id="nav-settings"
+                    class="rounded-xl py-2 text-xs">
+
+                    <div class="text-lg">
+                        ⚙️
+                    </div>
+
+                    Settings
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- PAYMENT MODAL -->
+
+    <div
+        id="paymentModal"
+        class="hidden fixed inset-0 z-50 modal-bg flex items-end md:items-center justify-center">
+
+        <div class="w-full md:max-w-lg bg-slate-950 border border-slate-800 rounded-t-3xl md:rounded-3xl p-5">
+
+            <div class="flex items-center justify-between mb-5">
+
+                <div>
+
+                    <div class="text-xs text-slate-400">
+                        Payment Method
+                    </div>
+
+                    <h2
+                        id="paymentTitle"
+                        class="text-xl font-bold mt-1">
+                        Payment
+                    </h2>
+
+                </div>
+
+                <button
+                    onclick="closePayment()"
+                    class="w-10 h-10 rounded-full bg-slate-800">
+                    ✕
+                </button>
+
+            </div>
+
+
+            <div class="space-y-4">
+
+                <div>
+
+                    <label class="text-sm text-slate-400">
+                        Amount
+                    </label>
+
+                    <input
+                        id="paymentAmount"
+                        type="number"
+                        min="1"
+                        step="0.01"
+                        class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700"
+                        placeholder="Amount">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-sm text-slate-400">
+                        Order / Invoice ID
+                    </label>
+
+                    <input
+                        id="paymentOrder"
+                        class="w-full mt-2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700"
+                        placeholder="INV-XXXXXXXX">
+
+                </div>
+
+
+                <div
+                    id="paymentNotice"
+                    class="p-4 rounded-xl bg-slate-900 text-sm text-slate-400 leading-6">
+
+                    Payment শুরু করলে Secure Backend API একটি payment session
+                    তৈরি করবে। Gateway verification ছাড়া success ধরা হবে না।
+
+                </div>
+
+
+                <button
+                    onclick="createPaymentSession()"
+                    class="btn w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 font-bold">
+
+                    Continue Secure Payment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TOAST -->
+
+    <div
+        id="toast"
+        class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-[100]">
+
+        <div
+            id="toastText"
+            class="px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 shadow-xl text-sm">
+
+        </div>
+
+    </div>
+
+
+
+<script>
+
+/* =========================================================
+   NIVORA ONE PAYMENT FRONTEND
+========================================================= */
+
+
+/*
+ IMPORTANT:
+
+ এই URL-টি পরে আপনার Secure Backend API URL হবে।
+
+ উদাহরণ:
+
+ https://api.example.com/api/payments/create
+
+ এখানে কোনো Secret Key বসাবেন না।
+*/
+
+const NIVORA_PAYMENT_API = "";
+
+
+/* ===============================
+   PAGE NAVIGATION
+================================ */
+
+function showPage(page){
+
+    const pages = [
+        "dashboard",
+        "transactions",
+        "refunds",
+        "reports",
+        "settings"
+    ];
+
+    pages.forEach(function(name){
+
+        const element =
+            document.getElementById("page-" + name);
+
+        if(element){
+
+            element.classList.remove("active-page");
+            element.classList.add("hidden-page");
+
+        }
+
+    });
+
+
+    const selected =
+        document.getElementById("page-" + page);
+
+    if(selected){
+
+        selected.classList.remove("hidden-page");
+        selected.classList.add("active-page");
+
+    }
+
+
+    document
+        .querySelectorAll("[id^='nav-']")
+        .forEach(function(nav){
+
+            nav.classList.remove("nav-active");
+
+        });
+
+
+    const activeNav =
+        document.getElementById("nav-" + page);
+
+    if(activeNav){
+
+        activeNav.classList.add("nav-active");
+
+    }
+
+}
+
+
+/* ===============================
+   PAYMENT MODAL
+================================ */
+
+let selectedPaymentMethod = "";
+
+
+function openPayment(method){
+
+    selectedPaymentMethod = method;
+
+    document.getElementById("paymentTitle")
+        .textContent = method;
+
+    document.getElementById("paymentModal")
+        .classList.remove("hidden");
+
+}
+
+
+function closePayment(){
+
+    document.getElementById("paymentModal")
+        .classList.add("hidden");
+
+}
+
+
+/* ===============================
+   SECURE PAYMENT SESSION
+================================ */
+
+async function createPaymentSession(){
+
+    const amount =
+        Number(
+            document.getElementById("paymentAmount").value
+        );
+
+    const orderId =
+        document.getElementById("paymentOrder").value.trim();
+
+
+    if(!amount || amount <= 0){
+
+        showToast("সঠিক payment amount দিন।");
+        return;
+
+    }
+
+
+    if(!orderId){
+
+        showToast("Order / Invoice ID দিন।");
+        return;
+
+    }
+
+
+    /*
+       Backend API না থাকলে কোনো fake success দেখানো হবে না।
+    */
+
+    if(!NIVORA_PAYMENT_API){
+
+        showToast(
+            "Secure Backend API এখনো সংযুক্ত হয়নি।"
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                NIVORA_PAYMENT_API + "/create",
+                {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        amount:amount,
+
+                        currency:"BDT",
+
+                        orderId:orderId,
+
+                        method:selectedPaymentMethod
+
+                    })
+
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Payment API request failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        /*
+          Backend থেকে payment URL এলে
+          user-কে gateway-তে পাঠানো হবে।
+        */
+
+        if(data.paymentUrl){
+
+            window.location.href =
+                data.paymentUrl;
+
+            return;
+
+        }
+
+
+        showToast(
+            "Payment session তৈরি হয়েছে, কিন্তু gateway URL পাওয়া যায়নি।"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Secure Payment Server-এর সঙ্গে সংযোগ করা যাচ্ছে না।"
+        );
+
+    }
+
+}
+
+
+/* ===============================
+   REFUND
+================================ */
+
+async function requestRefund(){
+
+    const transactionId =
+        document
+            .getElementById("refundTransaction")
+            .value
+            .trim();
+
+    const amount =
+        Number(
+            document
+                .getElementById("refundAmount")
+                .value
+        );
+
+    const reason =
+        document
+            .getElementById("refundReason")
+            .value
+            .trim();
+
+
+    if(!transactionId){
+
+        showToast("Transaction ID দিন।");
+        return;
+
+    }
+
+
+    if(!amount || amount <= 0){
+
+        showToast("সঠিক refund amount দিন।");
+        return;
+
+    }
+
+
+    if(!reason){
+
+        showToast("Refund-এর কারণ লিখুন।");
+        return;
+
+    }
+
+
+    if(!NIVORA_PAYMENT_API){
+
+        showToast(
+            "Refund Backend API এখনো সংযুক্ত হয়নি।"
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                NIVORA_PAYMENT_API + "/refund",
+                {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        transactionId:transactionId,
+
+                        amount:amount,
+
+                        reason:reason
+
+                    })
+
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Refund API failed"
+            );
+
+        }
+
+
+        showToast(
+            "Refund request Backend-এ পাঠানো হয়েছে।"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Refund server-এর সঙ্গে যোগাযোগ করা যায়নি।"
+        );
+
+    }
+
+}
+
+
+/* ===============================
+   TRANSACTIONS
+================================ */
+
+function loadTransactions(){
+
+    showToast(
+        "Verified transaction data Backend থেকে load হবে।"
+    );
+
+}
+
+
+function filterTransactions(){
+
+    /*
+      Production version-এ Firebase/API থেকে
+      paginated transaction data এনে filter করতে হবে।
+    */
+
+}
+
+
+/* ===============================
+   SETTINGS
+================================ */
+
+function saveSettings(){
+
+    const environment =
+        document.getElementById("environment")
+            .value;
+
+    localStorage.setItem(
+        "nivora_payment_environment",
+        environment
+    );
+
+
+    showToast(
+        "Frontend settings সংরক্ষণ করা হয়েছে।"
+    );
+
+}
+
+
+/* ===============================
+   TOAST
+================================ */
+
+let toastTimer;
+
+
+function showToast(message){
+
+    const toast =
+        document.getElementById("toast");
+
+    const text =
+        document.getElementById("toastText");
+
+
+    text.textContent = message;
+
+    toast.classList.remove("hidden");
+
+
+    clearTimeout(toastTimer);
+
+
+    toastTimer =
+        setTimeout(function(){
+
+            toast.classList.add("hidden");
+
+        },3500);
+
+}
+
+
+/* ===============================
+   ESC KEY
+================================ */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Escape"){
+
+            closePayment();
+
+        }
+
+    }
+);
+
+
+/* ===============================
+   INITIALIZATION
+================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const environment =
+            localStorage.getItem(
+                "nivora_payment_environment"
+            );
+
+
+        if(environment){
+
+            document.getElementById(
+                "environment"
+            ).value = environment;
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
+```
