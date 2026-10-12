@@ -1,262 +1,602 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মাল্টিমোডাল ইউনিভার্সাল এআই সহকারী</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 15px; }
-        .main-container { max-width: 650px; background: #fff; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #1a73e8; text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #5f6368; font-size: 13px; margin-bottom: 15px; }
-        
-        .chat-box { height: 400px; border: 1px solid #dadce0; border-radius: 8px; padding: 15px; overflow-y: scroll; background: #f8f9fa; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
-        
-        .message { padding: 10px 14px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-wrap: break-word; }
-        .user-message { background: #1a73e8; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .ai-message { background: #e8f0fe; color: #202124; align-self: flex-start; border-bottom-left-radius: 2px; white-space: pre-wrap; }
-        
-        .preview-area { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; font-size: 13px; color: #5f6368; }
-        .preview-thumbnail { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>NIVORA ONE — Universal AI Assistant</title>
 
-        .input-area { display: flex; flex-direction: column; gap: 8px; }
-        .input-controls { display: flex; gap: 8px; align-items: center; }
-        textarea { flex: 1; height: 45px; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; resize: none; font-size: 14px; outline: none; }
-        textarea:focus { border-color: #1a73e8; }
-        
-        .action-btns { display: flex; gap: 6px; }
-        .icon-btn { background: #f1f3f4; border: 1px solid #dadce0; color: #3c4043; padding: 10px 12px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background 0.2s; }
-        .icon-btn:hover { background: #e8eaed; }
-        .icon-btn.recording { background: #fee2e2; color: #dc2626; border-color: #fca5a5; animation: pulse 1.5s infinite; }
-        
-        button.send-btn { background: #1a73e8; color: white; border: none; padding: 0 18px; height: 45px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        button.send-btn:hover { background: #1557b0; }
+<style>
+:root {
+  --blue:#2563eb;
+  --blue-dark:#1d4ed8;
+  --bg:#f1f5f9;
+  --text:#172033;
+  --muted:#64748b;
+  --line:#dbe3ef;
+  --ai:#eaf1ff;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  padding:14px;
+  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+.main-container {
+  max-width:850px;
+  margin:auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 10px 32px #0f172a12;
+}
+.header {
+  padding:20px 14px;
+  text-align:center;
+  color:#fff;
+  background:linear-gradient(135deg,#0f172a,#1d4ed8);
+}
+h1 { font-size:clamp(20px,4vw,28px); margin:0 0 8px; }
+.subtitle { font-size:13px; color:#dbeafe; margin:0; }
+.status { font-size:12px; margin-top:10px; color:#e2e8f0; }
+.chat-box {
+  height:min(55vh,520px);
+  min-height:300px;
+  overflow-y:auto;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  background:#f8fafc;
+}
+.message {
+  max-width:90%;
+  padding:11px 14px;
+  border-radius:13px;
+  font-size:14px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.ai-message {
+  align-self:flex-start;
+  background:var(--ai);
+  border:1px solid #d6e4ff;
+  border-bottom-left-radius:4px;
+}
+.user-message {
+  align-self:flex-end;
+  background:var(--blue);
+  color:#fff;
+  border-bottom-right-radius:4px;
+}
+.message img {
+  display:block;
+  max-width:220px;
+  max-height:200px;
+  margin-top:8px;
+  border-radius:8px;
+}
+.preview {
+  margin:10px 12px;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  overflow-wrap:anywhere;
+}
+.preview img {
+  width:46px;
+  height:46px;
+  object-fit:cover;
+  border-radius:6px;
+}
+.preview span { flex:1; }
+.composer {
+  padding:12px;
+  border-top:1px solid var(--line);
+}
+.controls { display:flex; gap:8px; align-items:stretch; }
+textarea {
+  flex:1;
+  min-width:0;
+  min-height:48px;
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  font:inherit;
+  font-size:14px;
+  resize:vertical;
+}
+textarea:focus { outline:2px solid #bfdbfe; border-color:var(--blue); }
+button {
+  cursor:pointer;
+  font:inherit;
+  border-radius:9px;
+  min-height:44px;
+}
+.icon-btn,.clear-btn {
+  border:1px solid var(--line);
+  background:#f8fafc;
+  padding:9px 12px;
+}
+.send-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-top:9px;
+}
+.send-btn {
+  padding:10px 20px;
+  color:#fff;
+  background:var(--blue);
+  border:0;
+  font-weight:700;
+}
+.send-btn:hover { background:var(--blue-dark); }
+button:disabled { opacity:.55; cursor:not-allowed; }
+.recording { background:#fee2e2; color:#b91c1c; }
+.hint,.footer {
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.footer { padding:0 13px 14px; }
+[hidden] { display:none !important; }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-    </style>
+@media(max-width:520px) {
+  body { padding:0; }
+  .main-container { border-radius:0; border:0; min-height:100dvh; }
+  .chat-box { height:calc(100dvh - 285px); min-height:260px; padding:11px; }
+  .controls { flex-wrap:wrap; }
+  .controls textarea { flex-basis:100%; }
+  .message { max-width:95%; }
+  .composer { padding:10px; }
+  .footer { padding-bottom:calc(14px + env(safe-area-inset-bottom)); }
+}
+</style>
 </head>
+
 <body>
+<main class="main-container">
 
-    <div class="main-container">
-        <h2>💡 ইউনিভার্সাল মাল্টিমোডাল এআই হাব</h2>
-        <p class="subtitle">লেখা, ছবি, ফাইল বা ভয়েস দিয়ে যেকোনো সমস্যার সমাধান নিন</p>
-        
-        <div id="chatBox" class="chat-box">
-            <div class="message ai-message">নমস্কার! আমি প্রস্তুত আছি। আপনি লিখে, ছবি বা ফাইল আপলোড করে কিংবা মাইক্রোফোন ব্যবহার করে আপনার যেকোনো সমস্যা আমাকে জানাতে পারেন।</div>
-        </div>
+  <header class="header">
+    <h1>💡 NIVORA ONE — ইউনিভার্সাল AI হাব</h1>
+    <p class="subtitle">বাংলা ও ইংরেজি প্রশ্ন • ছবি ও ফাইল • ভয়েস ইনপুট</p>
+    <div id="status" class="status">সংযোগ পরীক্ষা হচ্ছে...</div>
+  </header>
 
-        <!-- ফাইল বা ইমেজ প্রিভিউ দেখানোর জায়গা -->
-        <div id="previewContainer" class="preview-area" style="display:none;">
-            <img id="imagePreview" class="preview-thumbnail" style="display:none;" />
-            <span id="fileNameDisplay"></span>
-            <button onclick="clearAttachment()" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold;">✕ মুছুন</button>
-        </div>
+  <section id="chatBox" class="chat-box" role="log" aria-live="polite">
+    <div class="message ai-message">আসসালামু আলাইকুম! আমি NIVORA ONE AI সহকারী। আপনার প্রশ্ন লিখুন, ছবি বা সমর্থিত ফাইল যুক্ত করুন, অথবা মাইক্রোফোন দিয়ে কথা বলুন।</div>
+  </section>
 
-        <div class="input-area">
-            <div class="input-controls">
-                <textarea id="userInput" placeholder="আপনার সমস্যা বা প্রশ্ন লিখুন..." onkeydown="checkEnter(event)"></textarea>
-                
-                <div class="action-btns">
-                    <!-- ইমেজ বা ফাইল আপলোড বাটন -->
-                    <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelect(event)" accept="image/*,video/*,audio/*,.pdf,.txt,.doc,.docx">
-                    <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="ছবি বা ফাইল আপলোড করুন">📎</button>
-                    
-                    <!-- ভয়েস রেকর্ডিং বাটন (Speech to Text) -->
-                    <button id="micBtn" class="icon-btn" onclick="toggleSpeechRecognition()" title="মুখে বলুন">🎤</button>
-                </div>
+  <div id="preview" class="preview" hidden>
+    <img id="previewImage" alt="ফাইল প্রিভিউ" hidden>
+    <span id="fileName"></span>
+    <button id="clearBtn" class="clear-btn" type="button">✕ মুছুন</button>
+  </div>
 
-                <button class="send-btn" onclick="sendToAI()">পাঠান</button>
-            </div>
-        </div>
+  <section class="composer">
+    <div class="controls">
+      <textarea id="userInput" rows="2"
+        placeholder="আপনার প্রশ্ন লিখুন... (Enter পাঠাবে, Shift+Enter নতুন লাইন)"></textarea>
+
+      <input id="fileInput" type="file" hidden
+        accept="image/jpeg,image/png,image/webp,application/pdf,text/plain,text/csv,application/json">
+
+      <button id="fileBtn" class="icon-btn" type="button"
+        aria-label="ফাইল যুক্ত করুন" title="ছবি বা ফাইল যুক্ত করুন">📎</button>
+
+      <button id="micBtn" class="icon-btn" type="button"
+        aria-label="ভয়েস ইনপুট" title="ভয়েস দিয়ে লিখুন">🎤</button>
     </div>
 
-    <script>
-        const apiKey = 'YOUR_GEMINI_API_KEY'; // এখানে আপনার এপিআই কি বসাবেন
-        let attachedFile = null; // ফাইল বা ইমেজ ডাটা স্টোর করার জন্য
+    <div class="send-row">
+      <span class="hint">JPG, PNG, WEBP, PDF, TXT, CSV, JSON • সর্বোচ্চ 10 MB</span>
+      <button id="sendBtn" class="send-btn" type="button">পাঠান ➤</button>
+    </div>
+  </section>
 
-        // ফাইল বা ইমেজ সিলেক্ট করার ফাংশন
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+  <div class="footer">
+    API key এই HTML-এ রাখা হয় না। AI চালাতে Cloudflare Worker-এ
+    <code>/api/ai/chat</code> endpoint এবং সার্ভার-সাইড API key থাকতে হবে।
+  </div>
 
-            attachedFile = file;
-            const previewContainer = document.getElementById('previewContainer');
-            const imagePreview = document.getElementById('imagePreview');
-            const fileNameDisplay = document.getElementById('fileNameDisplay');
+</main>
 
-            previewContainer.style.display = 'flex';
+<script>
+"use strict";
 
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    fileNameDisplay.innerText = file.name;
-                }
-                reader.readAsDataURL(file);
-            } else {
-                imagePreview.style.display = 'none';
-                fileNameDisplay.innerText = `সংযুক্ত ফাইল: ${file.name}`;
-            }
-        }
+/*
+  Cloudflare Worker-এর API endpoint।
+  Worker একই domain-এ থাকলে এই পথটি ব্যবহার করুন।
+  আলাদা domain হলে এখানে সম্পূর্ণ HTTPS URL দিতে হবে।
+*/
+const API_URL = "/api/ai/chat";
+const HEALTH_URL = "/api/health";
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-        // এটাচমেন্ট রিমুভ করা
-        function clearAttachment() {
-            attachedFile = null;
-            document.getElementById('fileInput').value = '';
-            document.getElementById('previewContainer').style.display = 'none';
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('fileNameDisplay').innerText = '';
-        }
+const ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+  "text/plain",
+  "text/csv",
+  "application/json"
+];
 
-        // ব্রাউজারের নিজস্ব Speech Recognition (ভয়েস থেকে লেখা)
-        let recognition;
-        let isRecording = false;
-        function toggleSpeechRecognition() {
-            const micBtn = document.getElementById('micBtn');
-            const userInput = document.getElementById('userInput');
+const chatBox = document.getElementById("chatBox");
+const input = document.getElementById("userInput");
+const fileInput = document.getElementById("fileInput");
+const fileBtn = document.getElementById("fileBtn");
+const micBtn = document.getElementById("micBtn");
+const sendBtn = document.getElementById("sendBtn");
+const statusEl = document.getElementById("status");
+const preview = document.getElementById("preview");
+const previewImage = document.getElementById("previewImage");
+const fileName = document.getElementById("fileName");
 
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('আপনার ব্রাউজার ভয়েস রেকর্ডিং সাপোর্ট করে না। দয়া করে Google Chrome ব্যবহার করুন।');
-                return;
-            }
+let attachment = null;
+let previewURL = null;
+let sending = false;
+let recognition = null;
+let recording = false;
+const history = [];
 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
-            if (isRecording) {
-                recognition.stop();
-                return;
-            }
+function setStatus(message) {
+  statusEl.textContent = message;
+}
 
-            recognition = new SpeechRecognition();
-            recognition.lang = 'bn-BD'; // বাংলা ভাষা
-            recognition.continuous = false;
-            recognition.interimResults = false;
+function addMessage(text, type, fileInfo) {
+  const bubble = document.createElement("div");
+  bubble.className = "message " +
+    (type === "user" ? "user-message" : "ai-message");
 
-            recognition.onstart = function() {
-                isRecording = true;
-                micBtn.classList.add('recording');
-                micBtn.title = "শোনা হচ্ছে... থামতে আবার ক্লিক করুন";
-            };
+  // নিরাপদে টেক্সট দেখায়; AI-এর উত্তর HTML হিসেবে চালায় না।
+  bubble.textContent = text || "";
 
-            recognition.onresult = function(event) {
-                const speechToText = event.results[0][0].transcript;
-                userInput.value += (userInput.value ? ' ' : '') + speechToText;
-            };
+  if (fileInfo) {
+    if (fileInfo.type && fileInfo.type.startsWith("image/") &&
+        fileInfo.url) {
+      const img = document.createElement("img");
+      img.src = fileInfo.url;
+      img.alt = "সংযুক্ত ছবি";
+      bubble.appendChild(img);
+    } else {
+      const label = document.createElement("div");
+      label.textContent = "📎 সংযুক্ত ফাইল: " + fileInfo.name;
+      bubble.appendChild(label);
+    }
+  }
 
-            recognition.onerror = function() {
-                stopMicState();
-            };
+  chatBox.appendChild(bubble);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  return bubble;
+}
 
-            recognition.onend = function() {
-                stopMicState();
-            };
+function clearAttachment() {
+  attachment = null;
+  fileInput.value = "";
 
-            recognition.start();
-        }
+  if (previewURL) {
+    URL.revokeObjectURL(previewURL);
+    previewURL = null;
+  }
 
-        function stopMicState() {
-            isRecording = false;
-            const micBtn = document.getElementById('micBtn');
-            micBtn.classList.remove('recording');
-            micBtn.title = "মুখে বলুন";
-        }
+  preview.hidden = true;
+  previewImage.hidden = true;
+  previewImage.removeAttribute("src");
+  fileName.textContent = "";
+}
 
-        // ফাইলকে Base64 এ রূপান্তর করার হেল্পার ফাংশন
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                // @ts-ignore
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = error => reject(error);
-            });
-        }
+function selectFile() {
+  const file = fileInput.files && fileInput.files[0];
+  if (!file) return;
 
-        // এআই এর কাছে রিকোয়েস্ট পাঠানোর মূল ফাংশন
-        async function sendToAI() {
-            const inputField = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
-            const userText = inputField.value.trim();
+  if (file.size > MAX_FILE_SIZE) {
+    alert("ফাইলটি 10 MB-এর বেশি। অনুগ্রহ করে ছোট ফাইল নির্বাচন করুন।");
+    fileInput.value = "";
+    return;
+  }
 
-            if (!userText && !attachedFile) {
-                alert('দয়া করে কিছু লিখুন অথবা কোনো ফাইল/ছবি যুক্ত করুন!');
-                return;
-            }
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    alert("এই ফাইলের ধরন সমর্থিত নয়। JPG, PNG, WEBP, PDF, TXT, CSV বা JSON দিন।");
+    fileInput.value = "";
+    return;
+  }
 
-            // চ্যাটবক্সে ইউজারের মেসেজ বা এটাচমেন্ট প্রদর্শন
-            let userHtmlContent = escapeHtml(userText);
-            if (attachedFile) {
-                if (attachedFile.type.startsWith('image/')) {
-                    const localUrl = URL.createObjectURL(attachedFile);
-                    userHtmlContent += `<br><img src="${localUrl}" style="max-width:150px; border-radius:4px; margin-top:5px;">`;
-                } else {
-                    userHtmlContent += `<br>📁 <i>[ফাইল: ${attachedFile.name}]</i>`;
-                }
-            }
+  clearAttachment();
+  attachment = file;
+  preview.hidden = false;
+  fileName.textContent = file.name;
 
-            chatBox.innerHTML += `<div class="message user-message">${userHtmlContent}</div>`;
-            inputField.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
+  if (file.type.startsWith("image/")) {
+    previewURL = URL.createObjectURL(file);
+    previewImage.src = previewURL;
+    previewImage.hidden = false;
+  }
+}
 
-            const loadingId = 'loading-' + Date.now();
-            chatBox.innerHTML += `<div id="${loadingId}" class="message ai-message">বিশ্লেষণ করে সমাধান তৈরি করা হচ্ছে...</div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const systemPersona = "আপনি একজন অত্যন্ত জ্ঞানী ও বহুমুখী এআই এক্সপার্ট। ব্যবহারকারী যেকোনো টেক্সট, ছবি বা ফাইল দিলে তা নিখুঁতভাবে বিশ্লেষণ করে বাংলায় গঠনমূলক সমাধান দেবেন।";
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      const comma = result.indexOf(",");
 
-            try {
-                let partsArray = [{ text: systemPersona + "\n\n ব্যবহারকারী: " + (userText || "এই ফাইল বা ছবি সম্পর্কে বিস্তারিত বলুন।") }];
+      if (comma < 0) {
+        reject(new Error("ফাইলটি পড়া যায়নি।"));
+      } else {
+        resolve(result.slice(comma + 1));
+      }
+    };
 
-                // যদি কোনো ফাইল বা ইমেজ যুক্ত করা হয়ে থাকে, তা জেমিনির মাল্টিমোডাল ফরম্যাটে যুক্ত করা
-                if (attachedFile) {
-                    const base64Data = await fileToBase64(attachedFile);
-                    partsArray.push({
-                        inline_data: {
-                            mime_type: attachedFile.type || "application/octet-stream",
-                            data: base64Data
-                        }
-                    });
-                }
+    reader.onerror = () => reject(new Error("ফাইল পড়ার সময় সমস্যা হয়েছে।"));
+    reader.readAsDataURL(file);
+  });
+}
 
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ role: "user", parts: partsArray }]
-                    })
-                });
+function setBusy(value) {
+  sending = value;
+  sendBtn.disabled = value;
+  fileBtn.disabled = value;
+  sendBtn.textContent = value ? "অপেক্ষা করুন..." : "পাঠান ➤";
+}
 
-                const data = await response.json();
-                document.getElementById(loadingId).remove();
+function explainError(statusCode, message) {
+  if (statusCode === 400) {
+    return "অনুরোধটি সঠিক নয়। প্রশ্ন বা ফাইলের তথ্য যাচাই করুন।";
+  }
+  if (statusCode === 401 || statusCode === 403) {
+    return "API অনুমতি পাওয়া যায়নি। Cloudflare-এর API key ও permissions যাচাই করুন।";
+  }
+  if (statusCode === 404) {
+    return "AI endpoint পাওয়া যায়নি। Worker-এ /api/ai/chat route তৈরি আছে কি না দেখুন।";
+  }
+  if (statusCode === 413) {
+    return "ফাইল বা অনুরোধটি অনেক বড়। ছোট ফাইল দিয়ে চেষ্টা করুন।";
+  }
+  if (statusCode === 429) {
+    return "অনুরোধের সীমা বা API quota শেষ হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।";
+  }
+  if (statusCode >= 500) {
+    return "Worker বা AI সার্ভারে সমস্যা হয়েছে। Cloudflare logs পরীক্ষা করুন।";
+  }
+  return message || "AI উত্তর দিতে পারেনি। Worker configuration পরীক্ষা করুন।";
+}
 
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    const aiReply = data.candidates[0].content.parts[0].text;
-                    chatBox.innerHTML += `<div class="message ai-message">${escapeHtml(aiReply)}</div>`;
-                } else {
-                    chatBox.innerHTML += `<div class="message ai-message">দুঃখিত, এই মুহূর্তে উত্তর পাওয়া যায়নি। আবার চেষ্টা করুন।</div>`;
-                }
-            } catch (error) {
-                document.getElementById(loadingId).remove();
-                chatBox.innerHTML += `<div class="message ai-message">সার্ভার কানেক্ট করতে সমস্যা হয়েছে। ইন্টারনেট কানেকশন চেক করুন।</div>`;
-            }
+async function sendToAI() {
+  if (sending) return;
 
-            clearAttachment();
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+  const question = input.value.trim();
+  const selectedFile = attachment;
 
-        function checkEnter(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendToAI();
-            }
-        }
+  if (!question && !selectedFile) {
+    alert("প্রশ্ন লিখুন অথবা একটি ছবি/ফাইল যুক্ত করুন।");
+    return;
+  }
 
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-        }
-    </script>
+  setBusy(true);
 
+  let filePayload = null;
+
+  try {
+    if (selectedFile) {
+      filePayload = {
+        name: selectedFile.name,
+        mimeType: selectedFile.type,
+        data: await fileToBase64(selectedFile)
+      };
+    }
+
+    const visibleFile = selectedFile ? {
+      name: selectedFile.name,
+      type: selectedFile.type,
+      url: selectedFile.type.startsWith("image/") ? previewURL : null
+    } : null;
+
+    addMessage(
+      question || "সংযুক্ত ফাইলটি বিশ্লেষণ করুন।",
+      "user",
+      visibleFile
+    );
+
+    input.value = "";
+
+    const loading = addMessage("উত্তর তৈরি হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...", "ai");
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          prompt: question || "সংযুক্ত ফাইলটি বাংলায় বিশ্লেষণ করুন।",
+          history: history.slice(-12),
+          attachment: filePayload,
+          appInfo: {
+            app: "NIVORA ONE",
+            language: "bn",
+            feature: "multimodal-assistant"
+          }
+        })
+      });
+
+      const raw = await response.text();
+      let data = {};
+
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch (_) {
+        data = {};
+      }
+
+      loading.remove();
+
+      if (!response.ok) {
+        addMessage(
+          explainError(response.status, data.error || data.message),
+          "ai"
+        );
+        setStatus("AI অনুরোধ ব্যর্থ হয়েছে");
+        return;
+      }
+
+      const answer =
+        typeof data.reply === "string" ? data.reply :
+        typeof data.text === "string" ? data.text :
+        typeof data.response === "string" ? data.response : "";
+
+      if (!answer) {
+        addMessage(
+          "Worker থেকে উত্তর পাওয়া যায়নি। API response format যাচাই করুন।",
+          "ai"
+        );
+        setStatus("উত্তর পাওয়া যায়নি");
+        return;
+      }
+
+      addMessage(answer, "ai");
+
+      history.push({
+        role: "user",
+        text: question || "[ফাইল সংযুক্ত]"
+      });
+      history.push({
+        role: "assistant",
+        text: answer
+      });
+
+      while (history.length > 12) history.shift();
+
+      setStatus("AI উত্তর দিয়েছে");
+      clearAttachment();
+
+    } catch (error) {
+      loading.remove();
+      addMessage(
+        "Cloudflare Worker-এ সংযোগ করা যায়নি। ইন্টারনেট, API endpoint ও Worker deployment যাচাই করুন।",
+        "ai"
+      );
+      setStatus("সংযোগ ব্যর্থ");
+    }
+
+  } catch (error) {
+    addMessage(error.message || "ফাইল পড়া যায়নি। আবার চেষ্টা করুন।", "ai");
+    setStatus("ফাইল প্রসেস করা যায়নি");
+  } finally {
+    setBusy(false);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+}
+
+function checkEnter(event) {
+  if (
+    event.key === "Enter" &&
+    !event.shiftKey &&
+    !event.isComposing
+  ) {
+    event.preventDefault();
+    sendToAI();
+  }
+}
+
+function toggleSpeech() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert("এই ব্রাউজারে ভয়েস-টু-টেক্সট সমর্থিত নয়। আপডেট করা Chrome ব্যবহার করুন।");
+    return;
+  }
+
+  if (recording && recognition) {
+    recognition.stop();
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = "bn-BD";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    recording = true;
+    micBtn.classList.add("recording");
+    micBtn.textContent = "⏹";
+    setStatus("আপনার কথা শোনা হচ্ছে...");
+  };
+
+  recognition.onresult = event => {
+    const result = event.results &&
+      event.results[0] &&
+      event.results[0][0]
+      ? event.results[0][0].transcript
+      : "";
+
+    if (result) {
+      input.value += (input.value ? " " : "") + result;
+      input.focus();
+    }
+  };
+
+  recognition.onerror = () => {
+    setStatus("মাইক্রোফোন ব্যবহার করা যায়নি");
+  };
+
+  recognition.onend = () => {
+    recording = false;
+    micBtn.classList.remove("recording");
+    micBtn.textContent = "🎤";
+  };
+
+  try {
+    recognition.start();
+  } catch (_) {
+    setStatus("মাইক্রোফোন চালু করা যায়নি");
+  }
+}
+
+async function checkConnection() {
+  try {
+    const response = await fetch(HEALTH_URL, {
+      method: "GET",
+      credentials: "same-origin"
+    });
+
+    if (response.ok) {
+      setStatus("Cloudflare endpoint পাওয়া গেছে");
+    } else {
+      setStatus("Health check ব্যর্থ: " + response.status);
+    }
+  } catch (_) {
+    setStatus("Worker health check পাওয়া যায়নি");
+  }
+}
+
+document.getElementById("fileBtn")
+  .addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", selectFile);
+
+document.getElementById("clearBtn")
+  .addEventListener("click", clearAttachment);
+
+sendBtn.addEventListener("click", sendToAI);
+micBtn.addEventListener("click", toggleSpeech);
+input.addEventListener("keydown", checkEnter);
+
+checkConnection();
+</script>
 </body>
-  </html>
+</html>
