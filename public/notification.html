@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<title>NIVORA ONE — Notification Center</title>
+<style>
+:root{--bg:#08111f;--panel:#111b2d;--panel2:#17243a;--line:#293951;--text:#eef4ff;--muted:#92a1b8;--green:#18b957;--blue:#4384e8;--red:#e05252;--yellow:#eab54f}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#07101c,#0d1829);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Bengali",sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:255px 1fr}.side{background:#0b1424;border-right:1px solid var(--line);padding:20px 14px}.brand{display:flex;align-items:center;gap:11px;padding:5px 10px 25px}.logo{width:42px;height:42px;border-radius:12px;background:#19bc5d;display:grid;place-items:center;font-size:20px;font-weight:900}.brand b{font-size:18px}.brand small{display:block;color:var(--muted);margin-top:2px}.group{font-size:11px;font-weight:800;color:#71819b;letter-spacing:.7px;padding:11px 10px 6px}.nav button{width:100%;border:0;background:transparent;color:#b9c5d7;text-align:left;padding:12px;border-radius:10px;margin:2px 0}.nav button:hover,.nav button.active{background:#1b2a42;color:#fff}
+.main{padding:25px;max-width:1200px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}h1{margin:0;font-size:27px}.sub{color:var(--muted);margin-top:5px}.badge{border:1px solid #30435f;background:#122038;border-radius:99px;padding:8px 12px;font-size:12px;color:#b4c3d8}
+.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:17px}.card{background:rgba(17,27,45,.9);border:1px solid var(--line);border-radius:17px;padding:20px}.card h2{margin:0 0 7px;font-size:18px}.card p{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:17px}.stat{background:#111d31;border:1px solid var(--line);border-radius:14px;padding:15px}.stat b{display:block;font-size:22px}.stat span{font-size:11px;color:var(--muted)}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}input,select,textarea{background:#0b1525;color:#fff;border:1px solid #2b3d57;border-radius:9px;padding:11px 12px;outline:none;width:100%}textarea{min-height:85px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--green)}.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--green);color:#fff;font-weight:750}.btn.blue{background:#245fbf}.btn.gray{background:#26364f}.btn.red{background:#8a2e2e}.btn.small{padding:7px 10px;font-size:12px}
+.notice{padding:12px 14px;border-radius:11px;background:#10263d;border:1px solid #254b6c;color:#bcd6ee;font-size:13px;margin:12px 0}.form{display:grid;gap:11px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;font-size:12px;color:#afbdd0;margin-bottom:5px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tab{border:1px solid #2c3e58;background:#101c2e;color:#b9c7da;padding:9px 12px;border-radius:9px;cursor:pointer}.tab.active{background:#1a5d36;border-color:#23894e;color:#fff}
+.notification{display:flex;gap:13px;padding:14px;border:1px solid #293951;background:#0d1728;border-radius:13px;margin:9px 0;transition:.2s}.notification.unread{border-color:#2d7049;background:#10271b}.nicon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#1a2b44;font-size:20px;flex:0 0 auto}.notification h3{margin:0 0 3px;font-size:14px}.notification p{margin:0;color:#aebbd0;font-size:12px;line-height:1.45}.time{color:#71829b;font-size:11px;margin-top:5px}.dot{width:8px;height:8px;background:#20c968;border-radius:50%;margin-left:auto;margin-top:5px;flex:0 0 auto}.switch{position:relative;width:45px;height:24px}.switch input{display:none}.slider{position:absolute;inset:0;background:#304159;border-radius:20px;cursor:pointer}.slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}.switch input:checked+.slider{background:var(--green)}.switch input:checked+.slider:before{transform:translateX(21px)}
+.channel{display:flex;align-items:center;justify-content:space-between;padding:13px;border:1px solid #293951;border-radius:11px;margin:8px 0;background:#0d1728}.channel strong{font-size:14px}.channel small{display:block;color:var(--muted);margin-top:2px}
+.template{border:1px solid #293951;border-radius:11px;padding:13px;margin:8px 0;background:#0d1728}.template b{font-size:14px}.template small{color:var(--muted);display:block;margin-top:5px}.footer{text-align:center;color:#697991;font-size:12px;padding:25px}
+.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:18px;z-index:5}.modal.show{display:grid}.box{width:min(600px,100%);background:#111b2d;border:1px solid #2d405b;border-radius:17px;padding:20px}.close{float:right;border:0;background:none;color:#aab8cb;font-size:24px}.toast{position:fixed;right:17px;bottom:17px;background:#18263b;border:1px solid #344964;padding:12px 15px;border-radius:11px;display:none;z-index:10}.toast.show{display:block}
+@media(max-width:850px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line)}.nav{display:grid;grid-template-columns:repeat(2,1fr)}.group{grid-column:1/-1}.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start;gap:12px;flex-direction:column}}
+@media(max-width:520px){.nav{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+<div class="brand"><div class="logo">N</div><div><b>NIVORA ONE</b><small>Notification Center</small></div></div>
+<div class="group">NOTIFICATIONS</div>
+<div class="nav">
+<button class="active" onclick="page('inbox',this)">🔔 Notification Inbox</button>
+<button onclick="page('settings',this)">⚙️ Notification Settings</button>
+<button onclick="page('channels',this)">📡 Channels</button>
+<button onclick="page('templates',this)">📝 Templates</button>
+</div>
+<div class="group">TOOLS</div>
+<div class="nav">
+<button onclick="markAll()">✓ Mark All Read</button>
+<button onclick="testNotice()">🧪 Test Notification</button>
+</div>
+</aside>
+
+<main class="main">
+<div class="top"><div><h1 id="title">Notification Inbox</h1><div class="sub" id="sub">NIVORA ONE-এর সব গুরুত্বপূর্ণ ব্যবসায়িক নোটিফিকেশন এক জায়গায়</div></div><div class="badge">● Notification System v1.0</div></div>
+
+<section id="inbox" class="page active">
+<div class="stats"><div class="stat"><b id="unreadCount">7</b><span>Unread</span></div><div class="stat"><b>12</b><span>Today</span></div><div class="stat"><b>4</b><span>Critical</span></div><div class="stat"><b>4</b><span>Channels</span></div></div>
+<div class="card">
+<div class="tabs"><button class="tab active" onclick="filterNotices('all',this)">All</button><button class="tab" onclick="filterNotices('order',this)">Orders</button><button class="tab" onclick="filterNotices('payment',this)">Payments</button><button class="tab" onclick="filterNotices('stock',this)">Stock</button><button class="tab" onclick="filterNotices('system',this)">System</button></div>
+<div id="list"></div>
+</div>
+</section>
+
+<section id="settings" class="page">
+<div class="grid">
+<div class="card"><h2>⚙️ Notification Preferences</h2><p>কোন ধরনের Notification পাবেন তা নির্ধারণ করুন।</p>
+<div class="channel"><div><strong>🔔 New Order</strong><small>নতুন অর্ডার এলে</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="channel"><div><strong>💳 Payment Success</strong><small>Payment সফল হলে</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="channel"><div><strong>⚠️ Low Stock</strong><small>Stock নির্ধারিত সীমার নিচে গেলে</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="channel"><div><strong>🚫 Out of Stock</strong><small>পণ্য শেষ হয়ে গেলে</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="channel"><div><strong>💰 Payment Due</strong><small>Customer/Supplier payment due হলে</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+</div>
+<div class="card"><h2>📨 Delivery Channels</h2><p>প্রয়োজন অনুযায়ী এক বা একাধিক notification channel ব্যবহার করুন।</p>
+<div class="channel"><div><strong>🔔 In-App</strong><small>অ্যাপের ভিতরে notification</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="channel"><div><strong>✉️ Email</strong><small>ইমেইলে বিস্তারিত বার্তা</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="channel"><div><strong>📱 SMS / OTP</strong><small>জরুরি alert ও verification</small></div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+<div class="channel"><div><strong>📲 Push Notification</strong><small>মোবাইল push alert</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<button class="btn" onclick="toast('Notification preferences saved (demo)')">Save Preferences</button>
+</div>
+</div>
+</section>
+
+<section id="channels" class="page">
+<div class="grid">
+<div class="card"><h2>📡 Channel Configuration</h2><p>প্রতিটি channel-এর provider/backend integration এখানে করা যাবে।</p>
+<div class="channel"><div><strong>🔔 In-App</strong><small>Real-time notification center</small></div><span class="pill">READY UI</span></div>
+<div class="channel"><div><strong>✉️ Email</strong><small>SMTP / transactional email provider</small></div><button class="btn small blue" onclick="toast('Email provider setup UI')">Configure</button></div>
+<div class="channel"><div><strong>📱 SMS / OTP</strong><small>SMS gateway + OTP service</small></div><button class="btn small blue" onclick="toast('SMS provider setup UI')">Configure</button></div>
+<div class="channel"><div><strong>📲 Push</strong><small>Web/Mobile Push service</small></div><button class="btn small blue" onclick="toast('Push provider setup UI')">Configure</button></div>
+</div>
+<div class="card"><h2>🚨 Priority Rules</h2><p>জরুরি Notification কোন channel-এ যাবে তা নির্ধারণ করুন।</p>
+<div class="notice">🔴 Critical: Out of Stock, Payment Failed, Security Alert</div>
+<div class="notice">🟡 Important: New Order, Payment Due, Low Stock</div>
+<div class="notice">🔵 Normal: New Offer, Purchase Complete, New Customer</div>
+</div>
+</div>
+</section>
+
+<section id="templates" class="page">
+<div class="card"><h2>📝 Notification Templates</h2><p>একই ধরনের বার্তার জন্য reusable template রাখা যাবে।</p>
+<div class="template"><b>🛒 New Order</b><small>“নতুন অর্ডার #{{order_id}} এসেছে। মোট: {{amount}}”</small></div>
+<div class="template"><b>✅ Order Confirmed</b><small>“আপনার অর্ডার #{{order_id}} নিশ্চিত করা হয়েছে।”</small></div>
+<div class="template"><b>💳 Payment Successful</b><small>“Payment সফল। Transaction: {{transaction_id}}”</small></div>
+<div class="template"><b>❌ Payment Failed</b><small>“Payment সম্পন্ন হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।”</small></div>
+<div class="template"><b>⚠️ Low Stock</b><small>“{{product}}-এর stock মাত্র {{qty}}টি।”</small></div>
+<div class="template"><b>🚫 Out of Stock</b><small>“{{product}} বর্তমানে stock-এর বাইরে।”</small></div>
+<div class="template"><b>💰 Payment Due</b><small>“{{customer}}-এর {{amount}} টাকা payment due রয়েছে।”</small></div>
+<div class="template"><b>🔐 System Alert</b><small>“NIVORA ONE security/system alert: {{message}}”</small></div>
+</div>
+</section>
+
+<div class="footer">NIVORA ONE • Notification Center • Frontend Demo</div>
+</main></div>
+
+<div id="modal" class="modal"><div class="box"><button class="close" onclick="closeModal()">×</button><h2>🧪 Test Notification</h2><div class="form"><div><label>Notification Type</label><select id="testType"><option>New Order</option><option>Payment Successful</option><option>Low Stock</option><option>System Alert</option></select></div><div><label>Message</label><textarea id="testMsg">এটি একটি test notification.</textarea></div><button class="btn" onclick="addTest()">Send Test</button></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const notices=[
+{type:"order",icon:"🛒",title:"নতুন অর্ডার এসেছে",msg:"Order #NV-10482 — মোট ৳2,450। কাস্টমার checkout সম্পন্ন করেছেন।",time:"২ মিনিট আগে",unread:true},
+{type:"order",icon:"✅",title:"অর্ডার Confirm হয়েছে",msg:"Order #NV-10477 সফলভাবে confirmed হয়েছে।",time:"১২ মিনিট আগে",unread:true},
+{type:"payment",icon:"💳",title:"Payment সফল",msg:"Transaction #TX-88421 — ৳3,200 payment সফল হয়েছে।",time:"২৫ মিনিট আগে",unread:true},
+{type:"payment",icon:"❌",title:"Payment Failed",msg:"Order #NV-10471-এর payment সম্পন্ন হয়নি।",time:"৩৫ মিনিট আগে",unread:true},
+{type:"stock",icon:"⚠️",title:"Low Stock Alert",msg:"Product “Wireless Headphone”-এর stock মাত্র ৫টি।",time:"৪৫ মিনিট আগে",unread:true},
+{type:"stock",icon:"🚫",title:"Out of Stock",msg:"Product “Smart Watch X2” বর্তমানে stock-এর বাইরে।",time:"১ ঘণ্টা আগে",unread:true},
+{type:"system",icon:"👤",title:"নতুন Customer",msg:"নতুন customer account তৈরি হয়েছে।",time:"১ ঘণ্টা আগে",unread:true},
+{type:"system",icon:"🛍️",title:"Purchase সম্পন্ন",msg:"Supplier purchase #PO-2201 সম্পন্ন হয়েছে।",time:"২ ঘণ্টা আগে",unread:false},
+{type:"payment",icon:"💰",title:"Supplier Payment Due",msg:"Supplier payment ৳18,500 due হয়েছে।",time:"৩ ঘণ্টা আগে",unread:false},
+{type:"payment",icon:"💵",title:"Customer Payment Due",msg:"Customer ledger-এ ৳4,800 payment due রয়েছে।",time:"৪ ঘণ্টা আগে",unread:false},
+{type:"system",icon:"🎁",title:"নতুন Offer",msg:"Weekend campaign-এর নতুন offer publish হয়েছে।",time:"৫ ঘণ্টা আগে",unread:false},
+{type:"system",icon:"🔐",title:"System Alert",msg:"Security settings review করার সময় হয়েছে।",time:"আজ",unread:false}
+];
+let current="all";
+function render(){let arr=current==="all"?notices:notices.filter(n=>n.type===current);document.getElementById("list").innerHTML=arr.map((n,i)=>`<div class="notification ${n.unread?"unread":""}" onclick="read(${notices.indexOf(n)})"><div class="nicon">${n.icon}</div><div style="flex:1"><h3>${n.title}</h3><p>${n.msg}</p><div class="time">${n.time}</div></div>${n.unread?'<div class="dot"></div>':''}</div>`).join("");document.getElementById("unreadCount").textContent=notices.filter(n=>n.unread).length}
+function filterNotices(t,b){current=t;document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
+function read(i){notices[i].unread=false;render();toast("Notification read")}
+function markAll(){notices.forEach(n=>n.unread=false);render();toast("সব notification read হয়েছে")}
+function page(id,btn){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");const m={inbox:["Notification Inbox","সব গুরুত্বপূর্ণ ব্যবসায়িক notification এক জায়গায়"],settings:["Notification Settings","Notification preference ও channel নিয়ন্ত্রণ করুন"],channels:["Notification Channels","In-App, Email, SMS/OTP ও Push channel"],templates:["Notification Templates","Reusable notification message templates"]};document.getElementById("title").textContent=m[id][0];document.getElementById("sub").textContent=m[id][1]}
+function testNotice(){document.getElementById("modal").classList.add("show")}function closeModal(){document.getElementById("modal").classList.remove("show")}function addTest(){notices.unshift({type:"system",icon:"🧪",title:document.getElementById("testType").value,msg:document.getElementById("testMsg").value,time:"এইমাত্র",unread:true});closeModal();page("inbox");render();toast("Test notification তৈরি হয়েছে")}
+function toast(s){let t=document.getElementById("toast");t.textContent=s;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}render();
+</script>
+</body>
+</html>
