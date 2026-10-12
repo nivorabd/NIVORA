@@ -1,4 +1,4 @@
-```json
+json
 {
   "name": "nivora-one",
   "version": "1.0.0",
@@ -16,4 +16,3 @@
     "express": "^5.1.0"
   }
 }
-```
