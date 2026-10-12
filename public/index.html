@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIVORA ONE - Enterprise Ecosystem</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Smooth iframe display */
+        #appFrame { width: 100%; height: 100%; border: none; background-color: #020617; }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { height: 4px; width: 4px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-screen flex flex-col overflow-hidden font-sans select-none">
+
+    <!-- 1. TOP UTILITY BAR: Time, Date, Language & Currency -->
+    <header class="bg-slate-900 border-b border-slate-800 px-3 py-2 flex justify-between items-center text-xs z-30 shrink-0 shadow-md">
+        <!-- Live Clock & Date -->
+        <div id="live-clock" class="text-emerald-400 font-medium flex items-center bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">
+            <i class="fa-regular fa-clock mr-1.5 text-xs"></i><span>লোড হচ্ছে...</span>
+        </div>
+
+        <!-- Global Selectors: Language & Currency -->
+        <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-md border border-slate-800">
+                <i class="fa-solid fa-globe text-slate-400 text-[10px]"></i>
+                <select class="bg-transparent text-slate-200 outline-none text-xs cursor-pointer">
+                    <option value="bn" class="bg-slate-900">বাংলা</option>
+                    <option value="en" class="bg-slate-900">English</option>
+                    <option value="de" class="bg-slate-900">Deutsch</option>
+                </select>
+            </div>
+
+            <div class="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-md border border-slate-800">
+                <i class="fa-solid fa-coins text-slate-400 text-[10px]"></i>
+                <select class="bg-transparent text-slate-200 outline-none text-xs cursor-pointer">
+                    <option value="bdt" class="bg-slate-900">৳ BDT</option>
+                    <option value="usd" class="bg-slate-900">$ USD</option>
+                    <option value="eur" class="bg-slate-900">€ EUR</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. MAIN APP BAR (Left Menu Toggle & Brand & Auth) -->
+    <nav class="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-3 py-2.5 flex justify-between items-center z-25 shrink-0">
+        <div class="flex items-center space-x-3">
+            <!-- Left Menu Toggle Button (Hamburger) -->
+            <button onclick="toggleLeftDrawer()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 w-9 h-9 rounded-xl flex items-center justify-center border border-slate-700 transition shadow-sm active:scale-95" title="মেনু খুলুন">
+                <i class="fa-solid fa-bars-staggered text-base"></i>
+            </button>
+
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center space-x-2.5 cursor-pointer" onclick="loadFeature('pages/ai-studio.html', null)">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-cube text-slate-950 font-bold text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm tracking-wide bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">NIVORA ONE</h1>
+                    <p class="text-[10px] text-slate-400 leading-none">মাস্টার ড্যাশবোর্ড</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auth Actions (Login / Account / Logout) -->
+        <div class="flex items-center space-x-1.5">
+            <button onclick="alert('লগইন পেজ ওপেন হবে')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-medium transition border border-slate-700 flex items-center">
+                <i class="fa-solid fa-right-to-bracket mr-1"></i>লগইন
+            </button>
+            <button onclick="alert('নতুন একাউন্ট ফরম')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center">
+                <i class="fa-solid fa-user-plus mr-1"></i>রেজিস্টার
+            </button>
+        </div>
+    </nav>
+
+    <!-- 3. TOP HORIZONTAL QUICK MENU BAR (10 Core Features) -->
+    <div class="bg-slate-900/50 border-b border-slate-800/80 px-3 py-2 flex space-x-2 overflow-x-auto whitespace-nowrap z-20 shrink-0">
+        <!-- 4. NIVORA AI -->
+        <button onclick="loadFeature('pages/ai-studio.html', this)" class="feature-btn active-btn bg-emerald-600 text-white px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center shadow-sm shrink-0">
+            <i class="fa-solid fa-brain mr-2 text-sm"></i>NIVORA AI
+        </button>
+        <!-- 5. BUSINESS MANAGEMENT -->
+        <button onclick="loadFeature('pages/business.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
+            <i class="fa-solid fa-briefcase mr-2 text-sm text-emerald-400"></i>Business Mgmt
+        </button>
+        <!-- 6. E-COMMERCE MARKETPLACE -->
+        <button onclick="loadFeature('pages/ecommerce.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
+            <i class="fa-solid fa-store mr-2 text-sm text-cyan-400"></i>Marketplace
+        </button>
+        <!-- 7. MATH CALCULATOR -->
+        <button onclick="loadFeature('pages/calculator.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
+            <i class="fa-solid fa-calculator mr-2 text-sm text-amber-400"></i>Calculator
+        </button>
+        <!-- 8. DIGITAL GERMAN HOMOEO HALL -->
+        <button onclick="loadFeature('pages/homoeo-hall.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
+            <i class="fa-solid fa-notes-medical mr-2 text-sm text-rose-400"></i>Homoeo Hall
+        </button>
+        <!-- 9. ADMIN PANEL -->
+        <button onclick="loadFeature('pages/admin-panel.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
+            <i class="fa-solid fa-user-shield mr-2 text-sm text-purple-400"></i>Admin Panel
+        </button>
+        <!-- 10. CORE AN HUB -->
+        <button onclick="loadFeature('pages/core-hub.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
+            <i class="fa-solid fa-network-wired mr-2 text-sm text-blue-400"></i>Core An Hub
+        </button>
+    </div>
+
+    <!-- 4. WORKSPACE CONTENT AREA (Super Fast IFRAME Loader) -->
+    <main class="flex-1 bg-slate-950 relative overflow-hidden">
+        <iframe id="appFrame" src="pages/ai-studio.html"></iframe>
+    </main>
+
+    <!-- 5. LEFT SIDEBAR MENU DRAWER (Full Navigation & Extra Features) -->
+    <!-- Backdrop -->
+    <div id="drawer-backdrop" onclick="toggleLeftDrawer()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+    
+    <!-- Drawer Container (Left Side) -->
+    <div id="left-drawer" class="fixed top-0 left-0 h-full w-80 bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col p-5 shadow-2xl">
+        <!-- Drawer Header -->
+        <div class="flex justify-between items-center mb-5 border-b border-slate-800 pb-3">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <span class="font-bold text-sm text-slate-100">মাস্টার মেনু ও নেভিগেশন</span>
+            </div>
+            <button onclick="toggleLeftDrawer()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+        </div>
+
+        <!-- Drawer Feature Items List -->
+        <div class="space-y-1.5 flex-1 overflow-y-auto pr-1">
+            <div class="text-[10px] font-semibold text-slate-500 uppercase px-3 pb-1 tracking-wider">প্রধান ফিচারসমূহ</div>
+            
+            <button onclick="loadFeatureAndClose('pages/ai-studio.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-brain mr-3 text-emerald-400 w-5 text-center text-sm"></i> ৪. NIVORA AI
+            </button>
+            <button onclick="loadFeatureAndClose('pages/business.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-briefcase mr-3 text-emerald-400 w-5 text-center text-sm"></i> ৫. BUSINESS MANAGEMENT
+            </button>
+            <button onclick="loadFeatureAndClose('pages/ecommerce.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-store mr-3 text-cyan-400 w-5 text-center text-sm"></i> ৬. ই-কমার্স মার্কেটপ্লেস
+            </button>
+            <button onclick="loadFeatureAndClose('pages/calculator.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-calculator mr-3 text-amber-400 w-5 text-center text-sm"></i> ৭. ম্যাথ ক্যালকুলেটর
+            </button>
+            <button onclick="loadFeatureAndClose('pages/homoeo-hall.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-notes-medical mr-3 text-rose-400 w-5 text-center text-sm"></i> ৮. জার্মান হোমিও হল
+            </button>
+            <button onclick="loadFeatureAndClose('pages/admin-panel.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-user-shield mr-3 text-purple-400 w-5 text-center text-sm"></i> ৯. এডমিন প্যানেল
+            </button>
+            <button onclick="loadFeatureAndClose('pages/core-hub.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-network-wired mr-3 text-blue-400 w-5 text-center text-sm"></i> ১০. কোর আন হাব
+            </button>
+
+            <div class="text-[10px] font-semibold text-slate-500 uppercase px-3 pt-3 pb-1 tracking-wider">অন্যান্য ইউটিলিটি</div>
+
+            <!-- Radar System Tracking -->
+            <button onclick="loadFeatureAndClose('pages/radar-tracking.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-radar mr-3 text-teal-400 w-5 text-center text-sm"></i> রাডার সিস্টেম ট্র্যাকিং
+            </button>
+            <!-- Review Button -->
+            <button onclick="loadFeatureAndClose('pages/reviews.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-star mr-3 text-yellow-400 w-5 text-center text-sm"></i> রিভিউ বাটন
+            </button>
+            <!-- About & Security -->
+            <button onclick="loadFeatureAndClose('pages/about-security.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
+                <i class="fa-solid fa-shield-halved mr-3 text-indigo-400 w-5 text-center text-sm"></i> এবাউট ও সিকিউরিটি
+            </button>
+        </div>
+
+        <!-- Drawer Footer (Logout Action) -->
+        <div class="pt-4 border-t border-slate-800 mt-2">
+            <button onclick="alert('সফলভাবে লগআউট হয়েছে')" class="w-full bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 border border-rose-900/50 p-2.5 rounded-xl text-xs font-medium flex items-center justify-center transition shadow-sm">
+                <i class="fa-solid fa-power-off mr-2"></i>লগআউট (Logout)
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & HANDLERS -->
+    <script>
+        // 1. Live Bangla Clock & Date Generator
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('live-clock').innerHTML = `<i class="fa-regular fa-clock mr-1.5 text-xs text-emerald-400"></i><span>${now.toLocaleDateString('bn-BD', options)}</span>`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. Fast Feature Switcher & Top Button Active State Handler
+        function loadFeature(filePath, buttonElement) {
+            const iframe = document.getElementById('appFrame');
+            if(iframe) {
+                iframe.src = filePath;
+            }
+            
+            // If triggered from top bar, update active styles
+            if(buttonElement) {
+                document.querySelectorAll('.feature-btn').forEach(btn => {
+                    btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-sm');
+                    btn.classList.add('bg-slate-900', 'hover:bg-slate-800', 'text-slate-300', 'border', 'border-slate-800');
+                });
+                
+                buttonElement.classList.remove('bg-slate-900', 'hover:bg-slate-800', 'text-slate-300', 'border', 'border-slate-800');
+                buttonElement.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+            }
+        }
+
+        // 3. Left Side Drawer Open/Close Toggle (Fixed & Verified)
+        function toggleLeftDrawer() {
+            const drawer = document.getElementById('left-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            if(drawer && backdrop) {
+                drawer.classList.toggle('-translate-x-full');
+                backdrop.classList.toggle('hidden');
+            }
+        }
+
+        // 4. Load Feature from Left Drawer and Close Drawer automatically
+        function loadFeatureAndClose(filePath) {
+            loadFeature(filePath, null);
+            toggleLeftDrawer();
+        }
+    </script>
+
+<script type="module" src="./js/firebase.js"></script>
+</body>
+</html>
