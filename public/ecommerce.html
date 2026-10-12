@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIVORA ONE — Global Commerce Ecosystem</title>
+  <style>
+    /* NIVORA ONE - Scoped & Namespaced Commerce Styles */
+    :root {
+      --nvr-primary: #1e3a8a;
+      --nvr-primary-hover: #1d4ed8;
+      --nvr-secondary: #0d9488;
+      --nvr-accent: #f59e0b;
+      --nvr-dark: #0f172a;
+      --nvr-light: #f8fafc;
+      --nvr-gray: #64748b;
+      --nvr-danger: #dc2626;
+      --nvr-success: #059669;
+      --nvr-border: #e2e8f0;
+    }
+
+    .nivora-ecommerce {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--nvr-dark);
+      background-color: var(--nvr-light);
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .nivora-ecommerce *, 
+    .nivora-ecommerce *::before, 
+    .nivora-ecommerce *::after {
+      box-sizing: inherit;
+    }
+
+    .nivora-ecommerce .nvr-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* Top Navigation & Header */
+    .nivora-ecommerce .nvr-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--nvr-border);
+      padding: 0.75rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .nivora-ecommerce .nvr-flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nivora-ecommerce .nvr-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Scoped Buttons */
+    .nivora-ecommerce .nvr-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nivora-ecommerce .nvr-btn-primary {
+      background-color: var(--nvr-primary);
+      color: #ffffff;
+    }
+
+    .nivora-ecommerce .nvr-btn-primary:hover {
+      background-color: var(--nvr-primary-hover);
+    }
+
+    .nivora-ecommerce .nvr-btn-outline {
+      background-color: transparent;
+      border-color: var(--nvr-border);
+      color: var(--nvr-dark);
+    }
+
+    .nivora-ecommerce .nvr-btn-outline:hover {
+      background-color: #f1f5f9;
+    }
+
+    .nivora-ecommerce .nvr-btn-danger {
+      background-color: var(--nvr-danger);
+      color: #ffffff;
+    }
+
+    .nivora-ecommerce .nvr-btn-disabled {
+      background-color: #94a3b8 !important;
+      cursor: not-allowed !important;
+      border-color: transparent !important;
+    }
+
+    /* Badges */
+    .nivora-ecommerce .nvr-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .nivora-ecommerce .nvr-badge-warning {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .nivora-ecommerce .nvr-badge-success {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    /* Layout & Cards */
+    .nivora-ecommerce .nvr-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .nivora-ecommerce .nvr-card {
+      background: #ffffff;
+      border: 1px solid var(--nvr-border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .nivora-ecommerce .nvr-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    .nivora-ecommerce .nvr-card-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background-color: #f1f5f9;
+    }
+
+    .nivora-ecommerce .nvr-card-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .nivora-ecommerce .nvr-section {
+      background: #ffffff;
+      border: 1px solid var(--nvr-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    /* Inputs & Selects */
+    .nivora-ecommerce input, 
+    .nivora-ecommerce select, 
+    .nivora-ecommerce textarea {
+      width: 100%;
+      padding: 0.65rem;
+      margin-top: 0.35rem;
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--nvr-border);
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+
+    /* Tabs */
+    .nivora-ecommerce .nvr-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--nvr-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .nivora-ecommerce .nvr-tab-btn {
+      background: none;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--nvr-gray);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+    }
+
+    .nivora-ecommerce .nvr-tab-btn.active {
+      color: var(--nvr-primary);
+      background-color: #eff6ff;
+    }
+
+    @media (max-width: 768px) {
+      .nivora-ecommerce .nvr-grid-4 {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body class="nivora-ecommerce">
+
+  <!-- Header Navigation -->
+  <header class="nvr-header">
+    <div class="nvr-container nvr-flex-between">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <!-- Back Button -->
+        <button class="nvr-btn nvr-btn-outline" onclick="app.goBack()" title="পূর্ববর্তী পেজ">
+          ← ব্যাক
+        </button>
+        <div>
+          <h1 style="font-size: 1.25rem; margin: 0; color: var(--nvr-primary); line-height: 1.2;">NIVORA ONE</h1>
+          <span style="font-size: 0.75rem; color: var(--nvr-gray);">Global Commerce Ecosystem</span>
+        </div>
+      </div>
+
+      <!-- Navigation Control Bar -->
+      <div class="nvr-nav-controls">
+        <select id="currency-selector" onchange="app.changeCurrency(this.value)" style="margin: 0; width: auto; padding: 0.45rem;">
+          <option value="BDT">BDT (৳)</option>
+          <option value="INR">INR (₹)</option>
+          <option value="PKR">PKR (Rs)</option>
+        </select>
+        <button class="nvr-btn nvr-btn-outline" onclick="app.switchTab('store')">স্টোরফ্রন্ট</button>
+        <button class="nvr-btn nvr-btn-outline" onclick="app.switchTab('tracking')">পার্সেল ট্র্যাকিং</button>
+        <button class="nvr-btn nvr-btn-outline" onclick="app.switchTab('admin')">অ্যাডমিন ও সেলার</button>
+        <button class="nvr-btn nvr-btn-primary" onclick="app.switchTab('cart')">কার্ট (<span id="cart-count">০</span>)</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="nvr-container">
+    <!-- Status Notice -->
+    <div style="background: #fffbe3; border: 1px solid #fef08a; padding: 0.65rem 1rem; border-radius: 6px; font-size: 0.825rem; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <div>
+        <strong>সিস্টেম স্ট্যাটাস:</strong> 
+        <span class="nvr-badge nvr-badge-warning">LIVE PAYMENT & COURIER: CONFIGURATION REQUIRED</span>
+      </div>
+      <span style="color: var(--nvr-gray);">রেফারেল কোড: <strong id="active-ref-display">None</strong></span>
+    </div>
+
+    <!-- TAB 1: STOREFRONT CATALOG -->
+    <div id="tab-store" class="tab-content" style="margin-top: 1.25rem;">
+      <div style="display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+        <input type="text" id="search-input" placeholder="পণ্য বা SKU অনুসন্ধান করুন..." oninput="app.filterProducts()" style="flex: 1; margin: 0;">
+        <select id="cat-filter" onchange="app.filterProducts()" style="width: auto; min-width: 180px; margin: 0;">
+          <option value="">সব ক্যাটাগরি</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Software">Software</option>
+          <option value="Digital">Digital</option>
+        </select>
+      </div>
+
+      <h2>পণ্য ক্যাটালগ</h2>
+      <div id="product-grid" class="nvr-grid-4" style="margin-top: 1rem;">
+        <!-- Dynamic Products -->
+      </div>
+    </div>
+
+    <!-- TAB 2: CART & CHECKOUT -->
+    <div id="tab-cart" class="tab-content" style="display: none; margin-top: 1.25rem;">
+      <h2>আপনার কার্ট ও চেকআউট</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+        <div class="nvr-section" style="margin: 0;">
+          <h3>কার্ট আইটেমসমূহ</h3>
+          <div id="cart-items-list" style="margin-top: 1rem;">
+            <p>কার্ট খালি রয়েছে।</p>
+          </div>
+          <hr style="border: 0; border-top: 1px solid var(--nvr-border); margin: 1rem 0;">
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem;">
+            <span>মোট মূল্য:</span>
+            <span id="cart-total-amount">৳0</span>
+          </div>
+        </div>
+
+        <div class="nvr-section" style="margin: 0;">
+          <h3>শিপিং ও পেমেন্ট বিবরণ</h3>
+          <label>গ্রাহকের নাম:</label>
+          <input type="text" id="chk-name" placeholder="আপনার সম্পূর্ণ নাম">
+
+          <label>ফোন নম্বর:</label>
+          <input type="text" id="chk-phone" placeholder="০১XXXXXXXXX">
+
+          <label>ডেলিভারি ঠিকানা:</label>
+          <textarea id="chk-address" rows="2" placeholder="পূর্ণাঙ্গ বাসা/রোড ঠিকানা"></textarea>
+
+          <label>পেমেন্ট মেথড:</label>
+          <select id="chk-payment">
+            <option value="cod">Cash on Delivery (COD)</option>
+            <option value="bkash">bKash / Nagad (Sandbox - NOT CONNECTED)</option>
+            <option value="upi">UPI / Card (Sandbox - NOT CONNECTED)</option>
+          </select>
+
+          <button class="nvr-btn nvr-btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="app.processCheckout()">অর্ডার নিশ্চিত করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PARCEL TRACKING -->
+    <div id="tab-tracking" class="tab-content" style="display: none; margin-top: 1.25rem;">
+      <div class="nvr-section" style="max-width: 600px; margin: 0 auto;">
+        <h3>শিপমেন্ট ও পার্সেল ট্র্যাকিং</h3>
+        <p style="font-size: 0.875rem; color: var(--nvr-gray);">আপনার অর্ডারের সঠিক ট্র্যাকিং নম্বর (যেমন: NVR-123456) প্রদান করুন।</p>
+        <input type="text" id="track-id-input" placeholder="অর্ডার আইডি লিখুন...">
+        <button class="nvr-btn nvr-btn-primary" style="width: 100%;" onclick="app.trackShipment()">ট্র্যাক করুন</button>
+
+        <div id="tracking-result" style="margin-top: 1.25rem; display: none;">
+          <!-- Tracking Render -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMIN & SELLER PANEL -->
+    <div id="tab-admin" class="tab-content" style="display: none; margin-top: 1.25rem;">
+      <div class="nvr-tabs">
+        <button class="nvr-tab-btn active" onclick="app.switchAdminSub('products', event)">পণ্য ম্যানেজমেন্ট</button>
+        <button class="nvr-tab-btn" onclick="app.switchAdminSub('orders', event)">অর্ডার ও হিসাব</button>
+        <button class="nvr-tab-btn" onclick="app.switchAdminSub('referral', event)">রেফারেল ও অ্যাফিলিয়েট</button>
+      </div>
+
+      <!-- Sub Panel: Product CRUD -->
+      <div id="admin-sub-products" class="admin-sub">
+        <div class="nvr-section">
+          <h3>নতুন পণ্য যুক্ত করুন (Seller / Admin)</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+            <div>
+              <label>পণ্যের নাম:</label>
+              <input type="text" id="p-title" placeholder="পণ্যের নাম">
+            </div>
+            <div>
+              <label>SKU কোড:</label>
+              <input type="text" id="p-sku" placeholder="SKU-101">
+            </div>
+            <div>
+              <label>মূল মূল্য:</label>
+              <input type="number" id="p-price" placeholder="1500">
+            </div>
+            <div>
+              <label>বিক্রয় মূল্য:</label>
+              <input type="number" id="p-sale" placeholder="1200">
+            </div>
+            <div>
+              <label>স্টক পরিমাণ:</label>
+              <input type="number" id="p-stock" placeholder="10">
+            </div>
+            <div>
+              <label>ক্যাটাগরি:</label>
+              <select id="p-cat">
+                <option value="Healthcare">Healthcare</option>
+                <option value="Software">Software</option>
+                <option value="Digital">Digital</option>
+              </select>
+            </div>
+          </div>
+          <button class="nvr-btn nvr-btn-primary" style="margin-top: 0.5rem;" onclick="app.addNewProduct()">পণ্য প্রকাশ করুন (Publish)</button>
+        </div>
+      </div>
+
+      <!-- Sub Panel: Orders Ledger -->
+      <div id="admin-sub-orders" class="admin-sub" style="display: none;">
+        <div class="nvr-section">
+          <h3>অর্ডার ও আর্থিক লেনদেন রেকর্ড</h3>
+          <div id="admin-orders-list" style="margin-top: 1rem;">
+            <p>কোনো অর্ডার পাওয়া যায়নি।</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub Panel: Referral Hub -->
+      <div id="admin-sub-referral" class="admin-sub" style="display: none;">
+        <div class="nvr-section">
+          <h3>আপনার ইউনিক রেফারেল লিংক</h3>
+          <p style="font-size: 0.875rem; color: var(--nvr-gray);">এই লিংক ব্যবহার করে ক্রেতারা অর্ডার করলে কমিশন হিসাব করা হবে।</p>
+          <input type="text" id="my-ref-link" readonly style="background: #f1f5f9;">
+          <button class="nvr-btn nvr-btn-primary" onclick="app.copyRefLink()">লিংক কপি করুন</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Complete Application Logic Engine Script -->
+  <script>
+    class NivoraEcosystem {
+      constructor() {
+        this.currentTab = 'store';
+        this.navigationHistory = ['store'];
+        this.currentCurrency = 'BDT';
+        this.currencyRates = { BDT: 1, INR: 1.35, PKR: 3.2 };
+        this.currencySymbols = { BDT: '৳', INR: '₹', PKR: 'Rs' };
+
+        // Core Data Collections
+        this.products = [
+          { id: 'p1', title: 'Digital German Homoeo Care Kit', sku: 'HOMO-01', regularPrice: 1500, salePrice: 1200, stock: 12, category: 'Healthcare', image: 'https://via.placeholder.com/300x180?text=Homoeo+Kit' },
+          { id: 'p2', title: 'Nivora AI Smart Business Tool', sku: 'NIV-02', regularPrice: 3500, salePrice: 2800, stock: 5, category: 'Software', image: 'https://via.placeholder.com/300x180?text=Nivora+AI' },
+          { id: 'p3', title: 'TaskEarn BD Premium Script', sku: 'TSK-03', regularPrice: 2000, salePrice: 1500, stock: 0, category: 'Digital', image: 'https://via.placeholder.com/300x180?text=TaskEarn+Script' }
+        ];
+
+        this.cart = [];
+        this.orders = [];
+        this.currentUser = { uid: 'USR-ADMIN-01', role: 'admin' };
+
+        this.init();
+      }
+
+      init() {
+        this.captureReferral();
+        this.renderCatalog();
+        this.updateCartUI();
+        this.setupReferralLink();
+      }
+
+      // Tab Navigation System
+      switchTab(tabName, isBackAction = false) {
+        if (!isBackAction && this.currentTab !== tabName) {
+          this.navigationHistory.push(tabName);
+        }
+
+        this.currentTab = tabName;
+        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        
+        const target = document.getElementById(`tab-${tabName}`);
+        if (target) target.style.display = 'block';
+
+        if (tabName === 'cart') this.renderCartItems();
+        if (tabName === 'admin') this.renderAdminOrders();
+      }
+
+      // Back Button Functionality
+      goBack() {
+        if (this.navigationHistory.length > 1) {
+          this.navigationHistory.pop(); // Remove current view
+          const previousTab = this.navigationHistory[this.navigationHistory.length - 1];
+          this.switchTab(previousTab, true);
+        } else {
+          alert('আপনি ইতিমধ্যে মূল হোমে আছেন।');
+        }
+      }
+
+      switchAdminSub(subName, event) {
+        document.querySelectorAll('.admin-sub').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.nvr-tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`admin-sub-${subName}`).style.display = 'block';
+        if (event) event.target.classList.add('active');
+      }
+
+      // Multi-Currency Converter
+      changeCurrency(curr) {
+        this.currentCurrency = curr;
+        this.renderCatalog();
+        this.renderCartItems();
+      }
+
+      formatPrice(amount) {
+        const rate = this.currencyRates[this.currentCurrency];
+        const symbol = this.currencySymbols[this.currentCurrency];
+        return `${symbol}${(amount * rate).toFixed(0)}`;
+      }
+
+      // Catalog & Filters
+      renderCatalog(filteredProducts = null) {
+        const grid = document.getElementById('product-grid');
+        const list = filteredProducts || this.products;
+
+        if (list.length === 0) {
+          grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--nvr-gray);">কোনো পণ্য পাওয়া যায়নি।</p>`;
+          return;
+        }
+
+        grid.innerHTML = list.map(p => `
+          <div class="nvr-card">
+            <img src="${p.image}" class="nvr-card-img" alt="${p.title}">
+            <div class="nvr-card-body">
+              <span class="nvr-badge ${p.stock > 0 ? 'nvr-badge-success' : 'nvr-badge-warning'}">
+                ${p.stock > 0 ? `স্টক: ${p.stock}` : 'স্টক শেষ'}
+              </span>
+              <h3 style="font-size: 0.95rem; margin: 0.5rem 0;">${p.title}</h3>
+              <p style="font-weight: 700; color: var(--nvr-primary); margin: 0 0 0.85rem 0;">${this.formatPrice(p.salePrice)}</p>
+              <button class="nvr-btn nvr-btn-primary ${p.stock <= 0 ? 'nvr-btn-disabled' : ''}" 
+                      onclick="app.addToCart('${p.id}')" ${p.stock <= 0 ? 'disabled' : ''}>
+                ${p.stock > 0 ? 'কার্টে যোগ করুন' : 'আউট অব স্টক'}
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      filterProducts() {
+        const keyword = document.getElementById('search-input').value.toLowerCase();
+        const cat = document.getElementById('cat-filter').value;
+
+        const filtered = this.products.filter(p => {
+          const matchKey = p.title.toLowerCase().includes(keyword) || p.sku.toLowerCase().includes(keyword);
+          const matchCat = cat ? p.category === cat : true;
+          return matchKey && matchCat;
+        });
+
+        this.renderCatalog(filtered);
+      }
+
+      // Cart Logic
+      addToCart(productId) {
+        const product = this.products.find(p => p.id === productId);
+        if (!product || product.stock <= 0) return;
+
+        const existing = this.cart.find(item => item.id === productId);
+        if (existing) {
+          if (existing.quantity < product.stock) {
+            existing.quantity++;
+          } else {
+            alert('দুঃখিত, স্টকে থাকা সর্বোচ্চ সীমার বেশি পণ্য যোগ করা যাবে না।');
+            return;
+          }
+        } else {
+          this.cart.push({ ...product, quantity: 1 });
+        }
+
+        this.updateCartUI();
+        alert(`"${product.title}" কার্টে সফলভাবে যুক্ত করা হয়েছে।`);
+      }
+
+      updateCartUI() {
+        const totalQty = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById('cart-count').innerText = totalQty;
+      }
+
+      renderCartItems() {
+        const container = document.getElementById('cart-items-list');
+        if (this.cart.length === 0) {
+          container.innerHTML = `<p>আপনার কার্ট খালি রয়েছে।</p>`;
+          document.getElementById('cart-total-amount').innerText = this.formatPrice(0);
+          return;
+        }
+
+        container.innerHTML = this.cart.map(item => `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75re
