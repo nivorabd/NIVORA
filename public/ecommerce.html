@@ -555,4 +555,178 @@
         }
 
         container.innerHTML = this.cart.map(item => `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75re
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--nvr-border); padding-bottom: 0.5rem;">
+            <div>
+              <strong>${item.title}</strong><br>
+              <small>পরিমাণ: ${item.quantity} × ${this.formatPrice(item.salePrice)}</small>
+            </div>
+            <button class="nvr-btn nvr-btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="app.removeFromCart('${item.id}')">মুছুন</button>
+          </div>
+        `).join('');
+
+        const subtotal = this.cart.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
+        document.getElementById('cart-total-amount').innerText = this.formatPrice(subtotal);
+      }
+
+      removeFromCart(productId) {
+        this.cart = this.cart.filter(item => item.id !== productId);
+        this.updateCartUI();
+        this.renderCartItems();
+      }
+
+      // Checkout Engine
+      processCheckout() {
+        if (this.cart.length === 0) {
+          alert('আপনার কার্ট খালি রয়েছে!');
+          return;
+        }
+
+        const name = document.getElementById('chk-name').value;
+        const phone = document.getElementById('chk-phone').value;
+        const address = document.getElementById('chk-address').value;
+        const payment = document.getElementById('chk-payment').value;
+
+        if (!name || !phone || !address) {
+          alert('নাম, ফোন নম্বর এবং সম্পূর্ণ ঠিকানা দেওয়া বাধ্যতামূলক।');
+          return;
+        }
+
+        const subtotal = this.cart.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
+        const orderId = `NVR-${Math.floor(100000 + Math.random() * 900000)}`;
+        const activeRef = sessionStorage.getItem('NIVORA_ACTIVE_REF') || 'None';
+
+        // Stock Deduction
+        this.cart.forEach(cartItem => {
+          const prod = this.products.find(p => p.id === cartItem.id);
+          if (prod) prod.stock -= cartItem.quantity;
+        });
+
+        const newOrder = {
+          orderId,
+          customer: { name, phone, address },
+          items: [...this.cart],
+          total: subtotal,
+          currency: this.currentCurrency,
+          paymentMethod: payment,
+          paymentStatus: payment === 'cod' ? 'CASH_ON_DELIVERY' : 'LIVE_PAYMENT_NOT_CONFIGURED',
+          status: 'PENDING',
+          referral: activeRef,
+          date: new Date().toLocaleString()
+        };
+
+        this.orders.push(newOrder);
+        this.cart = [];
+        this.updateCartUI();
+        this.renderCatalog();
+
+        alert(`অর্ডার সফলভাবে তৈরি হয়েছে!\nঅর্ডার আইডি: ${orderId}\nস্টক পরিমাণ সমন্বিত হয়েছে।`);
+        this.switchTab('store');
+      }
+
+      // Parcel Tracking Engine
+      trackShipment() {
+        const orderId = document.getElementById('track-id-input').value.trim();
+        const resultContainer = document.getElementById('tracking-result');
+
+        if (!orderId) {
+          alert('অর্ডার আইডি প্রদান করুন।');
+          return;
+        }
+
+        const matchedOrder = this.orders.find(o => o.orderId === orderId);
+        resultContainer.style.display = 'block';
+
+        if (!matchedOrder) {
+          resultContainer.innerHTML = `
+            <div style="background: #fee2e2; border: 1px solid #fca5a5; padding: 0.85rem; border-radius: 6px; color: #991b1b;">
+              <strong>কোনো অর্ডার পাওয়া যায়নি!</strong> দেওয়া আইডিটি পরীক্ষা করুন।
+            </div>`;
+          return;
+        }
+
+        resultContainer.innerHTML = `
+          <div style="background: #f8fafc; border: 1px solid var(--nvr-border); padding: 1rem; border-radius: 6px;">
+            <h4>অর্ডার ট্র্যাকিং বিবরণ: ${matchedOrder.orderId}</h4>
+            <p style="margin: 0.25rem 0; font-size: 0.875rem;">গ্রাহক: ${matchedOrder.customer.name}</p>
+            <p style="margin: 0.25rem 0; font-size: 0.875rem;">স্ট্যাটাস: <strong>${matchedOrder.status}</strong></p>
+            <p style="margin: 0.25rem 0; font-size: 0.875rem;">কুরিয়ার পার্টনার: <strong>Steadfast Courier (SANDBOX MODE)</strong></p>
+            <p style="margin: 0.25rem 0; font-size: 0.875rem;">আনুমানিক সময়: <strong>২-৩ কর্মদিবস</strong></p>
+          </div>`;
+      }
+
+      // Admin Functions
+      addNewProduct() {
+        const title = document.getElementById('p-title').value;
+        const sku = document.getElementById('p-sku').value;
+        const regularPrice = Number(document.getElementById('p-price').value);
+        const salePrice = Number(document.getElementById('p-sale').value);
+        const stock = Number(document.getElementById('p-stock').value);
+        const category = document.getElementById('p-cat').value;
+
+        if (!title || !sku || regularPrice <= 0 || stock < 0) {
+          alert('অনুগ্রহ করে সঠিক পণ্যের মান প্রদান করুন।');
+          return;
+        }
+
+        const newProd = {
+          id: `p-${Date.now()}`,
+          title,
+          sku,
+          regularPrice,
+          salePrice: salePrice || regularPrice,
+          stock,
+          category,
+          image: 'https://via.placeholder.com/300x180?text=New+Product'
+        };
+
+        this.products.push(newProd);
+        this.renderCatalog();
+        alert('নতুন পণ্য সফলভাবে যুক্ত করা হয়েছে!');
+      }
+
+      renderAdminOrders() {
+        const container = document.getElementById('admin-orders-list');
+        if (this.orders.length === 0) {
+          container.innerHTML = `<p>কোনো অর্ডার রেকর্ড পাওয়া যায়নি।</p>`;
+          return;
+        }
+
+        container.innerHTML = this.orders.map(o => `
+          <div style="background: #f8fafc; border: 1px solid var(--nvr-border); padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
+            <strong>অর্ডার আইডি: ${o.orderId}</strong> (${o.date})<br>
+            গ্রাহক: ${o.customer.name} (${o.customer.phone})<br>
+            মোট: <strong>${o.currency} ${o.total}</strong> | স্ট্যাটাস: ${o.status}<br>
+            পেমেন্ট স্টেট: <span style="color: var(--nvr-danger); font-size: 0.8rem;">${o.paymentStatus}</span>
+          </div>
+        `).join('');
+      }
+
+      // Referral Handling
+      captureReferral() {
+        const params = new URLSearchParams(window.location.search);
+        const ref = params.get('ref');
+        if (ref) {
+          sessionStorage.setItem('NIVORA_ACTIVE_REF', ref);
+        }
+        document.getElementById('active-ref-display').innerText = sessionStorage.getItem('NIVORA_ACTIVE_REF') || 'None';
+      }
+
+      setupReferralLink() {
+        const refCode = btoa(this.currentUser.uid).replace(/=/g, '');
+        const link = `${window.location.origin}${window.location.pathname}?ref=${refCode}`;
+        document.getElementById('my-ref-link').value = link;
+      }
+
+      copyRefLink() {
+        const input = document.getElementById('my-ref-link');
+        input.select();
+        navigator.clipboard.writeText(input.value);
+        alert('রেফারেল লিংক কপি করা হয়েছে!');
+      }
+    }
+
+    // Launch Application Engine
+    const app = new NivoraEcosystem();
+  </script>
+</body>
+</html>
