@@ -1,1379 +1,582 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0b1020">
-    <title>NIVORA ONE — Global Enterprise ERP Intelligence (Complete Edition)</title>
-    <!-- Tailwind CSS for robust layout and styling components -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        obsidian: { 950: '#060709', 900: '#0b1020', 800: '#121a2d', 700: '#1c2841', 600: '#293650' },
-                        gold: { 500: '#e8bd58', 400: '#f3d47c', 600: '#c59b32' }
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', 'Noto Sans Bengali', sans-serif; background-color: #0b1020; color: #edf2ff; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0b1020; }
-        ::-webkit-scrollbar-thumb { background: #293650; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb-hover { background: #e8bd58; }
-        .glass { background: rgba(18, 26, 45, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-        @media print {
-            .no-print { display: none !important; }
-            body { background: #fff !important; color: #000 !important; }
-            .print-card { background: #fff !important; color: #000 !important; border: 1px solid #ccc !important; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>NIVORA ONE — Business Management</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#e5edf8;font-family:system-ui,"Noto Sans Bengali",sans-serif}
+.panel{background:#101d30;border:1px solid #26364b;border-radius:16px;padding:16px}
+.field{width:100%;background:#081525;color:#fff;border:1px solid #34465e;border-radius:10px;padding:11px;margin-top:5px}
+.btn{padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+.primary{background:#10b981;color:#04130f}
+.secondary{background:#26364b;color:#fff}
+.danger{background:#7f1d1d;color:white}
+.navbtn{display:block;width:100%;text-align:left;padding:12px;border-radius:10px;color:#cbd5e1}
+.navbtn:hover,.navbtn.active{background:#163b3b;color:#6ee7b7}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{padding:11px;text-align:left;border-bottom:1px solid #26364b;font-size:13px}
+th{color:#6ee7b7;background:#0a1728}
+.wrap{overflow:auto}
+.view{display:none}.view.active{display:block}
+label{font-size:13px;color:#bdc9d9}
+small{color:#94a3b8}
+@media(max-width:760px){#layout{display:block}#sidebar{display:flex;overflow:auto;gap:5px;padding:8px}#sidebar .navbtn{white-space:nowrap;width:auto;font-size:12px}main{padding:12px!important}.panel{padding:12px}}
+</style>
 </head>
-<body class="bg-[#0b1020] text-[#edf2ff] min-h-screen flex flex-col selection:bg-[#e8bd58] selection:text-[#0b1020]">
+<body>
 
-    <div class="app flex min-h-screen">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar w-72 flex-shrink-0 bg-[#0e1527] border-r border-[#293650] p-4 flex flex-col gap-3 fixed lg:static inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300" id="sidebar">
-            <div class="brand flex items-center justify-between pb-4 border-b border-[#293650]">
-                <div class="flex items-center space-x-3">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#ffe8a0] to-[#d4a12d] text-[#151a28] font-black flex items-center justify-center text-xl shadow-lg shadow-amber-500/10">N1</div>
-                    <div>
-                        <strong class="text-sm tracking-wider block">NIVORA ONE</strong>
-                        <small class="text-[11px] text-[#9baac4]">Century-Proof Edition 100+</small>
-                    </div>
-                </div>
-                <button onclick="toggleSidebar()" class="lg:hidden text-[#9baac4] hover:text-white">&times;</button>
-            </div>
-            
-            <div class="text-[10px] text-[#9baac4] tracking-widest font-bold px-2 uppercase" data-i18n="modules">Enterprise Modules</div>
-            
-            <nav class="nav flex-1 space-y-1 overflow-y-auto" id="nav">
-                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition bg-[#202b42] text-[#e8bd58] border border-[#34445f]" data-view="dashboard">
-                    <span class="text-base">◈</span> <span data-i18n="dashboard">Executive Dashboard</span>
-                </button>
-                <button onclick="switchTab('inventory')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="inventory">
-                    <span class="text-base">▦</span> <span data-i18n="inventory">Inventory & Scanner</span>
-                </button>
-                <button onclick="switchTab('trade')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="trade">
-                    <span class="text-base">⇄</span> <span data-i18n="trade">Procurement & Sales</span>
-                </button>
-                <button onclick="switchTab('ledger')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="ledger">
-                    <span class="text-base">৳</span> <span data-i18n="ledger">Ledger & Tally Book</span>
-                </button>
-                <button onclick="switchTab('financials')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="financials">
-                    <span class="text-base">📊</span> <span data-i18n="financials">P&L & Balance Sheet</span>
-                </button>
-                <button onclick="switchTab('shipping')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="shipping">
-                    <span class="text-base">▤</span> <span data-i18n="shipping">Shipping & Customs</span>
-                </button>
-                <button onclick="switchTab('radar')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="radar">
-                    <span class="text-base">◉</span> <span data-i18n="radar">AI Seasonal Radar</span>
-                </button>
-                <button onclick="switchTab('people')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="people">
-                    <span class="text-base">♙</span> <span data-i18n="people">HR & Payroll</span>
-                </button>
-                <button onclick="switchTab('reports')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="reports">
-                    <span class="text-base">▥</span> <span data-i18n="reports">Reports & Backup</span>
-                </button>
-                <button onclick="switchTab('settings')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition text-[#b5c2d9] hover:bg-[#202b42] hover:text-[#e8bd58]" data-view="settings">
-                    <span class="text-base">⚙</span> <span data-i18n="settings">Global Settings</span>
-                </button>
-            </nav>
-
-            <div class="sidefoot pt-3 border-t border-[#293650] text-[11px] text-[#9baac4]">
-                <strong class="text-white">CENTURY CORE (100+ Years)</strong><br>
-                <span id="storageStatus">Quantum Encrypted Offline Sync</span><br>
-                <span class="text-emerald-400">● AI Copilot Online</span>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="main flex-1 min-w-0 flex flex-col">
-            <!-- Top Navigation Bar -->
-            <header class="topbar h-18 border-b border-[#293650] glass sticky top-0 z-30 px-6 flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl bg-[#18233a] text-amber-400 hover:bg-[#293650]" aria-label="Toggle menu">☰</button>
-                    <div>
-                        <h2 id="pageTitle" class="text-base font-bold text-white" data-i18n="dashboard">Executive Dashboard</h2>
-                        <div class="clock text-[11px] text-[#9baac4] mono" id="clock">Loading UTC clock...</div>
-                    </div>
-                </div>
-
-                <div class="flex items-center space-x-3">
-                    <select id="language" onchange="changeLanguage(this.value)" class="bg-[#121a2d] border border-[#293650] text-xs rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400 font-semibold">
-                        <option value="bn">বাংলা (Bengali)</option>
-                        <option value="en">English</option>
-                        <option value="ar">العربية (Arabic)</option>
-                        <option value="hi">हिन्दी (Hindi)</option>
-                        <option value="ur">اردو (Urdu)</option>
-                    </select>
-
-                    <select id="currency" onchange="changeCurrency(this.value)" class="bg-[#121a2d] border border-[#293650] text-xs rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-400 font-semibold">
-                        <option value="BDT">৳ BDT</option>
-                        <option value="USD">$ USD</option>
-                        <option value="EUR">€ EUR</option>
-                        <option value="GBP">£ GBP</option>
-                        <option value="INR">₹ INR</option>
-                        <option value="AED">د.إ AED</option>
-                    </select>
-
-                    <button onclick="triggerQuickAudit()" class="hidden sm:flex items-center space-x-1.5 bg-[#18233a] border border-[#293650] hover:border-amber-400 px-3 py-2 rounded-xl text-xs text-amber-300 transition" title="Run System Integrity Audit">
-                        <span data-i18n="btn_audit">⚡ Audit</span>
-                    </button>
-                </div>
-            </header>
-
-            <main class="content p-6 max-w-[1600px] mx-auto w-full flex-1 space-y-6">
-
-                <div id="view-dashboard" class="view space-y-6 active">
-                    <div class="hero p-8 border border-[#3a3c48] rounded-3xl bg-gradient-to-r from-[#1d2b43] via-[#151d31] to-[#29251b] shadow-2xl relative overflow-hidden">
-                        <div class="absolute -right-16 -top-16 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
-                        <span class="eyebrow text-xs font-bold text-amber-400 uppercase tracking-widest" data-i18n="hero_eyebrow">GLOBAL ENTERPRISE COMMAND CENTER</span>
-                        <h1 class="text-2xl lg:text-4xl font-black text-white mt-1" data-i18n="hero_title">Autonomous Business Intelligence & Resilience Hub</h1>
-                        <p class="text-sm text-[#c0cbe0] mt-3 max-w-3xl leading-relaxed" data-i18n="hero_desc">Equipped with 100-year forward architecture, manual, barcode scanner, digital ledger, P&L generation, and fully automated AI predictive logistics.</p>
-                        <div class="mt-6 flex flex-wrap gap-3">
-                            <button onclick="switchTab('trade')" class="px-5 py-2.5 rounded-xl bg-[#e8bd58] text-[#0b1020] font-bold text-xs shadow-lg shadow-amber-500/20 hover:scale-105 transition" data-i18n="btn_record_trade">+ Record Trade</button>
-                            <button onclick="switchTab('inventory')" class="px-5 py-2.5 rounded-xl bg-[#1c2841] border border-[#34445f] text-white font-semibold text-xs hover:border-amber-400 transition" data-i18n="btn_scan_qr">Scan Barcode / QR</button>
-                            <button onclick="switchTab('financials')" class="px-5 py-2.5 rounded-xl bg-[#1c2841] border border-[#34445f] text-amber-300 font-semibold text-xs hover:border-amber-400 transition" data-i18n="btn_view_pl">View Live P&L Statement</button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="card bg-[#121a2d] border border-[#293650] rounded-2xl p-5 shadow-lg">
-                            <span class="label text-xs text-[#9baac4] uppercase tracking-wider" data-i18n="kpi_rev">Total Annual Revenue</span>
-                            <div class="metric text-2xl lg:text-3xl font-black text-white mt-2 mono" id="kpi-revenue">$54,290,000</div>
-                            <div class="sub text-xs text-emerald-400 mt-1" data-i18n="kpi_rev_sub">↑ 22.4% vs previous cycle</div>
-                        </div>
-                        <div class="card bg-[#121a2d] border border-[#293650] rounded-2xl p-5 shadow-lg">
-                            <span class="label text-xs text-[#9baac4] uppercase tracking-wider" data-i18n="kpi_inv">Inventory Valuation</span>
-                            <div class="metric text-2xl lg:text-3xl font-black text-white mt-2 mono" id="kpi-inventory">$8,450,200</div>
-                            <div class="sub text-xs text-[#9baac4] mt-1" id="kpi-inv-count">42 SKU Lines Active</div>
-                        </div>
-                        <div class="card bg-[#121a2d] border border-[#293650] rounded-2xl p-5 shadow-lg">
-                            <span class="label text-xs text-[#9baac4] uppercase tracking-wider" data-i18n="kpi_ship">Active Shipments</span>
-                            <div class="metric text-2xl lg:text-3xl font-black text-white mt-2 mono" id="kpi-shipment-count">14 Containers</div>
-                            <div class="sub text-xs text-amber-400 mt-1" data-i18n="kpi_ship_sub">2 Customs Clearance Pending</div>
-                        </div>
-                        <div class="card bg-[#121a2d] border border-[#293650] rounded-2xl p-5 shadow-lg">
-                            <span class="label text-xs text-[#9baac4] uppercase tracking-wider" data-i18n="kpi_pay">Monthly Payroll Outflow</span>
-                            <div class="metric text-2xl lg:text-3xl font-black text-white mt-2 mono" id="kpi-payroll">$1,420,000</div>
-                            <div class="sub text-xs text-emerald-400 mt-1" data-i18n="kpi_pay_sub">1,420 Employees Enrolled</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl">
-                            <div class="panelhead flex justify-between items-center mb-4">
-                                <h3 class="text-base font-bold text-white" data-i18n="ai_radar_title">AI Market Competition & Resilience Radar</h3>
-                                <span class="badge ok px-2.5 py-1 rounded-full bg-[#173d32] text-[#88eac2] text-xs font-semibold" data-i18n="shield_active">AI Shield Active</span>
-                            </div>
-                            <p class="text-xs text-[#9baac4] mb-4" data-i18n="ai_radar_desc">Continuously evaluating macroeconomic indicators, automated pricing adjustments, and inventory stock-out risks.</p>
-                            <div class="space-y-3" id="dashboard-radar-alerts">
-                                <div class="p-4 rounded-2xl bg-[#18233a] border border-[#293650] flex items-center justify-between gap-4">
-                                    <div>
-                                        <h4 class="text-xs font-bold text-white flex items-center gap-2" data-i18n="alert_1_title">⚠️ High-Speed AI Semiconductor Chip Shortage Warning</h4>
-                                        <p class="text-[11px] text-[#9baac4] mt-0.5" data-i18n="alert_1_desc">Predicted 30% price escalation in Q4. Current reserve covers 45 days of production.</p>
-                                    </div>
-                                    <button onclick="switchTab('radar')" class="btn small primary whitespace-nowrap" data-i18n="btn_hedge">Auto-Hedge</button>
-                                </div>
-                                <div class="p-4 rounded-2xl bg-[#18233a] border border-[#293650] flex items-center justify-between gap-4">
-                                    <div>
-                                        <h4 class="text-xs font-bold text-white flex items-center gap-2" data-i18n="alert_2_title">⚡ Automated Currency Arbitrage Opportunity</h4>
-                                        <p class="text-[11px] text-[#9baac4] mt-0.5" data-i18n="alert_2_desc">EUR/USD exchange volatility detected. Recommending settlement in EUR for European exports.</p>
-                                    </div>
-                                    <button onclick="switchTab('ledger')" class="btn small good whitespace-nowrap" data-i18n="btn_optimize">Optimize</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-base font-bold text-white mb-2" data-i18n="quick_actions">Master Executive Controls</h3>
-                                <p class="text-xs text-[#9baac4] mb-4" data-i18n="quick_actions_desc">Instant enterprise-grade overrides for emergency situations.</p>
-                                <div class="space-y-2.5">
-                                    <button onclick="triggerEmergencyLockdown()" class="w-full text-left p-3 rounded-xl bg-[#351d2a] border border-[#773845] text-[#ff9eab] font-semibold text-xs hover:bg-[#48232e] transition flex items-center justify-between">
-                                        <span data-i18n="btn_lockdown">🔒 Emergency Facility Lockdown</span>
-                                        <span>➔</span>
-                                    </button>
-                                    <button onclick="runPayrollDisbursement()" class="w-full text-left p-3 rounded-xl bg-[#16372f] border border-[#286e59] text-[#8ef0cb] font-semibold text-xs hover:bg-[#1f4a3e] transition flex items-center justify-between">
-                                        <span data-i18n="btn_disburse">💸 Instant Multi-Currency Payroll Payout</span>
-                                        <span>➔</span>
-                                    </button>
-                                    <button onclick="exportFullJSONBackup()" class="w-full text-left p-3 rounded-xl bg-[#18233a] border border-[#293650] text-white font-semibold text-xs hover:border-amber-400 transition flex items-center justify-between">
-                                        <span data-i18n="btn_backup">💾 Export Encrypted Backup JSON</span>
-                                        <span>➔</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-[#293650] text-[11px] text-[#9baac4] text-center" data-i18n="century_proof_label">
-                                NIVORA ONE Century-Proof Enterprise Edition
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-inventory" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl">
-                        <div class="panelhead flex justify-between items-center flex-wrap gap-4 mb-6">
-                            <div>
-                                <h3 class="text-lg font-bold text-white" data-i18n="inv_title">Smart Inventory & Barcode/QR Scanner</h3>
-                                <p class="text-xs text-[#9baac4]" data-i18n="inv_subtitle">Real-time stock control with manual entry, barcode scanning, digital logging, and auto triggers.</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="openScannerModal()" class="btn primary text-xs" data-i18n="btn_open_cam">📷 Open Camera Scanner</button>
-                                <button onclick="toggleItemForm()" class="btn text-xs" data-i18n="btn_add_sku">+ Add New Product SKU</button>
-                            </div>
-                        </div>
-
-                        <!-- Add Product Form -->
-                        <div id="productFormContainer" class="hidden mb-6 p-5 rounded-2xl bg-[#18233a] border border-[#293650]">
-                            <h4 class="text-sm font-bold text-amber-400 mb-4" data-i18n="new_sku_title">Register New Product SKU (Manual / Digital)</h4>
-                            <form id="productForm" onsubmit="saveProduct(event)" class="space-y-4">
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <div class="field">
-                                        <label data-i18n="lbl_sku">SKU Code</label>
-                                        <input type="text" id="pSku" required placeholder="SKU-NV-901" class="mono bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                    </div>
-                                    <div class="field">
-                                        <label data-i18n="lbl_pname">Product Name</label>
-                                        <input type="text" id="pName" required placeholder="Quantum Microcontroller v2" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                    </div>
-                                    <div class="field">
-                                        <label data-i18n="lbl_category">Category</label>
-                                        <input type="text" id="pCat" required placeholder="Electronics / Raw Material" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                    </div>
-                                    <div class="field">
-                                        <label data-i18n="lbl_qty">Quantity in Stock</label>
-                                        <input type="number" id="pQty" required value="100" min="0" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                    </div>
-                                    <div class="field">
-                                        <label data-i18n="lbl_price">Unit Price (USD Base)</label>
-                                        <input type="number" id="pPrice" required step="0.01" value="145.00" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                    </div>
-                                    <div class="field">
-                                        <label data-i18n="lbl_warehouse">Warehouse Location</label>
-                                        <input type="text" id="pLoc" value="Factory A - Sector 4" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                    </div>
-                                </div>
-                                <div class="form-actions flex gap-2 pt-2">
-                                    <button type="submit" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs" data-i18n="btn_save_sku">Save SKU Record</button>
-                                    <button type="button" onclick="toggleItemForm()" class="px-4 py-2 rounded-xl bg-[#293650] text-white text-xs" data-i18n="btn_cancel">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="toolbar flex gap-3 mb-4">
-                            <input type="text" id="inventorySearch" onkeyup="filterInventory()" placeholder="Search by SKU, Name or Location..." class="bg-[#18233a] border border-[#293650] p-2.5 rounded-xl text-xs text-white w-full max-w-sm">
-                        </div>
-
-                        <div class="tablewrap overflow-x-auto border border-[#293650] rounded-xl">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="border-b border-[#293650] text-[#9baac4] bg-[#18233a]/50">
-                                        <th class="p-3" data-i18n="th_sku">SKU Code</th>
-                                        <th class="p-3" data-i18n="th_pname">Product Name</th>
-                                        <th class="p-3" data-i18n="th_cat">Category</th>
-                                        <th class="p-3" data-i18n="th_qty">Quantity</th>
-                                        <th class="p-3" data-i18n="th_price">Unit Price</th>
-                                        <th class="p-3" data-i18n="th_loc">Location</th>
-                                        <th class="p-3" data-i18n="th_status">Stock Status</th>
-                                        <th class="p-3 text-right" data-i18n="th_action">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventoryTableBody" class="divide-y divide-[#293650]/40">
-                                    <!-- Dynamic rows injected here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-trade" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl">
-                        <div class="panelhead flex justify-between items-center mb-6">
-                            <div>
-                                <h3 class="text-lg font-bold text-white" data-i18n="trade_title">Procurement & Sales Transaction Gateway</h3>
-                                <p class="text-xs text-[#9baac4]" data-i18n="trade_subtitle">Manual, scanner, digital and automatic multi-currency trade entries.</p>
-                            </div>
-                        </div>
-
-                        <form id="tradeForm" onsubmit="saveTradeTransaction(event)" class="space-y-4 mb-8 p-5 rounded-2xl bg-[#18233a] border border-[#293650]">
-                            <h4 class="text-sm font-bold text-amber-400" data-i18n="new_trade_title">New Commercial Transaction</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div class="field">
-                                    <label data-i18n="lbl_trade_type">Transaction Type</label>
-                                    <select id="tType" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                        <option value="Sale" data-i18n="opt_sale">Export Sale (Inflow)</option>
-                                        <option value="Purchase" data-i18n="opt_purchase">Raw Material Purchase (Outflow)</option>
-                                    </select>
-                                </div>
-                                <div class="field">
-                                    <label data-i18n="lbl_partner">Client / Supplier Name</label>
-                                    <input type="text" id="tPartner" required placeholder="Samsung Global / SinoChem" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                </div>
-                                <div class="field">
-                                    <label data-i18n="lbl_item_desc">Item & Quantity Description</label>
-                                    <input type="text" id="tDesc" required placeholder="Quantum Microcontroller (450 pcs)" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                </div>
-                                <div class="field">
-                                    <label data-i18n="lbl_amount">Total Amount (USD)</label>
-                                    <input type="number" id="tAmount" required step="0.01" placeholder="85000" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                </div>
-                                <div class="field">
-                                    <label data-i18n="lbl_payment_status">Payment Status</label>
-                                    <select id="tStatus" class="bg-[#121a2d] border border-[#293650] p-2.5 rounded-xl text-white w-full text-xs">
-                                        <option value="Completed" data-i18n="opt_completed">Completed & Cleared</option>
-                                        <option value="Pending" data-i18n="opt_pending">Pending Wire Transfer</option>
-                                        <option value="Escrow" data-i18n="opt_escrow">Secured in Escrow</option>
-                                    </select>
-                                </div>
-                                <div class="field flex items-end">
-                                    <button type="submit" class="w-full py-2.5 rounded-xl bg-amber-500 text-black font-bold text-xs">Record Transaction</button>
-                                </div>
-                            </div>
-                        </form>
-
-                        <div class="tablewrap overflow-x-auto border border-[#293650] rounded-xl">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="border-b border-[#293650] text-[#9baac4] bg-[#18233a]/50">
-                                        <th class="p-3" data-i18n="th_tid">Transaction ID</th>
-                                        <th class="p-3" data-i18n="th_ttype">Type</th>
-                                        <th class="p-3" data-i18n="th_partner">Client / Supplier</th>
-                                        <th class="p-3" data-i18n="th_desc">Description</th>
-                                        <th class="p-3" data-i18n="th_amount">Amount</th>
-                                        <th class="p-3" data-i18n="th_tstatus">Status</th>
-                                        <th class="p-3" data-i18n="th_date">Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tradeTableBody" class="divide-y divide-[#293650]/40">
-                                    <!-- Dynamic rows -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-ledger" class="view space-y-6 hidden">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl space-y-4">
-                            <h3 class="text-lg font-bold text-white" data-i18n="ledger_title">Financial Ledger & Tally Summary</h3>
-                            <p class="text-xs text-[#9baac4]" data-i18n="ledger_subtitle">Double-entry bookkeeping synthesized across all global enterprise accounts.</p>
-                            
-                            <div class="space-y-3 pt-2">
-                                <div class="p-4 rounded-2xl bg-[#18233a] border border-[#293650] flex justify-between items-center">
-                                    <span class="text-xs text-[#9baac4]" data-i18n="lbl_total_inflow">Total Inflow (Revenue)</span>
-                                    <span class="mono font-bold text-emerald-400 text-sm" id="ledgerInflow">$48,290,000</span>
-                                </div>
-                                <div class="p-4 rounded-2xl bg-[#18233a] border border-[#293650] flex justify-between items-center">
-                                    <span class="text-xs text-[#9baac4]" data-i18n="lbl_total_outflow">Total Outflow & Payroll</span>
-                                    <span class="mono font-bold text-rose-400 text-sm" id="ledgerOutflow">$14,120,000</span>
-                                </div>
-                                <div class="p-4 rounded-2xl bg-[#18233a] border border-[#293650] flex justify-between items-center">
-                                    <span class="text-xs text-[#9baac4]" data-i18n="lbl_net_profit">Net Enterprise Balance</span>
-                                    <span class="mono font-bold text-amber-400 text-base" id="ledgerNet">$34,170,000</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="lg:col-span-2 panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl">
-                            <div class="panelhead flex justify-between items-center mb-4">
-                                <h3 class="text-base font-bold text-white" data-i18n="ledger_log">Double-Entry Journal Entries</h3>
-                                <button onclick="openLedgerModal()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs">+ Manual Journal Entry</button>
-                            </div>
-                            <div class="tablewrap overflow-x-auto border border-[#293650] rounded-xl">
-                                <table class="w-full text-left border-collapse text-xs">
-                                    <thead>
-                                        <tr class="border-b border-[#293650] text-[#9baac4] bg-[#18233a]/50">
-                                            <th class="p-3" data-i18n="th_ref">Ref No</th>
-                                            <th class="p-3" data-i18n="th_account">Account Category</th>
-                                            <th class="p-3" data-i18n="th_narration">Narration</th>
-                                            <th class="p-3" data-i18n="th_debit">Debit</th>
-                                            <th class="p-3" data-i18n="th_credit">Credit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="ledgerTableBody" class="divide-y divide-[#293650]/40">
-                                        <!-- Dynamic entries -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-financials" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl space-y-6">
-                        <div class="flex justify-between items-center flex-wrap gap-4 border-b border-[#293650] pb-4">
-                            <div>
-                                <h3 class="text-lg font-bold text-white">Live Profit & Loss (P&L) Statement & Balance Sheet</h3>
-                                <p class="text-xs text-[#9baac4]">Real-time automated financial statements generated from enterprise transactions and ledger records.</p>
-                            </div>
-                            <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs">🖨️ Print Financial Statement</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Income Statement -->
-                            <div class="p-5 rounded-2xl bg-[#18233a] border border-[#293650] space-y-4">
-                                <h4 class="text-sm font-bold text-amber-400">Income Statement (Revenues & Inflows)</h4>
-                                <div class="space-y-2 text-xs divide-y divide-[#293650]">
-                                    <div class="flex justify-between pt-2">
-                                        <span class="text-[#9baac4]">Gross Product Sales</span>
-                                        <span class="mono font-bold text-emerald-400" id="plGrossSales">$48,290,000</span>
-                                    </div>
-                                    <div class="flex justify-between pt-2">
-                                        <span class="text-[#9baac4]">Export Contracts & Services</span>
-                                        <span class="mono font-bold text-emerald-400">$6,000,000</span>
-                                    </div>
-                                    <div class="flex justify-between pt-2">
-                                        <span class="text-[#9baac4]">Currency Arbitrage & Yields</span>
-                                        <span class="mono font-bold text-emerald-400">$1,450,000</span>
-                                    </div>
-                                    <div class="flex justify-between pt-3 font-bold text-white border-t border-amber-400/40">
-                                        <span>Total Enterprise Revenue</span>
-                                        <span class="mono text-emerald-400 text-sm" id="plTotalRev">$55,740,000</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Operating Expenses & Net Income -->
-                            <div class="p-5 rounded-2xl bg-[#18233a] border border-[#293650] space-y-4">
-                                <h4 class="text-sm font-bold text-rose-400">Operating Expenses & Net Profit</h4>
-                                <div class="space-y-2 text-xs divide-y divide-[#293650]">
-                                    <div class="flex justify-between pt-2">
-                                        <span class="text-[#9baac4]">Raw Material Procurement</span>
-                                        <span class="mono font-bold text-rose-400">$14,200,000</span>
-                                    </div>
-                                    <div class="flex justify-between pt-2">
-                                        <span class="text-[#9baac4]">Global Payroll Outflow</span>
-                                        <span class="mono font-bold text-rose-400">$17,040,000</span>
-                                    </div>
-                                    <div class="flex justify-between pt-2">
-                                        <span class="text-[#9baac4]">Logistics, Custom Duties & Tax</span>
-                                        <span class="mono font-bold text-rose-400">$3,500,000</span>
-                                    </div>
-                                    <div class="flex justify-between pt-3 font-bold text-white border-t border-rose-400/40">
-                                        <span>Net Profit (EBITDA)</span>
-                                        <span class="mono text-amber-400 text-sm" id="plNetProfit">$21,000,000</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-shipping" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl">
-                        <div class="panelhead flex justify-between items-center mb-6">
-                            <div>
-                                <h3 class="text-lg font-bold text-white" data-i18n="ship_title">Global Shipping, Bills of Lading & Customs</h3>
-                                <p class="text-xs text-[#9baac4]" data-i18n="ship_subtitle">Track maritime containers, air cargo manifest clearance, and automated customs compliance.</p>
-                            </div>
-                            <button onclick="openShipmentModal()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs" data-i18n="btn_dispatch_container">+ Dispatch New Container</button>
-                        </div>
-
-                        <div class="tablewrap overflow-x-auto border border-[#293650] rounded-xl">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="border-b border-[#293650] text-[#9baac4] bg-[#18233a]/50">
-                                        <th class="p-3" data-i18n="th_bol">Bill of Lading ID</th>
-                                        <th class="p-3" data-i18n="th_route">Origin / Destination</th>
-                                        <th class="p-3" data-i18n="th_cargo">Cargo & Material</th>
-                                        <th class="p-3" data-i18n="th_customs">Customs Status</th>
-                                        <th class="p-3" data-i18n="th_transit">Transit Progress</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-[#293650]/40">
-                                    <tr class="hover:bg-[#172238] transition">
-                                        <td class="p-3 mono font-bold text-amber-400">BOL-89021-US</td>
-                                        <td class="p-3">Shanghai Port ➔ Los Angeles</td>
-                                        <td class="p-3">Industrial Microcontrollers (450 pcs)</td>
-                                        <td class="p-3"><span class="px-2 py-1 rounded-md bg-[#173d32] text-[#88eac2]">Cleared & Verified</span></td>
-                                        <td class="p-3">At Sea (Day 9 / 14)</td>
-                                    </tr>
-                                    <tr class="hover:bg-[#172238] transition">
-                                        <td class="p-3 mono font-bold text-amber-400">BOL-44102-EU</td>
-                                        <td class="p-3">Hamburg Port ➔ Dhaka EPZ</td>
-                                        <td class="p-3">High-Grade Steel Sheets (12 Tons)</td>
-                                        <td class="p-3"><span class="px-2 py-1 rounded-md bg-[#3d3417] text-[#eacb88]">Inspection Pending</span></td>
-                                        <td class="p-3">Port Docked</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-radar" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl space-y-6">
-                        <div class="panelhead flex justify-between items-center">
-                            <div>
-                                <h3 class="text-lg font-bold text-white" data-i18n="radar_title_full">AI-Powered Predictive Seasonal Radar</h3>
-                                <p class="text-xs text-[#9baac4]" data-i18n="radar_subtitle_full">Anticipates raw material price spikes, monsoon shipping delays, and demand surges before they impact profitability.</p>
-                            </div>
-                            <button onclick="runAiPrediction()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs" data-i18n="btn_run_scan">Run Deep AI Scan</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="radarCardsGrid">
-                            <div class="p-5 rounded-2xl bg-[#18233a] border border-[#293650] space-y-3">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-xs font-bold text-rose-400" data-i18n="risk_critical">CRITICAL DEFICIT WARNING</span>
-                                    <span class="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300">Risk: High</span>
-                                </div>
-                                <h4 class="text-sm font-bold text-white">Polymer Grade-A Resin (Raw Material)</h4>
-                                <p class="text-xs text-[#9baac4]">Predicted seasonal demand spike (+35%) in Q3 across Asian manufacturing plants. Current inventory covers only 18 days.</p>
-                                <div class="pt-2 flex justify-between items-center">
-                                    <span class="text-xs text-amber-300 mono">Recommended Buffer: +500 Tons</span>
-                                    <button onclick="triggerAutoProcure('Polymer Resin')" class="px-3 py-1.5 rounded-lg bg-amber-500 text-black font-bold text-xs" data-i18n="btn_auto_procure">Auto Procure</button>
-                                </div>
-                            </div>
-                            <div class="p-5 rounded-2xl bg-[#18233a] border border-[#293650] space-y-3">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-xs font-bold text-amber-400" data-i18n="risk_notice">ROUTE CONGESTION NOTICE</span>
-                                    <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300">Risk: Moderate</span>
-                                </div>
-                                <h4 class="text-sm font-bold text-white">Lithium-Ion Cathode Cells</h4>
-                                <p class="text-xs text-[#9baac4]">Maritime Route #4 experiencing weather delays. AI has simulated an alternate air freight corridor to prevent line stoppage.</p>
-                                <div class="pt-2 flex justify-between items-center">
-                                    <span class="text-xs text-amber-300 mono">Time Saved: 6 Days</span>
-                                    <button onclick="triggerReroute('Route #4')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-black font-bold text-xs" data-i18n="btn_reroute">Reroute Now</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-people" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl">
-                        <div class="panelhead flex justify-between items-center mb-6">
-                            <div>
-                                <h3 class="text-lg font-bold text-white" data-i18n="hr_title">Global Personnel & Automated Payroll</h3>
-                                <p class="text-xs text-[#9baac4]" data-i18n="hr_subtitle">Manage executive personnel, factory shift schedules, and multi-currency salary disbursements.</p>
-                            </div>
-                            <button onclick="runPayrollDisbursement()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs" data-i18n="btn_run_payroll">Run Monthly Payroll Payout</button>
-                        </div>
-
-                        <div class="tablewrap overflow-x-auto border border-[#293650] rounded-xl">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="border-b border-[#293650] text-[#9baac4] bg-[#18233a]/50">
-                                        <th class="p-3" data-i18n="th_emp">Employee Name & ID</th>
-                                        <th class="p-3" data-i18n="th_role">Designation & Station</th>
-                                        <th class="p-3" data-i18n="th_shift">Shift Status</th>
-                                        <th class="p-3" data-i18n="th_salary">Monthly Salary</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-[#293650]/40">
-                                    <tr class="hover:bg-[#172238] transition">
-                                        <td class="p-3 font-semibold text-white">Al-Razi Mahmud <br><span class="text-[10px] text-[#9baac4] mono">EMP-001</span></td>
-                                        <td class="p-3" data-i18n="emp_1_role">Chief Operations Director (Factory A)</td>
-                                        <td class="p-3"><span class="px-2 py-1 rounded-md bg-[#173d32] text-[#88eac2]" data-i18n="shift_onduty">On Duty (Shift A)</span></td>
-                                        <td class="p-3 mono font-bold text-white salary-val" data-base="12500">$12,500</td>
-                                    </tr>
-                                    <tr class="hover:bg-[#172238] transition">
-                                        <td class="p-3 font-semibold text-white">Elena Rostova <br><span class="text-[10px] text-[#9baac4] mono">EMP-002</span></td>
-                                        <td class="p-3" data-i18n="emp_2_role">Global Logistics & Customs Head</td>
-                                        <td class="p-3"><span class="px-2 py-1 rounded-md bg-[#173d32] text-[#88eac2]" data-i18n="shift_onduty">On Duty (Shift B)</span></td>
-                                        <td class="p-3 mono font-bold text-white salary-val" data-base="9800">$9,800</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-reports" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl space-y-6">
-                        <div class="panelhead flex justify-between items-center">
-                            <div>
-                                <h3 class="text-lg font-bold text-white" data-i18n="reports_title">Executive Reports & Encrypted Backup</h3>
-                                <p class="text-xs text-[#9baac4]" data-i18n="reports_subtitle">Generate print-ready executive summaries or backup your complete database to local storage.</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs" data-i18n="btn_print">🖨️ Print Executive Report</button>
-                                <button onclick="exportFullJSONBackup()" class="px-4 py-2 rounded-xl bg-[#293650] text-white text-xs" data-i18n="btn_export_json">📥 Export JSON Backup</button>
-                            </div>
-                        </div>
-
-                        <div class="p-6 rounded-2xl bg-[#18233a] border border-[#293650] space-y-4 print-card">
-                            <h4 class="text-base font-bold text-white border-b border-[#293650] pb-2" data-i18n="report_card_title">NIVORA ONE — Quarterly Executive Performance Briefing (Century-Proof)</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                                <div>
-                                    <span class="text-[#9baac4] block" data-i18n="rep_period">Reporting Period</span>
-                                    <strong class="text-white text-sm">Q3 Fiscal Year 2126</strong>
-                                </div>
-                                <div>
-                                    <span class="text-[#9baac4] block" data-i18n="rep_rev">Consolidated Revenue</span>
-                                    <strong class="text-emerald-400 text-sm mono">$54,290,000</strong>
-                                </div>
-                                <div>
-                                    <span class="text-[#9baac4] block" data-i18n="rep_comp">Operational Compliance</span>
-                                    <strong class="text-amber-400 text-sm">99.99% Century Certified</strong>
-                                </div>
-                            </div>
-                            <p class="text-xs text-[#9baac4] leading-relaxed pt-2" data-i18n="rep_desc">All international trade transactions, manual/digital double-entry ledger tallies, and barcode inventory records have been verified against autonomous AI security protocols.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-settings" class="view space-y-6 hidden">
-                    <div class="panel bg-[#121a2d] border border-[#293650] rounded-3xl p-6 shadow-xl space-y-6">
-                        <h3 class="text-lg font-bold text-white" data-i18n="settings_title">Global System Preferences & Storage</h3>
-                        <div class="space-y-4 max-w-xl text-xs">
-                            <div class="field">
-                                <label data-i18n="lbl_company_name">Enterprise Corporate Name</label>
-                                <input type="text" id="settingCompany" value="NIVORA ONE Global Enterprise Inc." class="bg-[#18233a] border border-[#293650] p-2.5 rounded-xl text-white w-full">
-                            </div>
-                            <div class="field">
-                                <label data-i18n="lbl_tax_rate">Default International Tax / VAT Rate (%)</label>
-                                <input type="number" id="settingTax" value="4.2" step="0.1" class="bg-[#18233a] border border-[#293650] p-2.5 rounded-xl text-white w-full">
-                            </div>
-                            <div class="flex gap-2 pt-2">
-                                <button onclick="saveSettings()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs" data-i18n="btn_save_settings">Save Preferences</button>
-                                <button onclick="resetAppStorage()" class="px-4 py-2 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs" data-i18n="btn_reset_storage">Factory Reset Storage</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </main>
-
-            <footer class="text-center py-6 border-t border-[#293650] text-[11px] text-[#9baac4] no-print">
-                NIVORA ONE Global Enterprise ERP Intelligence Hub • Century-Proof 100+ Years Local Architecture
-            </footer>
-        </div>
+<header class="sticky top-0 z-20 border-b border-slate-700 bg-slate-950/95 p-4">
+  <div class="flex flex-wrap items-center justify-between gap-3 max-w-7xl mx-auto">
+    <div>
+      <h1 class="text-xl font-black text-emerald-300">NIVORA ONE</h1>
+      <p class="text-xs text-slate-400">Business Management • ERP</p>
     </div>
-
-    <!-- Barcode / QR Camera Scanner Modal -->
-    <div id="scannerModal" class="fixed inset-0 z-50 bg-[#060709]/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-[#121a2d] border border-[#293650] rounded-3xl p-6 max-w-md w-full shadow-2xl relative space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-base font-bold text-white" data-i18n="cam_modal_title">📷 Camera Barcode & QR Scanner</h3>
-                <button onclick="closeScannerModal()" class="text-[#9baac4] hover:text-white text-lg">&times;</button>
-            </div>
-            <p class="text-xs text-[#9baac4]" data-i18n="cam_modal_desc">Point camera at product QR or barcode to instantly audit inventory or log stock movement.</p>
-            
-            <div class="w-full h-52 bg-[#060709] border-2 border-dashed border-amber-400/50 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden">
-                <div class="absolute inset-x-0 h-0.5 bg-rose-500 animate-pulse top-1/2"></div>
-                <video id="cameraVideo" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover opacity-60"></video>
-                <div class="relative z-10 text-center p-4">
-                    <span class="text-xs text-amber-400 font-mono block bg-[#0b1020]/80 px-3 py-1.5 rounded-lg border border-[#293650]" data-i18n="laser_active">Laser Scanning Active (58kHz)</span>
-                </div>
-            </div>
-
-            <div class="flex gap-2">
-                <button onclick="simulateSuccessfulScan()" class="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs flex-1" data-i18n="btn_sim_scan">Simulate Successful Scan (SKU-NV-901)</button>
-                <button onclick="closeScannerModal()" class="px-4 py-2 rounded-xl bg-[#293650] text-white text-xs" data-i18n="btn_close">Close</button>
-            </div>
-        </div>
+    <div class="text-right">
+      <div id="clock" class="font-bold"></div>
+      <div id="connection" class="text-xs text-amber-300">সংযোগ পরীক্ষা হচ্ছে...</div>
     </div>
+  </div>
+</header>
 
-    <!-- Toast Notification Box -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-[#121a2d] border border-amber-400/50 rounded-2xl p-4 shadow-2xl flex items-center space-x-3 max-w-sm pointer-events-none">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#ffe8a0] to-[#d4a12d] flex items-center justify-center text-[#0b1020] font-bold text-sm">✓</div>
-        <div>
-            <h4 id="toastTitle" class="text-xs font-bold text-white">System Notification</h4>
-            <p id="toastDesc" class="text-[11px] text-[#9baac4]">Operation completed successfully.</p>
+<div id="layout" class="max-w-7xl mx-auto md:flex min-h-screen">
+  <aside id="sidebar" class="md:w-60 shrink-0 border-r border-slate-800 p-3">
+    <button class="navbtn active" data-view="dashboard">▦ ড্যাশবোর্ড</button>
+    <button class="navbtn" data-view="inventory">▣ পণ্য ও স্টক</button>
+    <button class="navbtn" data-view="trade">⇄ ক্রয়-বিক্রয়</button>
+    <button class="navbtn" data-view="ledger">▤ আয়-ব্যয় খাতা</button>
+    <button class="navbtn" data-view="reports">▥ লাভ-ক্ষতি রিপোর্ট</button>
+    <button class="navbtn" data-view="backup">⬇ ব্যাকআপ ও সেটিংস</button>
+  </aside>
+
+  <main class="flex-1 min-w-0 p-5 space-y-5">
+
+    <section id="dashboard" class="view active space-y-5">
+      <div>
+        <h2 class="text-2xl font-bold">ব্যবসার ড্যাশবোর্ড</h2>
+        <p class="text-sm text-slate-400">আপনার সংরক্ষিত তথ্য থেকে হিসাব দেখানো হচ্ছে।</p>
+      </div>
+      <div class="grid grid-cols-2 xl:grid-cols-4 gap-3">
+        <div class="panel"><small>মোট পণ্য</small><div id="kProducts" class="text-2xl font-black mt-2">0</div></div>
+        <div class="panel"><small>স্টকের মোট ইউনিট</small><div id="kStock" class="text-2xl font-black mt-2">0</div></div>
+        <div class="panel"><small>মোট বিক্রি</small><div id="kSales" class="text-xl font-black text-emerald-300 mt-2">৳0</div></div>
+        <div class="panel"><small>আয়-ব্যয়ের নিট ফল</small><div id="kNet" class="text-xl font-black mt-2">৳0</div></div>
+      </div>
+      <div class="panel">
+        <h3 class="font-bold mb-3">সাম্প্রতিক ক্রয়-বিক্রয়</h3>
+        <div class="wrap"><table><thead><tr><th>তারিখ</th><th>ধরন</th><th>বিবরণ</th><th>পরিমাণ</th><th>মোট</th></tr></thead><tbody id="recentTrades"></tbody></table></div>
+      </div>
+      <div class="panel">
+        <h3 class="font-bold mb-2">গুরুত্বপূর্ণ নির্দেশনা</h3>
+        <p class="text-sm text-slate-300">বিক্রয়ের আগে পর্যাপ্ত স্টক আছে কি না যাচাই করা হয়। একই SKU দিয়ে একাধিক পণ্য যোগ করা যাবে না। এখানে দেখানো হিসাব আপনার রেকর্ডের ওপর নির্ভরশীল।</p>
+      </div>
+    </section>
+
+    <section id="inventory" class="view space-y-5">
+      <h2 class="text-2xl font-bold">পণ্য ও স্টক ব্যবস্থাপনা</h2>
+      <form id="productForm" class="panel grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <input type="hidden" id="editProductId">
+        <label>পণ্যের নাম<input id="pName" class="field" required maxlength="120" placeholder="পণ্যের নাম"></label>
+        <label>SKU / পণ্য কোড<input id="pSku" class="field" required maxlength="60" placeholder="যেমন: PROD-001"></label>
+        <label>প্রতি ইউনিট ক্রয়মূল্য<input id="pCost" class="field" type="number" min="0" step="0.01" required></label>
+        <label>প্রতি ইউনিট বিক্রয়মূল্য<input id="pPrice" class="field" type="number" min="0" step="0.01" required></label>
+        <label>প্রাথমিক স্টক<input id="pStock" class="field" type="number" min="0" step="1" required></label>
+        <label>সতর্কতামূলক ন্যূনতম স্টক<input id="pMin" class="field" type="number" min="0" step="1" value="5" required></label>
+        <div class="flex gap-2 items-end sm:col-span-2 lg:col-span-3">
+          <button class="btn primary" type="submit">পণ্য সংরক্ষণ</button>
+          <button class="btn secondary" type="button" id="cancelEdit">বাতিল</button>
         </div>
+        <p id="productMsg" class="text-sm sm:col-span-3"></p>
+      </form>
+      <div class="panel">
+        <input id="productSearch" class="field mb-3" placeholder="নাম অথবা SKU দিয়ে খুঁজুন...">
+        <div class="wrap"><table><thead><tr><th>পণ্য</th><th>SKU</th><th>স্টক</th><th>ক্রয়মূল্য</th><th>বিক্রয়মূল্য</th><th>অবস্থা</th><th>কাজ</th></tr></thead><tbody id="productRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="trade" class="view space-y-5">
+      <h2 class="text-2xl font-bold">ক্রয়-বিক্রয়</h2>
+      <form id="tradeForm" class="panel grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <label>লেনদেনের ধরন<select id="tType" class="field"><option value="sale">বিক্রয়</option><option value="purchase">ক্রয়</option></select></label>
+        <label>পণ্য<select id="tProduct" class="field" required></select></label>
+        <label>পরিমাণ<input id="tQty" class="field" type="number" min="1" step="1" required></label>
+        <label>প্রতি ইউনিট মূল্য<input id="tUnitPrice" class="field" type="number" min="0" step="0.01" required></label>
+        <label>ক্রেতা / সরবরাহকারী<input id="tParty" class="field" maxlength="120" placeholder="নাম (ঐচ্ছিক)"></label>
+        <label>তারিখ<input id="tDate" class="field" type="date" required></label>
+        <label class="sm:col-span-2 lg:col-span-3">নোট<input id="tNote" class="field" maxlength="300" placeholder="ঐচ্ছিক"></label>
+        <div class="sm:col-span-2 lg:col-span-3 flex flex-wrap gap-2 items-center">
+          <button class="btn primary" type="submit">লেনদেন সংরক্ষণ</button>
+          <span id="tradeTotal" class="text-emerald-300 font-bold"></span>
+        </div>
+        <p id="tradeMsg" class="text-sm sm:col-span-3"></p>
+      </form>
+      <div class="panel">
+        <h3 class="font-bold mb-3">লেনদেনের ইতিহাস</h3>
+        <div class="wrap"><table><thead><tr><th>তারিখ</th><th>ধরন</th><th>পণ্য</th><th>পরিমাণ</th><th>একক মূল্য</th><th>মোট</th><th>পার্টি</th><th>কাজ</th></tr></thead><tbody id="tradeRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="ledger" class="view space-y-5">
+      <h2 class="text-2xl font-bold">আয়-ব্যয় খাতা</h2>
+      <form id="ledgerForm" class="panel grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <label>ধরন<select id="lType" class="field"><option value="income">অন্যান্য আয়</option><option value="expense">অন্যান্য ব্যয়</option></select></label>
+        <label>বিবরণ<input id="lDesc" class="field" maxlength="160" required placeholder="যেমন: বিদ্যুৎ বিল"></label>
+        <label>টাকার পরিমাণ<input id="lAmount" class="field" type="number" min="0.01" step="0.01" required></label>
+        <label>তারিখ<input id="lDate" class="field" type="date" required></label>
+        <label>নোট<input id="lNote" class="field" maxlength="300"></label>
+        <div class="flex items-end"><button class="btn primary" type="submit">খাতায় যোগ করুন</button></div>
+        <p id="ledgerMsg" class="text-sm sm:col-span-3"></p>
+      </form>
+      <div class="panel"><div class="wrap"><table><thead><tr><th>তারিখ</th><th>ধরন</th><th>বিবরণ</th><th>পরিমাণ</th><th>কাজ</th></tr></thead><tbody id="ledgerRows"></tbody></table></div></div>
+    </section>
+
+    <section id="reports" class="view space-y-5">
+      <h2 class="text-2xl font-bold">লাভ-ক্ষতি রিপোর্ট</h2>
+      <div class="panel grid sm:grid-cols-2 gap-3">
+        <label>শুরুর তারিখ<input id="rStart" class="field" type="date"></label>
+        <label>শেষ তারিখ<input id="rEnd" class="field" type="date"></label>
+        <button id="runReport" class="btn primary sm:col-span-2">রিপোর্ট তৈরি করুন</button>
+      </div>
+      <div id="reportOutput" class="panel space-y-3"></div>
+      <p class="text-xs text-slate-400">নোট: ক্রয়কৃত পণ্যের বিক্রীত অংশের প্রকৃত Cost of Goods Sold (COGS), ফেরত, কর, বকেয়া ও অন্যান্য সমন্বয় এই সাধারণ রিপোর্টে সম্পূর্ণ হিসাব করা হয় না। বড় প্রতিষ্ঠানের নিরীক্ষিত আর্থিক বিবরণীর বিকল্প নয়।</p>
+    </section>
+
+    <section id="backup" class="view space-y-5">
+      <h2 class="text-2xl font-bold">ব্যাকআপ ও সেটিংস</h2>
+      <div class="panel space-y-4">
+        <h3 class="font-bold">ডেটা ব্যাকআপ</h3>
+        <p class="text-sm text-slate-300">JSON ফাইল ডাউনলোড করে নিরাপদ স্থানে রাখুন। এই ফাইল এনক্রিপ্ট করা নয়।</p>
+        <div class="flex flex-wrap gap-2">
+          <button id="exportBtn" class="btn primary">JSON ব্যাকআপ ডাউনলোড</button>
+          <label class="btn secondary">JSON ব্যাকআপ ফিরিয়ে আনুন<input id="importFile" type="file" accept=".json,application/json" hidden></label>
+        </div>
+        <p id="backupMsg" class="text-sm"></p>
+      </div>
+      <div class="panel space-y-3">
+        <h3 class="font-bold">মুদ্রা</h3>
+        <label>হিসাবের মুদ্রা<select id="currency" class="field"><option value="BDT">BDT — ৳</option><option value="USD">USD — $</option><option value="EUR">EUR — €</option><option value="INR">INR — ₹</option><option value="GBP">GBP — £</option><option value="AED">AED</option></select></label>
+        <button id="saveSettings" class="btn primary">সেটিংস সংরক্ষণ</button>
+        <p class="text-xs text-amber-300">মুদ্রা বদলালে আগের অঙ্কগুলো স্বয়ংক্রিয়ভাবে রূপান্তরিত হয় না। সব পুরোনো লেনদেন একই অঙ্কে থাকবে।</p>
+      </div>
+      <div class="panel">
+        <h3 class="font-bold text-amber-300">ডেটা মুছে ফেলা</h3>
+        <p class="text-sm text-slate-300 my-2">এটি এই ব্রাউজারের স্থানীয় ডেটা মুছবে। আগে ব্যাকআপ নিন। ক্লাউড ডেটা মুছে ফেলার জন্য আলাদা অনুমোদিত কাজ প্রয়োজন।</p>
+        <button id="clearLocal" class="btn danger">স্থানীয় ডেটা মুছুন</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden rounded-xl bg-slate-800 border border-slate-600 px-4 py-3 text-sm shadow-xl"></div>
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+/*
+  Firebase config আপনার বিদ্যমান NIVORA ONE প্রজেক্টের।
+  Firebase Web API key নিজে থেকে অ্যাডমিন অধিকার দেয় না;
+  আসল সুরক্ষা Firestore Security Rules দিয়ে করতে হবে।
+*/
+const firebaseConfig = {
+  apiKey: "AIzaSyBiu3pj9P3MpY6d0juL1-pfCarkrI2eZ54",
+  authDomain: "taskearn-bd-fa040.firebaseapp.com",
+  projectId: "taskearn-bd-fa040",
+  storageBucket: "taskearn-bd-fa040.firebasestorage.app",
+  messagingSenderId: "177026495081",
+  appId: "1:177026495081:web:48bfaaf8e2e7688e3e68f8"
+};
+
+const $ = id => document.getElementById(id);
+const today = () => new Date().toLocaleDateString("en-CA");
+const newId = () => crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2);
+const defaultData = () => ({
+  products: [], trades: [], ledger: [],
+  settings: { currency: "BDT" }
+});
+
+let data = defaultData();
+let currentUser = null;
+let db = null;
+let cloudReady = false;
+let saveTimer = null;
+let saveInProgress = false;
+let saveAgain = false;
+
+const currencyMarks = {BDT:"৳",USD:"$",EUR:"€",INR:"₹",GBP:"£",AED:"د.إ"};
+const money = n => (currencyMarks[data.settings?.currency] || "৳") +
+  Number(n || 0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function notify(message, isError=false) {
+  $("toast").textContent = message;
+  $("toast").classList.remove("hidden");
+  $("toast").style.borderColor = isError ? "#ef4444" : "#10b981";
+  clearTimeout(notify.timer);
+  notify.timer = setTimeout(()=>$("toast").classList.add("hidden"),3500);
+}
+function message(id,text,error=false){
+  $(id).textContent=text;
+  $(id).style.color=error?"#fca5a5":"#6ee7b7";
+}
+function safeText(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function localKey(){
+  return "NIVORA_BUSINESS_V2_" + (currentUser?.uid || "local");
+}
+function normalize(input){
+  if(!input || typeof input!=="object") throw new Error("ফাইলের ডেটা সঠিক নয়");
+  const result = {
+    products:Array.isArray(input.products)?input.products:[],
+    trades:Array.isArray(input.trades)?input.trades:[],
+    ledger:Array.isArray(input.ledger)?input.ledger:[],
+    settings:{currency:currencyMarks[input.settings?.currency]?input.settings.currency:"BDT"}
+  };
+  for(const p of result.products){
+    if(!p.id || !p.sku || !Number.isFinite(Number(p.stock)) || Number(p.stock)<0) throw new Error("পণ্যের ডেটায় সমস্যা আছে");
+  }
+  return result;
+}
+function readLocal(){
+  try{
+    const raw=localStorage.getItem(localKey());
+    if(raw) data=normalize(JSON.parse(raw));
+  }catch(e){console.error(e);notify("স্থানীয় ডেটা পড়া যায়নি।",true);}
+}
+function saveLocal(){
+  try{
+    localStorage.setItem(localKey(),JSON.stringify(data));
+  }catch(e){
+    console.error(e);
+    notify("ব্রাউজারে জায়গা নেই বা সেভ করা যায়নি। ব্যাকআপ নিন।",true);
+    throw e;
+  }
+}
+async function saveData(){
+  saveLocal();
+  if(!currentUser || !db || !cloudReady){
+    $("connection").textContent="স্থানীয় ডেটা সংরক্ষিত";
+    return;
+  }
+  if(saveInProgress){saveAgain=true;return;}
+  saveInProgress=true;
+  try{
+    const ref=doc(db,"users",currentUser.uid,"erp","businessData");
+    await setDoc(ref,{...data,updatedAt:serverTimestamp()});
+    $("connection").textContent="Firebase-এ সংরক্ষিত";
+  }catch(e){
+    console.error("Cloud save error",e);
+    $("connection").textContent="ক্লাউড সেভ হয়নি";
+    notify("স্থানীয় কপি রাখা হয়েছে, কিন্তু Firebase-এ সেভ হয়নি। Rules ও সংযোগ পরীক্ষা করুন।",true);
+  }finally{
+    saveInProgress=false;
+    if(saveAgain){saveAgain=false;saveData();}
+  }
+}
+function scheduleSave(){
+  saveLocal();
+  $("connection").textContent=currentUser?"পরিবর্তন সংরক্ষণ হচ্ছে...":"শুধু এই ব্রাউজারে সংরক্ষিত";
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveData,300);
+}
+async function startFirebase(){
+  try{
+    const app=getApps().length?getApps()[0]:initializeApp(firebaseConfig);
+    const auth=getAuth(app);
+    db=getFirestore(app);
+    onAuthStateChanged(auth,async user=>{
+      currentUser=user||null;
+      cloudReady=false;
+      readLocal();
+      if(user){
+        $("connection").textContent="Firebase ডেটা লোড হচ্ছে...";
+        try{
+          const snap=await getDoc(doc(db,"users",user.uid,"erp","businessData"));
+          if(snap.exists()){
+            const cloud=normalize(snap.data());
+            // ক্লাউডে আগে থেকে ডেটা থাকলে সেটিই প্রাথমিক উৎস।
+            data=cloud;
+            saveLocal();
+          }else{
+            // নতুন অ্যাকাউন্টের স্থানীয় তথ্য ক্লাউডে পাঠানোর আগে নিশ্চিত হতে হবে।
+            await setDoc(doc(db,"users",user.uid,"erp","businessData"),{
+              ...data,updatedAt:serverTimestamp()
+            });
+          }
+          cloudReady=true;
+          $("connection").textContent="Firebase সংযুক্ত";
+        }catch(e){
+          console.error(e);
+          $("connection").textContent="Firebase সেভ/লোড ব্যর্থ";
+          notify("Firebase Rules বা লগইন পরীক্ষা করুন। স্থানীয় ডেটা আপাতত ব্যবহার হচ্ছে।",true);
+        }
+      }else{
+        $("connection").textContent="লগইন নেই — স্থানীয় ডেটা";
+      }
+      renderAll();
+    });
+  }catch(e){
+    console.error("Firebase init error",e);
+    $("connection").textContent="শুধু স্থানীয় মোড";
+    readLocal();
+    renderAll();
+  }
+}
+
+function switchView(view){
+  document.querySelectorAll(".view").forEach(el=>el.classList.toggle("active",el.id===view));
+  document.querySelectorAll(".navbtn").forEach(el=>el.classList.toggle("active",el.dataset.view===view));
+  if(view==="reports") makeReport();
+}
+document.querySelectorAll(".navbtn").forEach(btn=>btn.addEventListener("click",()=>switchView(btn.dataset.view)));
+
+function renderProductSelect(){
+  const select=$("tProduct");
+  const previous=select.value;
+  select.innerHTML='<option value="">পণ্য নির্বাচন করুন</option>'+data.products.map(p=>
+    `<option value="${safeText(p.id)}">${safeText(p.name)} — ${safeText(p.sku)} (স্টক: ${p.stock})</option>`
+  ).join("");
+  if(data.products.some(p=>p.id===previous)) select.value=previous;
+  updateTradePrice();
+}
+function renderProducts(){
+  const q=$("productSearch").value.trim().toLowerCase();
+  $("productRows").innerHTML=data.products.filter(p=>(p.name+" "+p.sku).toLowerCase().includes(q)).map(p=>`
+    <tr>
+      <td>${safeText(p.name)}</td><td>${safeText(p.sku)}</td>
+      <td>${p.stock}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td>
+      <td>${p.stock<=p.min?'<span class="text-amber-300">স্টক কম</span>':'<span class="text-emerald-300">স্বাভাবিক</span>'}</td>
+      <td><button class="btn secondary" data-edit="${safeText(p.id)}">সম্পাদনা</button>
+      <button class="btn danger mt-1" data-delete-product="${safeText(p.id)}">মুছুন</button></td>
+    </tr>`).join("") || '<tr><td colspan="7">কোনো পণ্য নেই। উপরের ফর্ম থেকে যোগ করুন।</td></tr>';
+}
+function renderTrades(){
+  const rows=[...data.trades].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  $("tradeRows").innerHTML=rows.map(t=>`<tr>
+    <td>${safeText(t.date)}</td><td>${t.type==="sale"?"বিক্রয়":"ক্রয়"}</td>
+    <td>${safeText(t.productName)}</td><td>${t.qty}</td><td>${money(t.unitPrice)}</td>
+    <td>${money(t.total)}</td><td>${safeText(t.party||"—")}</td>
+    <td><button class="btn danger" data-delete-trade="${safeText(t.id)}">বাতিল</button></td>
+  </tr>`).join("") || '<tr><td colspan="8">এখনো কোনো লেনদেন নেই।</td></tr>';
+  $("recentTrades").innerHTML=rows.slice(0,5).map(t=>`<tr>
+    <td>${safeText(t.date)}</td><td>${t.type==="sale"?"বিক্রয়":"ক্রয়"}</td>
+    <td>${safeText(t.productName)}</td><td>${t.qty}</td><td>${money(t.total)}</td>
+  </tr>`).join("") || '<tr><td colspan="5">লেনদেন যোগ করা হয়নি।</td></tr>';
+}
+function renderLedger(){
+  const rows=[...data.ledger].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  $("ledgerRows").innerHTML=rows.map(l=>`<tr>
+    <td>${safeText(l.date)}</td><td>${l.type==="income"?"আয়":"ব্যয়"}</td>
+    <td>${safeText(l.desc)}</td><td>${money(l.amount)}</td>
+    <td><button class="btn danger" data-delete-ledger="${safeText(l.id)}">মুছুন</button></td>
+  </tr>`).join("") || '<tr><td colspan="5">এখনো কোনো এন্ট্রি নেই।</td></tr>';
+}
+function renderDashboard(){
+  $("kProducts").textContent=data.products.length;
+  $("kStock").textContent=data.products.reduce((s,p)=>s+Number(p.stock||0),0).toLocaleString();
+  const sales=data.trades.filter(t=>t.type==="sale").reduce((s,t)=>s+t.total,0);
+  const income=data.ledger.filter(l=>l.type==="income").reduce((s,l)=>s+l.amount,0);
+  const expenses=data.ledger.filter(l=>l.type==="expense").reduce((s,l)=>s+l.amount,0);
+  const purchases=data.trades.filter(t=>t.type==="purchase").reduce((s,t)=>s+t.total,0);
+  $("kSales").textContent=money(sales);
+  $("kNet").textContent=money(sales+income-purchases-expenses);
+}
+function renderAll(){
+  $("currency").value=data.settings.currency||"BDT";
+  renderProductSelect();renderProducts();renderTrades();renderLedger();renderDashboard();
+  makeReport();
+}
+
+$("productForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const id=$("editProductId").value;
+  const name=$("pName").value.trim();
+  const sku=$("pSku").value.trim();
+  const cost=Number($("pCost").value),price=Number($("pPrice").value);
+  const stock=Number($("pStock").value),min=Number($("pMin").value);
+  if(!name||!sku||![cost,price,stock,min].every(Number.isFinite)||cost<0||price<0||stock<0||min<0||!Number.isInteger(stock)||!Number.isInteger(min)){
+    message("productMsg","সব তথ্য সঠিকভাবে পূরণ করুন।",true);return;
+  }
+  if(data.products.some(p=>p.sku.toLowerCase()===sku.toLowerCase()&&p.id!==id)){
+    message("productMsg","এই SKU আগে থেকেই আছে। অন্য SKU দিন।",true);return;
+  }
+  if(id){
+    const old=data.products.find(p=>p.id===id);
+    if(!old)return;
+    const hasTrades=data.trades.some(t=>t.productId===id);
+    if(hasTrades && stock!==old.stock){
+      message("productMsg","এই পণ্যের লেনদেন আছে। স্টক সরাসরি বদলাবেন না; ক্রয়-বিক্রয়ের মাধ্যমে সমন্বয় করুন।",true);return;
+    }
+    Object.assign(old,{name,sku,cost,price,stock,min});
+  }else{
+    data.products.push({id:newId(),name,sku,cost,price,stock,min,createdAt:new Date().toISOString()});
+  }
+  $("productForm").reset();$("editProductId").value="";$("pMin").value="5";
+  scheduleSave();renderAll();message("productMsg","পণ্য সংরক্ষণ করা হয়েছে।");notify("পণ্য সংরক্ষিত");
+});
+$("cancelEdit").addEventListener("click",()=>{$("productForm").reset();$("editProductId").value="";$("pMin").value="5";message("productMsg","");});
+$("productSearch").addEventListener("input",renderProducts);
+
+$("productRows").addEventListener("click",e=>{
+  const edit=e.target.closest("[data-edit]");
+  const del=e.target.closest("[data-delete-product]");
+  if(edit){
+    const p=data.products.find(x=>x.id===edit.dataset.edit);if(!p)return;
+    $("editProductId").value=p.id;$("pName").value=p.name;$("pSku").value=p.sku;
+    $("pCost").value=p.cost;$("pPrice").value=p.price;$("pStock").value=p.stock;$("pMin").value=p.min;
+    switchView("inventory");window.scrollTo({top:0,behavior:"smooth"});
+  }
+  if(del){
+    const id=del.dataset.deleteProduct;
+    if(data.trades.some(t=>t.productId===id)){notify("লেনদেন থাকা পণ্য মুছতে পারবেন না।",true);return;}
+    if(!confirm("এই পণ্যটি মুছে ফেলবেন?"))return;
+    data.products=data.products.filter(p=>p.id!==id);scheduleSave();renderAll();notify("পণ্য মুছে ফেলা হয়েছে");
+  }
+});
+
+function updateTradePrice(){
+  const p=data.products.find(x=>x.id===$("tProduct").value);
+  if(p)$("tUnitPrice").value=$("tType").value==="sale"?p.price:p.cost;
+  calculateTradeTotal();
+}
+function calculateTradeTotal(){
+  $("tradeTotal").textContent="মোট: "+money(Number($("tQty").value||0)*Number($("tUnitPrice").value||0));
+}
+$("tProduct").addEventListener("change",updateTradePrice);
+$("tType").addEventListener("change",updateTradePrice);
+$("tQty").addEventListener("input",calculateTradeTotal);
+$("tUnitPrice").addEventListener("input",calculateTradeTotal);
+$("tDate").value=today();
+
+$("tradeForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const p=data.products.find(x=>x.id===$("tProduct").value);
+  const type=$("tType").value,qty=Number($("tQty").value),unitPrice=Number($("tUnitPrice").value);
+  if(!p){message("tradeMsg","আগে একটি পণ্য যোগ করুন।",true);return;}
+  if(!Number.isInteger(qty)||qty<=0||!Number.isFinite(unitPrice)||unitPrice<0){message("tradeMsg","পরিমাণ ও মূল্য সঠিক দিন।",true);return;}
+  if(type==="sale"&&p.stock<qty){message("tradeMsg",`পর্যাপ্ত স্টক নেই। বর্তমান স্টক: ${p.stock}`,true);return;}
+  const transaction={
+    id:newId(),productId:p.id,productName:p.name,type,qty,unitPrice,
+    total:Math.round(qty*unitPrice*100)/100,
+    party:$("tParty").value.trim(),date:$("tDate").value,
+    note:$("tNote").value.trim(),createdAt:new Date().toISOString()
+  };
+  // একই কাজের মধ্যে স্টক ও লেনদেন রেকর্ড আপডেট করা হচ্ছে।
+  p.stock+=type==="purchase"?qty:-qty;
+  if(type==="purchase")p.cost=unitPrice;
+  data.trades.push(transaction);
+  scheduleSave();renderAll();
+  $("tradeForm").reset();$("tDate").value=today();
+  message("tradeMsg","লেনদেন সংরক্ষিত এবং স্টক সমন্বয় হয়েছে।");notify("লেনদেন সংরক্ষিত");
+});
+
+$("tradeRows").addEventListener("click",e=>{
+  const btn=e.target.closest("[data-delete-trade]");if(!btn)return;
+  const t=data.trades.find(x=>x.id===btn.dataset.deleteTrade);if(!t)return;
+  if(!confirm("লেনদেন বাতিল করলে স্টকও উল্টোভাবে সমন্বয় হবে। চালিয়ে যাবেন?"))return;
+  const p=data.products.find(x=>x.id===t.productId);
+  if(p){
+    const corrected=p.stock+(t.type==="sale"?t.qty:-t.qty);
+    if(corrected<0){notify("স্টক সমন্বয় সম্ভব নয়; বর্তমান তথ্য পরীক্ষা করুন।",true);return;}
+    p.stock=corrected;
+  }
+  data.trades=data.trades.filter(x=>x.id!==t.id);
+  scheduleSave();renderAll();notify("লেনদেন বাতিল ও স্টক সমন্বয় হয়েছে");
+});
+
+$("lDate").value=today();
+$("ledgerForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const amount=Number($("lAmount").value);
+  if(!Number.isFinite(amount)||amount<=0){message("ledgerMsg","শূন্যের বেশি সঠিক অঙ্ক দিন।",true);return;}
+  data.ledger.push({
+    id:newId(),type:$("lType").value,desc:$("lDesc").value.trim(),
+    amount:Math.round(amount*100)/100,date:$("lDate").value,
+    note:$("lNote").value.trim(),createdAt:new Date().toISOString()
+  });
+  scheduleSave();renderAll();$("ledgerForm").reset();$("lDate").value=today();
+  message("ledgerMsg","এন্ট্রি সংরক্ষণ করা হয়েছে।");notify("খাতায় সংরক্ষিত");
+});
+$("ledgerRows").addEventListener("click",e=>{
+  const btn=e.target.closest("[data-delete-ledger]");if(!btn)return;
+  if(!confirm("এই আয়/ব্যয়ের এন্ট্রি মুছবেন?"))return;
+  data.ledger=data.ledger.filter(l=>l.id!==btn.dataset.deleteLedger);
+  scheduleSave();renderAll();notify("এন্ট্রি মুছে ফেলা হয়েছে");
+});
+
+function makeReport(){
+  if(!$("reportOutput"))return;
+  const start=$("rStart").value||"0000-01-01",end=$("rEnd").value||"9999-12-31";
+  const inRange=x=>x.date>=start&&x.date<=end;
+  const trades=data.trades.filter(inRange),ledger=data.ledger.filter(inRange);
+  const sales=trades.filter(t=>t.type==="sale").reduce((s,t)=>s+t.total,0);
+  const purchases=trades.filter(t=>t.type==="purchase").reduce((s,t)=>s+t.total,0);
+  const income=ledger.filter(l=>l.type==="income").reduce((s,l)=>s+l.amount,0);
+  const expenses=ledger.filter(l=>l.type==="expense").reduce((s,l)=>s+l.amount,0);
+  const net=sales+income-purchases-expenses;
+  $("reportOutput").innerHTML=`
+    <h3 class="font-bold text-lg">নির্বাচিত সময়ের সারাংশ</h3>
+    <p class="text-sm text-slate-400">${safeText(start)} থেকে ${safeText(end)}</p>
+    <div class="grid sm:grid-cols-2 gap-3">
+      <div class="bg-slate-900 rounded-xl p-4">মোট বিক্রয় <strong class="block text-emerald-300 text-xl">${money(sales)}</strong></div>
+      <div class="bg-slate-900 rounded-xl p-4">মোট ক্রয় <strong class="block text-xl">${money(purchases)}</strong></div>
+      <div class="bg-slate-900 rounded-xl p-4">অন্যান্য আয় <strong class="block text-emerald-300 text-xl">${money(income)}</strong></div>
+      <div class="bg-slate-900 rounded-xl p-4">অন্যান্য ব্যয় <strong class="block text-rose-300 text-xl">${money(expenses)}</strong></div>
     </div>
+    <div class="border border-emerald-700 rounded-xl p-4">আয় + বিক্রয় − ক্রয় − ব্যয় <strong class="block text-2xl ${net>=0?"text-emerald-300":"text-rose-300"}">${money(net)}</strong></div>
+    <p class="text-xs text-slate-400">এটি নগদ/লেনদেনভিত্তিক সরল সারাংশ; এটি চূড়ান্ত হিসাবনিকাশভিত্তিক নিট মুনাফা নয়।</p>`;
+}
+$("runReport").addEventListener("click",()=>{
+  if($("rStart").value&&$("rEnd").value&&$("rStart").value>$("rEnd").value){notify("শুরুর তারিখ শেষ তারিখের পরে হতে পারে না।",true);return;}
+  makeReport();
+});
+$("rStart").value=new Date(new Date().getFullYear(),new Date().getMonth(),1).toLocaleDateString("en-CA");
+$("rEnd").value=today();
 
-    <script>
-        const translations = {
-            bn: {
-                modules: "বিজনেস মডিউলসমূহ",
-                dashboard: "নির্বাহী ড্যাশবোর্ড",
-                inventory: "পণ্য ও স্ক্যানার",
-                trade: "ক্রয়–বিক্রয় ও ট্রেড",
-                ledger: "হিসাব ও ট্যালি বুক",
-                financials: "ব্যালেন্স ও P&L",
-                shipping: "শিপিং ও কাস্টমস",
-                radar: "এআই মৌসুমী রাডার",
-                people: "কর্মী ও বেতন (HR)",
-                reports: "রিপোর্ট ও ব্যাকআপ",
-                settings: "সেটিংস",
-                hero_eyebrow: "গ্লোবাল এন্টারপ্রাইজ কমান্ড সেন্টার",
-                hero_title: "অটোনোমাস বিজনেস ইন্টেলিজেন্স ও রেজিলিয়েন্স হাব",
-                hero_desc: "১০০ বছরের অগ্রিম ফিকির ও টেকসই স্থাপত্যে তৈরি। ম্যানুয়াল, বারকোড স্ক্যানার, ডিজিটাল ও এআই অটোমেটিক হিসাব-নিকাশের সমন্বয়ে শতভাগ আন্তর্জাতিক মানের এন্টারপ্রাইজ সফটওয়্যার।",
-                btn_record_trade: "+ ট্রেড রেকর্ড করুন",
-                btn_scan_qr: "বারকোড / QR স্ক্যানার",
-                btn_view_pl: "লাইভ P&L স্টেটমেন্ট",
-                kpi_rev: "মোট বার্ষিক রাজস্ব",
-                kpi_rev_sub: "↑ আগের চক্রের তুলনায় ২২.৪%",
-                kpi_inv: "ইনভেন্টরি মূল্যায়ন",
-                kpi_ship: "সক্রিয় কন্টেইনার চালান",
-                kpi_ship_sub: "২টি কাস্টমস ক্লিয়ারেন্স বাকি",
-                kpi_pay: "মাসিক বেতন আউটফ্লো",
-                kpi_pay_sub: "১,৪২০ কর্মী সংযুক্ত",
-                ai_radar_title: "এআই মার্কেট প্রতিযোগিতা ও রেজিলিয়েন্স রাডার",
-                shield_active: "এআই শিল্ড সক্রিয়",
-                ai_radar_desc: "ম্যাক্রো-ইকোনমিক সূচক, স্বয়ংক্রিয় মূল্য সমন্বয় এবং স্টক-আউট ঝুঁকি রিয়েল-টাইমে মূল্যায়ন করছে।",
-                alert_1_title: "⚠️ উচ্চ গতির এআই সেমিকন্ডাক্টর চিপ ঘাটতি সতর্কতা",
-                alert_1_desc: "চতুর্থ প্রান্তিকে ৩০% মূল্য বৃদ্ধির পূর্বাভাস। বর্তমান রিজার্ভ ৪৫ দিনের উৎপাদন কভার করে।",
-                btn_hedge: "অটো-হেজ",
-                alert_2_title: "⚡ স্বয়ংক্রিয় কারেন্সি আরবিট্রেজ সুযোগ",
-                alert_2_desc: "EUR/USD এক্সচেঞ্জ অস্থিরতা সনাক্ত হয়েছে। ইউরোপীয় রপ্তানির জন্য EUR এ সেটেলমেন্ট করার সুপারিশ।",
-                btn_optimize: "অপ্টিমাইজ",
-                quick_actions: "মাস্টার এক্সিকিউটিভ কন্ট্রোল",
-                quick_actions_desc: "জরুরী পরিস্থিতিতে তাৎক্ষণিক এন্টারপ্রাইজ লেভেল ওভাররাইড।",
-                btn_lockdown: "🔒 জরুরি কারখানা লকডাউন",
-                btn_disburse: "💸 তাৎক্ষণিক মাল্টি-কারেন্সি বেতন প্রদান",
-                btn_backup: "💾 এনক্রিপ্টেড ব্যাকআপ JSON এক্সপোর্ট",
-                century_proof_label: "NIVORA ONE সেঞ্চুরি-প্রুফ এন্টারপ্রাইজ সংস্করণ",
-                inv_title: "স্মার্ট ইনভেন্টরি ও বারকোড/QR স্ক্যানার",
-                inv_subtitle: "ম্যানুয়াল, স্ক্যানার, ডিজিটাল এবং অটোমেটিক ট্রিগার সহ রিয়েল-টাইম স্টক নিয়ন্ত্রণ।",
-                btn_open_cam: "📷 ক্যামেরা স্ক্যানার খুলুন",
-                btn_add_sku: "+ নতুন পণ্য SKU যোগ করুন",
-                new_sku_title: "নতুন পণ্য SKU নিবন্ধন করুন (ম্যানুয়াল / ডিজিটাল)",
-                lbl_sku: "SKU কোড",
-                lbl_pname: "পণ্যের নাম",
-                lbl_category: "ক্যাটাগরি",
-                lbl_qty: "মজুদ পরিমাণ",
-                lbl_price: "একক মূল্য (USD বেস)",
-                lbl_warehouse: "গুদাম অবস্থান",
-                btn_save_sku: "SKU সংরক্ষণ করুন",
-                btn_cancel: "বাতিল",
-                th_sku: "SKU কোড",
-                th_pname: "পণ্যের নাম",
-                th_cat: "ক্যাটাগরি",
-                th_qty: "পরিমাণ",
-                th_price: "একক মূল্য",
-                th_loc: "অবস্থান",
-                th_status: "স্টক অবস্থা",
-                th_action: "পদক্ষেপ",
-                trade_title: "ক্রয়–বিক্রয় ও কমার্শিয়াল ট্রানজ্যাকশন গেটওয়ে",
-                trade_subtitle: "ম্যানুয়াল, স্ক্যানার, ডিজিটাল এবং স্বয়ংক্রিয় মাল্টি-কারেন্সি বাণিজ্য এন্ট্রি।",
-                new_trade_title: "নতুন বাণিজ্যিক ট্রানজ্যাকশন",
-                lbl_trade_type: "লেনদেনের ধরণ",
-                opt_sale: "রপ্তানি বিক্রয় (ইনফ্লো)",
-                opt_purchase: "কাঁচামাল ক্রয় (আউটফ্লো)",
-                lbl_partner: "ক্লায়েন্ট / সরবরাহকারী",
-                lbl_item_desc: "পণ্য ও পরিমাণ বিবরণী",
-                lbl_amount: "মোট পরিমাণ (USD)",
-                lbl_payment_status: "পেমেন্ট অবস্থা",
-                opt_completed: "সম্পন্ন ও পরিশোধিত",
-                opt_pending: "পেন্ডিং ওয়্যার ট্রান্সফার",
-                opt_escrow: "এসক্রোতে সুরক্ষিত",
-                btn_record_trans: "ট্রানজ্যাকশন রেকর্ড করুন",
-                th_tid: "ট্রানজ্যাকশন আইডি",
-                th_ttype: "ধরণ",
-                th_partner: "অংশীদার",
-                th_desc: "বিবরণ",
-                th_amount: "পরিমাণ",
-                th_tstatus: "অবস্থা",
-                th_date: "তারিখ",
-                ledger_title: "ফিন্যান্সিয়াল লেজার ও ট্যালি সামারি",
-                ledger_subtitle: "সমস্ত এন্টারপ্রাইজ অ্যাকাউন্টে ডাবল-এন্ট্রি বুককিপিং।",
-                lbl_total_inflow: "মোট ইনকাম (রাজস্ব)",
-                lbl_total_outflow: "মোট খরচ ও বেতন",
-                lbl_net_profit: "নিট এন্টারপ্রাইজ ব্যালেন্স",
-                ledger_log: "ডাবল-এন্ট্রি জার্নাল এন্ট্রি",
-                btn_manual_je: "+ ম্যানুয়াল জার্নাল এন্ট্রি",
-                th_ref: "রেফ নং",
-                th_account: "অ্যাকাউন্ট ক্যাটাগরি",
-                th_narration: "বিবরণ",
-                th_debit: "ডেবিট",
-                th_credit: "ক্রেডিট",
-                ship_title: "গ্লোবাল শিপিং ও কাস্টমস ক্লিয়ারেন্স",
-                ship_subtitle: "মেরিন কন্টেইনার ট্র্যাকিং এবং কাস্টমস কমপ্লায়েন্স ম্যানেজমেন্ট।",
-                btn_dispatch_container: "+ নতুন কন্টেইনার পাঠান",
-                th_bol: "বিল অফ লেডিং ID",
-                th_route: "উৎস / গন্তব্য",
-                th_cargo: "কার্গো ও পণ্য",
-                th_customs: "কাস্টমস অবস্থা",
-                th_transit: "ট্রানজিট অগ্রগতি",
-                radar_title_full: "এআই-চালিত প্রেডিক্টিভ মৌসুমী রাডার",
-                radar_subtitle_full: "কাঁচামালের মূল্য বৃদ্ধি এবং শিপিং বিলম্বের আগেই পূর্বাভাস দেয়।",
-                btn_run_scan: "ডিপ এআই স্ক্যান রান করুন",
-                risk_critical: "গুরুত্বপূর্ণ ঘাটতি সতর্কতা",
-                btn_auto_procure: "অটো প্রকিউর",
-                risk_notice: "রুট কনজেশন নোটিশ",
-                btn_reroute: "এখনই রিরুট করুন",
-                hr_title: "গ্লোবাল কর্মী ও স্বয়ংক্রিয় বেতন ব্যবস্থাপনা",
-                hr_subtitle: "এক্সিকিউটিভ কর্মী, শিফট শিডিউল এবং মাল্টি-কারেন্সি বেতন বিতরণ।",
-                btn_run_payroll: "মাসিক বেতন বিতরণ রান করুন",
-                th_emp: "কর্মী ও আইডি",
-                th_role: "পদবী ও স্টেশন",
-                th_shift: "শিফট অবস্থা",
-                th_salary: "মাসিক বেতন",
-                emp_1_role: "চিফ অপারেশনস ডিরেক্টর (ফ্যাক্টরি A)",
-                emp_2_role: "গ্লোবাল লজিস্টিকস ও কাস্টমস প্রধান",
-                shift_onduty: "ডিউটিতে আছেন (শিফট A)",
-                reports_title: "এক্সিকিউটিভ রিপোর্ট ও এনক্রিপ্টেড ব্যাকআপ",
-                reports_subtitle: "প্রিন্ট-রেডি এক্সিকিউটিভ সামারি তৈরি করুন অথবা সম্পূর্ণ ডাটাবেস ব্যাকআপ নিন।",
-                btn_print: "🖨️ এক্সিকিউটিভ রিপোর্ট প্রিন্ট করুন",
-                btn_export_json: "📥 JSON ব্যাকআপ ডাউনলোড",
-                report_card_title: "NIVORA ONE — ত্রৈমাসিক কার্যনির্বাহী প্রতিবেদন (সেঞ্চুরি-প্রুফ)",
-                rep_period: "রিপোর্টিং সময়কাল",
-                rep_rev: "সংহত রাজস্ব",
-                rep_comp: "অপারেটিং কমপ্লায়েন্স",
-                rep_desc: "সমস্ত আন্তর্জাতিক ট্রেড ট্রানজ্যাকশন, ম্যানুয়াল/ডিজিটাল লেজার এবং ইনভেন্টরি এআই সিকিউরিটি প্রোটোকল দ্বারা যাচাইকৃত।",
-                settings_title: "গ্লোবাল সিস্টেম প্রেফারেন্স ও স্টোরেজ",
-                lbl_company_name: "এন্টারপ্রাইজ কোম্পানির নাম",
-                lbl_tax_rate: "ডিফল্ট আন্তর্জাতিক কর / ভ্যাট হার (%)",
-                btn_save_settings: "প্রেফারেন্স সংরক্ষণ করুন",
-                btn_reset_storage: "ফ্যাক্টরি রিসেট স্টোরেজ",
-                cam_modal_title: "📷 ক্যামেরা বারকোড ও QR স্ক্যানার",
-                cam_modal_desc: "পণ্য বা ইনভেন্টরি স্ক্যান করতে ক্যামেরা ফোকাস করুন।",
-                laser_active: "লেজার স্ক্যানিং সক্রিয় (৫৮kHz)",
-                btn_sim_scan: "সফল স্ক্যান সিমুলেট করুন (SKU-NV-901)",
-                btn_close: "বন্ধ করুন",
-                btn_audit: "⚡ অডিট"
-            },
-            en: {
-                modules: "BUSINESS MODULES",
-                dashboard: "Executive Dashboard",
-                inventory: "Inventory & Scanner",
-                trade: "Procurement & Sales",
-                ledger: "Ledger & Tally Book",
-                financials: "P&L & Balance Sheet",
-                shipping: "Shipping & Customs",
-                radar: "AI Seasonal Radar",
-                people: "HR & Payroll",
-                reports: "Reports & Backup",
-                settings: "Global Settings",
-                hero_eyebrow: "GLOBAL ENTERPRISE COMMAND CENTER",
-                hero_title: "Autonomous Business Intelligence & Resilience Hub",
-                hero_desc: "Engineered with 100-year forward architecture. Features manual, barcode scanner, digital ledger, P&L generation, and autonomous AI predictive logistics.",
-                btn_record_trade: "+ Record Trade",
-                btn_scan_qr: "Scan Barcode / QR",
-                btn_view_pl: "View Live P&L Statement",
-                kpi_rev: "Total Annual Revenue",
-                kpi_rev_sub: "↑ 22.4% vs previous cycle",
-                kpi_inv: "Inventory Valuation",
-                kpi_ship: "Active Shipments",
-                kpi_ship_sub: "2 Customs Clearance Pending",
-                kpi_pay: "Monthly Payroll Outflow",
-                kpi_pay_sub: "1,420 Employees Enrolled",
-                ai_radar_title: "AI Market Competition & Resilience Radar",
-                shield_active: "AI Shield Active",
-                ai_radar_desc: "Continuously evaluating macroeconomic indicators, automated pricing adjustments, and inventory stock-out risks.",
-                alert_1_title: "⚠️ High-Speed AI Semiconductor Chip Shortage Warning",
-                alert_1_desc: "Predicted 30% price escalation in Q4. Current reserve covers 45 days of production.",
-                btn_hedge: "Auto-Hedge",
-                alert_2_title: "⚡ Automated Currency Arbitrage Opportunity",
-                alert_2_desc: "EUR/USD exchange volatility detected. Recommending settlement in EUR for European exports.",
-                btn_optimize: "Optimize",
-                quick_actions: "Master Executive Controls",
-                quick_actions_desc: "Instant enterprise-grade overrides for emergency situations.",
-                btn_lockdown: "🔒 Emergency Facility Lockdown",
-                btn_disburse: "💸 Instant Multi-Currency Payroll Payout",
-                btn_backup: "💾 Export Encrypted Backup JSON",
-                century_proof_label: "NIVORA ONE Century-Proof Enterprise Edition",
-                inv_title: "Smart Inventory & Barcode/QR Scanner",
-                inv_subtitle: "Real-time stock control with manual entry, barcode scanning, digital logging, and auto triggers.",
-                btn_open_cam: "📷 Open Camera Scanner",
-                btn_add_sku: "+ Add New Product SKU",
-                new_sku_title: "Register New Product SKU (Manual / Digital)",
-                lbl_sku: "SKU Code",
-                lbl_pname: "Product Name",
-                lbl_category: "Category",
-                lbl_qty: "Quantity in Stock",
-                lbl_price: "Unit Price (USD Base)",
-                lbl_warehouse: "Warehouse Location",
-                btn_save_sku: "Save SKU Record",
-                btn_cancel: "Cancel",
-                th_sku: "SKU Code",
-                th_pname: "Product Name",
-                th_cat: "Category",
-                th_qty: "Quantity",
-                th_price: "Unit Price",
-                th_loc: "Location",
-                th_status: "Stock Status",
-                th_action: "Actions",
-                trade_title: "Procurement & Sales Transaction Gateway",
-                trade_subtitle: "Manual, scanner, digital and automated multi-currency trade entries.",
-                new_trade_title: "New Commercial Transaction",
-                lbl_trade_type: "Transaction Type",
-                opt_sale: "Export Sale (Inflow)",
-                opt_purchase: "Raw Material Purchase (Outflow)",
-                lbl_partner: "Client / Supplier Name",
-                lbl_item_desc: "Item & Quantity Description",
-                lbl_amount: "Total Amount (USD)",
-                lbl_payment_status: "Payment Status",
-                opt_completed: "Completed & Cleared",
-                opt_pending: "Pending Wire Transfer",
-                opt_escrow: "Secured in Escrow",
-                btn_record_trans: "Record Transaction",
-                th_tid: "Transaction ID",
-                th_ttype: "Type",
-                th_partner: "Client / Supplier",
-                th_desc: "Description",
-                th_amount: "Amount",
-                th_tstatus: "Status",
-                th_date: "Date",
-                ledger_title: "Financial Ledger & Tally Summary",
-                ledger_subtitle: "Double-entry bookkeeping synthesized across all global enterprise accounts.",
-                lbl_total_inflow: "Total Inflow (Revenue)",
-                lbl_total_outflow: "Total Outflow & Payroll",
-                lbl_net_profit: "Net Enterprise Balance",
-                ledger_log: "Double-Entry Journal Entries",
-                btn_manual_je: "+ Manual Journal Entry",
-                th_ref: "Ref No",
-                th_account: "Account Category",
-                th_narration: "Narration",
-                th_debit: "Debit",
-                th_credit: "Credit",
-                ship_title: "Global Shipping, Bills of Lading & Customs",
-                ship_subtitle: "Track maritime containers, air cargo manifest clearance, and automated customs compliance.",
-                btn_dispatch_container: "+ Dispatch New Container",
-                th_bol: "Bill of Lading ID",
-                th_route: "Origin / Destination",
-                th_cargo: "Cargo & Material",
-                th_customs: "Customs Status",
-                th_transit: "Transit Progress",
-                radar_title_full: "AI-Powered Predictive Seasonal Radar",
-                radar_subtitle_full: "Anticipates raw material price spikes, monsoon shipping delays, and demand surges.",
-                btn_run_scan: "Run Deep AI Scan",
-                risk_critical: "CRITICAL DEFICIT WARNING",
-                btn_auto_procure: "Auto Procure",
-                risk_notice: "ROUTE CONGESTION NOTICE",
-                btn_reroute: "Reroute Now",
-                hr_title: "Global Personnel & Automated Payroll",
-                hr_subtitle: "Manage executive personnel, factory shift schedules, and multi-currency salary disbursements.",
-                btn_run_payroll: "Run Monthly Payroll Payout",
-                th_emp: "Employee Name & ID",
-                th_role: "Designation & Station",
-                th_shift: "Shift Status",
-                th_salary: "Monthly Salary",
-                emp_1_role: "Chief Operations Director (Factory A)",
-                emp_2_role: "Global Logistics & Customs Head",
-                shift_onduty: "On Duty (Shift A)",
-                reports_title: "Executive Reports & Encrypted Backup",
-                reports_subtitle: "Generate print-ready executive summaries or backup your complete database to local storage.",
-                btn_print: "🖨️ Print Executive Report",
-                btn_export_json: "📥 Export JSON Backup",
-                report_card_title: "NIVORA ONE — Quarterly Executive Performance Briefing (Century-Proof)",
-                rep_period: "Reporting Period",
-                rep_rev: "Consolidated Revenue",
-                rep_comp: "Operational Compliance",
-                rep_desc: "All international trade transactions, manual/digital double-entry ledger tallies, and barcode inventory records have been verified.",
-                settings_title: "Global System Preferences & Storage",
-                lbl_company_name: "Enterprise Corporate Name",
-                lbl_tax_rate: "Default International Tax / VAT Rate (%)",
-                btn_save_settings: "Save Preferences",
-                btn_reset_storage: "Factory Reset Storage",
-                cam_modal_title: "📷 Camera Barcode & QR Scanner",
-                cam_modal_desc: "Point camera at product QR or barcode to instantly audit inventory.",
-                laser_active: "Laser Scanning Active (58kHz)",
-                btn_sim_scan: "Simulate Successful Scan (SKU-NV-901)",
-                btn_close: "Close",
-                btn_audit: "⚡ Audit"
-            },
-            ar: {
-                modules: "وحدات الأعمال",
-                dashboard: "لوحة التحكم التنفيذية",
-                inventory: "المخزون والماسح الضوئي",
-                trade: "المشتريات والمبيعات",
-                ledger: "دفتر الأستاذ والحسابات",
-                financials: "الميزانية العمومية",
-                shipping: "الشحن والجمارك",
-                radar: "رادار الذكاء الاصطناعي",
-                people: "الموارد البشرية والرواتب",
-                reports: "التقارير والنسخ الاحتياطي",
-                settings: "الإعدادات العامة",
-                hero_eyebrow: "مركز القيادة المؤسسية العالمية",
-                hero_title: "ذكاء الأعمال المستقل ومنصة المرونة",
-                hero_desc: "مصممة بهندسة مئوية متقدمة للمؤسسات العالمية.",
-                btn_record_trade: "+ تسجيل صفقة",
-                btn_scan_qr: "مسح الرمز الشريطي",
-                kpi_rev: "إجمالي الإيرادات السنوية",
-                kpi_inv: "تقييم المخزون",
-                kpi_ship: "الشحنات النشطة",
-                kpi_pay: "تدفق الرواتب الشهري",
-                inv_title: "المخزون الذكي وماسح الرموز الشريطية",
-                th_sku: "رمز SKU",
-                th_pname: "اسم المنتج",
-                th_qty: "الكمية",
-                th_price: "سعر الوحدة",
-                th_action: "الإجراءات",
-                btn_print: "🖨️ طباعة التقرير التنفيذي",
-                settings_title: "التفضيلات والتخزين العالمي",
-                btn_audit: "⚡ تدقيق"
-            },
-            hi: {
-                modules: "व्यापार मॉड्यूल",
-                dashboard: "कार्यकारी डैशबोर्ड",
-                inventory: "इन्वेंटरी और स्कैनर",
-                trade: "खरीद और बिक्री",
-                ledger: "बहीखाता और टैली",
-                financials: "बैलेंस शीट और P&L",
-                shipping: "शिपिंग और कस्टम्स",
-                radar: "एआई मौसमी रडार",
-                people: "एचआर और पेरोल",
-                reports: "रिपोर्ट और बैकअप",
-                settings: "वैश्विक सेटिंग्स",
-                hero_eyebrow: "ग्लोबल एंटरप्राइज कमांड सेंटर",
-                hero_title: "स्वायत्त व्यावसायिक बुद्धिमत्ता और लचीलापन केंद्र",
-                hero_desc: "100-वर्षीय उन्नत वास्तुकला के साथ निर्मित।",
-                btn_record_trade: "+ व्यापार दर्ज करें",
-                kpi_rev: "कुल वार्षिक राजस्व",
-                kpi_inv: "इन्वेंटरी मूल्यांकन",
-                kpi_ship: "सक्रिय शिपमेंट",
-                kpi_pay: "मासिक पेरोल बहिर्प्रवाह",
-                btn_audit: "⚡ ऑडिट"
-            },
-            ur: {
-                modules: "بزنس ماڈیولز",
-                dashboard: "ایگزیکٹو ڈیش بورڈ",
-                inventory: "انوینٹری اور اسکینر",
-                trade: "خرید و فروخت",
-                ledger: "لیجر اور ٹ্যালি",
-                financials: "بیلنس شیٹ",
-                shipping: "شپنگ اور کسٹمز",
-                radar: "اے آئی سیزনل راڈار",
-                people: "ایچ آر اور پے رول",
-                reports: "رپورٹس اور بیک اپ",
-                settings: "ترتیبات",
-                hero_eyebrow: "گلوبل انٹرپرائز کمانڈ سینٹر",
-                hero_title: "خود مختار کاروباری ذہانت اور لچک کا مرکز",
-                hero_desc: "ایک سو سالہ جدید ڈھانچے کے ساتھ تیار کردہ۔",
-                btn_record_trade: "+ ٹریڈ درج کریں",
-                kpi_rev: "کل سالانہ آمدنی",
-                kpi_inv: "انوینٹری ویلیو ایشن",
-                kpi_ship: "آئندہ شپমেন্ট",
-                kpi_pay: "मासिक پے رول",
-                btn_audit: "⚡ آڈٹ"
-            }
-        };
+$("exportBtn").addEventListener("click",()=>{
+  try{
+    const blob=new Blob([JSON.stringify({format:"NIVORA_BUSINESS_BACKUP_V2",exportedAt:new Date().toISOString(),data},null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;a.download="nivora-business-backup-"+today()+".json";a.click();URL.revokeObjectURL(url);
+    message("backupMsg","ব্যাকআপ ফাইল ডাউনলোড শুরু হয়েছে।");
+  }catch(e){message("backupMsg","ব্যাকআপ তৈরি করা যায়নি।",true);}
+});
+$("importFile").addEventListener("change",async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  try{
+    if(file.size>5*1024*1024)throw new Error("ফাইল ৫ MB-এর কম হতে হবে।");
+    const parsed=JSON.parse(await file.text());
+    const imported=normalize(parsed.data||parsed);
+    if(!confirm("বর্তমান স্থানীয় ডেটা আমদানি করা ডেটা দিয়ে প্রতিস্থাপন হবে। আগে ব্যাকআপ নিয়েছেন?"))return;
+    data=imported;saveLocal();renderAll();
+    if(currentUser&&db&&cloudReady)await saveData();
+    message("backupMsg","ডেটা আমদানি করা হয়েছে।");
+  }catch(err){message("backupMsg","আমদানি ব্যর্থ: "+err.message,true);}
+  finally{e.target.value="";}
+});
+$("saveSettings").addEventListener("click",()=>{
+  data.settings.currency=$("currency").value;
+  scheduleSave();renderAll();notify("সেটিংস সংরক্ষিত");
+});
+$("clearLocal").addEventListener("click",()=>{
+  if(!confirm("এই ব্রাউজারের NIVORA Business ডেটা মুছে যাবে। নিশ্চিত?"))return;
+  if(!confirm("শেষবার নিশ্চিত করুন: ব্যাকআপ ছাড়া ডেটা ফেরত পাওয়া নাও যেতে পারে।"))return;
+  localStorage.removeItem(localKey());data=defaultData();renderAll();notify("স্থানীয় ডেটা মুছে ফেলা হয়েছে");
+});
 
-        const currencies = {
-            BDT: { symbol: '৳', rate: 117.5 },
-            USD: { symbol: '$', rate: 1.0 },
-            EUR: { symbol: '€', rate: 0.92 },
-            GBP: { symbol: '£', rate: 0.79 },
-            INR: { symbol: '₹', rate: 83.2 },
-            AED: { symbol: 'د.إ', rate: 3.67 }
-        };
-
-        let currentLang = 'bn';
-        let currentCurr = 'USD';
-
-        let appData = {
-            inventory: [
-                { sku: 'SKU-NV-901', name: 'Quantum Microcontroller v2', category: 'Electronics', qty: 1450, price: 145.00, location: 'Factory A - Sector 4' },
-                { sku: 'SKU-NV-442', name: 'Titanium Alloy Shafts', category: 'Raw Material', qty: 34, price: 820.00, location: 'Factory B - Sector 1' },
-                { sku: 'SKU-NV-710', name: 'Polymer Grade-A Resin', category: 'Chemicals', qty: 520, price: 310.00, location: 'Factory C - Hub 2' }
-            ],
-            trades: [
-                { id: 'TRD-8902', type: 'Sale', partner: 'Samsung Global', desc: 'Quantum Microcontrollers (450 pcs)', amount: 85000, status: 'Completed', date: '2026-10-08' },
-                { id: 'TRD-4411', type: 'Purchase', partner: 'SinoChem Petrochemical', desc: 'Polymer Resin Bulk (1 Ton)', amount: 320000, status: 'Completed', date: '2026-10-06' }
-            ],
-            ledger: [
-                { ref: 'JE-1001', account: 'Export Sales Revenue', narration: 'Samsung Global Consignment #BOL-89021', debit: 0, credit: 850000 },
-                { ref: 'JE-1002', account: 'Raw Material Inventory', narration: 'SinoChem Petrochemical Bulk Purchase', debit: 320000, credit: 0 },
-                { ref: 'JE-1003', account: 'Monthly Payroll Disburse', narration: 'Global Personnel Salaries October', debit: 1245000, credit: 0 }
-            ],
-            settings: { company: 'NIVORA ONE Global Enterprise Inc.', tax: 4.2 }
-        };
-
-        function loadStorage() {
-            const saved = localStorage.getItem('NIVORA_ERP_CENTURY_v7');
-            if (saved) {
-                try { appData = JSON.parse(saved); } catch(e) { console.error(e); }
-            }
-        }
-        function saveStorage() {
-            localStorage.setItem('NIVORA_ERP_CENTURY_v7', JSON.stringify(appData));
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toUTCString().split(' ')[4] + ' UTC • ' + now.toLocaleDateString();
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        function switchTab(viewId) {
-            document.querySelectorAll('.view').forEach(v => {
-                v.classList.remove('active', 'hidden');
-                v.classList.add('hidden');
-            });
-            document.getElementById('view-' + viewId).classList.remove('hidden');
-            document.getElementById('view-' + viewId).classList.add('active');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-[#202b42]', 'text-[#e8bd58]', 'border', 'border-[#34445f]');
-                btn.classList.add('text-[#b5c2d9]');
-            });
-            const activeBtn = document.querySelector(`[data-view="${viewId}"]`);
-            if (activeBtn) {
-                activeBtn.classList.add('bg-[#202b42]', 'text-[#e8bd58]', 'border', 'border-[#34445f]');
-                activeBtn.classList.remove('text-[#b5c2d9]');
-            }
-
-            const sidebar = document.getElementById('sidebar');
-            if (!sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.add('-translate-x-full');
-            }
-            renderAllViews();
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('-translate-x-full');
-        }
-
-        function changeLanguage(lang) {
-            currentLang = lang;
-            const dict = translations[lang] || translations['en'];
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (dict[key]) {
-                    el.innerText = dict[key];
-                }
-            });
-            showToast('Language Synchronized', `Global UI language successfully updated to ${lang.toUpperCase()}`);
-        }
-
-        function changeCurrency(currCode) {
-            currentCurr = currCode;
-            renderAllViews();
-            showToast('Currency Converted', `All ledger & financial figures converted to ${currCode}`);
-        }
-
-        function formatMoney(amountUSD) {
-            const currObj = currencies[currentCurr];
-            const converted = amountUSD * currObj.rate;
-            return currObj.symbol + Math.round(converted).toLocaleString();
-        }
-
-        function renderAllViews() {
-            renderInventoryTable();
-            renderTradeTable();
-            renderLedgerTable();
-            updateDashboardKPIs();
-            updateFinancialStatements();
-        }
-
-        function updateDashboardKPIs() {
-            let totalInvVal = appData.inventory.reduce((acc, item) => acc + (item.qty * item.price), 0);
-            document.getElementById('kpi-inventory').innerText = formatMoney(totalInvVal);
-            document.getElementById('kpi-inv-count').innerText = appData.inventory.length + ' SKU Lines Active';
-        }
-
-        function updateFinancialStatements() {
-            let totalSales = appData.trades.filter(t => t.type === 'Sale').reduce((acc, t) => acc + t.amount, 48290000);
-            document.getElementById('plGrossSales').innerText = formatMoney(totalSales);
-            document.getElementById('plTotalRev').innerText = formatMoney(totalSales + 7450000);
-            document.getElementById('plNetProfit').innerText = formatMoney((totalSales + 7450000) * 0.42);
-        }
-
-        function renderInventoryTable() {
-            const tbody = document.getElementById('inventoryTableBody');
-            tbody.innerHTML = '';
-            appData.inventory.forEach(item => {
-                const statusBadge = item.qty < 50 ? '<span class="px-2 py-1 rounded-md bg-rose-500/20 text-rose-300">Low Stock</span>' : '<span class="px-2 py-1 rounded-md bg-[#173d32] text-[#88eac2]">In Stock</span>';
-                tbody.innerHTML += `
-                    <tr class="hover:bg-[#172238] transition">
-                        <td class="p-3 mono font-bold text-amber-400">${item.sku}</td>
-                        <td class="p-3 font-semibold text-white">${item.name}</td>
-                        <td class="p-3">${item.category}</td>
-                        <td class="p-3 mono font-bold">${item.qty}</td>
-                        <td class="p-3 mono">${formatMoney(item.price)}</td>
-                        <td class="p-3">${item.location}</td>
-                        <td class="p-3">${statusBadge}</td>
-                        <td class="p-3 text-right">
-                            <button onclick="deleteProduct('${item.sku}')" class="px-3 py-1 rounded bg-rose-500/20 text-rose-300 text-xs">Delete</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function toggleItemForm() {
-            document.getElementById('productFormContainer').classList.toggle('hidden');
-        }
-
-        function saveProduct(e) {
-            e.preventDefault();
-            const sku = document.getElementById('pSku').value.trim();
-            const name = document.getElementById('pName').value.trim();
-            const category = document.getElementById('pCat').value.trim();
-            const qty = parseInt(document.getElementById('pQty').value);
-            const price = parseFloat(document.getElementById('pPrice').value);
-            const location = document.getElementById('pLoc').value.trim();
-
-            appData.inventory.push({ sku, name, category, qty, price, location });
-            saveStorage();
-            renderAllViews();
-            toggleItemForm();
-            document.getElementById('productForm').reset();
-            showToast('SKU Registered (Manual/Digital)', `Product ${sku} added successfully to global inventory.`);
-        }
-
-        function deleteProduct(sku) {
-            appData.inventory = appData.inventory.filter(i => i.sku !== sku);
-            saveStorage();
-            renderAllViews();
-            showToast('SKU Removed', `Product ${sku} deleted.`);
-        }
-
-        function filterInventory() {
-            const query = document.getElementById('inventorySearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#inventoryTableBody tr');
-            rows.forEach(r => {
-                r.style.display = r.innerText.toLowerCase().includes(query) ? '' : 'none';
-            });
-        }
-
-        function renderTradeTable() {
-            const tbody = document.getElementById('tradeTableBody');
-            tbody.innerHTML = '';
-            appData.trades.forEach(t => {
-                const typeBadge = t.type === 'Sale' ? '<span class="px-2 py-1 rounded-md bg-[#173d32] text-[#88eac2]">Export Sale</span>' : '<span class="px-2 py-1 rounded-md bg-[#3d3417] text-[#eacb88]">Purchase</span>';
-                tbody.innerHTML += `
-                    <tr class="hover:bg-[#172238] transition">
-                        <td class="p-3 mono font-bold text-amber-400">${t.id}</td>
-                        <td class="p-3">${typeBadge}</td>
-                        <td class="p-3 font-semibold text-white">${t.partner}</td>
-                        <td class="p-3">${t.desc}</td>
-                        <td class="p-3 mono font-bold">${formatMoney(t.amount)}</td>
-                        <td class="p-3"><span class="px-2 py-1 rounded-md bg-[#173d32] text-[#88eac2]">${t.status}</span></td>
-                        <td class="p-3 mono text-xs text-[#9baac4]">${t.date}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function saveTradeTransaction(e) {
-            e.preventDefault();
-            const type = document.getElementById('tType').value;
-            const partner = document.getElementById('tPartner').value.trim();
-            const desc = document.getElementById('tDesc').value.trim();
-            const amount = parseFloat(document.getElementById('tAmount').value);
-            const status = document.getElementById('tStatus').value;
-            const id = 'TRD-' + Math.floor(1000 + Math.random() * 9000);
-            const date = new Date().toISOString().split('T')[0];
-
-            appData.trades.unshift({ id, type, partner, desc, amount, status, date });
-            saveStorage();
-            renderAllViews();
-            document.getElementById('tradeForm').reset();
-            showToast('Trade Recorded (Manual/Automatic)', `Transaction ${id} successfully logged and synchronized.`);
-        }
-
-        function renderLedgerTable() {
-            const tbody = document.getElementById('ledgerTableBody');
-            tbody.innerHTML = '';
-            appData.ledger.forEach(l => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-[#172238] transition">
-                        <td class="p-3 mono font-bold text-amber-400">${l.ref}</td>
-                        <td class="p-3 font-semibold text-white">${l.account}</td>
-                        <td class="p-3">${l.narration}</td>
-                        <td class="p-3 mono text-rose-400">${l.debit > 0 ? formatMoney(l.debit) : '-'}</td>
-                        <td class="p-3 mono text-emerald-400">${l.credit > 0 ? formatMoney(l.credit) : '-'}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openLedgerModal() {
-            const acc = prompt("Enter Account Category (Manual Entry):", "Operating Expense");
-            if (!acc) return;
-            const amount = parseFloat(prompt("Enter Amount in USD:", "15000"));
-            if (isNaN(amount)) return;
-            const narration = prompt("Enter Narration / Memo:", "Manual ledger adjustment entry");
-            
-            appData.ledger.unshift({
-                ref: 'JE-' + Math.floor(2000 + Math.random() * 8000),
-                account: acc,
-                narration: narration || 'Manual Journal Entry',
-                debit: amount,
-                credit: 0
-            });
-            saveStorage();
-            renderAllViews();
-            showToast('Manual Journal Entry Saved', `Double-entry ledger updated successfully.`);
-        }
-
-        function openScannerModal() {
-            document.getElementById('scannerModal').classList.remove('hidden');
-            navigator.mediaDevices?.getUserMedia({ video: true }).then(stream => {
-                document.getElementById('cameraVideo').srcObject = stream;
-            }).catch(() => {});
-        }
-        function closeScannerModal() {
-            document.getElementById('scannerModal').classList.add('hidden');
-            const video = document.getElementById('cameraVideo');
-            if (video.srcObject) {
-                video.srcObject.getTracks().forEach(t => t.stop());
-            }
-        }
-        function simulateSuccessfulScan() {
-            closeScannerModal();
-            showToast('Scanner Verified (SKU-NV-901)', 'Barcode/QR successfully read and inventory automatically updated.');
-        }
-
-        function triggerQuickAudit() {
-            showToast('Century System Audit Passed', 'All international accounting standards, double-entry tallies, and inventory ledgers are 100% verified.');
-        }
-
-        function triggerEmergencyLockdown() {
-            if (confirm("Initiate Century Emergency Facility Lockdown across all global manufacturing hubs?")) {
-                showToast('Facility Lockdown Active', 'Perimeter gates and automated systems secured.');
-            }
-        }
-
-        function runPayrollDisbursement() {
-            showToast('Payroll Disbursed (Automatic)', '1,420 personnel salaries transferred instantly via multi-currency clearing.');
-        }
-
-        function runAiPrediction() {
-            showToast('AI Deep Scan Completed', 'No imminent stock deficits predicted for the next 100 operational cycles.');
-        }
-
-        function triggerAutoProcure(material) {
-            showToast('Procurement Dispatched', `Automated purchase order generated for ${material}.`);
-        }
-
-        function triggerReroute(route) {
-            showToast('Route Optimized', `Container fleet successfully diverted to secondary corridor.`);
-        }
-
-        function exportFullJSONBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", "NIVORA_ONE_Century_Proof_Backup.json");
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-            showToast('Backup Exported', 'Complete 100-year enterprise database downloaded successfully.');
-        }
-
-        function saveSettings() {
-            appData.settings.company = document.getElementById('settingCompany').value;
-            appData.settings.tax = parseFloat(document.getElementById('settingTax').value);
-            saveStorage();
-            showToast('Settings Saved', 'Global enterprise preferences updated.');
-        }
-
-        function resetAppStorage() {
-            if (confirm("Reset all enterprise data back to factory state?")) {
-                localStorage.removeItem('NIVORA_ERP_CENTURY_v7');
-                location.reload();
-            }
-        }
-
-        function showToast(title, desc) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastDesc').innerText = desc;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3500);
-        }
-
-        loadStorage();
-        renderAllViews();
-        changeLanguage('bn');
-    </script>
+function updateClock(){
+  $("clock").textContent=new Date().toLocaleString("bn-BD",{
+    weekday:"long",year:"numeric",month:"long",day:"numeric",
+    hour:"2-digit",minute:"2-digit",second:"2-digit"
+  });
+}
+setInterval(updateClock,1000);updateClock();
+readLocal();renderAll();startFirebase();
+</script>
 </body>
 </html>
