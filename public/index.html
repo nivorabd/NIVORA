@@ -1,237 +1,778 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIVORA ONE - Enterprise Ecosystem</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Smooth iframe display */
-        #appFrame { width: 100%; height: 100%; border: none; background-color: #020617; }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar { height: 4px; width: 4px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#020617">
+  <meta name="description" content="NIVORA ONE — AI, Business Management, Marketplace and Digital Services">
+  <title>NIVORA ONE — Enterprise Ecosystem</title>
+
+  <!-- External UI libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: #020617;
+      color: #f1f5f9;
+      font-family: system-ui, -apple-system, "Segoe UI",
+                   "Noto Sans Bengali", sans-serif;
+    }
+
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, select:focus-visible {
+      outline: 2px solid #34d399;
+      outline-offset: 3px;
+    }
+
+    #appFrame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #020617;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 8px;
+    }
+
+    .feature-btn {
+      flex-shrink: 0;
+      white-space: nowrap;
+      border: 1px solid #1e293b;
+      background: #0f172a;
+      color: #cbd5e1;
+      transition: background .2s, color .2s;
+    }
+
+    .feature-btn:hover { background: #1e293b; }
+
+    .feature-btn.is-active {
+      background: #059669;
+      border-color: #10b981;
+      color: white;
+    }
+
+    #left-drawer {
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      z-index: 100;
+      max-width: calc(100vw - 32px);
+      padding: 11px 16px;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+      box-shadow: 0 10px 35px #0008;
+      overflow-wrap: anywhere;
+    }
+
+    #toast[hidden] { display: none; }
+
+    #frame-status {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #020617;
+      text-align: center;
+    }
+
+    #frame-status[hidden] { display: none; }
+
+    .status-card {
+      width: min(100%, 420px);
+      padding: 24px;
+      border: 1px solid #1e293b;
+      border-radius: 18px;
+      background: #0f172a;
+    }
+
+    .status-card button {
+      margin-top: 14px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      background: #059669;
+      color: white;
+    }
+
+    @media (max-width: 480px) {
+      .brand-subtitle { display: none; }
+      .auth-label { display: none; }
+      #live-clock { max-width: 47vw; }
+      #clock-text { overflow: hidden; text-overflow: ellipsis; }
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 h-screen flex flex-col overflow-hidden font-sans select-none">
 
-    <!-- 1. TOP UTILITY BAR: Time, Date, Language & Currency -->
-    <header class="bg-slate-900 border-b border-slate-800 px-3 py-2 flex justify-between items-center text-xs z-30 shrink-0 shadow-md">
-        <!-- Live Clock & Date -->
-        <div id="live-clock" class="text-emerald-400 font-medium flex items-center bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">
-            <i class="fa-regular fa-clock mr-1.5 text-xs"></i><span>লোড হচ্ছে...</span>
-        </div>
+<body class="h-screen flex flex-col overflow-hidden">
 
-        <!-- Global Selectors: Language & Currency -->
-        <div class="flex items-center space-x-2">
-            <div class="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-md border border-slate-800">
-                <i class="fa-solid fa-globe text-slate-400 text-[10px]"></i>
-                <select class="bg-transparent text-slate-200 outline-none text-xs cursor-pointer">
-                    <option value="bn" class="bg-slate-900">বাংলা</option>
-                    <option value="en" class="bg-slate-900">English</option>
-                    <option value="de" class="bg-slate-900">Deutsch</option>
-                </select>
-            </div>
+  <!-- 1. GLOBAL UTILITY BAR -->
+  <header class="shrink-0 z-30 bg-slate-900 border-b border-slate-800
+                 px-2 sm:px-3 py-2 flex items-center justify-between gap-2">
 
-            <div class="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-md border border-slate-800">
-                <i class="fa-solid fa-coins text-slate-400 text-[10px]"></i>
-                <select class="bg-transparent text-slate-200 outline-none text-xs cursor-pointer">
-                    <option value="bdt" class="bg-slate-900">৳ BDT</option>
-                    <option value="usd" class="bg-slate-900">$ USD</option>
-                    <option value="eur" class="bg-slate-900">€ EUR</option>
-                </select>
-            </div>
-        </div>
-    </header>
-
-    <!-- 2. MAIN APP BAR (Left Menu Toggle & Brand & Auth) -->
-    <nav class="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-3 py-2.5 flex justify-between items-center z-25 shrink-0">
-        <div class="flex items-center space-x-3">
-            <!-- Left Menu Toggle Button (Hamburger) -->
-            <button onclick="toggleLeftDrawer()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 w-9 h-9 rounded-xl flex items-center justify-center border border-slate-700 transition shadow-sm active:scale-95" title="মেনু খুলুন">
-                <i class="fa-solid fa-bars-staggered text-base"></i>
-            </button>
-
-            <!-- Brand Logo & Title -->
-            <div class="flex items-center space-x-2.5 cursor-pointer" onclick="loadFeature('pages/ai-studio.html', null)">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-cube text-slate-950 font-bold text-sm"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-sm tracking-wide bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">NIVORA ONE</h1>
-                    <p class="text-[10px] text-slate-400 leading-none">মাস্টার ড্যাশবোর্ড</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Auth Actions (Login / Account / Logout) -->
-        <div class="flex items-center space-x-1.5">
-            <button onclick="alert('লগইন পেজ ওপেন হবে')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-medium transition border border-slate-700 flex items-center">
-                <i class="fa-solid fa-right-to-bracket mr-1"></i>লগইন
-            </button>
-            <button onclick="alert('নতুন একাউন্ট ফরম')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center">
-                <i class="fa-solid fa-user-plus mr-1"></i>রেজিস্টার
-            </button>
-        </div>
-    </nav>
-
-    <!-- 3. TOP HORIZONTAL QUICK MENU BAR (10 Core Features) -->
-    <div class="bg-slate-900/50 border-b border-slate-800/80 px-3 py-2 flex space-x-2 overflow-x-auto whitespace-nowrap z-20 shrink-0">
-        <!-- 4. NIVORA AI -->
-        <button onclick="loadFeature('pages/ai-studio.html', this)" class="feature-btn active-btn bg-emerald-600 text-white px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center shadow-sm shrink-0">
-            <i class="fa-solid fa-brain mr-2 text-sm"></i>NIVORA AI
-        </button>
-        <!-- 5. BUSINESS MANAGEMENT -->
-        <button onclick="loadFeature('pages/business.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
-            <i class="fa-solid fa-briefcase mr-2 text-sm text-emerald-400"></i>Business Mgmt
-        </button>
-        <!-- 6. E-COMMERCE MARKETPLACE -->
-        <button onclick="loadFeature('pages/ecommerce.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
-            <i class="fa-solid fa-store mr-2 text-sm text-cyan-400"></i>Marketplace
-        </button>
-        <!-- 7. MATH CALCULATOR -->
-        <button onclick="loadFeature('pages/calculator.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
-            <i class="fa-solid fa-calculator mr-2 text-sm text-amber-400"></i>Calculator
-        </button>
-        <!-- 8. DIGITAL GERMAN HOMOEO HALL -->
-        <button onclick="loadFeature('pages/homoeo-hall.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
-            <i class="fa-solid fa-notes-medical mr-2 text-sm text-rose-400"></i>Homoeo Hall
-        </button>
-        <!-- 9. ADMIN PANEL -->
-        <button onclick="loadFeature('pages/admin-panel.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
-            <i class="fa-solid fa-user-shield mr-2 text-sm text-purple-400"></i>Admin Panel
-        </button>
-        <!-- 10. CORE AN HUB -->
-        <button onclick="loadFeature('pages/core-hub.html', this)" class="feature-btn bg-slate-900 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium transition flex items-center border border-slate-800 shrink-0">
-            <i class="fa-solid fa-network-wired mr-2 text-sm text-blue-400"></i>Core An Hub
-        </button>
+    <div id="live-clock"
+         class="min-w-0 text-emerald-400 text-xs font-medium
+                bg-slate-950 border border-slate-800 rounded-lg px-2 py-2">
+      <i class="fa-regular fa-clock mr-1"></i>
+      <span id="clock-text">সময় লোড হচ্ছে...</span>
     </div>
 
-    <!-- 4. WORKSPACE CONTENT AREA (Super Fast IFRAME Loader) -->
-    <main class="flex-1 bg-slate-950 relative overflow-hidden">
-        <iframe id="appFrame" src="pages/ai-studio.html"></iframe>
-    </main>
+    <div class="flex items-center gap-2 shrink-0">
 
-    <!-- 5. LEFT SIDEBAR MENU DRAWER (Full Navigation & Extra Features) -->
-    <!-- Backdrop -->
-    <div id="drawer-backdrop" onclick="toggleLeftDrawer()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity"></div>
-    
-    <!-- Drawer Container (Left Side) -->
-    <div id="left-drawer" class="fixed top-0 left-0 h-full w-80 bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col p-5 shadow-2xl">
-        <!-- Drawer Header -->
-        <div class="flex justify-between items-center mb-5 border-b border-slate-800 pb-3">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-                <span class="font-bold text-sm text-slate-100">মাস্টার মেনু ও নেভিগেশন</span>
-            </div>
-            <button onclick="toggleLeftDrawer()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
-                <i class="fa-solid fa-xmark text-base"></i>
-            </button>
-        </div>
+      <label class="flex items-center gap-1 bg-slate-950
+                    border border-slate-800 rounded-lg px-2 py-2">
+        <i class="fa-solid fa-globe text-slate-400 text-xs"></i>
+        <select id="language-select"
+                aria-label="ভাষা নির্বাচন"
+                class="w-16 sm:w-auto max-w-24 bg-transparent
+                       text-xs text-slate-200 outline-none">
+          <option value="bn">বাংলা</option>
+          <option value="en">English</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </label>
 
-        <!-- Drawer Feature Items List -->
-        <div class="space-y-1.5 flex-1 overflow-y-auto pr-1">
-            <div class="text-[10px] font-semibold text-slate-500 uppercase px-3 pb-1 tracking-wider">প্রধান ফিচারসমূহ</div>
-            
-            <button onclick="loadFeatureAndClose('pages/ai-studio.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-brain mr-3 text-emerald-400 w-5 text-center text-sm"></i> ৪. NIVORA AI
-            </button>
-            <button onclick="loadFeatureAndClose('pages/business.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-briefcase mr-3 text-emerald-400 w-5 text-center text-sm"></i> ৫. BUSINESS MANAGEMENT
-            </button>
-            <button onclick="loadFeatureAndClose('pages/ecommerce.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-store mr-3 text-cyan-400 w-5 text-center text-sm"></i> ৬. ই-কমার্স মার্কেটপ্লেস
-            </button>
-            <button onclick="loadFeatureAndClose('pages/calculator.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-calculator mr-3 text-amber-400 w-5 text-center text-sm"></i> ৭. ম্যাথ ক্যালকুলেটর
-            </button>
-            <button onclick="loadFeatureAndClose('pages/homoeo-hall.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-notes-medical mr-3 text-rose-400 w-5 text-center text-sm"></i> ৮. জার্মান হোমিও হল
-            </button>
-            <button onclick="loadFeatureAndClose('pages/admin-panel.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-user-shield mr-3 text-purple-400 w-5 text-center text-sm"></i> ৯. এডমিন প্যানেল
-            </button>
-            <button onclick="loadFeatureAndClose('pages/core-hub.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-network-wired mr-3 text-blue-400 w-5 text-center text-sm"></i> ১০. কোর আন হাব
-            </button>
+      <label class="flex items-center gap-1 bg-slate-950
+                    border border-slate-800 rounded-lg px-2 py-2">
+        <i class="fa-solid fa-coins text-slate-400 text-xs"></i>
+        <select id="currency-select"
+                aria-label="মুদ্রা নির্বাচন"
+                class="w-16 sm:w-auto max-w-24 bg-transparent
+                       text-xs text-slate-200 outline-none">
+          <option value="BDT">৳ BDT</option>
+          <option value="USD">$ USD</option>
+          <option value="EUR">€ EUR</option>
+        </select>
+      </label>
+    </div>
+  </header>
 
-            <div class="text-[10px] font-semibold text-slate-500 uppercase px-3 pt-3 pb-1 tracking-wider">অন্যান্য ইউটিলিটি</div>
+  <!-- 2. MAIN APP HEADER -->
+  <nav class="shrink-0 z-20 bg-slate-900/95 border-b
+              border-slate-800 px-3 py-2 flex items-center
+              justify-between gap-2">
 
-            <!-- Radar System Tracking -->
-            <button onclick="loadFeatureAndClose('pages/radar-tracking.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-radar mr-3 text-teal-400 w-5 text-center text-sm"></i> রাডার সিস্টেম ট্র্যাকিং
-            </button>
-            <!-- Review Button -->
-            <button onclick="loadFeatureAndClose('pages/reviews.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-star mr-3 text-yellow-400 w-5 text-center text-sm"></i> রিভিউ বাটন
-            </button>
-            <!-- About & Security -->
-            <button onclick="loadFeatureAndClose('pages/about-security.html')" class="w-full text-left bg-slate-950/40 hover:bg-slate-800 p-2.5 rounded-xl text-xs font-medium text-slate-200 flex items-center border border-slate-800/50 transition">
-                <i class="fa-solid fa-shield-halved mr-3 text-indigo-400 w-5 text-center text-sm"></i> এবাউট ও সিকিউরিটি
-            </button>
-        </div>
+    <div class="flex items-center gap-2 min-w-0">
 
-        <!-- Drawer Footer (Logout Action) -->
-        <div class="pt-4 border-t border-slate-800 mt-2">
-            <button onclick="alert('সফলভাবে লগআউট হয়েছে')" class="w-full bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 border border-rose-900/50 p-2.5 rounded-xl text-xs font-medium flex items-center justify-center transition shadow-sm">
-                <i class="fa-solid fa-power-off mr-2"></i>লগআউট (Logout)
-            </button>
-        </div>
+      <button id="drawer-open"
+              type="button"
+              aria-label="প্রধান মেনু খুলুন"
+              aria-controls="left-drawer"
+              aria-expanded="false"
+              class="shrink-0 w-10 h-10 rounded-xl
+                     bg-slate-800 border border-slate-700
+                     text-emerald-400 hover:bg-slate-700">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+
+      <button type="button"
+              data-page="pages/ai-studio.html"
+              class="flex items-center gap-2 min-w-0 text-left"
+              aria-label="NIVORA ONE হোম">
+
+        <span class="w-9 h-9 shrink-0 rounded-xl
+                     bg-gradient-to-tr from-emerald-500 to-cyan-500
+                     text-slate-950 flex items-center justify-center">
+          <i class="fa-solid fa-cube"></i>
+        </span>
+
+        <span class="min-w-0">
+          <span class="block font-bold text-sm tracking-wide
+                       bg-gradient-to-r from-emerald-400 to-cyan-400
+                       bg-clip-text text-transparent">
+            NIVORA ONE
+          </span>
+          <span class="brand-subtitle block text-[10px] text-slate-400">
+            Enterprise Ecosystem
+          </span>
+        </span>
+      </button>
     </div>
 
-    <!-- JAVASCRIPT LOGIC & HANDLERS -->
-    <script>
-        // 1. Live Bangla Clock & Date Generator
-        function updateClock() {
-            const now = new Date();
-            const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            document.getElementById('live-clock').innerHTML = `<i class="fa-regular fa-clock mr-1.5 text-xs text-emerald-400"></i><span>${now.toLocaleDateString('bn-BD', options)}</span>`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+    <div class="flex items-center gap-1.5 shrink-0">
 
-        // 2. Fast Feature Switcher & Top Button Active State Handler
-        function loadFeature(filePath, buttonElement) {
-            const iframe = document.getElementById('appFrame');
-            if(iframe) {
-                iframe.src = filePath;
-            }
-            
-            // If triggered from top bar, update active styles
-            if(buttonElement) {
-                document.querySelectorAll('.feature-btn').forEach(btn => {
-                    btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-sm');
-                    btn.classList.add('bg-slate-900', 'hover:bg-slate-800', 'text-slate-300', 'border', 'border-slate-800');
-                });
-                
-                buttonElement.classList.remove('bg-slate-900', 'hover:bg-slate-800', 'text-slate-300', 'border', 'border-slate-800');
-                buttonElement.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
-            }
+      <button type="button"
+              data-page="pages/about-security.html"
+              class="rounded-lg bg-slate-800 border border-slate-700
+                     px-2.5 py-2 text-xs text-slate-200
+                     hover:bg-slate-700">
+        <i class="fa-solid fa-right-to-bracket mr-1"></i>
+        <span class="auth-label">লগইন</span>
+      </button>
+
+      <button type="button"
+              data-page="pages/about-security.html"
+              class="rounded-lg bg-emerald-600 px-2.5 py-2
+                     text-xs text-white hover:bg-emerald-500">
+        <i class="fa-solid fa-user-plus mr-1"></i>
+        <span class="auth-label">রেজিস্টার</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- 3. QUICK NAVIGATION -->
+  <div id="quick-menu"
+       class="shrink-0 z-10 bg-slate-900/70 border-b
+              border-slate-800 px-3 py-2 flex gap-2
+              overflow-x-auto">
+
+    <button type="button" data-page="pages/ai-studio.html"
+            class="feature-btn is-active rounded-xl px-3.5 py-2 text-xs">
+      <i class="fa-solid fa-brain mr-1.5"></i>NIVORA AI
+    </button>
+
+    <button type="button" data-page="pages/business.html"
+            class="feature-btn rounded-xl px-3.5 py-2 text-xs">
+      <i class="fa-solid fa-briefcase mr-1.5 text-emerald-400"></i>
+      Business
+    </button>
+
+    <button type="button" data-page="pages/ecommerce.html"
+            class="feature-btn rounded-xl px-3.5 py-2 text-xs">
+      <i class="fa-solid fa-store mr-1.5 text-cyan-400"></i>
+      Marketplace
+    </button>
+
+    <button type="button" data-page="pages/calculator.html"
+            class="feature-btn rounded-xl px-3.5 py-2 text-xs">
+      <i class="fa-solid fa-calculator mr-1.5 text-amber-400"></i>
+      Calculator
+    </button>
+
+    <button type="button" data-page="pages/homoeo-hall.html"
+            class="feature-btn rounded-xl px-3.5 py-2 text-xs">
+      <i class="fa-solid fa-notes-medical mr-1.5 text-rose-400"></i>
+      Homoeo Hall
+    </button>
+
+    <button type="button" data-page="pages/admin-panel.html"
+            class="feature-btn rounded-xl px-3.5 py-2 text-xs">
+      <i class="fa-solid fa-user-shield mr-1.5 text-purple-400"></i>
+      Admin
+    </button>
+
+    <button type="button" data-page="pages/core-hub.html"
+            class="feature-btn rounded-xl px-3.5 py-2 text-xs">
+      <i class="fa-solid fa-network-wired mr-1.5 text-blue-400"></i>
+      Core Hub
+    </button>
+  </div>
+
+  <!-- 4. APP WORKSPACE -->
+  <main class="flex-1 min-h-0 relative overflow-hidden bg-slate-950">
+
+    <iframe id="appFrame"
+            title="NIVORA ONE application workspace"
+            src="./pages/ai-studio.html"
+            loading="eager"
+            referrerpolicy="strict-origin-when-cross-origin">
+    </iframe>
+
+    <!-- Visible fallback if a requested page is unavailable -->
+    <div id="frame-status" hidden>
+      <div class="status-card">
+        <i id="status-icon"
+           class="fa-solid fa-circle-notch fa-spin
+                  text-3xl text-emerald-400"></i>
+
+        <h2 id="status-title" class="font-bold text-lg mt-4">
+          পেজ লোড হচ্ছে
+        </h2>
+
+        <p id="status-message"
+           class="text-sm text-slate-400 mt-2 leading-6">
+          অনুগ্রহ করে অপেক্ষা করুন।
+        </p>
+
+        <button id="retry-page" type="button">
+          <i class="fa-solid fa-rotate-right mr-1"></i>
+          আবার চেষ্টা করুন
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 5. SIDEBAR BACKDROP -->
+  <div id="drawer-backdrop"
+       class="fixed inset-0 z-40 bg-black/70 hidden"
+       aria-hidden="true"></div>
+
+  <!-- 6. SIDEBAR DRAWER -->
+  <aside id="left-drawer"
+        class="fixed inset-y-0 left-0 z-50
+               w-[min(320px,88vw)] max-w-full
+               bg-slate-900 border-r border-slate-800
+               flex flex-col p-4 shadow-2xl
+               -translate-x-full transition-transform duration-200"
+        aria-label="প্রধান নেভিগেশন"
+        aria-hidden="true">
+
+    <div class="flex items-center justify-between gap-2
+                border-b border-slate-800 pb-4 mb-4">
+
+      <div class="flex items-center gap-2">
+        <span class="w-9 h-9 rounded-xl bg-emerald-500/15
+                     text-emerald-400 flex items-center justify-center">
+          <i class="fa-solid fa-cube"></i>
+        </span>
+
+        <div>
+          <h2 class="font-bold text-sm">NIVORA ONE</h2>
+          <p class="text-xs text-slate-400">মাস্টার মেনু</p>
+        </div>
+      </div>
+
+      <button id="drawer-close" type="button"
+              aria-label="মেনু বন্ধ করুন"
+              class="w-9 h-9 rounded-lg hover:bg-slate-800
+                     text-slate-300">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto space-y-2 pr-1">
+
+      <p class="text-[10px] font-semibold text-slate-500
+                uppercase tracking-wider px-2 py-1">
+        প্রধান ফিচার
+      </p>
+
+      <button type="button" data-page="pages/ai-studio.html"
+              class="drawer-link">
+        <i class="fa-solid fa-brain text-emerald-400"></i>
+        NIVORA AI
+      </button>
+
+      <button type="button" data-page="pages/business.html"
+              class="drawer-link">
+        <i class="fa-solid fa-briefcase text-emerald-400"></i>
+        Business Management
+      </button>
+
+      <button type="button" data-page="pages/ecommerce.html"
+              class="drawer-link">
+        <i class="fa-solid fa-store text-cyan-400"></i>
+        ই-কমার্স মার্কেটপ্লেস
+      </button>
+
+      <button type="button" data-page="pages/calculator.html"
+              class="drawer-link">
+        <i class="fa-solid fa-calculator text-amber-400"></i>
+        ম্যাথ ক্যালকুলেটর
+      </button>
+
+      <button type="button" data-page="pages/homoeo-hall.html"
+              class="drawer-link">
+        <i class="fa-solid fa-notes-medical text-rose-400"></i>
+        জার্মান হোমিও হল
+      </button>
+
+      <button type="button" data-page="pages/admin-panel.html"
+              class="drawer-link">
+        <i class="fa-solid fa-user-shield text-purple-400"></i>
+        এডমিন প্যানেল
+      </button>
+
+      <button type="button" data-page="pages/core-hub.html"
+              class="drawer-link">
+        <i class="fa-solid fa-network-wired text-blue-400"></i>
+        কোর হাব
+      </button>
+
+      <div class="border-t border-slate-800 my-3"></div>
+
+      <p class="text-[10px] font-semibold text-slate-500
+                uppercase tracking-wider px-2 py-1">
+        অন্যান্য ইউটিলিটি
+      </p>
+
+      <button type="button" data-page="pages/radar-tracking.html"
+              class="drawer-link">
+        <i class="fa-solid fa-satellite-dish text-teal-400"></i>
+        রাডার সিস্টেম ট্র্যাকিং
+      </button>
+
+      <button type="button" data-page="pages/reviews.html"
+              class="drawer-link">
+        <i class="fa-solid fa-star text-yellow-400"></i>
+        রিভিউ
+      </button>
+
+      <button type="button" data-page="pages/about-security.html"
+              class="drawer-link">
+        <i class="fa-solid fa-shield-halved text-indigo-400"></i>
+        এবাউট ও সিকিউরিটি
+      </button>
+
+    </div>
+
+    <div class="border-t border-slate-800 pt-3 mt-3">
+      <button id="logout-btn" type="button"
+              class="w-full rounded-xl border border-rose-900/60
+                     bg-rose-950/30 text-rose-300 p-3 text-sm
+                     hover:bg-rose-900/40">
+        <i class="fa-solid fa-power-off mr-2"></i>
+        লগআউট
+      </button>
+    </div>
+
+  </aside>
+
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Sidebar styles -->
+  <style>
+    .drawer-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      background: rgba(2, 6, 23, .5);
+      color: #e2e8f0;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .drawer-link:hover,
+    .drawer-link.is-active {
+      background: #1e293b;
+      border-color: #059669;
+    }
+
+    .drawer-link i {
+      width: 20px;
+      text-align: center;
+    }
+  </style>
+
+  <!-- 7. APPLICATION LOGIC -->
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (selector) => document.querySelector(selector);
+
+      const frame = $("#appFrame");
+      const status = $("#frame-status");
+      const statusIcon = $("#status-icon");
+      const statusTitle = $("#status-title");
+      const statusMessage = $("#status-message");
+      const drawer = $("#left-drawer");
+      const backdrop = $("#drawer-backdrop");
+      const toast = $("#toast");
+
+      let currentPage = "./pages/ai-studio.html";
+      let loadTimer = null;
+      let toastTimer = null;
+      let requestNumber = 0;
+
+      const allowedPages = new Set([
+        "pages/ai-studio.html",
+        "pages/business.html",
+        "pages/ecommerce.html",
+        "pages/calculator.html",
+        "pages/homoeo-hall.html",
+        "pages/admin-panel.html",
+        "pages/core-hub.html",
+        "pages/radar-tracking.html",
+        "pages/reviews.html",
+        "pages/about-security.html"
+      ]);
+
+      /* Toast notification */
+      function showToast(message) {
+        toast.textContent = message;
+        toast.hidden = false;
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.hidden = true;
+        }, 3500);
+      }
+
+      /* Live Bangladesh clock */
+      function updateClock() {
+        const now = new Date();
+
+        try {
+          $("#clock-text").textContent =
+            now.toLocaleString("bn-BD", {
+              timeZone: "Asia/Dhaka",
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true
+            });
+        } catch (error) {
+          $("#clock-text").textContent = now.toLocaleString();
+        }
+      }
+
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      /* Sidebar open / close */
+      function openDrawer() {
+        drawer.classList.remove("-translate-x-full");
+        backdrop.classList.remove("hidden");
+        drawer.setAttribute("aria-hidden", "false");
+        $("#drawer-open").setAttribute("aria-expanded", "true");
+      }
+
+      function closeDrawer() {
+        drawer.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+        drawer.setAttribute("aria-hidden", "true");
+        $("#drawer-open").setAttribute("aria-expanded", "false");
+      }
+
+      $("#drawer-open").addEventListener("click", openDrawer);
+      $("#drawer-close").addEventListener("click", closeDrawer);
+      backdrop.addEventListener("click", closeDrawer);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeDrawer();
+      });
+
+      /* Update active menu across both navigation areas */
+      function updateActiveMenu(page) {
+        const normalized = page.replace(/^\.?\//, "");
+
+        document.querySelectorAll("[data-page]").forEach((button) => {
+          const buttonPage = button.dataset.page;
+
+          const isActive = buttonPage === normalized;
+
+          if (button.classList.contains("feature-btn")) {
+            button.classList.toggle("is-active", isActive);
+          }
+
+          if (button.classList.contains("drawer-link")) {
+            button.classList.toggle("is-active", isActive);
+          }
+        });
+      }
+
+      /* Workspace loading status */
+      function showLoading(page) {
+        status.hidden = false;
+        statusIcon.className =
+          "fa-solid fa-circle-notch fa-spin text-3xl text-emerald-400";
+        statusTitle.textContent = "পেজ লোড হচ্ছে";
+        statusMessage.textContent =
+          page + " — অনুগ্রহ করে অপেক্ষা করুন।";
+        $("#retry-page").hidden = true;
+      }
+
+      function showLoadError(page) {
+        status.hidden = false;
+        statusIcon.className =
+          "fa-solid fa-triangle-exclamation text-3xl text-amber-400";
+        statusTitle.textContent = "পেজটি লোড করা যায়নি";
+        statusMessage.textContent =
+          "ফাইলের নাম, ফোল্ডার ও GitHub Deployment পরীক্ষা করুন: " + page;
+        $("#retry-page").hidden = false;
+      }
+
+      function loadFeature(filePath) {
+        const page = String(filePath || "").replace(/^\.?\//, "");
+
+        if (!allowedPages.has(page)) {
+          showToast("এই পেজের অনুমোদিত পথ পাওয়া যায়নি।");
+          return;
         }
 
-        // 3. Left Side Drawer Open/Close Toggle (Fixed & Verified)
-        function toggleLeftDrawer() {
-            const drawer = document.getElementById('left-drawer');
-            const backdrop = document.getElementById('drawer-backdrop');
-            if(drawer && backdrop) {
-                drawer.classList.toggle('-translate-x-full');
-                backdrop.classList.toggle('hidden');
-            }
+        currentPage = "./" + page;
+        const thisRequest = ++requestNumber;
+
+        clearTimeout(loadTimer);
+        closeDrawer();
+        updateActiveMenu(page);
+        showLoading(page);
+
+        /*
+          A timeout is only a warning.
+          A slow connection can also take longer than 15 seconds.
+        */
+        loadTimer = setTimeout(() => {
+          if (thisRequest === requestNumber) {
+            statusTitle.textContent = "পেজ লোড হতে দেরি হচ্ছে";
+            statusMessage.textContent =
+              "ইন্টারনেট সংযোগ ও ফাইলের অবস্থান পরীক্ষা করুন।";
+            $("#retry-page").hidden = false;
+          }
+        }, 15000);
+
+        frame.src = currentPage;
+      }
+
+      /*
+        A missing HTML file may still trigger iframe load.
+        Inspect only same-origin documents and report likely 404 pages.
+      */
+      frame.addEventListener("load", () => {
+        clearTimeout(loadTimer);
+
+        let missing = false;
+
+        try {
+          const doc = frame.contentDocument;
+          const pageUrl = frame.contentWindow.location.pathname;
+          const bodyText = (doc?.body?.innerText || "")
+            .slice(0, 1200)
+            .toLowerCase();
+          const title = (doc?.title || "").toLowerCase();
+
+          missing =
+            /\/404\/?$/.test(pageUrl) ||
+            (
+              /404|not found|page not found/.test(title) &&
+              /404|not found|page not found/.test(bodyText)
+            );
+        } catch (error) {
+          /*
+            If the document cannot be inspected, do not claim
+            that it failed. Browser security may block inspection.
+          */
         }
 
-        // 4. Load Feature from Left Drawer and Close Drawer automatically
-        function loadFeatureAndClose(filePath) {
-            loadFeature(filePath, null);
-            toggleLeftDrawer();
+        if (missing) {
+          showLoadError(currentPage);
+          return;
         }
-    </script>
 
-<script type="module" src="./js/firebase.js"></script>
+        status.hidden = true;
+      });
+
+      frame.addEventListener("error", () => {
+        clearTimeout(loadTimer);
+        showLoadError(currentPage);
+      });
+
+      $("#retry-page").addEventListener("click", () => {
+        loadFeature(currentPage);
+      });
+
+      /* One handler for every navigation button */
+      document.querySelectorAll("[data-page]").forEach((button) => {
+        button.addEventListener("click", () => {
+          loadFeature(button.dataset.page);
+        });
+      });
+
+      /* Language and currency preferences */
+      $("#language-select").addEventListener("change", (event) => {
+        const language = event.target.value;
+
+        try {
+          localStorage.setItem("nivora_language", language);
+        } catch (error) {}
+
+        showToast(
+          language === "bn" ? "বাংলা ভাষা নির্বাচন করা হয়েছে।" :
+          language === "de" ? "Deutsch ausgewählt." :
+          "English selected."
+        );
+
+        /*
+          This saves the preference only.
+          It does not automatically translate every module.
+        */
+      });
+
+      $("#currency-select").addEventListener("change", (event) => {
+        const currency = event.target.value;
+
+        try {
+          localStorage.setItem("nivora_currency", currency);
+        } catch (error) {}
+
+        showToast(
+          "নির্বাচিত মুদ্রা: " + currency +
+          "। এটি এখনো সব মডিউলের হিসাব পরিবর্তন করে না।"
+        );
+      });
+
+      /* Demo-session logout only; does not sign out Firebase */
+      $("#logout-btn").addEventListener("click", () => {
+        const confirmed = window.confirm(
+          "আপনি কি ডেমো সেশন থেকে লগআউট করতে চান?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+          localStorage.removeItem("nivora_demo_session");
+        } catch (error) {}
+
+        closeDrawer();
+        showToast(
+          "ডেমো সেশন পরিষ্কার করা হয়েছে। Firebase লগআউট আলাদাভাবে যুক্ত করতে হবে।"
+        );
+      });
+
+      /* Restore saved preferences */
+      try {
+        const savedLanguage = localStorage.getItem("nivora_language");
+        const savedCurrency = localStorage.getItem("nivora_currency");
+
+        if (["bn", "en", "de"].includes(savedLanguage)) {
+          $("#language-select").value = savedLanguage;
+        }
+
+        if (["BDT", "USD", "EUR"].includes(savedCurrency)) {
+          $("#currency-select").value = savedCurrency;
+        }
+      } catch (error) {}
+
+      /* Initial workspace */
+      updateActiveMenu("pages/ai-studio.html");
+
+      /*
+        Keep a normal iframe fallback if JavaScript is interrupted.
+        The initial iframe source is already set in the HTML.
+      */
+    })();
+  </script>
+
+  <!-- Load only if this file exists in your repository -->
+  <script type="module" src="./js/firebase.js"></script>
+
 </body>
 </html>
+
