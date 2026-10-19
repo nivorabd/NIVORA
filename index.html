@@ -1,189 +1,1108 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#020617">
-  <title>NIVORA ONE | AI & Business Management</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, sans-serif; }
-    #workspace { height: calc(100dvh - 164px); min-height: 300px; }
-    #appFrame { width: 100%; height: 100%; border: 0; background: #fff; }
-    .feature-btn { transition: .2s ease; }
-    .feature-btn.active {
-      background: #059669;
-      border-color: #10b981;
-      color: #fff;
-    }
-    @media (max-width: 480px) {
-      #workspace { height: calc(100dvh - 176px); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f2a43">
+<meta name="description" content="NIVORA ONE — ব্যবসা ব্যবস্থাপনা ও AI ওয়ার্কস্পেস">
+<title>NIVORA ONE — Global Business & AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f2;--card:#fff;--card2:#f4f8f7;--ink:#14263a;--mut:#5f7280;--line:#dbe5e3;
+--pri:#0b6e4f;--pri2:#12a077;--gold:#e0a526;--danger:#c0392b;--warn:#b7791f;--ok:#0b6e4f;
+--side:#0f2a43;--sideInk:#c5d5e4;--r:14px;--sh:0 6px 22px rgba(15,42,67,.08)}
+body.dark{--bg:#0a1620;--card:#12232f;--card2:#183040;--ink:#e8f1f5;--mut:#9fb4c2;--line:#244052;
+--pri:#2fc79a;--pri2:#5eddb7;--gold:#f2c14e;--danger:#ff7b6b;--warn:#f2c14e;--ok:#4fd6a6;--side:#07111a;--sh:0 6px 22px rgba(0,0,0,.35)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "Hind Siliguri",system-ui,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--pri2);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.app{display:flex;min-height:100vh}
+.sidebar{width:258px;background:var(--side);color:#fff;position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;overflow-y:auto;transition:transform .25s}
+.brand{padding:20px 18px;border-bottom:1px solid #ffffff1c;display:flex;align-items:center;gap:11px}
+.logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--pri2),var(--gold));font-weight:800;font-size:20px;color:#0f2a43}
+.bname{font-size:19px;font-weight:700;letter-spacing:1px}
+.bsub{font-size:10px;color:#9db4c8}
+.slabel{padding:16px 18px 6px;color:#7f98ae;font-size:11px;font-weight:600}
+.nav{padding:0 10px;display:grid;gap:3px}
+.nav button{border:0;background:transparent;color:var(--sideInk);text-align:left;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;font-size:13.5px;width:100%}
+.nav button:hover{background:#ffffff14;color:#fff}
+.nav button.active{background:var(--pri);color:#fff}
+.ni{width:22px;text-align:center;font-size:16px}
+.sfoot{margin-top:auto;padding:14px 17px;color:#8fa6ba;font-size:11px;border-top:1px solid #ffffff1c}
+.main{margin-left:258px;width:calc(100% - 258px);min-width:0}
+.topbar{min-height:72px;background:var(--card);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:30;flex-wrap:wrap}
+.tl,.ta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ttitle{font-size:17px;font-weight:700}
+.clock{color:var(--mut);font-size:11px}
+.ibtn{width:38px;height:38px;display:inline-grid;place-items:center;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font-size:17px}
+.ibtn:hover{border-color:var(--pri2)}
+.ssmall{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 6px;max-width:112px}
+.content{max-width:1500px;margin:auto;padding:22px}
+.page{display:none}
+.page.active{display:block}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.ph h1{margin:0;font-size:24px}
+.ph p{color:var(--mut);margin:5px 0 0}
+.grid{display:grid;gap:16px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);min-width:0}
+.stat{border-top:3px solid var(--pri2)}
+.stat.gold{border-top-color:var(--gold)}
+.stat.red{border-top-color:var(--danger)}
+.slab{color:var(--mut);font-size:12px;font-weight:600}
+.sval{font-size:clamp(19px,2vw,26px);font-weight:700;margin:10px 0 4px;overflow-wrap:anywhere}
+.snote{color:var(--mut);font-size:11px}
+.stitle{font-size:16px;font-weight:700;margin:0 0 14px}
+.two{grid-template-columns:minmax(0,1.35fr) minmax(280px,1fr)}
+.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+.input,.select,.textarea{width:100%;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:10px 11px;min-width:0}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--pri2);outline:none}
+.textarea{min-height:85px;resize:vertical}
+.field{display:grid;gap:5px;margin-bottom:12px}
+.field label{font-size:12px;font-weight:600;color:var(--mut)}
+.fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+.fg .full{grid-column:1/-1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 14px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font-weight:600;font-size:12.5px;text-decoration:none}
+.btn:hover{border-color:var(--pri2)}
+.bp{background:var(--pri);border-color:var(--pri);color:#fff}
+.bg{background:var(--gold);border-color:var(--gold);color:#2b2100}
+.bd{background:var(--danger);border-color:var(--danger);color:#fff}
+.bs{padding:5px 9px;font-size:11.5px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:11px}
+table{border-collapse:collapse;width:100%;min-width:680px;background:var(--card)}
+th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12.5px;vertical-align:middle}
+th{background:var(--card2);font-size:11.5px;color:var(--mut);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--card2)}
+.empty{text-align:center!important;color:var(--mut);padding:28px!important}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;background:var(--card2);font-size:11px;font-weight:700}
+.b-ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.b-warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.b-bad{color:var(--danger);background:color-mix(in srgb,var(--danger) 14%,transparent)}
+.muted{color:var(--mut)}
+.small{font-size:11.5px}
+.flex{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.mt{margin-top:16px}.mb{margin-bottom:16px}
+.hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.bar{height:8px;background:var(--card2);border-radius:20px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--pri2)}
+.notice{padding:11px 14px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:12.5px;line-height:1.7;color:var(--mut)}
+.nw{border-left:3px solid var(--warn)}.ni2{border-left:3px solid var(--pri2)}
+.lrow{padding:11px 0;border-bottom:1px solid var(--line)}
+.lrow:last-child{border-bottom:0}
+.overlay{position:fixed;inset:0;background:#06101ab8;z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.open{display:flex}
+.dialog{background:var(--card);color:var(--ink);border-radius:16px;padding:22px;width:min(640px,100%);max-height:90vh;overflow:auto}
+.dhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.dhead h2{margin:0;font-size:19px}
+.toasts{position:fixed;left:16px;bottom:16px;z-index:300;display:grid;gap:8px;width:min(360px,calc(100% - 32px))}
+.toast{background:var(--card);color:var(--ink);padding:12px 15px;border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;box-shadow:var(--sh)}
+.toast.error{border-left-color:var(--danger)}.toast.warning{border-left-color:var(--warn)}
+.hidden{display:none!important}
+.chart{width:100%;height:210px;display:block}
+.kline{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.kline:last-child{border:0}
+/* ad slots */
+.adslot{display:flex;flex-direction:column;align-items:center;gap:3px;margin:14px auto;max-width:100%;overflow:hidden;min-height:66px}
+.adslot small{font-size:10px;color:var(--mut)}
+.adgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px;justify-items:center}
+/* floating quran button (right side) */
+.fab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:80;width:50px;height:58px;border:0;border-radius:14px 0 0 14px;background:var(--gold);color:#2b2100;font-size:24px;box-shadow:-4px 4px 16px #0003;display:grid;place-items:center;padding:0}
+.fab small{font-size:9px;font-weight:700;display:block;line-height:1}
+@media(max-width:1150px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.ailay{grid-template-columns:1fr!important}}
+@media(max-width:760px){.sidebar{transform:translateX(-105%);width:276px}.sidebar.open{transform:none}.main{margin-left:0;width:100%}#mobileMenu{display:inline-grid!important}
+.content{padding:14px 11px}.three,.fg{grid-template-columns:1fr}.fg .full{grid-column:auto}.ph h1{font-size:21px}.card{padding:14px}}
+@media print{.sidebar,.topbar,.btn,.fab,.adslot,.noprint{display:none!important}.main{margin:0;width:100%}.page{display:none!important}.page.active{display:block!important}}
+</style>
 </head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand"><div class="logo">N</div><div><div class="bname">NIVORA ONE</div><div class="bsub">BUSINESS · INTELLIGENCE · AI</div></div></div>
+ <div class="slabel" data-i18n="workspace">কর্মক্ষেত্র</div>
+ <nav class="nav" id="mainNav">
+  <button class="active" data-page="dashboard"><span class="ni">▦</span><span data-i18n="dashboard">ড্যাশবোর্ড</span></button>
+  <button data-page="inventory"><span class="ni">▤</span><span data-i18n="inventory">পণ্য ও স্টক</span></button>
+  <button data-page="purchases"><span class="ni">🛒</span><span data-i18n="purchases">ক্রয়</span></button>
+  <button data-page="sales"><span class="ni">🧾</span><span data-i18n="sales">বিক্রি ও ইনভয়েস</span></button>
+  <button data-page="contacts"><span class="ni">♙</span><span data-i18n="contacts">ক্রেতা ও সরবরাহকারী</span></button>
+  <button data-page="ledger"><span class="ni">⇄</span><span data-i18n="ledger">বাকি হিসাব</span></button>
+  <button data-page="finance"><span class="ni">৳</span><span data-i18n="finance">আয় ও ব্যয়</span></button>
+  <button data-page="employees"><span class="ni">♧</span><span data-i18n="employees">কর্মচারী ও বেতন</span></button>
+  <button data-page="shipping"><span class="ni">🚚</span><span data-i18n="shipping">শিপিং ও আমদানি-রপ্তানি</span></button>
+  <button data-page="market"><span class="ni">📈</span><span data-i18n="market">মার্কেট বিশ্লেষণ</span></button>
+  <button data-page="radar"><span class="ni">◉</span><span data-i18n="radar">স্টক ও মৌসুমি রাডার</span></button>
+  <button data-page="reports"><span class="ni">▥</span><span data-i18n="reports">রিপোর্ট ও ডেটা</span></button>
+ </nav>
+ <div class="slabel" data-i18n="intelligence">বুদ্ধিমত্তা ও টুলস</div>
+ <nav class="nav">
+  <button data-page="ai"><span class="ni">✧</span><span>NIVORA AI</span></button>
+  <button data-page="studio"><span class="ni">▶</span><span>AI Studio</span></button>
+  <button data-page="calculator"><span class="ni">＋</span><span data-i18n="calculators">ব্যবসায়িক ক্যালকুলেটর</span></button>
+  <button data-page="quran"><span class="ni">☪</span><span data-i18n="quran">আল-কুরআন</span></button>
+ </nav>
+ <div class="slabel" data-i18n="system">সিস্টেম</div>
+ <nav class="nav">
+  <button data-page="account"><span class="ni">♙</span><span data-i18n="account">অ্যাকাউন্ট ও অ্যাডমিন</span></button>
+  <button data-page="settings"><span class="ni">⚙</span><span data-i18n="settings">সেটিংস ও নিরাপত্তা</span></button>
+  <button data-page="about"><span class="ni">ⓘ</span><span data-i18n="about">NIVORA ONE পরিচিতি</span></button>
+ </nav>
+ <div class="sfoot">NIVORA ONE · v1.1<br><span id="storageLabel">লোকাল ডেটা মোড</span></div>
+</aside>
 
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<div class="main">
+<header class="topbar">
+ <div class="tl">
+  <button class="ibtn" id="backBtn" aria-label="পেছনে যান" title="পেছনে">←</button>
+  <button class="ibtn" id="mobileMenu" style="display:none" aria-label="মেনু">☰</button>
+  <div><div class="ttitle" id="currentTitle">NIVORA ONE</div><div class="clock" id="liveClock"></div></div>
+ </div>
+ <div class="ta">
+  <input class="input" id="globalSearch" placeholder="খুঁজুন… (Enter)" aria-label="Search" style="width:170px">
+  <select class="ssmall" id="languageSelect" aria-label="Language"><option value="bn">বাংলা</option><option value="en">English</option><option value="hi">हिन्दी</option><option value="ur">اردو</option></select>
+  <select class="ssmall" id="currencySelect" aria-label="Currency"><option value="BDT">BDT ৳</option><option value="USD">USD $</option><option value="EUR">EUR €</option><option value="GBP">GBP £</option><option value="INR">INR ₹</option><option value="AED">AED د.إ</option></select>
+  <button class="ibtn" id="themeToggle" aria-label="Theme">☾</button>
+  <button class="ibtn" id="openCalculator" aria-label="Calculator">🧮</button>
+  <button class="ibtn" id="shareButton" aria-label="Share">↗</button>
+ </div>
+</header>
 
-  <!-- Header -->
-  <header class="bg-slate-900 border-b border-slate-800 px-3 py-3">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-      <button type="button" onclick="openFeature('ai')"
-        class="flex items-center gap-2 text-left">
-        <span class="w-10 h-10 rounded-xl bg-emerald-500 text-slate-950
-          flex items-center justify-center text-xl">
-          <i class="fa-solid fa-cube"></i>
-        </span>
-        <span>
-          <span class="block font-bold text-lg tracking-wide">NIVORA ONE</span>
-          <span class="block text-xs text-slate-400">AI & Business Platform</span>
-        </span>
-      </button>
+<!-- AD SLOT 1: top banner (static position, not inside a hidden page) -->
+<div class="adslot"><small>স্পনসর্ড</small>
+<script>atOptions={'key':'a5d02f8d03c4bd8907626a78422157d9','format':'iframe','height':50,'width':320,'params':{}};</script>
+<script src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js"></script></div>
 
-      <div class="text-right">
-        <div id="clock" class="text-xs sm:text-sm text-emerald-400">
-          সময় লোড হচ্ছে...
-        </div>
-        <div class="text-xs text-slate-500 mt-1">Version 1.0</div>
-      </div>
-    </div>
-  </header>
+<main class="content" id="mainContent">
 
-  <!-- Only two main features -->
-  <nav class="bg-slate-900/70 border-b border-slate-800 p-3">
-    <div class="max-w-7xl mx-auto grid grid-cols-2 gap-3">
+<section class="page active" id="page-dashboard">
+ <div class="ph"><div><h1 data-i18n="dashboard">ড্যাশবোর্ড</h1><p data-i18n="dashboardSub">আপনার সংরক্ষিত ব্যবসায়িক তথ্যের একক চিত্র।</p></div>
+  <div class="flex noprint"><select class="select" id="dashboardPeriod" style="width:auto"><option value="today">আজ</option><option value="week">এই সপ্তাহ</option><option value="month" selected>এই মাস</option><option value="year">এই বছর</option><option value="all">সব সময়</option></select><button class="btn bp" data-action="quick-sale">＋ নতুন বিক্রি</button></div></div>
+ <div class="grid stats">
+  <div class="card stat"><div class="slab">বিক্রি</div><div class="sval" id="kpiSales">৳0</div><div class="snote">নির্বাচিত সময়ের বিক্রি</div></div>
+  <div class="card stat"><div class="slab">ক্রয়</div><div class="sval" id="kpiPurchases">৳0</div><div class="snote">নির্বাচিত সময়ের ক্রয়</div></div>
+  <div class="card stat gold"><div class="slab">নিট লাভ (আনুমানিক)</div><div class="sval" id="kpiProfit">৳0</div><div class="snote">বিক্রির মোট লাভ + অন্য আয় − ব্যয়</div></div>
+  <div class="card stat"><div class="slab">স্টক মূল্য</div><div class="sval" id="kpiStock">৳0</div><div class="snote">পরিমাণ × ক্রয়মূল্য</div></div>
+  <div class="card stat gold"><div class="slab">ক্রেতার কাছে পাওনা</div><div class="sval" id="kpiReceivable">৳0</div><div class="snote">বাকি বিক্রির অবশিষ্ট</div></div>
+  <div class="card stat red"><div class="slab">সরবরাহকারীর দেনা</div><div class="sval" id="kpiPayable">৳0</div><div class="snote">বাকি ক্রয়ের অবশিষ্ট</div></div>
+  <div class="card stat"><div class="slab">পণ্যের সংখ্যা</div><div class="sval" id="kpiProducts">0</div><div class="snote">সংরক্ষিত পণ্য</div></div>
+  <div class="card stat red"><div class="slab">কম স্টক সতর্কতা</div><div class="sval" id="kpiLowStock">0</div><div class="snote">ন্যূনতম স্টক বা নিচে</div></div>
+ </div>
+ <div class="card mb"><h2 class="stitle">গত ৬ মাসের বিক্রি</h2><div id="dashChart"></div></div>
+ <div class="grid two">
+  <div class="card"><div class="between"><h2 class="stitle">সাম্প্রতিক লেনদেন</h2><button class="btn bs" data-page="reports">রিপোর্ট দেখুন</button></div>
+   <div class="tw"><table><thead><tr><th>তারিখ</th><th>ধরন</th><th>রেফারেন্স</th><th>পরিমাণ</th></tr></thead><tbody id="recentTransactions"></tbody></table></div></div>
+  <div class="card"><h2 class="stitle">স্টক সতর্কতা</h2><div id="dashboardAlerts"></div><hr class="hr"><h2 class="stitle">দ্রুত কাজ</h2>
+   <div class="grid three"><button class="btn" data-page="inventory">＋ পণ্য</button><button class="btn" data-action="quick-sale">＋ বিক্রি</button><button class="btn" data-action="add-finance">＋ খরচ</button><button class="btn" data-action="add-contact">＋ কন্টাক্ট</button><button class="btn" data-action="add-employee">＋ কর্মচারী</button><button class="btn" data-page="ai">✧ AI</button></div></div>
+ </div>
+</section>
 
-      <button id="aiBtn" type="button"
-        onclick="openFeature('ai')"
-        class="feature-btn active border border-slate-700 rounded-xl
-        p-3 text-sm font-semibold flex items-center justify-center gap-2">
-        <i class="fa-solid fa-brain"></i>
-        <span>NIVORA AI</span>
-      </button>
+<section class="page" id="page-inventory">
+ <div class="ph"><div><h1 data-i18n="inventory">পণ্য ও স্টক</h1><p>পণ্য, SKU, বারকোড ও মজুতের হিসাব।</p></div><button class="btn bp" data-action="add-product">＋ পণ্য যোগ</button></div>
+ <div class="card"><div class="toolbar"><input class="input" id="productSearch" placeholder="নাম, SKU, বারকোড খুঁজুন…" style="flex:1;min-width:180px"><button class="btn" id="scanProduct">▦ বারকোড স্ক্যান / লিখুন</button><button class="btn" id="exportProducts">CSV এক্সপোর্ট</button></div>
+ <div class="tw"><table><thead><tr><th>পণ্য</th><th>SKU / বারকোড</th><th>পরিমাণ</th><th>ক্রয়মূল্য</th><th>বিক্রয়মূল্য</th><th>স্টক মূল্য</th><th>অ্যাকশন</th></tr></thead><tbody id="productsTable"></tbody></table></div>
+ <div class="between mt"><span class="muted small" id="productCount">0 পণ্য</span></div></div>
+ <div class="notice ni2 mt">ক্যামেরা স্ক্যান ব্রাউজারের অনুমতি ও সমর্থনের ওপর নির্ভর করে; তাই সরাসরি SKU/বারকোড লেখার অপশনও আছে। স্টক পরিবর্তন ক্রয়, বিক্রি, রিটার্ন বা অ্যাডজাস্টমেন্টের মাধ্যমে হয়।</div>
+</section>
 
-      <button id="businessBtn" type="button"
-        onclick="openFeature('business')"
-        class="feature-btn border border-slate-700 bg-slate-950 rounded-xl
-        p-3 text-sm font-semibold flex items-center justify-center gap-2">
-        <i class="fa-solid fa-briefcase text-emerald-400"></i>
-        <span>Business</span>
-      </button>
+<section class="page" id="page-purchases">
+ <div class="ph"><div><h1 data-i18n="purchases">ক্রয়</h1><p>ক্রয় ইনভয়েস ও স্টক-ইন রেকর্ড।</p></div><button class="btn bp" data-action="add-purchase">＋ নতুন ক্রয়</button></div>
+ <div class="card"><div class="toolbar"><input class="input" id="purchaseSearch" placeholder="ইনভয়েস বা সরবরাহকারী…" style="flex:1"></div>
+ <div class="tw"><table><thead><tr><th>তারিখ</th><th>ইনভয়েস</th><th>সরবরাহকারী</th><th>মোট</th><th>পরিশোধ</th><th>বাকি</th><th>অ্যাকশন</th></tr></thead><tbody id="purchasesTable"></tbody></table></div></div>
+</section>
 
-    </div>
-  </nav>
+<section class="page" id="page-sales">
+ <div class="ph"><div><h1 data-i18n="sales">বিক্রি ও ইনভয়েস</h1><p>বিক্রি, পেমেন্ট, ডিসকাউন্ট, ট্যাক্স ও স্টক কর্তন।</p></div><button class="btn bp" data-action="quick-sale">＋ নতুন বিক্রি</button></div>
+ <div class="card"><div class="toolbar"><input class="input" id="saleSearch" placeholder="ইনভয়েস বা ক্রেতা…" style="flex:1"><button class="btn" id="printSales">প্রিন্ট</button></div>
+ <div class="tw"><table><thead><tr><th>তারিখ</th><th>ইনভয়েস</th><th>ক্রেতা</th><th>মোট</th><th>পরিশোধ</th><th>বাকি</th><th>অ্যাকশন</th></tr></thead><tbody id="salesTable"></tbody></table></div></div>
+</section>
 
-  <!-- Workspace heading -->
-  <div class="px-3 py-2 bg-slate-950">
-    <div class="max-w-7xl mx-auto flex justify-between items-center gap-2">
-      <div>
-        <h2 id="pageTitle" class="font-semibold text-sm">NIVORA AI</h2>
-        <p id="pageDescription" class="text-xs text-slate-400 mt-1">
-          আপনার বুদ্ধিমান ডিজিটাল সহকারী
-        </p>
-      </div>
+<section class="page" id="page-contacts">
+ <div class="ph"><div><h1 data-i18n="contacts">ক্রেতা ও সরবরাহকারী</h1><p>ক্রেতা, সরবরাহকারী ও যোগাযোগের তথ্য।</p></div><button class="btn bp" data-action="add-contact">＋ কন্টাক্ট যোগ</button></div>
+ <div class="card"><div class="toolbar"><input class="input" id="contactSearch" placeholder="নাম, ফোন, কোম্পানি…" style="flex:1"><select class="select" id="contactFilter" style="width:auto"><option value="all">সব</option><option value="customer">ক্রেতা</option><option value="supplier">সরবরাহকারী</option><option value="both">উভয়</option></select></div>
+ <div class="tw"><table><thead><tr><th>নাম / কোম্পানি</th><th>ধরন</th><th>ফোন</th><th>ঠিকানা</th><th>ব্যালেন্স</th><th>অ্যাকশন</th></tr></thead><tbody id="contactsTable"></tbody></table></div></div>
+</section>
+<!-- ===== END OF STEP 1 — Step 2 continues directly from here ===== -->
 
-      <button type="button" onclick="reloadFeature()"
-        class="text-xs bg-slate-800 hover:bg-slate-700
-        border border-slate-700 rounded-lg px-3 py-2">
-        <i class="fa-solid fa-rotate-right mr-1"></i>
-        রিফ্রেশ
-      </button>
-    </div>
-  </div>
+<section class="page" id="page-ledger">
+ <div class="ph"><div><h1 data-i18n="ledger">বাকি হিসাব</h1><p>বাকি আদায় ও সরবরাহকারীর পেমেন্ট।</p></div><button class="btn bp" data-action="add-payment">＋ পেমেন্ট রেকর্ড</button></div>
+ <div class="grid two">
+  <div class="card"><h2 class="stitle">ক্রেতার কাছে পাওনা</h2><div class="sval" id="ledgerReceivable">৳0</div><div id="receivableList"></div></div>
+  <div class="card"><h2 class="stitle">সরবরাহকারীকে দেনা</h2><div class="sval" id="ledgerPayable">৳0</div><div id="payableList"></div></div>
+ </div>
+ <div class="card mt"><h2 class="stitle">পেমেন্ট ইতিহাস</h2><div class="tw"><table><thead><tr><th>তারিখ</th><th>কন্টাক্ট</th><th>দিক</th><th>পরিমাণ</th><th>পদ্ধতি</th><th>নোট</th><th>অ্যাকশন</th></tr></thead><tbody id="paymentsTable"></tbody></table></div></div>
+</section>
 
-  <!-- Feature page -->
-  <main id="workspace" class="flex-1 bg-white">
-    <iframe
-      id="appFrame"
-      src="./ai-studio.html"
-      title="NIVORA AI"
-      loading="eager"
-      allow="clipboard-read; clipboard-write"
-      referrerpolicy="strict-origin-when-cross-origin">
-    </iframe>
-  </main>
+<section class="page" id="page-finance">
+ <div class="ph"><div><h1 data-i18n="finance">আয় ও ব্যয়</h1><p>অন্যান্য আয়, খরচ ও ক্যাশ ফ্লো।</p></div><button class="btn bp" data-action="add-finance">＋ নতুন এন্ট্রি</button></div>
+ <div class="grid three mb"><div class="card"><div class="slab">অন্যান্য আয়</div><div class="sval" id="financeIncome">৳0</div></div><div class="card"><div class="slab">ব্যয়</div><div class="sval" id="financeExpense">৳0</div></div><div class="card"><div class="slab">নিট ক্যাশ ফ্লো</div><div class="sval" id="financeNet">৳0</div></div></div>
+ <div class="card"><div class="toolbar"><input class="input" id="financeSearch" placeholder="ক্যাটাগরি বা নোট…" style="flex:1"><select class="select" id="financeType" style="width:auto"><option value="all">সব</option><option value="income">আয়</option><option value="expense">ব্যয়</option></select></div>
+ <div class="tw"><table><thead><tr><th>তারিখ</th><th>ধরন</th><th>ক্যাটাগরি</th><th>পরিমাণ</th><th>নোট</th><th>অ্যাকশন</th></tr></thead><tbody id="financeTable"></tbody></table></div></div>
+</section>
 
-  <!-- Footer -->
-  <footer class="bg-slate-900 border-t border-slate-800 px-3 py-2">
-    <p class="text-center text-xs text-slate-400">
-      NIVORA ONE · AI & Business Management
-    </p>
-  </footer>
+<section class="page" id="page-employees">
+ <div class="ph"><div><h1 data-i18n="employees">কর্মচারী ও বেতন</h1><p>কর্মচারী, ওভারটাইম ও বেতন হিসাব।</p></div><button class="btn bp" data-action="add-employee">＋ কর্মচারী যোগ</button></div>
+ <div class="grid three mb"><div class="card"><div class="slab">কর্মচারী</div><div class="sval" id="employeeCount">0</div></div><div class="card"><div class="slab">মাসিক মূল বেতন (মোট)</div><div class="sval" id="salaryTotal">৳0</div></div><div class="card"><div class="slab">পেরোল রেকর্ড</div><div class="sval" id="payrollCount">0</div></div></div>
+ <div class="card"><div class="toolbar"><input class="input" id="employeeSearch" placeholder="নাম / আইডি / বিভাগ…" style="flex:1"><button class="btn" data-action="payroll">বেতন হিসাব করুন</button></div>
+ <div class="tw"><table><thead><tr><th>আইডি</th><th>নাম / পদ</th><th>বিভাগ</th><th>ফোন</th><th>মূল বেতন</th><th>অবস্থা</th><th>অ্যাকশন</th></tr></thead><tbody id="employeesTable"></tbody></table></div>
+ <hr class="hr"><h2 class="stitle">পেরোল ইতিহাস</h2><div class="tw"><table><thead><tr><th>মাস</th><th>কর্মচারী</th><th>মূল</th><th>ওভারটাইম</th><th>ভাতা/বোনাস</th><th>কর্তন</th><th>নিট বেতন</th><th>অ্যাকশন</th></tr></thead><tbody id="payrollTable"></tbody></table></div></div>
+ <div class="notice nw mt">বেতন শুধু আপনার দেওয়া বেতন, ওভারটাইম, ভাতা, বোনাস ও কর্তন থেকে হিসাব হয়; উপস্থিতি নিজে থেকে বানানো হয় না।</div>
+</section>
 
-  <script>
-    "use strict";
+<section class="page" id="page-shipping">
+ <div class="ph"><div><h1 data-i18n="shipping">শিপিং ও আমদানি-রপ্তানি</h1><p>শিপমেন্ট, কাস্টমস, ফ্রেইট ও ল্যান্ডেড কস্ট।</p></div><button class="btn bp" data-action="add-shipment">＋ নতুন শিপমেন্ট</button></div>
+ <div class="card"><div class="toolbar"><input class="input" id="shipmentSearch" placeholder="ট্র্যাকিং, পার্টনার বা দেশ…" style="flex:1"></div>
+ <div class="tw"><table><thead><tr><th>তারিখ</th><th>দিক</th><th>পার্টনার</th><th>দেশ</th><th>ট্র্যাকিং</th><th>ল্যান্ডেড কস্ট</th><th>অবস্থা / অ্যাকশন</th></tr></thead><tbody id="shipmentsTable"></tbody></table></div>
+ <hr class="hr"><h2 class="stitle">ডকুমেন্ট (শুধু এই ডিভাইসে নির্বাচন)</h2><div class="field"><input class="input" type="file" id="shipmentFile" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv,.doc,.docx" multiple></div><div id="shipmentFiles" class="muted small" style="white-space:pre-line">কোনো ফাইল নির্বাচন করা হয়নি।</div></div>
+ <div class="notice ni2 mt">লাইভ ক্যারিয়ার ট্র্যাকিং এখানে নেই। ট্র্যাকিং আইডি লোকালি সংরক্ষিত হয়; যাচাইকৃত অবস্থার জন্য ক্যারিয়ারের ওয়েবসাইট ব্যবহার করুন।</div>
+</section>
 
-    const FEATURES = {
-      ai: {
-        file: "./ai-studio.html",
-        title: "NIVORA AI",
-        description: "আপনার বুদ্ধিমান ডিজিটাল সহকারী",
-        button: "aiBtn"
-      },
-      business: {
-        file: "./business.html",
-        title: "Business Management",
-        description: "পণ্য, ক্রয়-বিক্রয় ও ব্যবসার হিসাব",
-        button: "businessBtn"
-      }
-    };
+<section class="page" id="page-market">
+ <div class="ph"><div><h1 data-i18n="market">মার্কেট বিশ্লেষণ</h1><p>আপনার নিজের বিক্রি ও ক্রয়ের রেকর্ড থেকে হিসাব করা বিশ্লেষণ।</p></div><button class="btn" id="refreshMarket">↻ রিফ্রেশ</button></div>
+ <div class="grid stats" id="mkKpis"></div>
+ <div class="grid two"><div class="card"><h2 class="stitle">সর্বাধিক বিক্রিত পণ্য</h2><div id="mkTop"></div></div><div class="card"><h2 class="stitle">লাভের মার্জিন (পণ্যভিত্তিক)</h2><div id="mkMargin"></div></div></div>
+ <div class="grid two mt"><div class="card"><h2 class="stitle">মাসিক বিক্রি বনাম ক্রয় (১২ মাস)</h2><div id="mkTrend"></div></div><div class="card"><h2 class="stitle">শীর্ষ ক্রেতা</h2><div id="mkCustomers"></div></div></div>
+ <div class="card mt"><h2 class="stitle">ABC বিশ্লেষণ (বিক্রয় আয়ের ভিত্তিতে)</h2><div class="tw"><table><thead><tr><th>পণ্য</th><th>আয়</th><th>অংশ %</th><th>ক্লাস</th></tr></thead><tbody id="mkABC"></tbody></table></div><p class="muted small">A = প্রথম ৭০% আয়, B = পরের ২০%, C = বাকি ১০%। প্রকৃত বিক্রির রেকর্ড না থাকলে ফল খালি দেখাবে।</p></div>
+</section>
 
-    let currentFeature = "ai";
+<section class="page" id="page-radar">
+ <div class="ph"><div><h1 data-i18n="radar">স্টক ও মৌসুমি রাডার</h1><p>স্টক ঝুঁকি, পুনঃঅর্ডার ও ঐতিহাসিক বিক্রির ভিত্তিতে পূর্বাভাস।</p></div><button class="btn" id="refreshRadar">↻ রিফ্রেশ</button></div>
+ <div class="grid two"><div class="card"><h2 class="stitle">বর্তমান স্টক ঝুঁকি</h2><div id="radarAlerts"></div></div>
+ <div class="card"><h2 class="stitle">১০ দিনের স্টক পূর্বাভাস</h2><p class="muted small">গত ৩০ দিনের গড় বিক্রি থেকে; অন্তত ৩টি বিক্রির রেকর্ড না থাকলে পূর্বাভাস দেওয়া হয় না।</p><div class="tw"><table><thead><tr><th>পণ্য</th><th>মজুত</th><th>দৈনিক গড়</th><th>আনুমানিক দিন</th><th>১০ দিনে প্রয়োজন</th></tr></thead><tbody id="forecastTable"></tbody></table></div></div></div>
+ <div class="card mt"><h2 class="stitle">মৌসুমি সূচক (মাসভিত্তিক বিক্রি)</h2><div id="seasonChart"></div><p class="muted small" id="seasonNote"></p></div>
+ <div class="card mt"><h2 class="stitle">মৌসুমি পরিকল্পনা নোট</h2><div class="field"><textarea class="textarea" id="seasonNotes" placeholder="নিজস্ব বাজার পর্যবেক্ষণ লিখুন…"></textarea></div><button class="btn bp" id="saveSeasonNotes">নোট সংরক্ষণ</button></div>
+</section>
 
-    function openFeature(name) {
-      const feature = FEATURES[name];
-      if (!feature) return;
+<section class="page" id="page-reports">
+ <div class="ph"><div><h1 data-i18n="reports">রিপোর্ট ও ডেটা</h1><p>রিপোর্ট, এক্সপোর্ট ও ব্যাকআপ।</p></div><button class="btn" id="printReport">প্রিন্ট</button></div>
+ <div class="card mb"><div class="fg"><div class="field"><label>শুরুর তারিখ</label><input class="input" id="reportFrom" type="date"></div><div class="field"><label>শেষ তারিখ</label><input class="input" id="reportTo" type="date"></div></div>
+ <div class="flex"><button class="btn bp" id="runReport">রিপোর্ট তৈরি</button><button class="btn" id="exportCSV">লেনদেন CSV</button><button class="btn" id="exportJSON">ব্যাকআপ JSON</button><label class="btn" for="importJSON">JSON ইমপোর্ট</label><input class="hidden" type="file" id="importJSON" accept=".json,application/json"></div></div>
+ <div class="grid three mb"><div class="card"><div class="slab">সময়ের বিক্রি</div><div class="sval" id="reportSales">৳0</div></div><div class="card"><div class="slab">সময়ের ক্রয়</div><div class="sval" id="reportPurchases">৳0</div></div><div class="card"><div class="slab">আনুমানিক নিট লাভ</div><div class="sval" id="reportProfit">৳0</div></div></div>
+ <div class="card"><h2 class="stitle">অডিট ট্রেইল</h2><div class="notice mb">এটি এই ব্রাউজারের কার্যক্রমের রেকর্ড; সার্ভার-যাচাইকৃত বা পরিবর্তন-অসম্ভব লগ নয়।</div><div class="tw"><table><thead><tr><th>সময়</th><th>কাজ</th><th>রেকর্ড</th><th>বিবরণ</th></tr></thead><tbody id="auditTable"></tbody></table></div></div>
+ <div class="card mt"><h2 class="stitle">স্টোরেজ ও রিকভারি</h2><p class="muted">ইমপোর্টের আগে বর্তমান ডেটার ব্যাকআপ নিন।</p><button class="btn bd" id="resetData">লোকাল ডেটা রিসেট</button></div>
+</section>
+<!-- ===== STEP 2 MARKUP ENDS; STEP 3 ADDS REMAINING PAGES (ai, studio, calculator, quran, account, settings, about), FOOTER, THEN THE REST OF THE SCRIPT ===== -->
+</main>
+<footer id="siteFooter">
+<div style="width:100%;max-width:720px;margin:14px auto"><small class="muted" style="display:block;text-align:center">স্পনসর্ড</small>
+<script async="async" data-cfasync="false" src="https://pl31898636.profitableratecpmnetwork.com/bb41f7ae7e3578b16731281e445f41f8/invoke.js"></script>
+<div id="container-bb41f7ae7e3578b16731281e445f41f8"></div></div>
+<div class="adgrid"><div class="adslot"><small>স্পনসর্ড</small>
+<script>atOptions={'key':'a5d02f8d03c4bd8907626a78422157d9','format':'iframe','height':50,'width':320,'params':{}};</script>
+<script src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js"></script></div>
+<div class="adslot"><small>স্পনসর্ড</small>
+<script>atOptions={'key':'a5d02f8d03c4bd8907626a78422157d9','format':'iframe','height':50,'width':320,'params':{}};</script>
+<script src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js"></script></div></div>
+<div style="text-align:center;margin:12px 0"><a class="btn bg" href="https://www.profitableratecpmnetwork.com/i2semq2cv?key=cc700b40da57eaf8d82400a54ca1743e" target="_blank" rel="noopener sponsored">স্পনসরড অফার দেখুন</a></div>
+<p class="muted small" style="text-align:center">© NIVORA ONE</p></footer>
+</div></div>
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true"><div class="dialog"><div class="dhead"><h2 id="modalTitle"></h2><button class="ibtn" id="modalClose" aria-label="বন্ধ">×</button></div><div id="modalBody"></div></div></div>
+<div class="toasts" id="toastArea" aria-live="polite"></div>
 
-      currentFeature = name;
+<script>
+"use strict";
+(()=>{
+const $=id=>document.getElementById(id);
+const STORE="nivora_one_local_v1";
+const defaults={products:[],purchases:[],sales:[],contacts:[],payments:[],finance:[],employees:[],payroll:[],shipments:[],audit:[],briefs:[],chat:[],
+ settings:{currency:"BDT",language:"bn",theme:"light",lowStock:5,businessName:"",businessAddress:"",businessTax:"",businessTimezone:"local",invoiceFooter:"Thank you for your business",seasonNotes:"",aiProvider:"none",aiModel:""}};
+let db,editing=null,memory=0,lastAnswer="",pendingFiles=[],videoURL=null;
+const uid=()=>Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
+const num=v=>{const n=Number(v);return Number.isFinite(n)?n:0};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const dateOf=x=>x?.date||today();
+const clone=x=>JSON.parse(JSON.stringify(x));
+const sum=(a,f)=>a.reduce((t,x)=>t+num(f(x)),0);
+const get=id=>($(id)?.value||"").trim();
+const val=id=>num($(id)?.value);
+const setHTML=(id,h)=>{if($(id))$(id).innerHTML=h};
+const byId=(l,k)=>l.find(x=>x.id===k);
+const emptyRow=(c,m="কোনো রেকর্ড নেই")=>`<tr><td colspan="${c}" class="empty">${esc(m)}</td></tr>`;
+function load(){
+ try{const raw=localStorage.getItem(STORE);const r=clone(defaults);if(!raw)return r;const s=JSON.parse(raw);
+  for(const k of Object.keys(r)){if(k==="settings")r.settings={...r.settings,...(s.settings||{})};else if(Array.isArray(s[k]))r[k]=s[k]}return r}
+ catch(e){console.error(e);return clone(defaults)}
+}
+db=load();
+function toast(m,t="success"){const b=$("toastArea");if(!b)return;const e=document.createElement("div");e.className="toast"+(t==="success"?"":" "+t);e.textContent=m;b.appendChild(e);setTimeout(()=>e.remove(),4500)}
+function persist(){
+ try{localStorage.setItem(STORE,JSON.stringify(db));$("storageLabel").textContent="এই ব্রাউজারে সংরক্ষিত";return true}
+ catch(e){console.error(e);toast("সংরক্ষণ ব্যর্থ। ব্যাকআপ নিন ও স্টোরেজ জায়গা দেখুন।","error");$("storageLabel").textContent="সংরক্ষণ ত্রুটি";return false}
+}
+function audit(action,kind,details){db.audit.unshift({id:uid(),date:new Date().toISOString(),action,kind,details:String(details||"")});db.audit=db.audit.slice(0,1000)}
+function saveAndRender(m){if(!persist())return false;renderAll();if(m)toast(m);return true}
+function money(v){
+ const c=db.settings.currency||"BDT",l=({bn:"bn-BD",en:"en-US",hi:"hi-IN",ur:"ur-PK"})[db.settings.language]||"en-US";
+ try{return new Intl.NumberFormat(l,{style:"currency",currency:c,maximumFractionDigits:2}).format(num(v))}catch{return c+" "+num(v).toFixed(2)}
+}
+function dateText(d){if(!d)return "—";const p=new Date(d);return Number.isNaN(p.getTime())?esc(d):p.toLocaleDateString()}
+function field(label,name,type="text",value="",req=false,extra=""){return `<div class="field"><label for="${esc(name)}">${esc(label)}${req?" *":""}</label><input class="input" id="${esc(name)}" type="${type}" value="${esc(value)}" ${req?"required":""} ${extra}></div>`}
+function selectField(label,name,opts,value){return `<div class="field"><label for="${esc(name)}">${esc(label)}</label><select class="select" id="${esc(name)}">${opts.map(o=>`<option value="${esc(o[0])}" ${o[0]===value?"selected":""}>${esc(o[1])}</option>`).join("")}</select></div>`}
+function textareaField(label,name,value=""){return `<div class="field"><label for="${esc(name)}">${esc(label)}</label><textarea class="textarea" id="${esc(name)}">${esc(value)}</textarea></div>`}
+function openModal(title,html){$("modalTitle").textContent=title;$("modalBody").innerHTML=html;$("modalOverlay").classList.add("open")}
+function closeModal(){$("modalOverlay").classList.remove("open");editing=null}
+$("modalClose").addEventListener("click",closeModal);
+$("modalOverlay").addEventListener("click",e=>{if(e.target===$("modalOverlay"))closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();$("calculatorDrawer")?.classList.remove("open")}});
+const askConfirm=m=>window.confirm(m);
+const actionButton=(a,k,l,c="bs")=>`<button type="button" class="btn ${c}" data-action="${esc(a)}" data-id="${esc(k)}">${esc(l)}</button>`;
+let depth=0;
+function nav(page,fromPop){
+ const t=$("page-"+page);if(!t){toast("পেজটি পাওয়া যায়নি।","error");return}
+ const prev=document.querySelector(".page.active")?.id.slice(5);
+ if(!fromPop&&prev!==page){try{history.pushState({page},"","#"+page);depth++}catch{}}
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));t.classList.add("active");
+ document.querySelectorAll(".nav button.active").forEach(b=>b.classList.remove("active"));
+ document.querySelectorAll('.nav button[data-page="'+page+'"]').forEach(b=>b.classList.add("active"));
+ $("currentTitle").textContent=t.querySelector("h1")?.textContent||"NIVORA ONE";
+ $("sidebar").classList.remove("open");window.scrollTo({top:0,behavior:"smooth"});
+ if(page==="market")renderMarket();if(page==="radar")renderRadar();if(page==="reports")renderReports();if(page==="quran")qLoadList();
+}
+document.addEventListener("click",e=>{
+ const p=e.target.closest("[data-page]");if(p){e.preventDefault();nav(p.dataset.page);return}
+ const b=e.target.closest("[data-action]");if(b){e.preventDefault();handleAction(b.dataset.action,b.dataset.id)}
+ if(window.innerWidth<=760&&!e.target.closest("#sidebar")&&!e.target.closest("#mobileMenu"))$("sidebar").classList.remove("open");
+});
+try{history.replaceState({page:"dashboard"},"","#dashboard")}catch{}
+const overlaysOpen=()=>$("modalOverlay").classList.contains("open")||$("calculatorDrawer")?.classList.contains("open")||$("sidebar").classList.contains("open");
+function closeOverlays(){closeModal();$("calculatorDrawer")?.classList.remove("open");$("sidebar").classList.remove("open")}
+window.addEventListener("popstate",e=>{
+ if(overlaysOpen()){closeOverlays();const cur=document.querySelector(".page.active")?.id.slice(5)||"dashboard";try{history.pushState({page:cur},"","#"+cur)}catch{}return}
+ depth=Math.max(0,depth-1);nav(e.state?.page||"dashboard",true);
+});
+$("backBtn").addEventListener("click",()=>{
+ if(overlaysOpen()){closeOverlays();return}
+ if(depth>0){history.back();return}
+ if(document.querySelector(".page.active")?.id!=="page-dashboard"){nav("dashboard");return}
+ toast("এটিই প্রথম পেজ।","warning");
+});
+$("mobileMenu").addEventListener("click",e=>{e.stopPropagation();$("sidebar").classList.toggle("open")});
+const LOC={bn:"bn-BD",en:"en-GB",hi:"hi-IN",ur:"ur-PK"};
+function tickClock(){
+ const n=new Date(),l=LOC[db.settings.language]||"en-GB";
+ try{$("liveClock").textContent=new Intl.DateTimeFormat(l,{weekday:"long",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(n)}catch{$("liveClock").textContent=n.toLocaleString()}
+}
+tickClock();setInterval(tickClock,1000);
+const TR={
+en:{workspace:"WORKSPACE",dashboard:"Dashboard",inventory:"Inventory & Products",purchases:"Purchases",sales:"Sales & Invoices",contacts:"Customers & Suppliers",ledger:"Due Ledger",finance:"Income & Expenses",employees:"Employees & Payroll",shipping:"Shipping & Import/Export",market:"Market Analysis",radar:"Stock & Seasonal Radar",reports:"Reports & Data",intelligence:"INTELLIGENCE & TOOLS",calculators:"Business Calculators",quran:"Al-Quran",system:"SYSTEM",account:"Account & Admin",settings:"Settings & Security",about:"About NIVORA ONE",dashboardSub:"A single view of your saved business information."},
+hi:{workspace:"कार्यस्थान",dashboard:"डैशबोर्ड",inventory:"इन्वेंटरी और उत्पाद",purchases:"खरीद",sales:"बिक्री और इनवॉइस",contacts:"ग्राहक और आपूर्तिकर्ता",ledger:"बकाया खाता",finance:"आय और खर्च",employees:"कर्मचारी और वेतन",shipping:"शिपिंग और आयात/निर्यात",market:"बाज़ार विश्लेषण",radar:"स्टॉक और मौसमी रडार",reports:"रिपोर्ट और डेटा",intelligence:"बुद्धिमत्ता और टूल",calculators:"व्यवसाय कैलकुलेटर",quran:"अल-कुरआन",system:"सिस्टम",account:"खाता और एडमिन",settings:"सेटिंग्स और सुरक्षा",about:"NIVORA ONE के बारे में",dashboardSub:"आपके सहेजे गए व्यवसाय डेटा का अवलोकन।"},
+ur:{workspace:"ورک اسپیس",dashboard:"ڈیش بورڈ",inventory:"انوینٹری اور مصنوعات",purchases:"خریداری",sales:"فروخت اور انوائس",contacts:"گاہک اور سپلائر",ledger:"بقایاجات",finance:"آمدنی اور اخراجات",employees:"ملازمین اور تنخواہ",shipping:"شپنگ اور درآمد/برآمد",market:"مارکیٹ تجزیہ",radar:"اسٹاک اور موسمی ریڈار",reports:"رپورٹس اور ڈیٹا",intelligence:"ذہانت اور ٹولز",calculators:"کاروباری کیلکولیٹر",quran:"القرآن",system:"سسٹم",account:"اکاؤنٹ اور ایڈمن",settings:"ترتیبات اور سیکیورٹی",about:"NIVORA ONE کے بارے میں",dashboardSub:"آپ کے محفوظ کردہ کاروباری ڈیٹا کا جائزہ۔"}};
+document.querySelectorAll("[data-i18n]").forEach(e=>{e.dataset.bn=e.textContent});
+function applyLanguage(){
+ const l=db.settings.language||"bn";document.documentElement.lang=l;document.documentElement.dir=l==="ur"?"rtl":"ltr";
+ document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;e.textContent=l==="bn"?e.dataset.bn:(TR[l]?.[k]||e.dataset.bn)});
+ const h=document.querySelector("#page-"+(document.querySelector(".page.active")?.id.slice(5))+" h1");if(h)$("currentTitle").textContent=h.textContent;
+}
+function applyTheme(){document.body.classList.toggle("dark",db.settings.theme==="dark");$("themeToggle").textContent=db.settings.theme==="dark"?"☀":"☾";if($("settingsTheme"))$("settingsTheme").value=db.settings.theme}
+$("languageSelect").value=db.settings.language;$("currencySelect").value=db.settings.currency;
+$("languageSelect").addEventListener("change",e=>{db.settings.language=e.target.value;persist();applyLanguage();tickClock();renderAll()});
+$("currencySelect").addEventListener("change",e=>{db.settings.currency=e.target.value;if($("settingsCurrency"))$("settingsCurrency").value=e.target.value;persist();renderAll();toast("শুধু প্রদর্শনের কারেন্সি বদলেছে; মূল অঙ্ক রূপান্তর হয়নি।","warning")});
+$("themeToggle").addEventListener("click",()=>{db.settings.theme=db.settings.theme==="dark"?"light":"dark";persist();applyTheme()});
 
-      const frame = document.getElementById("appFrame");
-      const title = document.getElementById("pageTitle");
-      const description = document.getElementById("pageDescription");
+function periodMatch(date,period){
+ const d=new Date((date||today())+"T12:00:00"),now=new Date();if(Number.isNaN(d.getTime()))return false;
+ if(period==="all")return true;if(period==="today")return date===today();
+ if(period==="month")return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
+ if(period==="year")return d.getFullYear()===now.getFullYear();
+ if(period==="week"){const s=new Date(now);s.setHours(0,0,0,0);s.setDate(s.getDate()-((s.getDay()+6)%7));const e=new Date(s);e.setDate(s.getDate()+7);return d>=s&&d<e}
+ return true;
+}
+const calcSaleTotal=x=>num(x.subtotal)-num(x.discount)+num(x.tax)+num(x.delivery);
+const saleGrossProfit=x=>sum(x.items||[],it=>(num(it.price)-num(it.cost))*num(it.qty))-num(x.discount);
+/* বকেয়া: ইনভয়েসের সাথে যুক্ত পেমেন্ট (sourceId) ইনভয়েসের paid-এ আগেই ধরা আছে, তাই শুধু ম্যানুয়াল পেমেন্ট বিয়োগ হয় */
+function recv(c){const due=sum(db.sales.filter(s=>s.contactId===c.id),s=>Math.max(0,calcSaleTotal(s)-num(s.paid)));return Math.max(0,due-sum(db.payments.filter(p=>p.contactId===c.id&&p.direction==="in"&&!p.sourceId),p=>p.amount))}
+function pay(c){const due=sum(db.purchases.filter(p=>p.contactId===c.id),p=>Math.max(0,num(p.total)-num(p.paid)));return Math.max(0,due-sum(db.payments.filter(p=>p.contactId===c.id&&p.direction==="out"&&!p.sourceId),p=>p.amount))}
+function contactBalance(c){return c.type==="supplier"?pay(c):c.type==="customer"?recv(c):recv(c)-pay(c)}
+function totals(period="all"){
+ const sales=db.sales.filter(x=>periodMatch(dateOf(x),period)),purchases=db.purchases.filter(x=>periodMatch(dateOf(x),period)),fin=db.finance.filter(x=>periodMatch(dateOf(x),period));
+ const salesTotal=sum(sales,calcSaleTotal),purchaseTotal=sum(purchases,p=>p.total),gross=sum(sales,saleGrossProfit);
+ const income=sum(fin.filter(x=>x.type==="income"),x=>x.amount),expense=sum(fin.filter(x=>x.type==="expense"),x=>x.amount);
+ return {salesTotal,purchaseTotal,gross,income,expense,net:gross+income-expense};
+}
+function barChart(labels,vals){
+ const max=Math.max(1,...vals),w=600,h=200,bw=w/labels.length;
+ return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img">`+vals.map((v,i)=>{const bh=v/max*(h-60);return `<rect x="${i*bw+bw*.2}" y="${h-30-bh}" width="${bw*.6}" height="${bh}" rx="4" fill="var(--pri2)"/><text x="${i*bw+bw/2}" y="${h-12}" text-anchor="middle" font-size="12" fill="var(--mut)">${esc(labels[i])}</text><text x="${i*bw+bw/2}" y="${h-35-bh}" text-anchor="middle" font-size="11" fill="var(--ink)">${v?Math.round(v):""}</text>`}).join("")+`</svg>`;
+}
+function monthKeys(n){const o=[],now=new Date();for(let i=n-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);o.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"))}return o}
+function renderDashboard(){
+ const t=totals($("dashboardPeriod").value||"month");
+ $("kpiSales").textContent=money(t.salesTotal);$("kpiPurchases").textContent=money(t.purchaseTotal);$("kpiProfit").textContent=money(t.net);
+ $("kpiStock").textContent=money(sum(db.products,p=>num(p.qty)*num(p.cost)));
+ $("kpiReceivable").textContent=money(sum(db.contacts,recv));$("kpiPayable").textContent=money(sum(db.contacts,pay));
+ $("kpiProducts").textContent=db.products.length;
+ const low=db.products.filter(p=>num(p.qty)<=num(p.minStock));$("kpiLowStock").textContent=low.length;
+ const keys=monthKeys(6);setHTML("dashChart",barChart(keys,keys.map(k=>sum(db.sales.filter(s=>dateOf(s).startsWith(k)),calcSaleTotal))));
+ const tx=[...db.sales.map(x=>({date:dateOf(x),type:"বিক্রি",ref:x.invoice,amount:calcSaleTotal(x)})),...db.purchases.map(x=>({date:dateOf(x),type:"ক্রয়",ref:x.invoice,amount:x.total})),...db.finance.map(x=>({date:dateOf(x),type:x.type==="income"?"আয়":"ব্যয়",ref:x.category,amount:x.amount}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+ setHTML("recentTransactions",tx.length?tx.map(x=>`<tr><td>${dateText(x.date)}</td><td>${esc(x.type)}</td><td>${esc(x.ref||"—")}</td><td>${money(x.amount)}</td></tr>`).join(""):emptyRow(4,"এখনো কোনো লেনদেন নেই।"));
+ setHTML("dashboardAlerts",low.length?low.slice(0,8).map(p=>`<div class="lrow"><div class="between"><strong>${esc(p.name)}</strong><span class="badge b-bad">${num(p.qty)} ${esc(p.unit||"pcs")}</span></div><div class="muted small">ন্যূনতম: ${num(p.minStock)} · SKU: ${esc(p.sku||"—")}</div></div>`).join(""):'<div class="notice">কম স্টকের কোনো পণ্য নেই।</div>');
+}
+function renderProducts(){
+ const q=get("productSearch").toLowerCase(),list=db.products.filter(p=>[p.name,p.sku,p.barcode,p.category,p.brand].join(" ").toLowerCase().includes(q));
+ setHTML("productsTable",list.length?list.map(p=>`<tr><td><strong>${esc(p.name)}</strong><div class="muted small">${esc(p.category||"")}</div></td><td>${esc(p.sku||"—")}<div class="muted small">${esc(p.barcode||"")}</div></td><td><span class="badge ${num(p.qty)<=num(p.minStock)?"b-bad":"b-ok"}">${num(p.qty)} ${esc(p.unit||"pcs")}</span></td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td>${money(num(p.qty)*num(p.cost))}</td><td><div class="flex">${actionButton("edit-product",p.id,"এডিট")}${actionButton("delete-product",p.id,"মুছুন","bs bd")}</div></td></tr>`).join(""):emptyRow(7,"কোনো পণ্য নেই"));
+ $("productCount").textContent=list.length+" / "+db.products.length+" পণ্য";
+}
+function renderPurchases(){
+ const q=get("purchaseSearch").toLowerCase(),list=db.purchases.filter(p=>(p.invoice+" "+(byId(db.contacts,p.contactId)?.name||"")).toLowerCase().includes(q));
+ setHTML("purchasesTable",list.length?list.map(p=>`<tr><td>${dateText(p.date)}</td><td>${esc(p.invoice)}</td><td>${esc(byId(db.contacts,p.contactId)?.name||"—")}</td><td>${money(p.total)}</td><td>${money(p.paid)}</td><td>${money(Math.max(0,p.total-p.paid))}</td><td><div class="flex">${actionButton("view-purchase",p.id,"দেখুন")}${actionButton("delete-purchase",p.id,"বাতিল","bs bd")}</div></td></tr>`).join(""):emptyRow(7));
+}
+function renderSales(){
+ const q=get("saleSearch").toLowerCase(),list=db.sales.filter(s=>(s.invoice+" "+(byId(db.contacts,s.contactId)?.name||"")).toLowerCase().includes(q));
+ setHTML("salesTable",list.length?list.map(s=>`<tr><td>${dateText(s.date)}</td><td>${esc(s.invoice)}<div class="muted small">${esc(s.status||"")}</div></td><td>${esc(byId(db.contacts,s.contactId)?.name||"Walk-in")}</td><td>${money(calcSaleTotal(s))}</td><td>${money(s.paid)}</td><td>${money(Math.max(0,calcSaleTotal(s)-num(s.paid)))}</td><td><div class="flex">${actionButton("view-sale",s.id,"দেখুন")}${actionButton("return-sale",s.id,"রিটার্ন")}${actionButton("delete-sale",s.id,"বাতিল","bs bd")}</div></td></tr>`).join(""):emptyRow(7));
+}
+function renderContacts(){
+ const q=get("contactSearch").toLowerCase(),f=get("contactFilter")||"all";
+ const list=db.contacts.filter(c=>(f==="all"||c.type===f)&&[c.name,c.phone,c.company,c.address].join(" ").toLowerCase().includes(q));
+ const tl={customer:"ক্রেতা",supplier:"সরবরাহকারী",both:"উভয়"};
+ setHTML("contactsTable",list.length?list.map(c=>`<tr><td><strong>${esc(c.name)}</strong><div class="muted small">${esc(c.company||"")}</div></td><td>${tl[c.type]||esc(c.type)}</td><td>${esc(c.phone||"—")}</td><td>${esc(c.address||"—")}</td><td>${money(contactBalance(c))}</td><td><div class="flex">${actionButton("edit-contact",c.id,"এডিট")}${c.phone?actionButton("whatsapp",c.id,"WhatsApp"):""}${actionButton("delete-contact",c.id,"মুছুন","bs bd")}</div></td></tr>`).join(""):emptyRow(6));
+}
+function renderLedger(){
+ const cu=db.contacts.filter(c=>recv(c)>0),su=db.contacts.filter(c=>pay(c)>0);
+ $("ledgerReceivable").textContent=money(sum(cu,recv));$("ledgerPayable").textContent=money(sum(su,pay));
+ setHTML("receivableList",cu.length?cu.map(c=>`<div class="lrow"><div class="between"><strong>${esc(c.name)}</strong><strong>${money(recv(c))}</strong></div><div class="flex mt">${actionButton("pay-in",c.id,"টাকা গ্রহণ")}</div></div>`).join(""):'<p class="muted small">কোনো বকেয়া নেই।</p>');
+ setHTML("payableList",su.length?su.map(c=>`<div class="lrow"><div class="between"><strong>${esc(c.name)}</strong><strong>${money(pay(c))}</strong></div><div class="flex mt">${actionButton("pay-out",c.id,"পরিশোধ")}</div></div>`).join(""):'<p class="muted small">কোনো দেনা নেই।</p>');
+ setHTML("paymentsTable",db.payments.length?db.payments.map(p=>`<tr><td>${dateText(p.date)}</td><td>${esc(byId(db.contacts,p.contactId)?.name||"অজানা")}</td><td>${p.direction==="in"?"গ্রহণ":"পরিশোধ"}</td><td>${money(p.amount)}</td><td>${esc(p.method||"—")}</td><td>${esc(p.note||"")}</td><td>${actionButton("delete-payment",p.id,"মুছুন","bs bd")}</td></tr>`).join(""):emptyRow(7));
+}
+function renderFinance(){
+ const q=get("financeSearch").toLowerCase(),ty=get("financeType")||"all";
+ const list=db.finance.filter(x=>(ty==="all"||x.type===ty)&&((x.category||"")+" "+(x.note||"")).toLowerCase().includes(q));
+ const inc=sum(db.finance.filter(x=>x.type==="income"),x=>x.amount),exp=sum(db.finance.filter(x=>x.type==="expense"),x=>x.amount);
+ $("financeIncome").textContent=money(inc);$("financeExpense").textContent=money(exp);$("financeNet").textContent=money(inc-exp);
+ setHTML("financeTable",list.length?list.map(x=>`<tr><td>${dateText(x.date)}</td><td>${x.type==="income"?"আয়":"ব্যয়"}</td><td>${esc(x.category)}</td><td>${money(x.amount)}</td><td>${esc(x.note||"")}</td><td><div class="flex">${actionButton("edit-finance",x.id,"এডিট")}${actionButton("delete-finance",x.id,"মুছুন","bs bd")}</div></td></tr>`).join(""):emptyRow(6));
+}
+function renderEmployees(){
+ const q=get("employeeSearch").toLowerCase(),list=db.employees.filter(e=>[e.name,e.empId,e.department,e.phone].join(" ").toLowerCase().includes(q));
+ $("employeeCount").textContent=db.employees.length;$("salaryTotal").textContent=money(sum(db.employees.filter(e=>e.status!=="inactive"),e=>e.salary));$("payrollCount").textContent=db.payroll.length;
+ setHTML("employeesTable",list.length?list.map(e=>`<tr><td>${esc(e.empId)}</td><td><strong>${esc(e.name)}</strong><div class="muted small">${esc(e.role||"")}</div></td><td>${esc(e.department||"—")}</td><td>${esc(e.phone||"—")}</td><td>${money(e.salary)}</td><td><span class="badge">${esc(e.status||"active")}</span></td><td><div class="flex">${actionButton("edit-employee",e.id,"এডিট")}${actionButton("delete-employee",e.id,"মুছুন","bs bd")}</div></td></tr>`).join(""):emptyRow(7));
+ setHTML("payrollTable",db.payroll.length?db.payroll.map(p=>`<tr><td>${esc(p.period)}</td><td>${esc(byId(db.employees,p.employeeId)?.name||"মুছে ফেলা কর্মচারী")}</td><td>${money(p.base)}</td><td>${money(p.overtime)}</td><td>${money(num(p.allowance)+num(p.bonus))}</td><td>${money(p.deductions)}</td><td><strong>${money(p.net)}</strong></td><td>${actionButton("delete-payroll",p.id,"মুছুন","bs bd")}</td></tr>`).join(""):emptyRow(8));
+}
+function renderShipments(){
+ const q=get("shipmentSearch").toLowerCase(),list=db.shipments.filter(s=>[s.direction,s.partner,s.country,s.tracking,s.status].join(" ").toLowerCase().includes(q));
+ setHTML("shipmentsTable",list.length?list.map(s=>`<tr><td>${dateText(s.date)}</td><td>${esc(s.direction)}</td><td>${esc(s.partner)}</td><td>${esc(s.country||"—")}</td><td>${esc(s.tracking||"—")}${s.url?` <a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">ট্র্যাক</a>`:""}</td><td>${money(num(s.freight)+num(s.insurance)+num(s.duty)+num(s.tax))}</td><td><div>${esc(s.status)}</div><div class="flex">${actionButton("edit-shipment",s.id,"এডিট")}${actionButton("delete-shipment",s.id,"মুছুন","bs bd")}</div></td></tr>`).join(""):emptyRow(7));
+}
+function renderAll(){
+ renderDashboard();renderProducts();renderPurchases();renderSales();renderContacts();renderLedger();renderFinance();renderEmployees();renderShipments();
+ renderRadar();renderMarket();renderReports();renderChat();renderBriefs();renderAccount();
+ $("seasonNotes").value=db.settings.seasonNotes||"";
+ const set=(i,v)=>{if($(i))$(i).value=v};
+ set("aiProvider",db.settings.aiProvider||"none");set("aiModel",db.settings.aiModel||"");set("businessName",db.settings.businessName||"");set("businessAddress",db.settings.businessAddress||"");
+ set("businessTax",db.settings.businessTax||"");set("businessTimezone",db.settings.businessTimezone||"local");set("invoiceFooter",db.settings.invoiceFooter||"");set("defaultLowStock",db.settings.lowStock??5);set("settingsCurrency",db.settings.currency);
+ if($("aiStatus"))$("aiStatus").textContent="স্ট্যাটাস: সংযুক্ত নয় — ব্যাকএন্ড/API কনফিগার করা নেই";
+}
+function handleAction(a,k){
+ switch(a){
+  case "add-product":case "edit-product":return productForm(k);
+  case "delete-product":return deleteRecord("products",k,"এই পণ্য মুছবেন?");
+  case "add-contact":case "edit-contact":return contactForm(k);
+  case "delete-contact":return deleteRecord("contacts",k,"এই কন্টাক্ট মুছবেন? পুরোনো লেনদেন ইতিহাসে থাকবে।");
+  case "add-purchase":return purchaseForm();
+  case "view-purchase":return viewRecord("purchases",k);
+  case "delete-purchase":return cancelPurchase(k);
+  case "quick-sale":return saleForm();
+  case "view-sale":return viewRecord("sales",k);
+  case "return-sale":return returnSale(k);
+  case "delete-sale":return cancelSale(k);
+  case "add-payment":return paymentForm();
+  case "pay-in":case "pay-out":return paymentForm(k,a==="pay-in"?"in":"out");
+  case "delete-payment":return deletePayment(k);
+  case "add-finance":case "edit-finance":return financeForm(k);
+  case "delete-finance":return deleteRecord("finance",k,"এই এন্ট্রি মুছবেন?");
+  case "add-employee":case "edit-employee":return employeeForm(k);
+  case "delete-employee":return deleteRecord("employees",k,"কর্মচারী মুছবেন? পেরোল রেকর্ড থাকবে।");
+  case "payroll":return payrollForm();
+  case "delete-payroll":return deleteRecord("payroll",k,"এই পেরোল রেকর্ড মুছবেন?");
+  case "add-shipment":case "edit-shipment":return shipmentForm(k);
+  case "delete-shipment":return deleteRecord("shipments",k,"শিপমেন্ট রেকর্ড মুছবেন?");
+  case "delete-brief":return deleteRecord("briefs",k,"এই ব্রিফ মুছবেন?");
+  case "whatsapp":return whatsapp(k);
+  default:toast("এই বাটনে কোনো কাজ সেট করা নেই।","warning");
+ }
+}
+function deleteRecord(col,k,m){
+ if(!byId(db[col],k))return toast("রেকর্ড পাওয়া যায়নি।","error");
+ if(!askConfirm(m))return;
+ db[col]=db[col].filter(x=>x.id!==k);audit("DELETE",col,k);saveAndRender("মুছে ফেলা হয়েছে।");
+}
+function productForm(key){
+ const p=key?byId(db.products,key):null;
+ openModal(p?"পণ্য এডিট":"পণ্য যোগ",`<form id="recordForm"><div class="fg">
+ ${field("পণ্যের নাম","fName","text",p?.name||"",true)}${field("SKU","fSku","text",p?.sku||"")}${field("বারকোড / QR","fBarcode","text",p?.barcode||"")}${field("ক্যাটাগরি","fCategory","text",p?.category||"")}
+ ${field("ব্র্যান্ড","fBrand","text",p?.brand||"")}${field("একক","fUnit","text",p?.unit||"pcs")}${field("ক্রয়মূল্য","fCost","number",p?.cost??0,true,'min="0" step="any"')}${field("বিক্রয়মূল্য","fPrice","number",p?.price??0,true,'min="0" step="any"')}
+ ${field("বর্তমান পরিমাণ","fQty","number",p?.qty??0,true,'min="0" step="any"')}${field("ন্যূনতম স্টক","fMin","number",p?.minStock??db.settings.lowStock,true,'min="0" step="any"')}
+ </div><button class="btn bp" type="submit">সংরক্ষণ</button> <button class="btn" type="button" id="cancelForm">বাতিল</button></form>`);
+ $("cancelForm").onclick=closeModal;
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();
+  const d={name:get("fName"),sku:get("fSku"),barcode:get("fBarcode"),category:get("fCategory"),brand:get("fBrand"),unit:get("fUnit")||"pcs",cost:val("fCost"),price:val("fPrice"),qty:val("fQty"),minStock:val("fMin")};
+  if(!d.name)return toast("পণ্যের নাম দিন।","error");
+  if([d.cost,d.price,d.qty,d.minStock].some(x=>x<0))return toast("ঋণাত্মক মান গ্রহণযোগ্য নয়।","error");
+  if(d.sku&&db.products.some(x=>x.id!==key&&(x.sku||"").toLowerCase()===d.sku.toLowerCase()))return toast("এই SKU আগে থেকেই আছে।","error");
+  if(p){if(p.qty!==d.qty)audit("ADJUST","stock",p.name+": "+p.qty+" → "+d.qty);Object.assign(p,d);audit("EDIT","product",p.name)}else{db.products.push({id:uid(),...d});audit("CREATE","product",d.name)}
+  closeModal();saveAndRender("পণ্য সংরক্ষিত হয়েছে।");
+ };
+}
+function contactForm(key){
+ const c=key?byId(db.contacts,key):null;
+ openModal(c?"কন্টাক্ট এডিট":"কন্টাক্ট যোগ",`<form id="recordForm"><div class="fg">
+ ${field("নাম","fName","text",c?.name||"",true)}${selectField("ধরন","fType",[["customer","ক্রেতা"],["supplier","সরবরাহকারী"],["both","উভয়"]],c?.type||"customer")}
+ ${field("কোম্পানি","fCompany","text",c?.company||"")}${field("ফোন","fPhone","tel",c?.phone||"")}${field("ইমেইল","fEmail","email",c?.email||"")}
+ <div class="full">${textareaField("ঠিকানা","fAddress",c?.address||"")}</div></div><button class="btn bp" type="submit">সংরক্ষণ</button></form>`);
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const d={name:get("fName"),type:get("fType"),company:get("fCompany"),phone:get("fPhone"),email:get("fEmail"),address:get("fAddress")};
+  if(!d.name)return toast("নাম দিন।","error");
+  if(c){Object.assign(c,d);audit("EDIT","contact",c.name)}else{db.contacts.push({id:uid(),...d});audit("CREATE","contact",d.name)}
+  closeModal();saveAndRender("কন্টাক্ট সংরক্ষিত হয়েছে।");
+ };
+}
+function whatsapp(key){
+ const c=byId(db.contacts,key);if(!c?.phone)return toast("ফোন নম্বর নেই।","warning");
+ const n=c.phone.replace(/[^\d]/g,"").replace(/^0/,"880");
+ window.open("https://wa.me/"+n,"_blank","noopener,noreferrer");
+}
+/* ===== STEP 2 SCRIPT ENDS HERE (script tag is still open). Step 3 continues the same script: purchaseForm, saleForm, viewRecord, cancelPurchase, cancelSale, returnSale, paymentForm, deletePayment, financeForm, employeeForm, payrollForm, shipmentForm, renderMarket, renderRadar, renderReports, renderChat, renderBriefs, renderAccount, then the rest ===== */
 
-      title.textContent = feature.title;
-      description.textContent = feature.description;
-      frame.title = feature.title;
+/* ===================== STEP 3 (same script continues) ===================== */
+const PAGES=`<style>
+.chat-shell{height:min(62vh,620px);min-height:340px;display:flex;flex-direction:column}.chat-messages{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:4px}
+.cb{max-width:90%;padding:10px 13px;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}.cb.user{align-self:flex-end;background:var(--pri);color:#fff}.cb.assistant{align-self:flex-start;background:var(--card2);border:1px solid var(--line)}
+.calc-drawer{position:fixed;right:0;top:0;bottom:0;width:min(380px,100%);z-index:90;background:var(--card);border-left:1px solid var(--line);box-shadow:-10px 0 35px #0003;transform:translateX(105%);transition:.25s;overflow:auto;padding:18px}.calc-drawer.open{transform:none}
+.calc-display{width:100%;padding:14px;font-size:24px;text-align:right;border:1px solid var(--line);border-radius:10px;background:var(--card2);color:var(--ink);margin:12px 0}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.calc-grid button{min-height:46px;border:1px solid var(--line);background:var(--card2);color:var(--ink);border-radius:9px;font-weight:600}.calc-grid .eq{background:var(--pri);color:#fff}
+.ailay{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:16px}
+</style>
+<section class="page" id="page-ai"><div class="ph"><div><h1>✧ NIVORA AI</h1><p>বাংলা, English ও Banglish-এ লোকাল ব্যবসা-সহকারী।</p></div><button class="btn" id="clearChat">চ্যাট মুছুন</button></div>
+<div class="notice nw mb">কোনো ক্লাউড AI সংযুক্ত নেই; এই ফাইল নিজে থেকে কোথাও রিকোয়েস্ট পাঠায় না। এখানে আপনার সংরক্ষিত ব্যবসার সারাংশ ও স্টক তথ্য দেখা যায়। প্রকৃত AI উত্তরের জন্য নিরাপদ ব্যাকএন্ড (সার্ভারে API কী) দরকার।</div>
+<div class="ailay"><div class="card chat-shell"><div class="chat-messages" id="chatMessages"></div><div id="chatFilePreview"></div>
+<div class="flex mt" style="align-items:flex-end"><div style="flex:1;min-width:0"><textarea class="textarea" id="chatInput" rows="2" placeholder="প্রশ্ন লিখুন… (summary, stock, profit, help)"></textarea><div class="flex mt"><label class="btn bs" for="chatFiles">＋ ফাইল</label><input class="hidden" type="file" id="chatFiles" accept="image/*,.pdf,.txt,.csv,.json,.md" multiple><button class="btn bs" id="voiceStart">🎙 ভয়েস</button><button class="btn bs" id="voiceStop">থামান</button></div></div><button class="btn bp" id="sendChat">পাঠান ➤</button></div></div>
+<div class="grid"><div class="card"><h2 class="stitle">ব্যবসার সারাংশ</h2><button class="btn bp" id="businessContext">সারাংশ তৈরি</button><pre id="businessSummary" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px"></pre></div>
+<div class="card"><h2 class="stitle">AI প্রোভাইডার</h2><div class="field"><select class="select" id="aiProvider"><option value="none">সংযুক্ত নয়</option><option value="openai">OpenAI (ব্যাকএন্ড লাগবে)</option><option value="gemini">Gemini (ব্যাকএন্ড লাগবে)</option></select></div><div class="field"><input class="input" id="aiModel" placeholder="মডেলের নাম (কনফিগারেশন)"></div><button class="btn" id="saveAISettings">সংরক্ষণ</button><p id="aiStatus" class="muted small mt"></p></div>
+<div class="card"><button class="btn" id="speakLast">🔊 শেষ উত্তর পড়ুন</button></div></div></div></section>
 
-      document.querySelectorAll(".feature-btn").forEach(button => {
-        button.classList.remove("active");
-      });
+<section class="page" id="page-studio"><div class="ph"><div><h1>AI Studio</h1><p>ভিডিওর প্রম্পট, স্টোরিবোর্ড ও ব্রিফ প্রস্তুত করুন।</p></div></div>
+<div class="notice nw mb">ভিডিও জেনারেশন প্রোভাইডার সংযুক্ত নেই। এখানে কোনো ভুয়া ভিডিও বা ভুয়া প্রগ্রেস তৈরি হয় না — শুধু লিখিত ব্রিফ ও স্টোরিবোর্ড।</div>
+<div class="grid two"><div class="card"><div class="field"><label>ভিডিওর ধারণা</label><textarea class="textarea" id="videoPrompt" rows="5"></textarea></div><div class="fg">
+<div class="field"><label>ধরন</label><select class="select" id="videoType"><option>Product Advertisement</option><option>Educational</option><option>Cinematic</option><option>Animation</option><option>Documentary</option><option>Islamic Educational</option><option>Nature / Travel</option><option>Storytelling</option><option>Fashion</option></select></div>
+<div class="field"><label>স্টাইল</label><select class="select" id="videoStyle"><option>Realistic cinematic</option><option>3D animation</option><option>2D animation</option><option>Documentary realism</option><option>Minimal commercial</option><option>Watercolor illustration</option></select></div>
+<div class="field"><label>সময়</label><select class="select" id="videoDuration"><option>15 seconds</option><option>30 seconds</option><option>60 seconds</option><option>90 seconds</option><option>3 minutes</option></select></div>
+<div class="field"><label>রেশিও</label><select class="select" id="videoRatio"><option>16:9 Landscape</option><option>9:16 Vertical</option><option>1:1 Square</option><option>4:5 Portrait</option></select></div>
+<div class="field"><label>ভাষা</label><select class="select" id="videoLanguage"><option>Bangla</option><option>English</option><option>Bangla + English</option><option>No dialogue</option></select></div>
+<div class="field"><label>রেজোল্যুশন</label><select class="select" id="videoResolution"><option>1080p</option><option>720p</option><option>4K (provider support required)</option></select></div></div>
+<div class="flex"><button class="btn bp" id="improvePrompt">প্রম্পট উন্নত করুন</button><button class="btn" id="makeStoryboard">স্টোরিবোর্ড</button><button class="btn" id="saveVideoBrief">ব্রিফ সংরক্ষণ</button><button class="btn" id="copyBrief">কপি</button></div></div>
+<div class="card"><h2 class="stitle">প্রোডাকশন ব্রিফ</h2><div id="videoOutput" class="notice" style="white-space:pre-wrap">প্রম্পট লিখে বাটন চাপুন।</div><hr class="hr"><h2 class="stitle">নিজের ভিডিও প্রিভিউ</h2><div class="field"><input class="input" type="file" id="ownVideo" accept="video/*"></div><video id="videoPreview" controls playsinline style="width:100%;max-height:300px;background:#06101a;border-radius:10px;display:none"></video><div id="videoDownload" class="mt"></div></div></div>
+<div class="card mt"><h2 class="stitle">সংরক্ষিত ব্রিফ</h2><div id="savedBriefs"></div></div></section>
 
-      document.getElementById(feature.button).classList.add("active");
+<section class="page" id="page-calculator"><div class="ph"><div><h1 data-i18n="calculators">ব্যবসায়িক ক্যালকুলেটর</h1><p>মার্জিন, ডিসকাউন্ট/VAT, সুদ ও ওভারটাইম।</p></div></div>
+<div class="grid two">
+<div class="card"><h2 class="stitle">লাভ ও মার্জিন</h2><div class="field"><label>ক্রয়মূল্য</label><input class="input" id="marginCost" type="number" min="0" step="any" value="800"></div><div class="field"><label>বিক্রয়মূল্য</label><input class="input" id="marginSell" type="number" min="0" step="any" value="1000"></div><button class="btn bp" id="calcMargin">হিসাব</button><div id="marginResult" class="notice mt"></div></div>
+<div class="card"><h2 class="stitle">ডিসকাউন্ট ও VAT</h2><div class="field"><label>মূল টাকা</label><input class="input" id="vatAmount" type="number" min="0" step="any" value="1000"></div><div class="fg"><div class="field"><label>ডিসকাউন্ট %</label><input class="input" id="discountPercent" type="number" min="0" max="100" step="any" value="10"></div><div class="field"><label>VAT %</label><input class="input" id="vatPercent" type="number" min="0" step="any" value="5"></div></div><button class="btn bp" id="calcVAT">হিসাব</button><div id="vatResult" class="notice mt"></div></div>
+<div class="card"><h2 class="stitle">সরল সুদ</h2><div class="field"><label>মূলধন</label><input class="input" id="interestPrincipal" type="number" min="0" step="any" value="10000"></div><div class="fg"><div class="field"><label>বার্ষিক হার %</label><input class="input" id="interestRate" type="number" min="0" step="any" value="8"></div><div class="field"><label>বছর</label><input class="input" id="interestYears" type="number" min="0" step="any" value="2"></div></div><button class="btn bp" id="calcInterest">হিসাব</button><div id="interestResult" class="notice mt"></div></div>
+<div class="card"><h2 class="stitle">ওভারটাইম</h2><div class="field"><label>মাসিক বেতন</label><input class="input" id="otSalary" type="number" min="0" step="any" value="15000"></div><div class="fg"><div class="field"><label>মাসিক স্ট্যান্ডার্ড ঘণ্টা</label><input class="input" id="otHoursMonth" type="number" min="1" step="any" value="208"></div><div class="field"><label>OT ঘণ্টা</label><input class="input" id="otHours" type="number" min="0" step="any" value="10"></div><div class="field full"><label>OT গুণক (স্থানীয় শ্রম আইন যাচাই করুন)</label><input class="input" id="otMultiplier" type="number" min="0" step="any" value="2"></div></div><button class="btn bp" id="calcOT">হিসাব</button><div id="otResult" class="notice mt"></div></div></div></section>
 
-      if (frame.getAttribute("src") !== feature.file) {
-        frame.setAttribute("src", feature.file);
-      }
-    }
+<section class="page" id="page-quran"><div class="ph"><div><h1 data-i18n="quran">আল-কুরআন</h1><p>অ্যাপের ভেতরেই পড়ুন, অথবা Android-এর কুরআন অ্যাপ খুলুন।</p></div></div>
+<div class="card mb"><h2 class="stitle">অ্যাপের ভেতরে কুরআন (ইন্টারনেট লাগবে)</h2><div class="field"><select class="select" id="quranSurah"><option value="">— সূরা নির্বাচন করুন —</option></select></div><div id="quranText"><div class="notice">সূরা নির্বাচন করলে আরবি ও বাংলা অনুবাদ দেখাবে। সূত্র: Al Quran Cloud API।</div></div></div>
+<div class="card"><h2 class="stitle">☪ কুরআন অ্যাপ খুলুন (Android)</h2><p class="muted">ফোনে অ্যাপটি ইনস্টল থাকলে এই বাটন সেটি খুলবে, না থাকলে প্লে স্টোর খুলবে। Messenger/Facebook-এর ভেতরের ব্রাউজারে এটি কাজ করে না, তখন লিংকটি Chrome-এ খুলুন।</p><div class="flex"><button class="btn bg" id="quranOpen">☪ অ্যাপ খুলুন</button><button class="btn" id="quranStore">প্লে স্টোরে দেখুন</button></div></div></section>
 
-    function reloadFeature() {
-      const frame = document.getElementById("appFrame");
-      frame.src = FEATURES[currentFeature].file;
-    }
+<section class="page" id="page-account"><div class="ph"><div><h1 data-i18n="account">অ্যাকাউন্ট ও অ্যাডমিন</h1><p>লোকাল প্রোফাইল। এটি প্রোডাকশন লগইন নয়।</p></div></div>
+<div class="notice nw mb">এই ফর্ম নিরাপদ সার্ভার-লগইন নয়; এখানে পাসওয়ার্ড বা গোপন কী দেবেন না। ভূমিকা-ভিত্তিক অনুমতির জন্য ব্যাকএন্ড দরকার।</div>
+<div class="grid two"><div class="card"><h2 class="stitle">লোকাল প্রোফাইল</h2><form id="registerForm"><div class="field"><label>পূর্ণ নাম</label><input class="input" id="registerName" required maxlength="100"></div><div class="field"><label>ইমেইল (ঐচ্ছিক)</label><input class="input" id="registerEmail" type="email"></div><div class="field"><label>ব্যবসার নাম</label><input class="input" id="registerBusiness" maxlength="120"></div><button class="btn bp" type="submit">সংরক্ষণ</button></form></div>
+<div class="card"><h2 class="stitle">বর্তমান প্রোফাইল</h2><div id="accountStatus" class="notice" style="white-space:pre-line"></div><div class="flex mt"><button class="btn" id="logoutLocal">প্রোফাইল মুছুন</button></div></div></div></section>
 
-    function updateClock() {
-      const now = new Date();
+<section class="page" id="page-settings"><div class="ph"><div><h1 data-i18n="settings">সেটিংস ও নিরাপত্তা</h1><p>ব্যবসার প্রোফাইল, প্রদর্শন ও ডেটা নিয়ন্ত্রণ।</p></div></div>
+<div class="grid two"><div class="card"><h2 class="stitle">ব্যবসার প্রোফাইল</h2><form id="businessSettings"><div class="field"><label>ব্যবসার নাম</label><input class="input" id="businessName" maxlength="150"></div><div class="field"><label>ঠিকানা</label><textarea class="textarea" id="businessAddress"></textarea></div><div class="fg"><div class="field"><label>ট্যাক্স/VAT রেফারেন্স</label><input class="input" id="businessTax"></div><div class="field"><label>টাইমজোন</label><select class="select" id="businessTimezone"><option value="local">ডিভাইস সময়</option><option value="Asia/Dhaka">Asia/Dhaka</option><option value="UTC">UTC</option></select></div></div><div class="field"><label>ইনভয়েস ফুটার</label><input class="input" id="invoiceFooter"></div><button class="btn bp" type="submit">সংরক্ষণ</button></form></div>
+<div class="card"><h2 class="stitle">পছন্দসমূহ</h2><div class="field"><label>ডিফল্ট ন্যূনতম স্টক</label><input class="input" id="defaultLowStock" type="number" min="0" step="1" value="5"></div><div class="field"><label>কারেন্সি</label><select class="select" id="settingsCurrency"><option value="BDT">BDT</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="INR">INR</option><option value="AED">AED</option></select></div><div class="field"><label>থিম</label><select class="select" id="settingsTheme"><option value="light">লাইট</option><option value="dark">ডার্ক</option></select></div><button class="btn bp" id="savePreferences">সংরক্ষণ</button><hr class="hr"><p class="muted small">API কী ফ্রন্টএন্ডে রাখবেন না। মাল্টি-ইউজার, ক্রস-ডিভাইস সিঙ্ক ও নিরাপদ ব্যাকআপের জন্য Firebase নিয়ম/ব্যাকএন্ড দরকার।</p></div></div></section>
 
-      document.getElementById("clock").textContent =
-        now.toLocaleString("bn-BD", {
-          weekday: "short",
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true
-        });
-    }
+<section class="page" id="page-about"><div class="ph"><div><h1 data-i18n="about">NIVORA ONE পরিচিতি</h1><p>ব্যবসা ব্যবস্থাপনা ও AI প্ল্যাটফর্ম</p></div><span class="badge">v1.1</span></div>
+<div class="grid two"><div class="card"><p>ইনভেন্টরি, ক্রয়-বিক্রি, বাকি হিসাব, আয়-ব্যয়, বেতন, শিপিং, মার্কেট বিশ্লেষণ, মৌসুমি রাডার ও রিপোর্ট — সবই এই ব্রাউজারে সংরক্ষিত। ডিভাইসের মধ্যে নিজে থেকে সিঙ্ক হয় না।</p><button class="btn bp" id="shareFromAbout">↗ শেয়ার / লিংক কপি</button></div>
+<div class="card"><div class="kline"><span>লোকাল ব্যবসা রেকর্ড</span><span class="badge b-ok">চালু</span></div><div class="kline"><span>ক্যালকুলেটর ও রিপোর্ট</span><span class="badge b-ok">চালু</span></div><div class="kline"><span>AI প্রোভাইডার</span><span class="badge b-warn">ব্যাকএন্ড লাগবে</span></div><div class="kline"><span>ভিডিও জেনারেশন</span><span class="badge b-warn">প্রোভাইডার লাগবে</span></div><div class="kline"><span>মাল্টি-ইউজার ডেটাবেস</span><span class="badge b-warn">ব্যাকএন্ড লাগবে</span></div></div></div></section>`;
+const DRAWER=`<div class="calc-drawer" id="calculatorDrawer"><div class="between"><h2 style="margin:0">🧮 ক্যালকুলেটর</h2><button class="ibtn" id="closeCalculator" aria-label="বন্ধ">×</button></div>
+<input class="calc-display" id="calcDisplay" value="0" inputmode="decimal" aria-label="Display"><div class="calc-grid" id="calcKeys">
+<button data-calc="MC">MC</button><button data-calc="MR">MR</button><button data-calc="M+">M+</button><button data-calc="C">C</button>
+<button data-calc="(">(</button><button data-calc=")">)</button><button data-calc="%">%</button><button data-calc="/">÷</button>
+<button data-calc="7">7</button><button data-calc="8">8</button><button data-calc="9">9</button><button data-calc="*">×</button>
+<button data-calc="4">4</button><button data-calc="5">5</button><button data-calc="6">6</button><button data-calc="-">−</button>
+<button data-calc="1">1</button><button data-calc="2">2</button><button data-calc="3">3</button><button data-calc="+">+</button>
+<button data-calc="sqrt">√</button><button data-calc="0">0</button><button data-calc=".">.</button><button data-calc="=" class="eq">=</button>
+<button data-calc="Back" style="grid-column:1/-1">⌫</button></div></div>
+<button class="fab" id="quranFab" aria-label="আল-কুরআন অ্যাপ খুলুন" title="আল-কুরআন"><span>☪<small>কুরআন</small></span></button>`;
+$("mainContent").insertAdjacentHTML("beforeend",PAGES);
+document.body.insertAdjacentHTML("beforeend",DRAWER);
+document.querySelectorAll("[data-i18n]").forEach(e=>{if(!e.dataset.bn)e.dataset.bn=e.textContent});
+applyLanguage();applyTheme();
 
-    updateClock();
-    setInterval(updateClock, 1000);
-  </script>
+const contactOptions=t=>[["","— নির্বাচন নেই —"],...db.contacts.filter(c=>c.type===t||c.type==="both").map(c=>[c.id,c.name+(c.phone?" · "+c.phone:"")])];
+const METHODS=[["cash","ক্যাশ"],["bank","ব্যাংক"],["mobile","মোবাইল পেমেন্ট"],["credit","বাকি"],["other","অন্যান্য"]];
+function purchaseForm(){
+ if(!db.products.length)return toast("আগে একটি পণ্য যোগ করুন।","warning");
+ openModal("নতুন ক্রয়",`<form id="recordForm">${field("ইনভয়েস নম্বর","fInvoice","text","PUR-"+Date.now().toString().slice(-7),true)}${selectField("সরবরাহকারী","fContact",contactOptions("supplier"),"")}${field("তারিখ","fDate","date",today(),true)}
+ <div class="field"><label>পণ্য</label><select class="select" id="fProduct">${db.products.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} · স্টক ${num(p.qty)}</option>`).join("")}</select></div>
+ <div class="fg">${field("পরিমাণ","fQty","number","1",true,'min="0.000001" step="any"')}${field("একক ক্রয়মূল্য","fPrice","number",db.products[0].cost||0,true,'min="0" step="any"')}${field("অন্যান্য খরচ","fExtra","number","0",false,'min="0" step="any"')}${field("পরিশোধ","fPaid","number","0",false,'min="0" step="any"')}</div>
+ ${selectField("পেমেন্ট পদ্ধতি","fMethod",METHODS,"cash")}${textareaField("নোট","fNote")}<div class="notice mb" id="purchasePreview"></div><button class="btn bp" type="submit">ক্রয় ও স্টক-ইন সংরক্ষণ</button></form>`);
+ const upd=()=>{$("purchasePreview").textContent="মোট: "+money(val("fQty")*val("fPrice")+val("fExtra"))};
+ $("fProduct").onchange=()=>{$("fPrice").value=byId(db.products,get("fProduct"))?.cost||0;upd()};
+ ["fQty","fPrice","fExtra"].forEach(i=>$(i).addEventListener("input",upd));upd();
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const p=byId(db.products,get("fProduct")),qty=val("fQty"),price=val("fPrice"),total=qty*price+val("fExtra"),paid=val("fPaid"),inv=get("fInvoice");
+  if(!p||qty<=0||price<0||val("fExtra")<0||paid<0||paid>total)return toast("পরিমাণ, মূল্য ও পরিশোধ যাচাই করুন।","error");
+  if(db.purchases.some(x=>x.invoice===inv))return toast("ইনভয়েস নম্বর আগে ব্যবহৃত।","error");
+  const contactId=get("fContact")||null;if(paid<total&&!contactId&&!askConfirm("সরবরাহকারী ছাড়া বাকি ট্র্যাক হবে না। চালিয়ে যাবেন?"))return;
+  p.cost=price;p.qty=num(p.qty)+qty;
+  const r={id:uid(),invoice:inv,date:get("fDate"),contactId,items:[{productId:p.id,qty,cost:price}],subtotal:qty*price,extra:val("fExtra"),total,paid,method:get("fMethod"),note:get("fNote")};
+  db.purchases.push(r);if(paid>0&&contactId)db.payments.push({id:uid(),date:r.date,contactId,direction:"out",amount:paid,method:r.method,note:"ক্রয় পেমেন্ট "+inv,sourceId:r.id});
+  audit("CREATE","purchase",inv+"; stock +"+qty);closeModal();saveAndRender("ক্রয় সংরক্ষিত, স্টক বেড়েছে।");
+ };
+}
+function saleForm(){
+ if(!db.products.length)return toast("আগে পণ্য যোগ করুন।","warning");
+ openModal("নতুন বিক্রি / ইনভয়েস",`<form id="recordForm">${field("ইনভয়েস নম্বর","fInvoice","text","INV-"+Date.now().toString().slice(-7),true)}${selectField("ক্রেতা (ঐচ্ছিক)","fContact",contactOptions("customer"),"")}${field("তারিখ","fDate","date",today(),true)}
+ <div class="field"><label>পণ্য</label><select class="select" id="fProduct">${db.products.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} · স্টক ${num(p.qty)}</option>`).join("")}</select></div>
+ <div class="fg">${field("পরিমাণ","fQty","number","1",true,'min="0.000001" step="any"')}${field("একক বিক্রয়মূল্য","fPrice","number",db.products[0].price||0,true,'min="0" step="any"')}${field("ডিসকাউন্ট","fDiscount","number","0",false,'min="0" step="any"')}${field("ট্যাক্স/VAT","fTax","number","0",false,'min="0" step="any"')}${field("ডেলিভারি চার্জ","fDelivery","number","0",false,'min="0" step="any"')}${field("পরিশোধ","fPaid","number","0",false,'min="0" step="any"')}</div>
+ ${selectField("পেমেন্ট পদ্ধতি","fMethod",METHODS,"cash")}${textareaField("নোট","fNote")}<div class="notice mb" id="salePreview"></div><button class="btn bp" type="submit">বিক্রি ও স্টক কর্তন</button></form>`);
+ const upd=()=>{$("salePreview").textContent="মোট: "+money(val("fQty")*val("fPrice")-val("fDiscount")+val("fTax")+val("fDelivery"))};
+ $("fProduct").onchange=()=>{$("fPrice").value=byId(db.products,get("fProduct"))?.price||0;upd()};
+ ["fQty","fPrice","fDiscount","fTax","fDelivery"].forEach(i=>$(i).addEventListener("input",upd));upd();
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const p=byId(db.products,get("fProduct")),qty=val("fQty"),price=val("fPrice"),sub=qty*price,disc=val("fDiscount"),tax=val("fTax"),del=val("fDelivery"),total=sub-disc+tax+del,paid=val("fPaid"),inv=get("fInvoice");
+  if(!p||qty<=0||qty>num(p.qty))return toast("পরিমাণ ভুল বা স্টক অপর্যাপ্ত।","error");
+  if([price,disc,tax,del,paid].some(x=>x<0)||disc>sub||paid>total)return toast("মূল্য, ডিসকাউন্ট, ট্যাক্স ও পরিশোধ যাচাই করুন।","error");
+  if(db.sales.some(s=>s.invoice===inv))return toast("ইনভয়েস নম্বর আগে ব্যবহৃত।","error");
+  const contactId=get("fContact")||null;if(paid<total&&!contactId&&!askConfirm("ক্রেতা ছাড়া বাকি ট্র্যাক হবে না। চালিয়ে যাবেন?"))return;
+  p.qty=num(p.qty)-qty;
+  const r={id:uid(),invoice:inv,date:get("fDate"),contactId,items:[{productId:p.id,name:p.name,qty,price,cost:num(p.cost)}],subtotal:sub,discount:disc,tax,delivery:del,total,paid,method:get("fMethod"),note:get("fNote"),status:"completed"};
+  db.sales.push(r);if(paid>0&&contactId)db.payments.push({id:uid(),date:r.date,contactId,direction:"in",amount:paid,method:r.method,note:"বিক্রি পেমেন্ট "+inv,sourceId:r.id});
+  audit("CREATE","sale",inv+"; stock -"+qty);closeModal();saveAndRender("বিক্রি সংরক্ষিত, স্টক কমেছে।");
+  if(askConfirm("ইনভয়েস প্রিন্ট করবেন?"))viewRecord("sales",r.id,true);
+ };
+}
+function viewRecord(col,key,print){
+ const r=byId(db[col],key);if(!r)return toast("রেকর্ড পাওয়া যায়নি।","error");
+ const b=db.settings.businessName?`<h3>${esc(db.settings.businessName)}</h3><div class="muted small">${esc(db.settings.businessAddress)}</div>`:"";
+ const rows=Object.entries(r).filter(([k])=>k!=="id").map(([k,v])=>`<div class="kline"><span>${esc(k)}</span><span style="max-width:65%;overflow-wrap:anywhere;text-align:right">${esc(typeof v==="object"?JSON.stringify(v):v)}</span></div>`).join("");
+ openModal("বিস্তারিত",b+rows+`<p class="muted small">${esc(db.settings.invoiceFooter||"")}</p><button class="btn" onclick="window.print()">প্রিন্ট</button>`);
+ if(print)setTimeout(()=>window.print(),300);
+}
+function cancelPurchase(key){
+ const p=byId(db.purchases,key);if(!p)return;if(!askConfirm("ক্রয় বাতিল করে স্টক ফেরত নেবেন?"))return;
+ for(const it of p.items||[]){const x=byId(db.products,it.productId);if(x&&num(x.qty)<num(it.qty))return toast("বাতিল সম্ভব নয়: কিছু ইউনিট ইতিমধ্যে বিক্রি/কমেছে।","error")}
+ for(const it of p.items||[]){const x=byId(db.products,it.productId);if(x)x.qty=num(x.qty)-num(it.qty)}
+ db.payments=db.payments.filter(x=>x.sourceId!==p.id);db.purchases=db.purchases.filter(x=>x.id!==key);audit("CANCEL","purchase",p.invoice);saveAndRender("ক্রয় বাতিল হয়েছে।");
+}
+function cancelSale(key){
+ const s=byId(db.sales,key);if(!s)return;if(!askConfirm("বিক্রি বাতিল করে স্টক ফেরত দেবেন?"))return;
+ for(const it of s.items||[]){const x=byId(db.products,it.productId);if(x)x.qty=num(x.qty)+num(it.qty)}
+ db.payments=db.payments.filter(x=>x.sourceId!==s.id);db.sales=db.sales.filter(x=>x.id!==key);audit("CANCEL","sale",s.invoice);saveAndRender("বিক্রি বাতিল হয়েছে।");
+}
+function returnSale(key){
+ const s=byId(db.sales,key),it=s?.items?.[0];if(!it||num(it.qty)<=0)return toast("রিটার্নযোগ্য কিছু নেই।","warning");
+ openModal("বিক্রি রিটার্ন",`<form id="recordForm"><p>ইনভয়েস: <strong>${esc(s.invoice)}</strong></p>${field("ফেরত পরিমাণ","fQty","number",num(it.qty),true,`min="0.000001" max="${num(it.qty)}" step="any"`)}${field("রিফান্ড","fRefund","number","0",false,'min="0" step="any"')}<button class="btn bp" type="submit">রিটার্ন নিশ্চিত</button></form>`);
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const q=val("fQty"),ref=val("fRefund"),p=byId(db.products,it.productId);
+  if(q<=0||q>num(it.qty))return toast("পরিমাণ ভুল।","error");if(ref<0||ref>num(s.paid))return toast("রিফান্ড পরিশোধিত অঙ্কের বেশি হতে পারে না।","error");
+  const ratio=q/num(it.qty);if(p)p.qty=num(p.qty)+q;
+  s.subtotal=Math.max(0,num(s.subtotal)-num(it.price)*q);s.discount=num(s.discount)*(1-ratio);s.tax=num(s.tax)*(1-ratio);s.delivery=num(s.delivery)*(1-ratio);
+  it.qty=num(it.qty)-q;s.paid=Math.max(0,num(s.paid)-ref);s.status=it.qty<=0?"returned":"partially returned";s.note=((s.note||"")+" | রিটার্ন "+q+", রিফান্ড "+ref).trim();
+  audit("RETURN","sale",s.invoice+" qty "+q);closeModal();saveAndRender("রিটার্ন সংরক্ষিত, স্টক ফেরত এসেছে।");
+ };
+}
+function paymentForm(cid,dir){
+ openModal("পেমেন্ট রেকর্ড",`<form id="recordForm">${selectField("কন্টাক্ট","fContact",db.contacts.map(c=>[c.id,c.name]),cid||db.contacts[0]?.id||"")}${field("তারিখ","fDate","date",today(),true)}${selectField("দিক","fDirection",[["in","ক্রেতা থেকে গ্রহণ"],["out","সরবরাহকারীকে পরিশোধ"]],dir||"in")}${field("পরিমাণ","fAmount","number","0",true,'min="0.01" step="any"')}${selectField("পদ্ধতি","fMethod",METHODS.slice(0,3).concat([["other","অন্যান্য"]]),"cash")}${textareaField("নোট","fNote")}<button class="btn bp" type="submit">সংরক্ষণ</button></form>`);
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const c=byId(db.contacts,get("fContact")),a=val("fAmount"),d=get("fDirection");
+  if(!c||a<=0)return toast("কন্টাক্ট ও সঠিক পরিমাণ দিন।","error");
+  const due=d==="in"?recv(c):pay(c);if(a>due+1e-6&&!askConfirm("পরিমাণ বকেয়ার চেয়ে বেশি। তবুও সংরক্ষণ করবেন?"))return;
+  db.payments.push({id:uid(),date:get("fDate"),contactId:c.id,direction:d,amount:a,method:get("fMethod"),note:get("fNote"),sourceId:null});audit("PAYMENT",d,c.name+" "+a);closeModal();saveAndRender("পেমেন্ট সংরক্ষিত।");
+ };
+}
+function deletePayment(k){
+ const p=byId(db.payments,k);if(!p)return;if(p.sourceId)return toast("এটি ইনভয়েসের সাথে যুক্ত; মূল লেনদেন বাতিল করুন।","warning");
+ if(!askConfirm("এই পেমেন্ট মুছবেন?"))return;db.payments=db.payments.filter(x=>x.id!==k);audit("DELETE","payment",k);saveAndRender("মুছে ফেলা হয়েছে।");
+}
+function financeForm(key){
+ const f=key?byId(db.finance,key):null;
+ openModal(f?"এন্ট্রি এডিট":"নতুন এন্ট্রি",`<form id="recordForm">${selectField("ধরন","fType",[["income","অন্যান্য আয়"],["expense","ব্যয়"]],f?.type||"expense")}${field("তারিখ","fDate","date",f?.date||today(),true)}${field("ক্যাটাগরি","fCategory","text",f?.category||"",true)}${field("পরিমাণ","fAmount","number",f?.amount??0,true,'min="0.01" step="any"')}${selectField("পদ্ধতি","fMethod",[["cash","ক্যাশ"],["bank","ব্যাংক"],["mobile","মোবাইল"],["other","অন্যান্য"]],f?.method||"cash")}${textareaField("নোট","fNote",f?.note||"")}<button class="btn bp" type="submit">সংরক্ষণ</button></form>`);
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const a=val("fAmount");if(!get("fCategory")||a<=0)return toast("ক্যাটাগরি ও ধনাত্মক পরিমাণ দিন।","error");
+  const d={type:get("fType"),date:get("fDate"),category:get("fCategory"),amount:a,method:get("fMethod"),note:get("fNote")};
+  if(f){Object.assign(f,d);audit("EDIT","finance",f.category)}else{db.finance.push({id:uid(),...d});audit("CREATE","finance",d.category)}closeModal();saveAndRender("এন্ট্রি সংরক্ষিত।");
+ };
+}
+function employeeForm(key){
+ const x=key?byId(db.employees,key):null;
+ openModal(x?"কর্মচারী এডিট":"কর্মচারী যোগ",`<form id="recordForm"><div class="fg">${field("আইডি","fEmpId","text",x?.empId||"EMP-"+Date.now().toString().slice(-6),true)}${field("পূর্ণ নাম","fName","text",x?.name||"",true)}${field("পদ","fRole","text",x?.role||"")}${field("বিভাগ","fDepartment","text",x?.department||"")}${field("ফোন","fPhone","tel",x?.phone||"")}${field("যোগদান","fDate","date",x?.joiningDate||today())}${field("মাসিক মূল বেতন","fSalary","number",x?.salary??0,true,'min="0" step="any"')}${selectField("অবস্থা","fStatus",[["active","সক্রিয়"],["inactive","নিষ্ক্রিয়"],["leave","ছুটিতে"]],x?.status||"active")}</div><button class="btn bp" type="submit">সংরক্ষণ</button></form>`);
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const empId=get("fEmpId");if(db.employees.some(y=>y.id!==key&&(y.empId||"").toLowerCase()===empId.toLowerCase()))return toast("আইডি আগে ব্যবহৃত।","error");
+  const d={empId,name:get("fName"),role:get("fRole"),department:get("fDepartment"),phone:get("fPhone"),joiningDate:get("fDate"),salary:val("fSalary"),status:get("fStatus")};
+  if(!d.name||d.salary<0)return toast("নাম ও সঠিক বেতন দিন।","error");
+  if(x){Object.assign(x,d);audit("EDIT","employee",empId)}else{db.employees.push({id:uid(),...d});audit("CREATE","employee",empId)}closeModal();saveAndRender("কর্মচারী সংরক্ষিত।");
+ };
+}
+function payrollForm(){
+ if(!db.employees.length)return toast("আগে কর্মচারী যোগ করুন।","warning");
+ openModal("বেতন হিসাব",`<form id="recordForm">${selectField("কর্মচারী","fEmployee",db.employees.map(e=>[e.id,e.name+" · "+e.empId]),db.employees[0].id)}${field("মাস","fPeriod","month",today().slice(0,7),true)}<div class="fg">${field("মূল বেতন (ফাঁকা = কর্মচারীর বেতন)","fBase","number","",false,'min="0" step="any"')}${field("OT ঘণ্টা","fHours","number","0",false,'min="0" step="any"')}${field("ঘণ্টাপ্রতি হার","fRate","number","0",false,'min="0" step="any"')}${field("OT গুণক","fMultiplier","number","2",true,'min="0" step="any"')}${field("ভাতা","fAllowance","number","0",false,'min="0" step="any"')}${field("বোনাস","fBonus","number","0",false,'min="0" step="any"')}${field("কর্তন","fDeduct","number","0",false,'min="0" step="any"')}</div><div class="notice mb">নিট = মূল + (OT ঘণ্টা × হার × গুণক) + ভাতা + বোনাস − কর্তন</div><button class="btn bp" type="submit">হিসাব ও সংরক্ষণ</button></form>`);
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const emp=byId(db.employees,get("fEmployee"));if(!emp)return;
+  const base=$("fBase").value===""?num(emp.salary):val("fBase"),h=val("fHours"),r=val("fRate"),m=val("fMultiplier"),al=val("fAllowance"),bo=val("fBonus"),de=val("fDeduct"),ot=h*r*m,gross=base+ot+al+bo;
+  if([base,h,r,m,al,bo,de].some(n=>n<0)||de>gross)return toast("ইনপুট যাচাই করুন।","error");
+  if(db.payroll.some(p=>p.employeeId===emp.id&&p.period===get("fPeriod"))&&!askConfirm("এই মাসের পেরোল আগে আছে। আবার যোগ করবেন?"))return;
+  db.payroll.push({id:uid(),employeeId:emp.id,period:get("fPeriod"),base,overtime:ot,otHours:h,otRate:r,otMultiplier:m,allowance:al,bonus:bo,deductions:de,net:gross-de,date:today()});
+  audit("PAYROLL","employee",emp.empId+" "+get("fPeriod"));closeModal();saveAndRender("বেতন সংরক্ষিত।");
+ };
+}
+function shipmentForm(key){
+ const s=key?byId(db.shipments,key):null;
+ openModal(s?"শিপমেন্ট এডিট":"নতুন শিপমেন্ট",`<form id="recordForm">${field("তারিখ","fDate","date",s?.date||today(),true)}${selectField("দিক","fDirection",[["Import","আমদানি"],["Export","রপ্তানি"]],s?.direction||"Import")}${field("পার্টনার","fPartner","text",s?.partner||"",true)}${field("দেশ","fCountry","text",s?.country||"")}${field("রেফারেন্স","fInvoice","text",s?.invoice||"")}${field("ট্র্যাকিং আইডি","fTracking","text",s?.tracking||"")}${selectField("অবস্থা","fStatus",["Planned","Booked","In transit","Customs","Delivered","Cancelled"].map(x=>[x,x]),s?.status||"Planned")}<div class="fg">${field("ফ্রেইট","fFreight","number",s?.freight??0,false,'min="0" step="any"')}${field("ইনস্যুরেন্স","fInsurance","number",s?.insurance??0,false,'min="0" step="any"')}${field("কাস্টমস ডিউটি","fDuty","number",s?.duty??0,false,'min="0" step="any"')}${field("ট্যাক্স","fTax","number",s?.tax??0,false,'min="0" step="any"')}</div>${field("ট্র্যাকিং লিংক (ঐচ্ছিক)","fURL","url",s?.url||"")}<button class="btn bp" type="submit">সংরক্ষণ</button></form>`);
+ $("recordForm").onsubmit=e=>{
+  e.preventDefault();const d={date:get("fDate"),direction:get("fDirection"),partner:get("fPartner"),country:get("fCountry"),invoice:get("fInvoice"),tracking:get("fTracking"),status:get("fStatus"),freight:val("fFreight"),insurance:val("fInsurance"),duty:val("fDuty"),tax:val("fTax"),url:get("fURL")};
+  if(!d.partner||[d.freight,d.insurance,d.duty,d.tax].some(n=>n<0))return toast("পার্টনার ও সঠিক খরচ দিন।","error");
+  if(d.url&&!/^https?:\/\//i.test(d.url))return toast("লিংক http:// বা https:// দিয়ে শুরু হতে হবে।","error");
+  if(s){Object.assign(s,d);audit("EDIT","shipment",s.tracking||s.partner)}else{db.shipments.push({id:uid(),...d});audit("CREATE","shipment",d.tracking||d.partner)}closeModal();saveAndRender("শিপমেন্ট সংরক্ষিত।");
+ };
+}
+/* ---------- মার্কেট বিশ্লেষণ ও রাডার (শুধু আপনার রেকর্ড থেকে হিসাব) ---------- */
+function productStats(){
+ const m={};for(const s of db.sales)for(const it of s.items||[]){const k=it.productId||it.name,o=m[k]||(m[k]={name:it.name||byId(db.products,it.productId)?.name||"—",qty:0,rev:0,profit:0});o.qty+=num(it.qty);o.rev+=num(it.qty)*num(it.price);o.profit+=(num(it.price)-num(it.cost))*num(it.qty)}
+ return Object.values(m).sort((a,b)=>b.rev-a.rev);
+}
+const hbar=(label,v,max,txt)=>`<div class="lrow"><div class="between"><span>${esc(label)}</span><strong>${txt}</strong></div><div class="bar"><span style="width:${max?Math.max(2,v/max*100):0}%"></span></div></div>`;
+function renderMarket(){
+ const t=totals("all"),ps=productStats(),n=db.sales.length;
+ setHTML("mkKpis",[["গড় অর্ডার মূল্য",n?money(t.salesTotal/n):"—"],["মোট মার্জিন",t.salesTotal?(t.gross/t.salesTotal*100).toFixed(1)+"%":"—"],["সেরা পণ্য",ps[0]?esc(ps[0].name):"—"],["বিক্রয় রেকর্ড",n]].map(x=>`<div class="card stat"><div class="slab">${x[0]}</div><div class="sval">${x[1]}</div></div>`).join(""));
+ setHTML("mkTop",ps.length?ps.slice(0,8).map(p=>hbar(p.name,p.rev,ps[0].rev,money(p.rev)+" · "+p.qty+" ইউনিট")).join(""):'<div class="notice">বিক্রির রেকর্ড যোগ করলে এখানে দেখা যাবে।</div>');
+ const mg=ps.filter(p=>p.rev>0).map(p=>({...p,m:p.profit/p.rev*100})).sort((a,b)=>b.m-a.m);
+ setHTML("mkMargin",mg.length?mg.slice(0,8).map(p=>hbar(p.name,Math.max(0,p.m),100,p.m.toFixed(1)+"%")).join(""):'<div class="notice">তথ্য নেই।</div>');
+ const keys=monthKeys(12),sv=keys.map(k=>sum(db.sales.filter(s=>dateOf(s).startsWith(k)),calcSaleTotal)),pv=keys.map(k=>sum(db.purchases.filter(s=>dateOf(s).startsWith(k)),p=>p.total));
+ setHTML("mkTrend",`<div class="tw"><table style="min-width:420px"><thead><tr><th>মাস</th><th>বিক্রি</th><th>ক্রয়</th><th>পার্থক্য</th></tr></thead><tbody>${keys.map((k,i)=>`<tr><td>${k}</td><td>${money(sv[i])}</td><td>${money(pv[i])}</td><td>${money(sv[i]-pv[i])}</td></tr>`).join("")}</tbody></table></div>`);
+ const cu={};for(const s of db.sales){const nm=byId(db.contacts,s.contactId)?.name||"Walk-in";cu[nm]=(cu[nm]||0)+calcSaleTotal(s)}
+ const cl=Object.entries(cu).sort((a,b)=>b[1]-a[1]).slice(0,8);
+ setHTML("mkCustomers",cl.length?cl.map(c=>hbar(c[0],c[1],cl[0][1],money(c[1]))).join(""):'<div class="notice">তথ্য নেই।</div>');
+ const tot=sum(ps,p=>p.rev);let cum=0;
+ setHTML("mkABC",ps.length?ps.map(p=>{const share=p.rev/tot*100,cls=cum<70?"A":cum<90?"B":"C";cum+=share;return `<tr><td>${esc(p.name)}</td><td>${money(p.rev)}</td><td>${share.toFixed(1)}</td><td><span class="badge ${cls==="A"?"b-ok":cls==="B"?"b-warn":""}">${cls}</span></td></tr>`}).join(""):emptyRow(4,"বিক্রির রেকর্ড নেই"));
+}
+function renderRadar(){
+ const low=db.products.filter(p=>num(p.qty)<=num(p.minStock));
+ setHTML("radarAlerts",low.length?low.map(p=>`<div class="lrow"><div class="between"><strong>${esc(p.name)}</strong><span class="badge b-bad">${num(p.qty)} বাকি</span></div><div class="muted small">রিঅর্ডার পয়েন্ট: ${num(p.minStock)} · প্রস্তাবিত অর্ডার: ${Math.max(0,num(p.minStock)*2-num(p.qty))}</div></div>`).join(""):'<div class="notice">বর্তমান সীমা অনুযায়ী কম স্টক নেই।</div>');
+ setHTML("forecastTable",db.products.length?db.products.map(p=>{
+  const sold=db.sales.filter(s=>(Date.now()-new Date(dateOf(s)+"T12:00:00"))/864e5<=30).flatMap(s=>(s.items||[]).filter(i=>i.productId===p.id));
+  const ok=sold.length>=3,avg=sum(sold,i=>i.qty)/30,need=Math.ceil(avg*10);
+  return `<tr><td>${esc(p.name)}</td><td>${num(p.qty)}</td><td>${ok?avg.toFixed(2):"অপর্যাপ্ত তথ্য"}</td><td>${ok&&avg>0?Math.floor(num(p.qty)/avg):"—"}</td><td>${ok?(need>num(p.qty)?`<span class="badge b-bad">${need} (ঘাটতি ${need-num(p.qty)})</span>`:need):"—"}</td></tr>`}).join(""):emptyRow(5,"পণ্য যোগ করুন"));
+ const mon=Array(12).fill(0),seen=Array.from({length:12},()=>new Set());
+ for(const s of db.sales){const d=dateOf(s),mi=Number(d.slice(5,7))-1;if(mi>=0&&mi<12){mon[mi]+=calcSaleTotal(s);seen[mi].add(d.slice(0,4))}}
+ const avg=mon.map((v,i)=>seen[i].size?v/seen[i].size:0),filled=avg.filter(v=>v>0),mean=filled.length?sum(filled,v=>v)/filled.length:0;
+ const idx=avg.map(v=>mean?v/mean*100:0),names=["জান","ফেব","মার্চ","এপ্রি","মে","জুন","জুলা","আগ","সেপ্টে","অক্টো","নভে","ডিসে"];
+ setHTML("seasonChart",mean?barChart(names,idx):'<div class="notice">বিক্রির রেকর্ড নেই।</div>');
+ $("seasonNote").textContent=filled.length<3?"মৌসুমি প্রবণতার জন্য অন্তত ৩ মাসের বিক্রি দরকার; এখন ফল নির্ভরযোগ্য নয়।":"১০০ = গড় মাস। এটি আপনার নিজের ইতিহাস থেকে; ভবিষ্যৎ বাজারের নিশ্চিত পূর্বাভাস নয়।";
+}
+function renderReports(){
+ const f=get("reportFrom"),t=get("reportTo"),ok=d=>(!f||d>=f)&&(!t||d<=t);
+ const s=db.sales.filter(x=>ok(dateOf(x))),p=db.purchases.filter(x=>ok(dateOf(x))),fi=db.finance.filter(x=>ok(dateOf(x)));
+ $("reportSales").textContent=money(sum(s,calcSaleTotal));$("reportPurchases").textContent=money(sum(p,x=>x.total));
+ $("reportProfit").textContent=money(sum(s,saleGrossProfit)+sum(fi.filter(x=>x.type==="income"),x=>x.amount)-sum(fi.filter(x=>x.type==="expense"),x=>x.amount));
+ setHTML("auditTable",db.audit.length?db.audit.slice(0,150).map(a=>`<tr><td>${esc(new Date(a.date).toLocaleString())}</td><td>${esc(a.action)}</td><td>${esc(a.kind)}</td><td>${esc(a.details)}</td></tr>`).join(""):emptyRow(4,"অডিট রেকর্ড নেই"));
+}
+function renderChat(){
+ setHTML("chatMessages",db.chat.length?db.chat.map(m=>`<div class="cb ${m.role==="user"?"user":"assistant"}">${esc(m.text)}${m.fileNames?.length?`<div class="small">ফাইল: ${esc(m.fileNames.join(", "))}</div>`:""}</div>`).join(""):'<div class="cb assistant">আসসালামু আলাইকুম! AI প্রোভাইডার সংযুক্ত নেই, তাই আমি শুধু সংরক্ষিত ব্যবসার সারাংশ, স্টক ও লাভ-ক্ষতির তথ্য দেখাতে পারি। লিখুন: summary / stock / profit / help</div>');
+ const c=$("chatMessages");c.scrollTop=c.scrollHeight;
+}
+function renderBriefs(){
+ setHTML("savedBriefs",db.briefs.length?db.briefs.map(b=>`<div class="lrow"><div class="between"><strong>${esc(b.title)}</strong>${actionButton("delete-brief",b.id,"মুছুন","bs bd")}</div><div class="muted small">${dateText(b.date)}</div><p>${esc(b.prompt)}</p></div>`).join(""):'<div class="muted">কোনো ব্রিফ নেই।</div>');
+}
+function renderAccount(){
+ try{const p=JSON.parse(localStorage.getItem("nivora_local_profile")||"null");$("accountStatus").textContent=p?`নাম: ${p.name}\nইমেইল: ${p.email||"—"}\nব্যবসা: ${p.business||"—"}\nএই ব্রাউজারেই সংরক্ষিত।`:"কোনো প্রোফাইল নেই।"}catch{$("accountStatus").textContent="প্রোফাইল পড়া যায়নি।"}
+}
+/* ---------- ইভেন্ট ---------- */
+const on=(id,ev,fn)=>$(id).addEventListener(ev,fn);
+[["productSearch",renderProducts],["purchaseSearch",renderPurchases],["saleSearch",renderSales],["contactSearch",renderContacts],["contactFilter",renderContacts],["financeSearch",renderFinance],["financeType",renderFinance],["employeeSearch",renderEmployees],["shipmentSearch",renderShipments]].forEach(([i,f])=>on(i,"input",f));
+on("dashboardPeriod","change",renderDashboard);on("refreshRadar","click",()=>{renderRadar();toast("রাডার রিফ্রেশ হয়েছে।")});on("refreshMarket","click",()=>{renderMarket();toast("বিশ্লেষণ রিফ্রেশ হয়েছে।")});
+on("saveSeasonNotes","click",()=>{db.settings.seasonNotes=get("seasonNotes");audit("SAVE","settings","season notes");saveAndRender("নোট সংরক্ষিত।")});
+on("printSales","click",()=>window.print());on("printReport","click",()=>window.print());on("runReport","click",renderReports);
+on("shipmentFile","change",e=>{const fs=[...e.target.files];if(fs.length)$("shipmentFiles").textContent=fs.map(f=>f.name+" ("+Math.round(f.size/1024)+" KB) — শুধু নির্বাচিত, আপলোড হয়নি").join("\n")});
+function downloadFile(n,c,t="text/plain"){const u=URL.createObjectURL(new Blob([c],{type:t})),a=document.createElement("a");a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
+function downloadCSV(n,rows){
+ if(!rows.length)return toast("এক্সপোর্টের মতো রেকর্ড নেই।","warning");
+ const ks=[...new Set(rows.flatMap(x=>Object.keys(x)))];
+ downloadFile(n,"\uFEFF"+[ks.join(","),...rows.map(r=>ks.map(k=>'"'+(r[k]===undefined?"":typeof r[k]==="object"?JSON.stringify(r[k]):String(r[k])).replace(/"/g,'""')+'"').join(","))].join("\r\n"),"text/csv;charset=utf-8");
+}
+on("exportProducts","click",()=>downloadCSV("nivora-products.csv",db.products));
+on("exportCSV","click",()=>downloadCSV("nivora-transactions.csv",[...db.sales.map(x=>({type:"sale",date:x.date,reference:x.invoice,total:calcSaleTotal(x),paid:x.paid,due:Math.max(0,calcSaleTotal(x)-num(x.paid))})),...db.purchases.map(x=>({type:"purchase",date:x.date,reference:x.invoice,total:x.total,paid:x.paid,due:Math.max(0,x.total-x.paid)})),...db.finance.map(x=>({type:x.type,date:x.date,reference:x.category,total:x.amount,paid:x.amount,due:0}))]));
+on("exportJSON","click",()=>{downloadFile("nivora-backup-"+today()+".json",JSON.stringify({format:"NIVORA_ONE_BACKUP",version:1,exportedAt:new Date().toISOString(),data:db},null,2),"application/json");toast("ব্যাকআপ ফাইল ডাউনলোড হচ্ছে।")});
+on("importJSON","change",async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ try{
+  if(f.size>20*1024*1024)throw Error("ফাইল ২০ MB-এর বেশি।");
+  const j=JSON.parse(await f.text()),src=j.data||j;
+  if(!["products","purchases","sales","contacts","payments","finance","employees","payroll","shipments","audit","briefs","chat"].every(k=>Array.isArray(src[k])))throw Error("সমর্থিত NIVORA ব্যাকআপ নয়।");
+  if(!askConfirm("ইমপোর্ট বর্তমান ডেটা প্রতিস্থাপন করবে। আগে ব্যাকআপ নিয়েছেন? চালিয়ে যাবেন?"))return;
+  const c=clone(defaults);for(const k of Object.keys(c)){if(k==="settings")c.settings={...c.settings,...(src.settings||{})};else c[k]=src[k]}
+  for(const k of ["products","contacts","sales","purchases","finance","employees","payroll","shipments"])if(c[k].some(x=>!x||typeof x!=="object"||!x.id))throw Error(k+"-এ অবৈধ রেকর্ড।");
+  const old=db;db=c;if(!persist()){db=old;return}audit("IMPORT","backup",f.name);persist();applyTheme();applyLanguage();renderAll();toast("ব্যাকআপ ইমপোর্ট হয়েছে।");
+ }catch(err){toast("ইমপোর্ট ব্যর্থ: "+err.message,"error")}finally{e.target.value=""}
+});
+on("resetData","click",()=>{if(!askConfirm("সব লোকাল ডেটা স্থায়ীভাবে মুছবে। ব্যাকআপ নিয়েছেন?")||!askConfirm("চূড়ান্ত নিশ্চিতকরণ: সব রেকর্ড মুছবেন?"))return;db=clone(defaults);persist();applyTheme();applyLanguage();renderAll();toast("ডেটা রিসেট হয়েছে।")});
+on("businessSettings","submit",e=>{e.preventDefault();Object.assign(db.settings,{businessName:get("businessName"),businessAddress:get("businessAddress"),businessTax:get("businessTax"),businessTimezone:get("businessTimezone"),invoiceFooter:get("invoiceFooter")});audit("SAVE","settings","business profile");saveAndRender("সেটিংস সংরক্ষিত।")});
+on("savePreferences","click",()=>{const t=val("defaultLowStock");if(t<0)return toast("সীমা ঋণাত্মক হতে পারে না।","error");db.settings.lowStock=t;db.settings.currency=get("settingsCurrency");db.settings.theme=get("settingsTheme");$("currencySelect").value=db.settings.currency;persist();applyTheme();renderAll();toast("পছন্দ সংরক্ষিত।")});
+on("registerForm","submit",e=>{e.preventDefault();const p={name:get("registerName"),email:get("registerEmail"),business:get("registerBusiness"),createdAt:new Date().toISOString()};if(!p.name)return toast("নাম দিন।","error");try{localStorage.setItem("nivora_local_profile",JSON.stringify(p));audit("PROFILE","local",p.name);persist();renderAccount();toast("লোকাল প্রোফাইল সংরক্ষিত (নিরাপদ লগইন নয়)।")}catch{toast("প্রোফাইল সংরক্ষণ ব্যর্থ।","error")}});
+on("logoutLocal","click",()=>{if(askConfirm("প্রোফাইল মুছবেন? ব্যবসার রেকর্ড মুছবে না।")){localStorage.removeItem("nivora_local_profile");renderAccount();toast("প্রোফাইল মুছে ফেলা হয়েছে।")}});
+/* বারকোড: ক্যামেরা (BarcodeDetector থাকলে) নাহলে হাতে লেখা */
+function foundCode(code){$("productSearch").value=code;renderProducts();const p=db.products.find(x=>x.barcode===code||x.sku===code);p?toast("পণ্য: "+p.name):toast("মিল নেই। পণ্য যোগ করুন বা কোড যাচাই করুন।","warning")}
+on("scanProduct","click",async()=>{
+ if(!("BarcodeDetector"in window)||!navigator.mediaDevices?.getUserMedia){const c=prompt("বারকোড / SKU লিখুন (এই ব্রাউজারে ক্যামেরা স্ক্যান সমর্থিত নয়):");if(c)foundCode(c.trim());return}
+ let stream,live=true;
+ try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}})}catch{const c=prompt("ক্যামেরার অনুমতি নেই। বারকোড / SKU লিখুন:");if(c)foundCode(c.trim());return}
+ openModal("বারকোড স্ক্যান",'<video id="scanVideo" playsinline muted style="width:100%;border-radius:10px"></video><p class="muted small">কোডটি ক্যামেরার সামনে ধরুন।</p>');
+ const v=$("scanVideo");v.srcObject=stream;await v.play();
+ const stop=()=>{live=false;stream.getTracks().forEach(t=>t.stop())};$("modalClose").addEventListener("click",stop,{once:true});$("modalOverlay").addEventListener("click",stop,{once:true});
+ const det=new BarcodeDetector();
+ (async function loop(){while(live){try{const r=await det.detect(v);if(r.length){stop();closeModal();foundCode(r[0].rawValue);return}}catch{}await new Promise(r=>setTimeout(r,400))}})();
+});
+/* AI চ্যাট (লোকাল) */
+function businessSummary(){const t=totals("all");return `NIVORA ONE সারাংশ\nপণ্য: ${db.products.length}\nবিক্রির রেকর্ড: ${db.sales.length}\nমোট বিক্রি: ${money(t.salesTotal)}\nমোট ক্রয়: ${money(t.purchaseTotal)}\nআনুমানিক মোট লাভ: ${money(t.gross)}\nঅন্য আয়: ${money(t.income)}\nব্যয়: ${money(t.expense)}\nআনুমানিক নিট লাভ: ${money(t.net)}\nক্রেতার কাছে পাওনা: ${money(sum(db.contacts,recv))}\nসরবরাহকারীকে দেনা: ${money(sum(db.contacts,pay))}\nকম স্টক: ${db.products.filter(p=>num(p.qty)<=num(p.minStock)).length}\n\nনোট: লোকাল হিসাব; কর, রিটার্ন ও হিসাবনীতি যাচাই করে ব্যবহার করুন।`}
+on("businessContext","click",()=>{$("businessSummary").textContent=businessSummary()});
+function appendChat(role,text,extra={}){db.chat.push({id:uid(),role,text:String(text),date:new Date().toISOString(),...extra});db.chat=db.chat.slice(-300);persist();renderChat()}
+function sendChat(){
+ const text=get("chatInput");if(!text&&!pendingFiles.length)return;
+ const names=pendingFiles.map(f=>f.name);appendChat("user",text||"ফাইল দেখুন",{fileNames:names});$("chatInput").value="";
+ if(pendingFiles.length){appendChat("assistant","ফাইল নির্বাচিত হয়েছে, কিন্তু কনটেন্ট বিশ্লেষণের মতো কোনো সংযুক্ত AI সেবা নেই।\n"+pendingFiles.map(f=>f.name+" ("+Math.round(f.size/1024)+" KB)").join("\n"));pendingFiles=[];setHTML("chatFilePreview","");return}
+ const q=text.toLowerCase();let a="AI প্রোভাইডার সংযুক্ত নেই, তাই আমি প্রকৃত AI উত্তর দিতে পারছি না। লিখুন: summary, stock, profit বা help।";
+ if(/summary|সারাংশ|ব্যবসার হিসাব|profit|লাভ|ক্ষতি|expense|ব্যয়/.test(q))a=businessSummary();
+ else if(/stock|inventory|স্টক|মজুত/.test(q))a="স্টক তালিকা:\n"+(db.products.map(p=>`${p.name}: ${p.qty} ${p.unit||"pcs"}; ক্রয় ${money(p.cost)}; বিক্রয় ${money(p.price)}; ন্যূনতম ${p.minStock}`).join("\n")||"কোনো পণ্য নেই।");
+ else if(/help|সাহায্য/.test(q))a="আমি সংরক্ষিত সারাংশ, স্টক ও লাভের তথ্য দেখাতে পারি। বিস্তারিত বিশ্লেষণের জন্য মার্কেট বিশ্লেষণ ও রিপোর্ট পেজ দেখুন।";
+ lastAnswer=a;appendChat("assistant",a);
+}
+on("sendChat","click",sendChat);on("chatInput","keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
+on("clearChat","click",()=>{if(askConfirm("চ্যাট ইতিহাস মুছবেন?")){db.chat=[];persist();renderChat()}});
+const prevFiles=()=>setHTML("chatFilePreview",pendingFiles.map((f,i)=>`<div class="lrow flex"><span>📎 ${esc(f.name)} · ${Math.round(f.size/1024)} KB</span><button class="btn bs" data-rm="${i}">সরান</button></div>`).join(""));
+on("chatFiles","change",e=>{pendingFiles=[...e.target.files].filter(f=>f.size<=20*1024*1024||(toast(f.name+" ২০ MB-এর বেশি।","error"),false));prevFiles();e.target.value=""});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-rm]");if(b){pendingFiles.splice(Number(b.dataset.rm),1);prevFiles()}});
+let rec=null;const VL={bn:"bn-BD",en:"en-US",hi:"hi-IN",ur:"ur-PK"};
+on("voiceStart","click",()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast("এই ব্রাউজারে ভয়েস রিকগনিশন নেই।","warning");try{rec=new SR();rec.lang=VL[db.settings.language]||"bn-BD";rec.onresult=e=>{$("chatInput").value+=($("chatInput").value?" ":"")+e.results[0][0].transcript};rec.onerror=e=>toast("ভয়েস ত্রুটি: "+e.error,"error");rec.start();toast("শুনছি… মাইক্রোফোনের অনুমতি দিন।")}catch(err){toast(err.message,"error")}});
+on("voiceStop","click",()=>{rec&&rec.stop();rec=null});
+on("speakLast","click",()=>{if(!lastAnswer)return toast("পড়ার মতো উত্তর নেই।","warning");if(!("speechSynthesis"in window))return toast("টেক্সট-টু-স্পিচ সমর্থিত নয়।","warning");speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(lastAnswer);u.lang=VL[db.settings.language]||"bn-BD";speechSynthesis.speak(u)});
+on("saveAISettings","click",()=>{db.settings.aiProvider=get("aiProvider");db.settings.aiModel=get("aiModel");audit("SAVE","ai-config",db.settings.aiProvider);persist();$("aiStatus").textContent="কনফিগারেশন সংরক্ষিত; কোনো API রিকোয়েস্ট যায়নি, প্রোভাইডার এখনো সংযুক্ত নয়।";toast("সংরক্ষিত (প্রোভাইডার সংযুক্ত নয়)।","warning")});
+/* AI Studio */
+const sb=()=>({prompt:get("videoPrompt"),type:get("videoType"),style:get("videoStyle"),duration:get("videoDuration"),ratio:get("videoRatio"),language:get("videoLanguage"),resolution:get("videoResolution")});
+function storyboard(b){
+ if(!b.prompt)return "প্রথমে ভিডিওর ধারণা লিখুন।";
+ return `VIDEO PRODUCTION BRIEF\nধারণা: ${b.prompt}\nধরন: ${b.type} | স্টাইল: ${b.style} | সময়: ${b.duration} | রেশিও: ${b.ratio} | ভাষা: ${b.language} | রেজোল্যুশন: ${b.resolution}\n\nস্টোরিবোর্ড (পরিকল্পনা মাত্র; ভিডিও তৈরি হয়নি)\nদৃশ্য ১ — শুরু (০–১৫%): পরিবেশ ও মূল বিষয় পরিষ্কারভাবে দেখান।\nদৃশ্য ২ — বিকাশ (১৫–৪৫%): মূল ঘটনা/সমস্যা/পণ্যের সুবিধা তুলে ধরুন।\nদৃশ্য ৩ — মূল অংশ (৪৫–৭৫%): উদ্দেশ্যমূলক ক্যামেরা ফ্রেমিং ও ট্রানজিশনে এগিয়ে যান।\nদৃশ্য ৪ — সমাধান (৭৫–৯০%): মূল বার্তা বা আবেগময় সমাপ্তি দিন।\nদৃশ্য ৫ — শেষ (৯০–১০০%): পরিষ্কার শেষ ফ্রেম; প্রয়োজনে CTA/লোগো।\n\nGENERATION PROMPT\nCreate a ${b.duration} ${b.type.toLowerCase()} video, ${b.style.toLowerCase()} style, ${b.ratio}, ${b.resolution}. Concept: ${b.prompt}. Language: ${b.language}. Keep subjects, lighting and pacing consistent with clear transitions and a complete beginning-middle-end. Avoid glitches, inconsistent characters and unreadable text.\n\nপ্রোভাইডার: সংযুক্ত নয়।`;
+}
+on("improvePrompt","click",()=>{const b=sb();if(!b.prompt)return toast("আগে ধারণা লিখুন।","warning");$("videoOutput").textContent=`উন্নত প্রম্পট (খসড়া)\n\n${b.prompt}\n\nফরম্যাট: ${b.type}; স্টাইল: ${b.style}; সময়: ${b.duration}; রেশিও: ${b.ratio}; ভাষা: ${b.language}; রেজোল্যুশন: ${b.resolution}.\nনির্দেশনা: শক্তিশালী শুরু, ধাপে ধাপে অগ্রগতি, সামঞ্জস্যপূর্ণ বিষয়, উপযুক্ত গতি ও অর্থবহ সমাপ্তি। অসমর্থিত তথ্যগত দাবি যোগ করবেন না।\n\nএটি শুধু প্রম্পট প্রস্তুতি; ভিডিও তৈরি হয়নি।`});
+on("makeStoryboard","click",()=>{$("videoOutput").textContent=storyboard(sb())});
+on("saveVideoBrief","click",()=>{const b=sb();if(!b.prompt)return toast("আগে ধারণা লিখুন।","warning");db.briefs.unshift({id:uid(),date:today(),title:b.type,prompt:b.prompt,brief:storyboard(b),type:b.type,options:b});audit("CREATE","video-brief",b.type);saveAndRender("ব্রিফ সংরক্ষিত।")});
+on("copyBrief","click",()=>copyText($("videoOutput").textContent));
+on("ownVideo","change",e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("video/"))return toast("ভিডিও ফাইল নির্বাচন করুন।","error");if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);$("videoPreview").src=videoURL;$("videoPreview").style.display="block";setHTML("videoDownload",`<a class="btn bp" href="${videoURL}" download="${esc(f.name)}">ডাউনলোড</a><div class="muted small mt">শুধু লোকাল প্রিভিউ; আপলোড বা জেনারেট হয়নি।</div>`)});
+/* ক্যালকুলেটর */
+on("calcMargin","click",()=>{const c=val("marginCost"),s=val("marginSell");if(c<0||s<0)return toast("ঋণাত্মক মান নয়।","error");const p=s-c;$("marginResult").textContent=`প্রতি ইউনিট লাভ: ${money(p)} · মার্জিন: ${s?(p/s*100).toFixed(2):0}% · মার্কআপ: ${c?(p/c*100).toFixed(2):0}%`});
+on("calcVAT","click",()=>{const a=val("vatAmount"),d=val("discountPercent"),v=val("vatPercent");if(a<0||d<0||d>100||v<0)return toast("মান যাচাই করুন।","error");const dis=a*d/100,base=a-dis,tax=base*v/100;$("vatResult").textContent=`ডিসকাউন্ট: ${money(dis)} · করযোগ্য: ${money(base)} · VAT: ${money(tax)} · মোট: ${money(base+tax)}`});
+on("calcInterest","click",()=>{const p=val("interestPrincipal"),r=val("interestRate"),y=val("interestYears");if(p<0||r<0||y<0)return toast("ঋণাত্মক মান নয়।","error");const i=p*r*y/100;$("interestResult").textContent=`সরল সুদ: ${money(i)} · মোট: ${money(p+i)}`});
+on("calcOT","click",()=>{const s=val("otSalary"),m=val("otHoursMonth"),h=val("otHours"),x=val("otMultiplier");if(s<0||m<=0||h<0||x<0)return toast("মান যাচাই করুন।","error");const r=s/m,o=r*h*x;$("otResult").textContent=`ঘণ্টাপ্রতি: ${money(r)} · OT: ${money(o)} · মোট: ${money(s+o)}। শ্রম আইন যাচাই করুন।`});
+on("openCalculator","click",()=>$("calculatorDrawer").classList.toggle("open"));on("closeCalculator","click",()=>$("calculatorDrawer").classList.remove("open"));
+let ce="";
+function safeMath(x){
+ const s=String(x).replace(/\s/g,"");if(!s||s.length>150)throw Error("অবৈধ এক্সপ্রেশন");if(!/^[0-9+\-*/().%]+$/.test(s))throw Error("শুধু মৌলিক গণিত");
+ const t=s.match(/(?:\d+\.?\d*|\.\d+|[()+\-*/%])/g);if(!t||t.join("")!==s)throw Error("অবৈধ এক্সপ্রেশন");let i=0;
+ const pr=()=>{const k=t[i++];if(k==="(" ){const v=ex();if(t[i++]!==")")throw Error("বন্ধনী অসম্পূর্ণ");return v}if(k==="-")return -pr();if(k==="+")return pr();if(k===undefined||!/^(\d+\.?\d*|\.\d+)$/.test(k))throw Error("সংখ্যা প্রত্যাশিত");return Number(k)};
+ const tm=()=>{let v=pr();while(["*","/","%"].includes(t[i])){const o=t[i++],r=pr();if((o==="/"||o==="%")&&r===0)throw Error("শূন্য দিয়ে ভাগ");v=o==="*"?v*r:o==="/"?v/r:v%r}return v};
+ const ex=()=>{let v=tm();while(t[i]==="+"||t[i]==="-"){const o=t[i++],r=tm();v=o==="+"?v+r:v-r}return v};
+ const o=ex();if(i!==t.length||!Number.isFinite(o))throw Error("অবৈধ ফল");return o;
+}
+const sc=v=>{$("calcDisplay").value=String(v)};
+on("calcKeys","click",e=>{
+ const b=e.target.closest("[data-calc]");if(!b)return;const k=b.dataset.calc;
+ try{
+  if(k==="C"){ce="";sc("0");return}if(k==="MC"){memory=0;toast("মেমরি মুছেছে।");return}if(k==="MR"){ce+=String(memory);sc(ce);return}
+  if(k==="M+"){memory+=safeMath(ce||$("calcDisplay").value);toast("মেমরিতে যোগ হয়েছে।");return}
+  if(k==="Back"){ce=ce.slice(0,-1);sc(ce||"0");return}
+  if(k==="sqrt"){const n=safeMath(ce||$("calcDisplay").value);if(n<0)throw Error("ঋণাত্মক সংখ্যার বর্গমূল নয়");ce=String(Math.sqrt(n));sc(ce);return}
+  if(k==="="){ce=String(safeMath(ce||$("calcDisplay").value));sc(ce);return}
+  if(k==="%"){ce=String(safeMath(ce||"0")/100);sc(ce);return}
+  if(ce.length>140)return;ce+=k;sc(ce);
+ }catch(err){toast(err.message,"error")}
+});
+on("calcDisplay","input",e=>{ce=e.target.value});
+on("calcDisplay","keydown",e=>{if(e.key==="Enter"){e.preventDefault();try{ce=String(safeMath(ce||$("calcDisplay").value));sc(ce)}catch(err){toast(err.message,"error")}}});
+/* কুরআন অ্যাপ লঞ্চার */
+const QA="https://api.alquran.cloud/v1";
+async function qLoadList(){
+ const sel=$("quranSurah");if(!sel||sel.options.length>1)return;
+ try{const r=await fetch(QA+"/surah");if(!r.ok)throw Error("HTTP "+r.status);const j=await r.json();
+  sel.insertAdjacentHTML("beforeend",j.data.map(s=>`<option value="${s.number}">${s.number}. ${esc(s.englishName)} (${esc(s.name)}) — ${s.numberOfAyahs}</option>`).join(""))}
+ catch(e){setHTML("quranText",'<div class="notice nw">সূরার তালিকা লোড হয়নি। ইন্টারনেট দেখে আবার পেজটি খুলুন।</div>')}
+}
+async function qShow(){
+ const n=get("quranSurah");if(!n)return;setHTML("quranText",'<div class="notice">লোড হচ্ছে…</div>');
+ try{const r=await fetch(QA+"/surah/"+n+"/editions/quran-uthmani,bn.bengali");if(!r.ok)throw Error("HTTP "+r.status);const j=await r.json();
+  const ar=j.data[0].ayahs,bn=j.data[1].ayahs;
+  setHTML("quranText",ar.map((a,i)=>`<div class="lrow"><div style="font-size:24px;line-height:2.2;text-align:right;direction:rtl">${esc(a.text)} <span class="badge">${a.numberInSurah}</span></div><div class="muted">${esc(bn[i]?.text||"")}</div></div>`).join(""))}
+ catch(e){setHTML("quranText",'<div class="notice nw">সূরা লোড হয়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।</div>')}
+}
+function openQuran(){
+ const id="net.alquran.abdulwalialarkanioffline",web="https://play.google.com/store/apps/details?id="+id;
+ if(!/Android/i.test(navigator.userAgent)){window.open(web,"_blank","noopener,noreferrer");toast("এটি Android অ্যাপ। প্লে স্টোর পেজ খোলা হয়েছে; অ্যাপের ভেতরের পাঠক ব্যবহার করতে পারেন।","warning");return}
+ if(/FBAN|FBAV|FB_IAB|Messenger|Instagram|Line\//i.test(navigator.userAgent))toast("এই ইন-অ্যাপ ব্রাউজারে অ্যাপ খুলবে না। লিংকটি Chrome-এ খুলুন।","warning");
+ location.href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package="+id+";S.browser_fallback_url="+encodeURIComponent(web)+";end";
+}
+on("quranFab","click",()=>nav("quran"));on("quranOpen","click",openQuran);on("quranSurah","change",qShow);
+on("quranStore","click",()=>window.open("https://play.google.com/store/apps/details?id=net.alquran.abdulwalialarkanioffline","_blank","noopener,noreferrer"));
+/* শেয়ার ও সার্চ */
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast("কপি হয়েছে।")}catch{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy")}catch{}a.remove();toast(ok?"কপি হয়েছে।":"কপি ব্যর্থ; হাতে কপি করুন।",ok?"success":"error")}}
+async function shareApp(){
+ const url=location.href;if(location.protocol==="file:"){await copyText(url);toast("এটি লোকাল ফাইলের ঠিকানা, পাবলিক লিংক নয়।","warning");return}
+ if(navigator.share){try{await navigator.share({title:"NIVORA ONE",text:"ব্যবসা ব্যবস্থাপনা ও AI ওয়ার্কস্পেস",url});return}catch(e){if(e.name==="AbortError")return}}
+ await copyText(url);
+}
+on("shareButton","click",shareApp);on("shareFromAbout","click",shareApp);
+on("globalSearch","keydown",e=>{
+ if(e.key!=="Enter")return;const q=get("globalSearch").toLowerCase();if(!q)return;
+ const go=(p,i,r)=>{nav(p);$(i).value=q;r()};
+ if(db.products.some(p=>[p.name,p.sku,p.barcode].join(" ").toLowerCase().includes(q)))return go("inventory","productSearch",renderProducts);
+ if(db.contacts.some(c=>[c.name,c.phone,c.company].join(" ").toLowerCase().includes(q)))return go("contacts","contactSearch",renderContacts);
+ if(db.sales.some(s=>s.invoice.toLowerCase().includes(q)))return go("sales","saleSearch",renderSales);
+ if(db.purchases.some(p=>p.invoice.toLowerCase().includes(q)))return go("purchases","purchaseSearch",renderPurchases);
+ toast("কিছু পাওয়া যায়নি।","warning");
+});
+/* স্বয়ংক্রিয় যাচাই (কনসোলে) */
+(()=>{const f=[];for(const [n,fn] of [["গণিত",()=>safeMath("2*(3+4)")===14],["শূন্য ভাগ",()=>{try{safeMath("5/0");return false}catch{return true}}],["ইনজেকশন",()=>{try{safeMath("alert(1)");return false}catch{return true}}],["মুদ্রা",()=>typeof money(12)==="string"]]){try{if(!fn())f.push(n)}catch(e){f.push(n)}}f.length?console.error("NIVORA checks failed:",f):console.info("NIVORA checks passed")})();
+renderAll();
+})();
+</script>
 
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const QA="https://api.alquran.cloud/v1",QV="https://api.quran.com/api/v4",CDN="https://cdn.islamic.network/quran/audio/",BR=[128,64,192];
+const toast=(m,t)=>{const b=$("toastArea");if(!b)return;const e=document.createElement("div");e.className="toast"+(t?" "+t:"");e.textContent=m;b.appendChild(e);setTimeout(()=>e.remove(),4500)};
+const RECITERS=[["ar.alafasy","মিশারি রাশিদ আল-আফাসি"],["ar.abdurrahmaansudais","আবদুর রহমান আস-সুদাইস"],["ar.saoodshuraym","সউদ আশ-শুরাইম"],["ar.husary","মাহমুদ খলিল আল-হুসারি"],["ar.minshawi","মুহাম্মদ সিদ্দিক আল-মিনশাভি"],["ar.abdulbasitmurattal","আবদুল বাসিত (মুরাত্তাল)"],["ar.mahermuaiqly","মাহির আল-মুয়াইকিলি"],["ar.hudhaify","আলী আল-হুযাইফি"],["ar.shaatree","আবু বকর আশ-শাতরি"],["ar.ahmedajamy","আহমাদ আল-আজমি"]];
+const TRANS=[["bn.bengali","বাংলা তরজমা (মুহিউদ্দীন খান)"],["en.sahih","English (Saheeh International)"],["ur.jalandhry","اردو"],["hi.hindi","हिन्दी"],["none","তরজমা ছাড়া"]];
+const PK="nivora_quran_prefs";let P={script:"indopak",trans:"bn.bengali",reciter:"ar.alafasy",size:32,tafsir:""};
+try{P={...P,...JSON.parse(localStorage.getItem(PK)||"{}")}}catch{}
+const save=()=>{try{localStorage.setItem(PK,JSON.stringify(P))}catch{}};
+let ayahs=[],cur=-1,cont=false,surahNo=0,br=0,inited=false;
+/* ---------- স্টাইল ও ফন্ট ---------- */
+const lk=document.createElement("link");lk.rel="stylesheet";lk.href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&display=swap";document.head.appendChild(lk);
+const st=document.createElement("style");st.textContent='.qz-ar{font-family:"Scheherazade New","Amiri Quran","Noto Naskh Arabic",serif;line-height:2.5;text-align:right;direction:rtl}.qz-row{padding:12px 8px}.qz-row.active{background:color-mix(in srgb,var(--gold) 22%,transparent);border-radius:10px}.qz-tf{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px}';document.head.appendChild(st);
+/* ---------- কুরআন কার্ড (পুরোনো সাধারণ রিডারের জায়গায়; Android অ্যাপ-লঞ্চার কার্ড অক্ষত) ---------- */
+const sec=$("page-quran");if(sec){
+ const card=document.createElement("div");card.className="card mb";
+ card.innerHTML=`<h2 class="stitle">☪ হাফেজী কুরআন · তিলাওয়াত · তরজমা · তাফসির</h2><div class="fg">
+ <div class="field"><label for="qzSurah">সূরা</label><select class="select" id="qzSurah"><option value="">— সূরা নির্বাচন করুন —</option></select></div>
+ <div class="field"><label for="qzScript">লিপি</label><select class="select" id="qzScript"><option value="indopak">হাফেজী (ইন্দো-পাক লিপি)</option><option value="uthmani">উসমানী লিপি</option></select></div>
+ <div class="field"><label for="qzReciter">ক্বারি</label><select class="select" id="qzReciter">${RECITERS.map(r=>`<option value="${r[0]}">${r[1]}</option>`).join("")}</select></div>
+ <div class="field"><label for="qzTrans">তরজমা</label><select class="select" id="qzTrans">${TRANS.map(r=>`<option value="${r[0]}">${r[1]}</option>`).join("")}</select></div>
+ <div class="field"><label for="qzTafsir">তাফসির</label><select class="select" id="qzTafsir"><option value="">লোড হচ্ছে…</option></select></div>
+ <div class="field"><label for="qzSize">লেখার আকার</label><input class="input" id="qzSize" type="range" min="22" max="60" step="2"></div></div>
+ <div class="flex mb"><button class="btn bp" id="qzPlay">▶ পুরো সূরা শুনুন</button><button class="btn" id="qzPause">⏸ বিরতি</button><button class="btn" id="qzStop">⏹ থামান</button></div>
+ <audio id="qzAudio" controls preload="none" style="width:100%"></audio>
+ <div id="qzBody" class="mt"><div class="notice">সূরা নির্বাচন করলে আরবি লিপি, তরজমা, অডিও ও তাফসির পাবেন। (ইন্টারনেট লাগবে; সূত্র: Quran.com ও Al Quran Cloud API)</div></div>`;
+ const old=$("quranSurah")?.closest(".card");if(old)old.replaceWith(card);else sec.querySelector(".ph")?.after(card);
+ $("qzScript").value=P.script;$("qzReciter").value=P.reciter;$("qzTrans").value=P.trans;$("qzSize").value=P.size;
+}
+const A=()=>$("qzAudio");
+function mark(){document.querySelectorAll(".qz-row.active").forEach(e=>e.classList.remove("active"));const r=$("qzr"+cur);if(r){r.classList.add("active");r.scrollIntoView({block:"center",behavior:"smooth"})}}
+function setSrc(){A().src=CDN+BR[br]+"/"+P.reciter+"/"+ayahs[cur].no+".mp3";A().play().catch(()=>{})}
+function playAt(i){if(i<0||i>=ayahs.length){stopAll();return}cur=i;br=0;setSrc();mark()}
+function stopAll(){cont=false;cur=-1;A().pause();mark()}
+async function loadSurahs(){
+ try{const r=await fetch(QA+"/surah");if(!r.ok)throw 0;const j=await r.json();$("qzSurah").insertAdjacentHTML("beforeend",j.data.map(s=>`<option value="${s.number}">${s.number}. ${esc(s.englishName)} (${esc(s.name)}) — ${s.numberOfAyahs}</option>`).join(""))}
+ catch{$("qzBody").innerHTML='<div class="notice nw">সূরার তালিকা লোড হয়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।</div>'}
+}
+async function loadSurah(n){
+ stopAll();surahNo=n;if(!n)return;$("qzBody").innerHTML='<div class="notice">লোড হচ্ছে…</div>';
+ try{
+  const eds=["quran-uthmani"];if(P.trans!=="none")eds.push(P.trans);
+  const r=await fetch(`${QA}/surah/${n}/editions/${eds.join(",")}`);if(!r.ok)throw 0;const j=await r.json();
+  const ar=j.data[0].ayahs,tr=P.trans!=="none"?j.data[1].ayahs:null;let txt=null;
+  if(P.script==="indopak"){try{const r2=await fetch(`${QV}/quran/verses/indopak?chapter_number=${n}`);if(r2.ok){const v=(await r2.json()).verses.map(x=>x.text_indopak);if(v.length===ar.length)txt=v}}catch{}
+   if(!txt)toast("হাফেজী লিপি পাওয়া যায়নি; উসমানী লিপি দেখানো হচ্ছে।","warning")}
+  ayahs=ar.map((a,i)=>({no:a.number,n:a.numberInSurah,ar:txt?txt[i]:a.text,tr:tr?tr[i].text:""}));render();
+ }catch{$("qzBody").innerHTML='<div class="notice nw">সূরা লোড হয়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।</div>'}
+}
+function render(){
+ $("qzBody").innerHTML=ayahs.map((a,i)=>`<div class="lrow qz-row" id="qzr${i}"><div class="qz-ar" style="font-size:${P.size}px">${esc(a.ar)} <span class="badge">${a.n}</span></div>${a.tr?`<div class="muted">${esc(a.tr)}</div>`:""}<div class="flex mt"><button class="btn bs" data-qz="play" data-i="${i}">▶ শুনুন</button><button class="btn bs" data-qz="tafsir" data-i="${i}">তাফসির</button></div><div id="qzt${i}"></div></div>`).join("");
+}
+async function loadTafsirList(){
+ const out=[];
+ for(const l of ["bn","en","ar"]){try{const r=await fetch(`${QV}/resources/tafsirs?language=${l}`);if(r.ok)((await r.json()).tafsirs||[]).forEach(t=>out.push({id:String(t.id),name:`${t.translated_name?.name||t.name}${t.author_name?" — "+t.author_name:""} (${l})`}))}catch{}}
+ if(!out.length)out.push({id:"aq:ar.muyassar",name:"তাফসীর আল-মুয়াসসার (ar)"},{id:"aq:ar.jalalayn",name:"তাফসীর আল-জালালাইন (ar)"});
+ $("qzTafsir").innerHTML=out.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
+ if(!out.some(t=>t.id===P.tafsir))P.tafsir=out[0].id;$("qzTafsir").value=P.tafsir;
+}
+async function showTafsir(i){
+ const box=$("qzt"+i);if(box.dataset.open){box.textContent="";box.className="";delete box.dataset.open;return}
+ if(!P.tafsir)return toast("তাফসির তালিকা লোড হয়নি।","warning");
+ box.className="qz-tf notice";box.textContent="লোড হচ্ছে…";const key=surahNo+":"+ayahs[i].n;
+ try{let text;
+  if(P.tafsir.startsWith("aq:")){const r=await fetch(`${QA}/ayah/${key}/${P.tafsir.slice(3)}`);if(!r.ok)throw 0;text=(await r.json()).data.text}
+  else{const r=await fetch(`${QV}/tafsirs/${P.tafsir}/by_ayah/${key}`);if(!r.ok)throw 0;const h=(await r.json()).tafsir?.text||"";text=new DOMParser().parseFromString(h.replace(/<br\s*\/?>|<\/p>/gi,"\n"),"text/html").body.textContent.trim()}
+  box.textContent=text||"এই আয়াতের জন্য তাফসির পাওয়া যায়নি।";box.dataset.open="1";
+ }catch{box.textContent="তাফসির লোড হয়নি; ইন্টারনেট দেখুন বা অন্য তাফসির বেছে নিন।"}
+}
+if(sec){
+ $("qzSurah").addEventListener("change",e=>loadSurah(Number(e.target.value)));
+ $("qzScript").addEventListener("change",e=>{P.script=e.target.value;save();if(surahNo)loadSurah(surahNo)});
+ $("qzTrans").addEventListener("change",e=>{P.trans=e.target.value;save();if(surahNo)loadSurah(surahNo)});
+ $("qzReciter").addEventListener("change",e=>{P.reciter=e.target.value;save();if(cur>=0)playAt(cur)});
+ $("qzTafsir").addEventListener("change",e=>{P.tafsir=e.target.value;save()});
+ $("qzSize").addEventListener("input",e=>{P.size=Number(e.target.value);save();document.querySelectorAll(".qz-ar").forEach(x=>x.style.fontSize=P.size+"px")});
+ $("qzPlay").addEventListener("click",()=>{if(!ayahs.length)return toast("আগে সূরা নির্বাচন করুন।","warning");cont=true;playAt(cur>=0?cur:0)});
+ $("qzPause").addEventListener("click",()=>A().pause());$("qzStop").addEventListener("click",stopAll);
+ A().addEventListener("ended",()=>{if(cont)playAt(cur+1);else mark()});
+ A().addEventListener("error",()=>{if(cur<0)return;if(br<BR.length-1){br++;setSrc()}else toast("অডিও লোড হয়নি; অন্য ক্বারি বা ইন্টারনেট দেখুন।","error")});
+ $("qzBody").addEventListener("click",e=>{const b=e.target.closest("[data-qz]");if(!b)return;const i=Number(b.dataset.i);if(b.dataset.qz==="play"){cont=false;playAt(i)}else showTafsir(i)});
+ document.addEventListener("click",e=>{if(!inited&&e.target.closest('[data-page="quran"],#quranFab')){inited=true;loadSurahs();loadTafsirList()}});
+ if(location.hash==="#quran"){inited=true;loadSurahs();loadTafsirList()}
+}
+/* ---------- NIVORA AI চ্যাট: ছবি/ভিডিও/অডিও/ফাইল আপলোড + ভয়েস চ্যাট ---------- */
+const cf=$("chatFiles");if(cf)cf.accept="image/*,video/*,audio/*,.pdf,.txt,.csv,.json,.md,.doc,.docx,.xls,.xlsx";
+const lbl=document.querySelector('label[for="chatFiles"]');if(lbl)lbl.textContent="＋ ছবি / ভিডিও / ফাইল";
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition,VL={bn:"bn-BD",en:"en-US",hi:"hi-IN",ur:"ur-PK"};
+const vb=document.createElement("button");vb.type="button";vb.className="btn bs";vb.id="voiceChat";vb.textContent="🗣 ভয়েস চ্যাট";$("voiceStop")?.after(vb);
+let vc=false,waiting=false,rc=null;const lang=()=>VL[$("languageSelect")?.value]||"bn-BD";
+function ui(){vb.textContent=vc?"⏹ ভয়েস চ্যাট বন্ধ করুন":"🗣 ভয়েস চ্যাট";vb.classList.toggle("bp",vc)}
+function listen(){
+ if(!vc||waiting)return;
+ try{rc=new SR();rc.lang=lang();rc.interimResults=false;
+  rc.onresult=e=>{const t=e.results[0][0].transcript.trim();if(!t)return;waiting=true;$("chatInput").value=t;$("sendChat").click()};
+  rc.onend=()=>{if(vc&&!waiting)setTimeout(listen,500)};
+  rc.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"){vc=false;ui();toast("মাইক্রোফোনের অনুমতি দিন।","error")}};
+  rc.start()}catch{}
+}
+function speak(t){
+ if(!("speechSynthesis"in window)){waiting=false;listen();return}
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang();u.onend=u.onerror=()=>{waiting=false;listen()};speechSynthesis.speak(u);
+}
+vb.addEventListener("click",()=>{
+ if(!SR)return toast("এই ব্রাউজারে ভয়েস রিকগনিশন নেই; Chrome ব্যবহার করুন।","warning");
+ vc=!vc;ui();if(vc){toast("ভয়েস চ্যাট চালু: বলুন, উত্তর শুনুন।");listen()}else{waiting=false;try{rc&&rc.abort()}catch{}if("speechSynthesis"in window)speechSynthesis.cancel()}
+});
+const cm=$("chatMessages");
+if(cm)new MutationObserver(()=>{
+ if(!vc||!waiting||("speechSynthesis"in window&&speechSynthesis.speaking))return;const a=[...cm.querySelectorAll(".cb.assistant")].pop();if(a)speak(a.textContent);
+}).observe(cm,{childList:true});
+})();
+</script>
+<!-- সোশ্যাল বার (একবারই) -->
+<script src="https://pl31898635.profitableratecpmnetwork.com/04/dc/b0/04dcb039e3f79d091c9c270b103cdf1b.js"></script>
+
+<!-- Firebase (ES module; db নাম সংঘর্ষ এড়াতে fdb) -->
+<script type="module">
+import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import {getAuth} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import {getFirestore} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import {getStorage} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+import {getAnalytics,isSupported} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+const firebaseConfig={apiKey:"AIzaSyBiu3pj9P3MpY6d0juL1-pfCarkrI2eZ54",authDomain:"taskearn-bd-fa040.firebaseapp.com",projectId:"taskearn-bd-fa040",storageBucket:"taskearn-bd-fa040.firebasestorage.app",messagingSenderId:"177026495081",appId:"1:177026495081:web:48bfaaf8e2e7688e3e68f8",measurementId:"G-RDSLSLBP0Q"};
+try{
+ const app=getApps().length?getApp():initializeApp(firebaseConfig);
+ const analyticsReady=isSupported().then(s=>s?getAnalytics(app):null).catch(()=>null);
+ window.nivoraFirebase={app,auth:getAuth(app),fdb:getFirestore(app),storage:getStorage(app),analyticsReady};
+}catch(e){console.error("Firebase init failed:",e)}
+</script>
 </body>
 </html>
