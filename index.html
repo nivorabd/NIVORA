@@ -494,7 +494,7 @@ function renderAll(){
  const set=(i,v)=>{if($(i))$(i).value=v};
  set("aiProvider",db.settings.aiProvider||"none");set("aiModel",db.settings.aiModel||"");set("businessName",db.settings.businessName||"");set("businessAddress",db.settings.businessAddress||"");
  set("businessTax",db.settings.businessTax||"");set("businessTimezone",db.settings.businessTimezone||"local");set("invoiceFooter",db.settings.invoiceFooter||"");set("defaultLowStock",db.settings.lowStock??5);set("settingsCurrency",db.settings.currency);
- if($("aiStatus"))$("aiStatus").textContent="স্ট্যাটাস: সংযুক্ত নয় — ব্যাকএন্ড/API কনফিগার করা নেই";
+ ব্যাকএন্ড
 }
 function handleAction(a,k){
  switch(a){
@@ -864,15 +864,104 @@ on("scanProduct","click",async()=>{
 function businessSummary(){const t=totals("all");return `NIVORA ONE সারাংশ\nপণ্য: ${db.products.length}\nবিক্রির রেকর্ড: ${db.sales.length}\nমোট বিক্রি: ${money(t.salesTotal)}\nমোট ক্রয়: ${money(t.purchaseTotal)}\nআনুমানিক মোট লাভ: ${money(t.gross)}\nঅন্য আয়: ${money(t.income)}\nব্যয়: ${money(t.expense)}\nআনুমানিক নিট লাভ: ${money(t.net)}\nক্রেতার কাছে পাওনা: ${money(sum(db.contacts,recv))}\nসরবরাহকারীকে দেনা: ${money(sum(db.contacts,pay))}\nকম স্টক: ${db.products.filter(p=>num(p.qty)<=num(p.minStock)).length}\n\nনোট: লোকাল হিসাব; কর, রিটার্ন ও হিসাবনীতি যাচাই করে ব্যবহার করুন।`}
 on("businessContext","click",()=>{$("businessSummary").textContent=businessSummary()});
 function appendChat(role,text,extra={}){db.chat.push({id:uid(),role,text:String(text),date:new Date().toISOString(),...extra});db.chat=db.chat.slice(-300);persist();renderChat()}
-function sendChat(){
- const text=get("chatInput");if(!text&&!pendingFiles.length)return;
- const names=pendingFiles.map(f=>f.name);appendChat("user",text||"ফাইল দেখুন",{fileNames:names});$("chatInput").value="";
- if(pendingFiles.length){appendChat("assistant","ফাইল নির্বাচিত হয়েছে, কিন্তু কনটেন্ট বিশ্লেষণের মতো কোনো সংযুক্ত AI সেবা নেই।\n"+pendingFiles.map(f=>f.name+" ("+Math.round(f.size/1024)+" KB)").join("\n"));pendingFiles=[];setHTML("chatFilePreview","");return}
- const q=text.toLowerCase();let a="AI প্রোভাইডার সংযুক্ত নেই, তাই আমি প্রকৃত AI উত্তর দিতে পারছি না। লিখুন: summary, stock, profit বা help।";
- if(/summary|সারাংশ|ব্যবসার হিসাব|profit|লাভ|ক্ষতি|expense|ব্যয়/.test(q))a=businessSummary();
- else if(/stock|inventory|স্টক|মজুত/.test(q))a="স্টক তালিকা:\n"+(db.products.map(p=>`${p.name}: ${p.qty} ${p.unit||"pcs"}; ক্রয় ${money(p.cost)}; বিক্রয় ${money(p.price)}; ন্যূনতম ${p.minStock}`).join("\n")||"কোনো পণ্য নেই।");
- else if(/help|সাহায্য/.test(q))a="আমি সংরক্ষিত সারাংশ, স্টক ও লাভের তথ্য দেখাতে পারি। বিস্তারিত বিশ্লেষণের জন্য মার্কেট বিশ্লেষণ ও রিপোর্ট পেজ দেখুন।";
- lastAnswer=a;appendChat("assistant",a);
+
+
+async function sendChat() {
+  const text = get("chatInput").trim();
+
+  if (!text && !pendingFiles.length) return;
+
+  if (pendingFiles.length) {
+    appendChat("user", text || "ফাইল দেখুন", {
+      fileNames: pendingFiles.map(f => f.name)
+    });
+    appendChat(
+      "assistant",
+      "ফাইল বিশ্লেষণের সুবিধা এখনো এই চ্যাটে যুক্ত করা হয়নি। আপাতত আপনার প্রশ্নটি লিখে পাঠান।"
+    );
+    pendingFiles = [];
+    setHTML("chatFilePreview", "");
+    return;
+  }
+
+  const history = db.chat
+    .slice(-12)
+    .filter(m => m && m.text && (m.role === "user" || m.role === "assistant"))
+    .map(m => ({
+      role: m.role === "assistant" ? "model" : "user",
+      text: String(m.text)
+    }));
+
+  appendChat("user", text);
+  $("chatInput").value = "";
+
+  const btn = $("sendChat");
+  const status = $("aiStatus");
+
+  if (btn) btn.disabled = true;
+  if (status) status.textContent = "Cloudflare AI-তে সংযোগ হচ্ছে…";
+
+  try {
+    const response = await fetch(
+      "https://nivora.mdabuzar192.workers.dev/api/ai/chat",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          prompt: text,
+          history: history
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || data.message || ("HTTP " + response.status)
+      );
+    }
+
+    const answer =
+      data.candidates?.[0]?.content?.parts
+        ?.map(part => part.text || "")
+        .filter(Boolean)
+        .join("\n")
+      || data.answer
+      || data.response
+      || "";
+
+    if (!answer.trim()) {
+      throw new Error("AI থেকে কোনো লেখা উত্তর পাওয়া যায়নি।");
+    }
+
+    lastAnswer = answer;
+    appendChat("assistant", answer);
+
+    if (status) {
+      status.textContent = "AI সংযোগ সফল।";
+    }
+
+  } catch (error) {
+    console.error("NIVORA AI error:", error);
+
+    const message =
+      "AI সংযোগে সমস্যা হয়েছে: " +
+      (error.message || "অজানা ত্রুটি") +
+      "\nCloudflare Worker, Gemini API Secret এবং Deployment পরীক্ষা করুন।";
+
+    lastAnswer = message;
+    appendChat("assistant", message);
+
+    if (status) {
+      status.textContent = "AI সংযোগ ব্যর্থ হয়েছে।";
+    }
+
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 on("sendChat","click",sendChat);on("chatInput","keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
 on("clearChat","click",()=>{if(askConfirm("চ্যাট ইতিহাস মুছবেন?")){db.chat=[];persist();renderChat()}});
