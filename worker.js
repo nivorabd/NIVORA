@@ -7,7 +7,7 @@
  *   GEMINI_API_KEY
  *
  * Optional Variable:
- *   GEMINI_MODEL = gemini-2.5-flash
+ *   GEMINI_MODEL = gemini-3.8-flash
  */
 
 const DEFAULT_MODEL = "gemini-2.5-flash";
