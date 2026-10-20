@@ -1165,7 +1165,7 @@ function listen(){
 function speak(t){
  if(!("speechSynthesis"in window)){waiting=false;listen();return}
  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang();u.onend=u.onerror=()=>{waiting=false;listen()};speechSynthesis.speak(u);
-}এ
+}
 vb.addEventListener("click",()=>{
  if(!SR)return toast("এই ব্রাউজারে ভয়েস রিকগনিশন নেই; Chrome ব্যবহার করুন।","warning");
  vc=!vc;ui();if(vc){toast("ভয়েস চ্যাট চালু: বলুন, উত্তর শুনুন।");listen()}else{waiting=false;try{rc&&rc.abort()}catch{}if("speechSynthesis"in window)speechSynthesis.cancel()}
