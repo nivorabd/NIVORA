@@ -273,12 +273,14 @@ async function handleAI(request, env) {
           }]
         },
         contents,
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 4096
-        }
-      })
-    });
+generationConfig: {
+  maxOutputTokens: 4096,
+  thinkingConfig: {
+    thinkingLevel: "low"
+  }
+}
+})
+});
   } catch (error) {
     console.error("Gemini connection failed:", error);
 
