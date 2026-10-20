@@ -1,376 +1,285 @@
 
 /**
- * NIVORA ONE — Cloudflare Worker
- * Static Assets + Secure Gemini AI API
- *
- * Required Secret:
+ * NIVORA ONE — AI Worker
+ * Gemini primary + OpenAI fallback
+ * Required Cloudflare Secrets:
  *   GEMINI_API_KEY
- *
- * Optional Variable:
- *   GEMINI_MODEL = "gemini-3.8-flash";
+ *   OPENAI_API_KEY
  */
 
-const DEFAULT_MODEL = "gemini-3.8-flash";
-const MAX_REQUEST_BYTES = 18 * 1024 * 1024;
+const GEMINI_MODEL = "gemini-3.8-flash";
+const OPENAI_MODEL = "gpt-4.1-mini";
 
 const SYSTEM_INSTRUCTION = `
-You are NIVORA ONE, an advanced multilingual multimodal AI assistant.
+You are NIVORA AI, a helpful multilingual assistant
+inside the NIVORA ONE application.
 
-LANGUAGES:
-- Understand Bengali, English, Banglish and other supported languages.
-- Reply naturally in the user's preferred language.
-
-CONTEXT AND INTENT:
-- Consider the user's words, phrasing, available tone,
-  conversation context and stated goals.
-- Separate observed facts from possible interpretations.
-- Ask clarifying questions when intent is ambiguous.
-
-IMAGE, VIDEO AND AUDIO:
-- Analyze only media actually supplied and supported by the model.
-- Describe visible facial expressions, gaze direction, posture,
-  gestures, movement and relevant scene details when observable.
-- Analyze vocal tone only when the supplied audio and model support it.
-- Present emotional or behavioral interpretations as possibilities,
-  never as certain knowledge of someone's thoughts.
-- Never claim to read minds.
-- Do not determine honesty, personality, beliefs, health or intentions
-  as facts from appearance, gaze, voice or gestures alone.
-- Mention uncertainty and alternative explanations.
-- Do not identify a person from their face.
-
-RESPONSE FORMAT:
-When useful, provide:
-1. Observable evidence.
-2. Possible interpretations.
-3. Confidence and limitations.
-4. A respectful follow-up question or practical next step.
-
-BUSINESS AND APP DATA:
-- Use only records and context actually supplied.
-- Never invent products, stock, sales, purchases, customers,
-  financial records or other business information.
-- Clearly say when information is unavailable.
-
-Be helpful, respectful, privacy-conscious and accurate.
+- Answer accurately, clearly, and politely.
+- Support Bengali, English, Hindi, Urdu, and other languages.
+- Reply in the language used by the user.
+- Help with education, writing, calculations, business,
+  stock, accounting, technology, and everyday questions.
+- Never invent live data or claim an action was completed
+  when it was not.
+- For financial, medical, and religious topics, be careful
+  and explain uncertainty when appropriate.
 `;
 
-function jsonResponse(data, status = 200) {
+function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
-      "Content-Type": "application/json; charset=UTF-8",
+      "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff"
     }
   });
 }
 
-function addSecurityHeaders(response) {
-  const headers = new Headers(response.headers);
+function getPrompt(body) {
+  if (typeof body.prompt === "string" && body.prompt.trim()) {
+    return body.prompt.trim();
+  }
 
-  headers.set("X-Content-Type-Options", "nosniff");
-  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  headers.set("X-Frame-Options", "SAMEORIGIN");
-  headers.set("Cache-Control", "no-store");
+  if (Array.isArray(body.contents)) {
+    const messages = body.contents
+      .filter(item => item && Array.isArray(item.parts))
+      .map(item => {
+        const role = item.role === "model" ? "Assistant" : "User";
+        const text = item.parts
+          .map(part => typeof part.text === "string" ? part.text : "")
+          .join("\n");
+        return text ? `${role}: ${text}` : "";
+      })
+      .filter(Boolean);
 
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers
-  });
+    return messages.join("\n\n");
+  }
+
+  return "";
+}
+
+function getHistory(body) {
+  if (!Array.isArray(body.history)) return [];
+
+  return body.history
+    .filter(item =>
+      item &&
+      ["user", "model", "assistant"].includes(item.role) &&
+      typeof item.text === "string"
+    )
+    .slice(-12)
+    .map(item => ({
+      role: item.role === "user" ? "user" : "assistant",
+      content: item.text.slice(0, 12000)
+    }));
+}
+
+async function askGemini(prompt, history, apiKey) {
+  const contents = [
+    ...history.map(item => ({
+      role: item.role === "assistant" ? "model" : "user",
+      parts: [{ text: item.content }]
+    })),
+    { role: "user", parts: [{ text: prompt }] }
+  ];
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey
+      },
+      body: JSON.stringify({
+        system_instruction: {
+          parts: [{ text: SYSTEM_INSTRUCTION }]
+        },
+        contents,
+        generationConfig: {
+          maxOutputTokens: 2048,
+          thinkingConfig: {
+            thinkingLevel: "low"
+          }
+        }
+      }),
+      signal: AbortSignal.timeout(25000)
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      `Gemini API (${response.status}): ` +
+      (data.error?.message || "Request failed")
+    );
+  }
+
+  const answer = (data.candidates?.[0]?.content?.parts || [])
+    .map(part => part.text || "")
+    .join("")
+    .trim();
+
+  if (!answer) throw new Error("Gemini returned an empty answer");
+
+  return answer;
+}
+
+async function askOpenAI(prompt, history, apiKey) {
+  const messages = [
+    { role: "system", content: SYSTEM_INSTRUCTION },
+    ...history,
+    { role: "user", content: prompt }
+  ];
+
+  const response = await fetch(
+    "https://api.openai.com/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        messages,
+        max_completion_tokens: 2048
+      }),
+      signal: AbortSignal.timeout(25000)
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      `OpenAI API (${response.status}): ` +
+      (data.error?.message || "Request failed")
+    );
+  }
+
+  const answer = data.choices?.[0]?.message?.content?.trim();
+
+  if (!answer) throw new Error("OpenAI returned an empty answer");
+
+  return answer;
 }
 
 async function handleAI(request, env) {
   if (request.method !== "POST") {
-    return jsonResponse({
-      error: "এই API-তে POST request পাঠাতে হবে।"
-    }, 405);
-  }
-
-  if (!env.GEMINI_API_KEY) {
-    return jsonResponse({
-      error: "Cloudflare Secret GEMINI_API_KEY সেট করা নেই।"
-    }, 500);
-  }
-
-  const contentLength = Number(
-    request.headers.get("Content-Length") || 0
-  );
-
-  if (contentLength > MAX_REQUEST_BYTES) {
-    return jsonResponse({
-      error: "অনুরোধটি অনেক বড়। ছোট ফাইল দিয়ে আবার চেষ্টা করুন।"
-    }, 413);
+    return json({ error: "POST method required" }, 405);
   }
 
   let body;
 
   try {
-    const rawBody = await request.text();
-    const byteLength = new TextEncoder().encode(rawBody).length;
-
-    if (byteLength > MAX_REQUEST_BYTES) {
-      return jsonResponse({
-        error: "অনুরোধের আকার 18 MB সীমা অতিক্রম করেছে।"
-      }, 413);
-    }
-
-    body = JSON.parse(rawBody);
+    body = await request.json();
   } catch {
-    return jsonResponse({
-      error: "অনুরোধের JSON সঠিক নয়।"
-    }, 400);
+    return json({ error: "Invalid JSON request" }, 400);
   }
 
-  let contents = body.contents;
+  const prompt = getPrompt(body);
 
-  // Support the earlier NIVORA request format too.
-  if (!Array.isArray(contents)) {
-    const prompt = String(body.prompt || "").trim();
+  if (!prompt) {
+    return json({ error: "প্রশ্ন লিখে আবার চেষ্টা করুন।" }, 400);
+  }
 
-    if (!prompt) {
-      return jsonResponse({
-        error: "প্রশ্ন বা মেসেজ পাওয়া যায়নি।"
-      }, 400);
+  if (prompt.length > 20000) {
+    return json({ error: "প্রশ্নটি অনেক বড়। সংক্ষিপ্ত করুন।" }, 413);
+  }
+
+  const history = getHistory(body);
+  const errors = [];
+
+  // Try Gemini first.
+  if (env.GEMINI_API_KEY) {
+    try {
+      const answer = await askGemini(
+        prompt,
+        history,
+        env.GEMINI_API_KEY
+      );
+
+      return json({
+        success: true,
+        provider: "Gemini",
+        answer
+      });
+    } catch (error) {
+      errors.push(error.message);
     }
-
-    const context = body.context
-      ? "\n\nপ্রদত্ত অ্যাপের তথ্য:\n" + String(body.context)
-      : "";
-
-    const appInfo = body.appInfo
-      ? "\n\nঅ্যাপের প্রাসঙ্গিক তথ্য:\n" + String(body.appInfo)
-      : "";
-
-    const history = Array.isArray(body.history)
-      ? body.history
-          .filter(item =>
-            item &&
-            ["user", "model"].includes(item.role) &&
-            typeof item.text === "string"
-          )
-          .slice(-12)
-          .map(item => ({
-            role: item.role,
-            parts: [{ text: item.text }]
-          }))
-      : [];
-
-    contents = [
-      ...history,
-      {
-        role: "user",
-        parts: [{
-          text: prompt + context + appInfo
-        }]
-      }
-    ];
+  } else {
+    errors.push("GEMINI_API_KEY is not configured");
   }
 
-  if (
-    contents.length === 0 ||
-    contents.length > 30
-  ) {
-    return jsonResponse({
-      error: "মেসেজের সংখ্যা সঠিক নয়।"
-    }, 400);
-  }
+  // If Gemini fails, try OpenAI.
+  if (env.OPENAI_API_KEY) {
+    try {
+      const answer = await askOpenAI(
+        prompt,
+        history,
+        env.OPENAI_API_KEY
+      );
 
-  for (const item of contents) {
-    if (
-      !item ||
-      !["user", "model"].includes(item.role) ||
-      !Array.isArray(item.parts) ||
-      item.parts.length === 0
-    ) {
-      return jsonResponse({
-        error: "মেসেজের কাঠামো সঠিক নয়।"
-      }, 400);
+      return json({
+        success: true,
+        provider: "OpenAI",
+        answer,
+        fallback: true
+      });
+    } catch (error) {
+      errors.push(error.message);
     }
-
-    for (const part of item.parts) {
-      if (!part || typeof part !== "object") {
-        return jsonResponse({
-          error: "মেসেজের অংশটি সঠিক নয়।"
-        }, 400);
-      }
-
-      if (
-        part.text !== undefined &&
-        typeof part.text !== "string"
-      ) {
-        return jsonResponse({
-          error: "টেক্সটের ফরম্যাট সঠিক নয়।"
-        }, 400);
-      }
-
-      const file = part.inline_data || part.inlineData;
-
-      if (file) {
-        if (
-          typeof file.data !== "string" ||
-          typeof file.mime_type !== "string" &&
-          typeof file.mimeType !== "string"
-        ) {
-          return jsonResponse({
-            error: "সংযুক্ত ফাইলের তথ্য সঠিক নয়।"
-          }, 400);
-        }
-
-        const mimeType = file.mime_type || file.mimeType;
-
-        // Accept common media and PDF MIME types.
-        const allowedMime =
-          /^(image\/(jpeg|png|webp|heic|heif)|audio\/[a-zA-Z0-9.+-]+|video\/[a-zA-Z0-9.+-]+|application\/pdf)$/i;
-
-        if (!allowedMime.test(mimeType)) {
-          return jsonResponse({
-            error: "এই ফাইলের ধরন সরাসরি সমর্থিত নয়। ছবি, PDF অথবা সমর্থিত অডিও/ভিডিও ব্যবহার করুন।"
-          }, 415);
-        }
-
-        // Normalize camelCase input to Gemini's snake_case format.
-        if (part.inlineData) {
-          part.inline_data = {
-            mime_type: mimeType,
-            data: file.data
-          };
-          delete part.inlineData;
-        }
-      }
-    }
+  } else {
+    errors.push("OPENAI_API_KEY is not configured");
   }
 
-  const model = String(
-    env.GEMINI_MODEL || DEFAULT_MODEL
-  ).trim();
-
-  if (!/^[a-zA-Z0-9._-]+$/.test(model)) {
-    return jsonResponse({
-      error: "GEMINI_MODEL variable-এর মান সঠিক নয়।"
-    }, 500);
-  }
-
-  const endpoint =
-    "https://generativelanguage.googleapis.com/v1beta/models/" +
-    encodeURIComponent(model) +
-    ":generateContent";
-
-  let upstream;
-
-  try {
-    upstream = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": env.GEMINI_API_KEY
-      },
-      body: JSON.stringify({
-        system_instruction: {
-          parts: [{
-            text: SYSTEM_INSTRUCTION
-          }]
-        },
-        contents,
-generationConfig: {
-  maxOutputTokens: 4096,
-  thinkingConfig: {
-    thinkingLevel: "low"
-  }
-}
-})
-});
-  } catch (error) {
-    console.error("Gemini connection failed:", error);
-
-    return jsonResponse({
-      error: "Gemini সার্ভারে সংযোগ করা যায়নি। ইন্টারনেট বা সার্ভারের অবস্থা পরীক্ষা করুন।"
-    }, 502);
-  }
-
-  let result;
-
-  try {
-    result = await upstream.json();
-  } catch {
-    return jsonResponse({
-      error: "Gemini থেকে সঠিক JSON উত্তর পাওয়া যায়নি।"
-    }, 502);
-  }
-
-  if (!upstream.ok) {
-    const message =
-      result?.error?.message ||
-      "Gemini API অনুরোধ গ্রহণ করেনি।";
-
-    console.error(
-      "Gemini API error status:",
-      upstream.status
-    );
-
-    return jsonResponse({
-      error: "Gemini API ত্রুটি: " + message,
-      upstreamStatus: upstream.status
-    }, upstream.status);
-  }
-
-  return jsonResponse(result, 200);
+  // Do not expose secret values.
+  return json({
+    success: false,
+    error: "Gemini ও OpenAI—দুই সংযোগেই সমস্যা হয়েছে।",
+    details: errors
+  }, 502);
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    try {
-      if (url.pathname === "/api/ai/chat") {
-        return addSecurityHeaders(
-          await handleAI(request, env)
-        );
-      }
+    if (url.pathname === "/api/health") {
+      return json({
+        service: "NIVORA ONE",
+        worker: "ready",
+        aiEndpoint: "/api/ai/chat",
+        geminiConfigured: Boolean(env.GEMINI_API_KEY),
+        openaiConfigured: Boolean(env.OPENAI_API_KEY),
+        time: new Date().toISOString()
+      });
+    }
 
-      if (url.pathname === "/api/health") {
-        return addSecurityHeaders(
-          jsonResponse({
-            service: "NIVORA ONE",
-            worker: "ready",
-            aiEndpoint: "/api/ai/chat",
-            time: new Date().toISOString()
-          })
-        );
-      }
+    if (url.pathname === "/api/ai/chat") {
+      return handleAI(request, env);
+    }
 
-      if (!env.ASSETS) {
-        return addSecurityHeaders(
-          new Response(
-            "NIVORA ONE: ASSETS binding is not configured.",
-            {
-              status: 500,
-              headers: {
-                "Content-Type": "text/plain; charset=UTF-8"
-              }
-            }
-          )
-        );
-      }
-
-      const response = await env.ASSETS.fetch(request);
-
-      return addSecurityHeaders(response);
-    } catch (error) {
-      console.error("NIVORA ONE Worker error:", error);
-
-      return addSecurityHeaders(
-        new Response(
-          "NIVORA ONE service error.",
-          {
-            status: 500,
-            headers: {
-              "Content-Type": "text/plain; charset=UTF-8"
-            }
-          }
-        )
+    if (!env.ASSETS) {
+      return new Response(
+        "NIVORA ONE: ASSETS binding is not configured.",
+        { status: 500 }
       );
     }
+
+    const response = await env.ASSETS.fetch(request);
+    const headers = new Headers(response.headers);
+
+    headers.set("X-Content-Type-Options", "nosniff");
+    headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers
+    });
   }
 };
