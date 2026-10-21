@@ -1,28 +1,33 @@
 
 /**
  * NIVORA ONE — AI Worker
- * Gemini primary + OpenAI fallback
- * Required Cloudflare Secrets:
+ * Primary: Groq
+ * Fallback: Gemini
+ *
+ * Cloudflare Secrets:
+ *   GROQ_API_KEY
  *   GEMINI_API_KEY
- *   OPENAI_API_KEY
+ *
+ * Existing Assets binding:
+ *   ASSETS
  */
 
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 const GEMINI_MODEL = "gemini-3.8-flash";
-const OPENAI_MODEL = "gpt-4.1-mini";
 
 const SYSTEM_INSTRUCTION = `
 You are NIVORA AI, a helpful multilingual assistant
 inside the NIVORA ONE application.
 
-- Answer accurately, clearly, and politely.
-- Support Bengali, English, Hindi, Urdu, and other languages.
 - Reply in the language used by the user.
+- Support Bengali, English, Hindi, Urdu and other languages.
+- Be accurate, clear, polite and practical.
 - Help with education, writing, calculations, business,
-  stock, accounting, technology, and everyday questions.
+  accounting, stock, technology and everyday questions.
 - Never invent live data or claim an action was completed
   when it was not.
-- For financial, medical, and religious topics, be careful
-  and explain uncertainty when appropriate.
+- For medical, financial and religious topics, be careful
+  and explain uncertainty where appropriate.
 `;
 
 function json(data, status = 200) {
@@ -37,42 +42,94 @@ function json(data, status = 200) {
 }
 
 function getPrompt(body) {
-  if (typeof body.prompt === "string" && body.prompt.trim()) {
+  if (typeof body?.prompt === "string" && body.prompt.trim()) {
     return body.prompt.trim();
   }
 
-  if (Array.isArray(body.contents)) {
-    const messages = body.contents
+  if (Array.isArray(body?.contents)) {
+    return body.contents
       .filter(item => item && Array.isArray(item.parts))
       .map(item => {
         const role = item.role === "model" ? "Assistant" : "User";
         const text = item.parts
-          .map(part => typeof part.text === "string" ? part.text : "")
+          .map(part => typeof part?.text === "string" ? part.text : "")
           .join("\n");
+
         return text ? `${role}: ${text}` : "";
       })
-      .filter(Boolean);
-
-    return messages.join("\n\n");
+      .filter(Boolean)
+      .join("\n\n");
   }
 
   return "";
 }
 
 function getHistory(body) {
-  if (!Array.isArray(body.history)) return [];
+  if (!Array.isArray(body?.history)) return [];
 
   return body.history
     .filter(item =>
       item &&
       ["user", "model", "assistant"].includes(item.role) &&
-      typeof item.text === "string"
+      typeof item.text === "string" &&
+      item.text.trim()
     )
-    .slice(-12)
+    .slice(-10)
     .map(item => ({
       role: item.role === "user" ? "user" : "assistant",
-      content: item.text.slice(0, 12000)
+      content: item.text.slice(0, 8000)
     }));
+}
+
+async function readJSON(response) {
+  const text = await response.text();
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: { message: text.slice(0, 500) || "Invalid API response" } };
+  }
+}
+
+async function askGroq(prompt, history, apiKey) {
+  const response = await fetch(
+    "https://api.groq.com/openai/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [
+          { role: "system", content: SYSTEM_INSTRUCTION },
+          ...history,
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      }),
+      signal: AbortSignal.timeout(18000)
+    }
+  );
+
+  const data = await readJSON(response);
+
+  if (!response.ok) {
+    throw new Error(
+      `Groq API (${response.status}): ` +
+      (data.error?.message || "Request failed")
+    );
+  }
+
+  const answer = data.choices?.[0]?.message?.content;
+
+  if (typeof answer !== "string" || !answer.trim()) {
+    throw new Error("Groq returned an empty answer");
+  }
+
+  return answer.trim();
 }
 
 async function askGemini(prompt, history, apiKey) {
@@ -98,17 +155,15 @@ async function askGemini(prompt, history, apiKey) {
         },
         contents,
         generationConfig: {
-          maxOutputTokens: 2048,
-          thinkingConfig: {
-            thinkingLevel: "low"
-          }
+          maxOutputTokens: 1500,
+          thinkingConfig: { thinkingLevel: "low" }
         }
       }),
-      signal: AbortSignal.timeout(25000)
+      signal: AbortSignal.timeout(18000)
     }
   );
 
-  const data = await response.json();
+  const data = await readJSON(response);
 
   if (!response.ok) {
     throw new Error(
@@ -122,47 +177,9 @@ async function askGemini(prompt, history, apiKey) {
     .join("")
     .trim();
 
-  if (!answer) throw new Error("Gemini returned an empty answer");
-
-  return answer;
-}
-
-async function askOpenAI(prompt, history, apiKey) {
-  const messages = [
-    { role: "system", content: SYSTEM_INSTRUCTION },
-    ...history,
-    { role: "user", content: prompt }
-  ];
-
-  const response = await fetch(
-    "https://api.openai.com/v1/chat/completions",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: OPENAI_MODEL,
-        messages,
-        max_completion_tokens: 2048
-      }),
-      signal: AbortSignal.timeout(25000)
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      `OpenAI API (${response.status}): ` +
-      (data.error?.message || "Request failed")
-    );
+  if (!answer) {
+    throw new Error("Gemini returned an empty answer");
   }
-
-  const answer = data.choices?.[0]?.message?.content?.trim();
-
-  if (!answer) throw new Error("OpenAI returned an empty answer");
 
   return answer;
 }
@@ -193,7 +210,28 @@ async function handleAI(request, env) {
   const history = getHistory(body);
   const errors = [];
 
-  // Try Gemini first.
+  // 1. Try Groq first.
+  if (env.GROQ_API_KEY) {
+    try {
+      const answer = await askGroq(
+        prompt,
+        history,
+        env.GROQ_API_KEY
+      );
+
+      return json({
+        success: true,
+        provider: "Groq",
+        answer
+      });
+    } catch (error) {
+      errors.push(String(error.message || "Groq request failed").slice(0, 700));
+    }
+  } else {
+    errors.push("GROQ_API_KEY is not configured in Cloudflare Secrets");
+  }
+
+  // 2. Fall back to Gemini.
   if (env.GEMINI_API_KEY) {
     try {
       const answer = await askGemini(
@@ -205,41 +243,19 @@ async function handleAI(request, env) {
       return json({
         success: true,
         provider: "Gemini",
-        answer
-      });
-    } catch (error) {
-      errors.push(error.message);
-    }
-  } else {
-    errors.push("GEMINI_API_KEY is not configured");
-  }
-
-  // If Gemini fails, try OpenAI.
-  if (env.OPENAI_API_KEY) {
-    try {
-      const answer = await askOpenAI(
-        prompt,
-        history,
-        env.OPENAI_API_KEY
-      );
-
-      return json({
-        success: true,
-        provider: "OpenAI",
         answer,
         fallback: true
       });
     } catch (error) {
-      errors.push(error.message);
+      errors.push(String(error.message || "Gemini request failed").slice(0, 700));
     }
   } else {
-    errors.push("OPENAI_API_KEY is not configured");
+    errors.push("GEMINI_API_KEY is not configured in Cloudflare Secrets");
   }
 
-  // Do not expose secret values.
   return json({
     success: false,
-    error: "Gemini ও OpenAI—দুই সংযোগেই সমস্যা হয়েছে।",
+    error: "Groq ও Gemini—দুই AI সংযোগেই সমস্যা হয়েছে।",
     details: errors
   }, 502);
 }
@@ -253,8 +269,8 @@ export default {
         service: "NIVORA ONE",
         worker: "ready",
         aiEndpoint: "/api/ai/chat",
+        groqConfigured: Boolean(env.GROQ_API_KEY),
         geminiConfigured: Boolean(env.GEMINI_API_KEY),
-        openaiConfigured: Boolean(env.OPENAI_API_KEY),
         time: new Date().toISOString()
       });
     }
