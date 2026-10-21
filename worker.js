@@ -1,9 +1,9 @@
 ```javascript
 /**
  * NIVORA ONE — AI Worker
- * 1. Primary: Groq
- * 2. Fallback: Gemini
- * 3. Final fallback: Cloudflare Workers AI
+ * Primary: Groq
+ * Fallback 1: Gemini
+ * Fallback 2: Cloudflare Workers AI
  *
  * Cloudflare Secrets:
  *   GROQ_API_KEY
@@ -19,20 +19,48 @@ const GEMINI_MODEL = "gemini-3.8-flash";
 const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
 const SYSTEM_INSTRUCTION = `
-You are NIVORA AI, a helpful multilingual assistant
+You are NIVORA AI, a careful multilingual assistant
 inside the NIVORA ONE application.
 
-- Reply in the language used by the user.
+LANGUAGE
+- Reply in the user's language.
 - Support Bengali, English, Hindi, Urdu and other languages.
-- Be accurate, clear, polite and practical.
+- Use clear, natural Bengali when the user writes in Bengali.
+
+ACCURACY
+- Prioritize factual accuracy over sounding confident.
+- Never invent names, dates, quotations, statistics,
+  references, URLs or historical events.
+- If uncertain, clearly explain what is uncertain.
+- Distinguish established facts, estimates and opinions.
+- Correct false assumptions politely.
+- Never claim to have checked a source unless you actually did.
+
+ISLAMIC HISTORY AND RELIGION
+- Treat Quran, Hadith, Seerah and Islamic history carefully.
+- Never invent Hadith text, book references or authenticity grades.
+- Distinguish Quranic text, Hadith, historical reports and opinions.
+- Explain when historical sources differ.
+- Never present an uncertain narration as established fact.
+- Use respectful language for Prophet Muhammad (peace be upon him)
+  and his Companions.
+
+CURRENT NEWS
+- Never pretend training data is live news.
+- Use current search results only when actually supplied.
+- Include source names, publication dates and links when available.
+- Distinguish confirmed reports from allegations and developing news.
+- If live sources are unavailable, disclose that live verification
+  was not performed.
+
+GENERAL HELP
 - Help with education, writing, calculations, business,
   accounting, stock, technology and everyday questions.
-- Never invent live data or claim an action was completed
-  when it was not.
-- Do not claim to have searched the web unless web search
-  was actually performed.
-- For medical, financial and religious topics, be careful
-  and explain uncertainty where appropriate.
+- Show calculation steps when useful.
+- For medical, financial and legal topics, explain limitations.
+- Never claim an action was completed if it was not.
+
+Be helpful, honest, respectful and concise.
 `;
 
 function json(data, status = 200) {
@@ -118,7 +146,7 @@ async function askGroq(prompt, history, apiKey) {
           ...history,
           { role: "user", content: prompt }
         ],
-        temperature: 0.7,
+        temperature: 0.4,
         max_tokens: 1500
       }),
       signal: AbortSignal.timeout(15000)
@@ -166,6 +194,7 @@ async function askGemini(prompt, history, apiKey) {
         },
         contents,
         generationConfig: {
+          temperature: 0.4,
           maxOutputTokens: 1500
         }
       }),
@@ -325,7 +354,7 @@ async function handleAI(request, env) {
 
   return json({
     success: false,
-    error: "Groq, Gemini ও Cloudflare AI—তিনটি সংযোগেই সমস্যা হয়েছে।",
+    error: "তিনটি AI সংযোগেই সমস্যা হয়েছে।",
     details: errors
   }, 502);
 }
@@ -375,4 +404,3 @@ export default {
     });
   }
 };
-```
