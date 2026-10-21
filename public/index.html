@@ -918,11 +918,17 @@ async function sendChat() {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(
-        data.error || data.message || ("HTTP " + response.status)
-      );
-    }
+    
+if (!response.ok) {
+  const details = Array.isArray(data.details)
+    ? data.details.join(" | ")
+    : "";
+  throw new Error(
+    [data.error, details, data.message]
+      .filter(Boolean)
+      .join(" | ") || ("HTTP " + response.status)
+  );
+}
 
     const answer =
       data.candidates?.[0]?.content?.parts
