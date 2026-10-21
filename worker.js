@@ -1,19 +1,22 @@
-
+```javascript
 /**
  * NIVORA ONE — AI Worker
- * Primary: Groq
- * Fallback: Gemini
+ * 1. Primary: Groq
+ * 2. Fallback: Gemini
+ * 3. Final fallback: Cloudflare Workers AI
  *
  * Cloudflare Secrets:
  *   GROQ_API_KEY
  *   GEMINI_API_KEY
  *
- * Existing Assets binding:
+ * Bindings:
  *   ASSETS
+ *   AI
  */
 
 const GROQ_MODEL = "openai/gpt-oss-120b";
 const GEMINI_MODEL = "gemini-3.8-flash";
+const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
 const SYSTEM_INSTRUCTION = `
 You are NIVORA AI, a helpful multilingual assistant
@@ -26,6 +29,8 @@ inside the NIVORA ONE application.
   accounting, stock, technology and everyday questions.
 - Never invent live data or claim an action was completed
   when it was not.
+- Do not claim to have searched the web unless web search
+  was actually performed.
 - For medical, financial and religious topics, be careful
   and explain uncertainty where appropriate.
 `;
@@ -51,11 +56,13 @@ function getPrompt(body) {
       .filter(item => item && Array.isArray(item.parts))
       .map(item => {
         const role = item.role === "model" ? "Assistant" : "User";
-        const text = item.parts
-          .map(part => typeof part?.text === "string" ? part.text : "")
+        const content = item.parts
+          .map(part =>
+            typeof part?.text === "string" ? part.text : ""
+          )
           .join("\n");
 
-        return text ? `${role}: ${text}` : "";
+        return content ? `${role}: ${content}` : "";
       })
       .filter(Boolean)
       .join("\n\n");
@@ -87,7 +94,11 @@ async function readJSON(response) {
   try {
     return JSON.parse(text);
   } catch {
-    return { error: { message: text.slice(0, 500) || "Invalid API response" } };
+    return {
+      error: {
+        message: text.slice(0, 500) || "Invalid API response"
+      }
+    };
   }
 }
 
@@ -110,7 +121,7 @@ async function askGroq(prompt, history, apiKey) {
         temperature: 0.7,
         max_tokens: 1500
       }),
-      signal: AbortSignal.timeout(18000)
+      signal: AbortSignal.timeout(15000)
     }
   );
 
@@ -155,11 +166,10 @@ async function askGemini(prompt, history, apiKey) {
         },
         contents,
         generationConfig: {
-          maxOutputTokens: 1500,
-          thinkingConfig: { thinkingLevel: "low" }
+          maxOutputTokens: 1500
         }
       }),
-      signal: AbortSignal.timeout(18000)
+      signal: AbortSignal.timeout(15000)
     }
   );
 
@@ -184,6 +194,38 @@ async function askGemini(prompt, history, apiKey) {
   return answer;
 }
 
+async function askCloudflareAI(prompt, history, env) {
+  if (!env.AI || typeof env.AI.run !== "function") {
+    throw new Error(
+      "Cloudflare AI binding missing. Configure binding name AI."
+    );
+  }
+
+  const messages = [
+    { role: "system", content: SYSTEM_INSTRUCTION },
+    ...history,
+    { role: "user", content: prompt }
+  ];
+
+  const result = await env.AI.run(CF_MODEL, {
+    messages,
+    max_tokens: 1200
+  });
+
+  const answer =
+    typeof result === "string"
+      ? result
+      : result?.response ||
+        result?.choices?.[0]?.message?.content ||
+        "";
+
+  if (typeof answer !== "string" || !answer.trim()) {
+    throw new Error("Cloudflare Workers AI returned an empty answer");
+  }
+
+  return answer.trim();
+}
+
 async function handleAI(request, env) {
   if (request.method !== "POST") {
     return json({ error: "POST method required" }, 405);
@@ -200,17 +242,21 @@ async function handleAI(request, env) {
   const prompt = getPrompt(body);
 
   if (!prompt) {
-    return json({ error: "প্রশ্ন লিখে আবার চেষ্টা করুন।" }, 400);
+    return json({
+      error: "প্রশ্ন লিখে আবার চেষ্টা করুন।"
+    }, 400);
   }
 
   if (prompt.length > 20000) {
-    return json({ error: "প্রশ্নটি অনেক বড়। সংক্ষিপ্ত করুন।" }, 413);
+    return json({
+      error: "প্রশ্নটি অনেক বড়। সংক্ষিপ্ত করুন।"
+    }, 413);
   }
 
   const history = getHistory(body);
   const errors = [];
 
-  // 1. Try Groq first.
+  // 1. Groq
   if (env.GROQ_API_KEY) {
     try {
       const answer = await askGroq(
@@ -225,13 +271,15 @@ async function handleAI(request, env) {
         answer
       });
     } catch (error) {
-      errors.push(String(error.message || "Groq request failed").slice(0, 700));
+      errors.push(
+        String(error.message || "Groq request failed").slice(0, 700)
+      );
     }
   } else {
-    errors.push("GROQ_API_KEY is not configured in Cloudflare Secrets");
+    errors.push("GROQ_API_KEY is not configured");
   }
 
-  // 2. Fall back to Gemini.
+  // 2. Gemini
   if (env.GEMINI_API_KEY) {
     try {
       const answer = await askGemini(
@@ -247,15 +295,37 @@ async function handleAI(request, env) {
         fallback: true
       });
     } catch (error) {
-      errors.push(String(error.message || "Gemini request failed").slice(0, 700));
+      errors.push(
+        String(error.message || "Gemini request failed").slice(0, 700)
+      );
     }
   } else {
-    errors.push("GEMINI_API_KEY is not configured in Cloudflare Secrets");
+    errors.push("GEMINI_API_KEY is not configured");
+  }
+
+  // 3. Cloudflare Workers AI
+  try {
+    const answer = await askCloudflareAI(
+      prompt,
+      history,
+      env
+    );
+
+    return json({
+      success: true,
+      provider: "Cloudflare Workers AI",
+      answer,
+      fallback: true
+    });
+  } catch (error) {
+    errors.push(
+      String(error.message || "Cloudflare AI request failed").slice(0, 700)
+    );
   }
 
   return json({
     success: false,
-    error: "Groq ও Gemini—দুই AI সংযোগেই সমস্যা হয়েছে।",
+    error: "Groq, Gemini ও Cloudflare AI—তিনটি সংযোগেই সমস্যা হয়েছে।",
     details: errors
   }, 502);
 }
@@ -271,6 +341,9 @@ export default {
         aiEndpoint: "/api/ai/chat",
         groqConfigured: Boolean(env.GROQ_API_KEY),
         geminiConfigured: Boolean(env.GEMINI_API_KEY),
+        cloudflareAIConfigured: Boolean(
+          env.AI && typeof env.AI.run === "function"
+        ),
         time: new Date().toISOString()
       });
     }
@@ -290,7 +363,10 @@ export default {
     const headers = new Headers(response.headers);
 
     headers.set("X-Content-Type-Options", "nosniff");
-    headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    headers.set(
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    );
 
     return new Response(response.body, {
       status: response.status,
@@ -299,3 +375,4 @@ export default {
     });
   }
 };
+```
