@@ -1,213 +1,82 @@
-```javascript
-/**
- * NIVORA ONE — AI Worker
- * Primary: Groq
- * Fallback 1: Gemini
- * Fallback 2: Cloudflare Workers AI
- *
- * Cloudflare Secrets:
- *   GROQ_API_KEY
- *   GEMINI_API_KEY
- *
- * Bindings:
- *   ASSETS
- *   AI
- */
 
-const GROQ_MODEL = "openai/gpt-oss-120b";
-const GEMINI_MODEL = "gemini-3.8-flash";
-const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
-
-const SYSTEM_INSTRUCTION = `
-You are NIVORA AI, a careful multilingual assistant
-inside the NIVORA ONE application.
-
-LANGUAGE
-- Reply in the user's language.
-- Support Bengali, English, Hindi, Urdu and other languages.
-- Use clear, natural Bengali when the user writes in Bengali.
-
-ACCURACY
-- Prioritize factual accuracy over sounding confident.
-- Never invent names, dates, quotations, statistics,
-  references, URLs or historical events.
-- If uncertain, clearly explain what is uncertain.
-- Distinguish established facts, estimates and opinions.
-- Correct false assumptions politely.
-- Never claim to have checked a source unless you actually did.
-
-ISLAMIC HISTORY AND RELIGION
-- Treat Quran, Hadith, Seerah and Islamic history carefully.
-- Never invent Hadith text, book references or authenticity grades.
-- Distinguish Quranic text, Hadith, historical reports and opinions.
-- Explain when historical sources differ.
-- Never present an uncertain narration as established fact.
-- Use respectful language for Prophet Muhammad (peace be upon him)
-  and his Companions.
-
-CURRENT NEWS
-- Never pretend training data is live news.
-- Use current search results only when actually supplied.
-- Include source names, publication dates and links when available.
-- Distinguish confirmed reports from allegations and developing news.
-- If live sources are unavailable, disclose that live verification
-  was not performed.
-
-GENERAL HELP
-- Help with education, writing, calculations, business,
-  accounting, stock, technology and everyday questions.
-- Show calculation steps when useful.
-- For medical, financial and legal topics, explain limitations.
-- Never claim an action was completed if it was not.
-
-Be helpful, honest, respectful and concise.
+const SYSTEM_PROMPT = `
+You are NIVORA AI, a careful multilingual assistant.
+Reply in the user's language whenever possible.
+Be helpful, accurate, respectful, and clear.
+Never claim that an action succeeded unless it actually did.
+If you are uncertain, explain the uncertainty honestly.
 `;
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization"
+};
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-      "X-Content-Type-Options": "nosniff"
+      ...corsHeaders,
+      "Content-Type": "application/json; charset=utf-8"
     }
   });
 }
 
-function getPrompt(body) {
-  if (typeof body?.prompt === "string" && body.prompt.trim()) {
-    return body.prompt.trim();
+async function askGemini(message, history, env) {
+  if (!env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY is not configured");
   }
 
-  if (Array.isArray(body?.contents)) {
-    return body.contents
-      .filter(item => item && Array.isArray(item.parts))
-      .map(item => {
-        const role = item.role === "model" ? "Assistant" : "User";
-        const content = item.parts
-          .map(part =>
-            typeof part?.text === "string" ? part.text : ""
-          )
-          .join("\n");
+  const model = env.GEMINI_MODEL || "gemini-2.5-flash";
+  const contents = [];
 
-        return content ? `${role}: ${content}` : "";
-      })
-      .filter(Boolean)
-      .join("\n\n");
+  for (const item of history) {
+    if (!item || typeof item.content !== "string") continue;
+
+    const role = item.role === "assistant" ? "model" : "user";
+
+    if (item.role === "system") continue;
+
+    contents.push({
+      role,
+      parts: [{ text: item.content.slice(0, 12000) }]
+    });
   }
 
-  return "";
-}
+  contents.push({
+    role: "user",
+    parts: [{ text: message.slice(0, 12000) }]
+  });
 
-function getHistory(body) {
-  if (!Array.isArray(body?.history)) return [];
-
-  return body.history
-    .filter(item =>
-      item &&
-      ["user", "model", "assistant"].includes(item.role) &&
-      typeof item.text === "string" &&
-      item.text.trim()
-    )
-    .slice(-10)
-    .map(item => ({
-      role: item.role === "user" ? "user" : "assistant",
-      content: item.text.slice(0, 8000)
-    }));
-}
-
-async function readJSON(response) {
-  const text = await response.text();
-
-  try {
-    return JSON.parse(text);
-  } catch {
-    return {
-      error: {
-        message: text.slice(0, 500) || "Invalid API response"
-      }
-    };
-  }
-}
-
-async function askGroq(prompt, history, apiKey) {
   const response = await fetch(
-    "https://api.groq.com/openai/v1/chat/completions",
+    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "x-goog-api-key": env.GEMINI_API_KEY
       },
       body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages: [
-          { role: "system", content: SYSTEM_INSTRUCTION },
-          ...history,
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.4,
-        max_tokens: 1500
-      }),
-      signal: AbortSignal.timeout(15000)
-    }
-  );
-
-  const data = await readJSON(response);
-
-  if (!response.ok) {
-    throw new Error(
-      `Groq API (${response.status}): ` +
-      (data.error?.message || "Request failed")
-    );
-  }
-
-  const answer = data.choices?.[0]?.message?.content;
-
-  if (typeof answer !== "string" || !answer.trim()) {
-    throw new Error("Groq returned an empty answer");
-  }
-
-  return answer.trim();
-}
-
-async function askGemini(prompt, history, apiKey) {
-  const contents = [
-    ...history.map(item => ({
-      role: item.role === "assistant" ? "model" : "user",
-      parts: [{ text: item.content }]
-    })),
-    { role: "user", parts: [{ text: prompt }] }
-  ];
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey
-      },
-      body: JSON.stringify({
-        system_instruction: {
-          parts: [{ text: SYSTEM_INSTRUCTION }]
+        systemInstruction: {
+          parts: [{ text: SYSTEM_PROMPT }]
         },
         contents,
         generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 1500
+          temperature: 0.7,
+          maxOutputTokens: 4096
         }
-      }),
-      signal: AbortSignal.timeout(15000)
+      })
     }
   );
 
-  const data = await readJSON(response);
+  const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      `Gemini API (${response.status}): ` +
-      (data.error?.message || "Request failed")
+      `Gemini API error ${response.status}: ${
+        data.error?.message || "Request failed"
+      }`
     );
   }
 
@@ -216,191 +85,168 @@ async function askGemini(prompt, history, apiKey) {
     .join("")
     .trim();
 
-  if (!answer) {
-    throw new Error("Gemini returned an empty answer");
-  }
+  if (!answer) throw new Error("Gemini returned an empty response");
 
   return answer;
 }
 
-async function askCloudflareAI(prompt, history, env) {
-  if (!env.AI || typeof env.AI.run !== "function") {
-    throw new Error(
-      "Cloudflare AI binding missing. Configure binding name AI."
-    );
+async function askOpenAI(message, history, env) {
+  if (!env.OPENAI_API_KEY) {
+    throw new Error("OPENAI_API_KEY is not configured");
   }
 
   const messages = [
-    { role: "system", content: SYSTEM_INSTRUCTION },
-    ...history,
-    { role: "user", content: prompt }
+    { role: "system", content: SYSTEM_PROMPT }
   ];
 
-  const result = await env.AI.run(CF_MODEL, {
-    messages,
-    max_tokens: 1200
+  for (const item of history) {
+    if (
+      !item ||
+      typeof item.content !== "string" ||
+      !["user", "assistant"].includes(item.role)
+    ) continue;
+
+    messages.push({
+      role: item.role,
+      content: item.content.slice(0, 12000)
+    });
+  }
+
+  messages.push({
+    role: "user",
+    content: message.slice(0, 12000)
   });
 
-  const answer =
-    typeof result === "string"
-      ? result
-      : result?.response ||
-        result?.choices?.[0]?.message?.content ||
-        "";
-
-  if (typeof answer !== "string" || !answer.trim()) {
-    throw new Error("Cloudflare Workers AI returned an empty answer");
-  }
-
-  return answer.trim();
-}
-
-async function handleAI(request, env) {
-  if (request.method !== "POST") {
-    return json({ error: "POST method required" }, 405);
-  }
-
-  let body;
-
-  try {
-    body = await request.json();
-  } catch {
-    return json({ error: "Invalid JSON request" }, 400);
-  }
-
-  const prompt = getPrompt(body);
-
-  if (!prompt) {
-    return json({
-      error: "প্রশ্ন লিখে আবার চেষ্টা করুন।"
-    }, 400);
-  }
-
-  if (prompt.length > 20000) {
-    return json({
-      error: "প্রশ্নটি অনেক বড়। সংক্ষিপ্ত করুন।"
-    }, 413);
-  }
-
-  const history = getHistory(body);
-  const errors = [];
-
-  // 1. Groq
-  if (env.GROQ_API_KEY) {
-    try {
-      const answer = await askGroq(
-        prompt,
-        history,
-        env.GROQ_API_KEY
-      );
-
-      return json({
-        success: true,
-        provider: "Groq",
-        answer
-      });
-    } catch (error) {
-      errors.push(
-        String(error.message || "Groq request failed").slice(0, 700)
-      );
+  const response = await fetch(
+    "https://api.openai.com/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: env.OPENAI_MODEL || "gpt-4.1-mini",
+        messages,
+        temperature: 0.7,
+        max_tokens: 4096
+      })
     }
-  } else {
-    errors.push("GROQ_API_KEY is not configured");
-  }
+  );
 
-  // 2. Gemini
-  if (env.GEMINI_API_KEY) {
-    try {
-      const answer = await askGemini(
-        prompt,
-        history,
-        env.GEMINI_API_KEY
-      );
+  const data = await response.json();
 
-      return json({
-        success: true,
-        provider: "Gemini",
-        answer,
-        fallback: true
-      });
-    } catch (error) {
-      errors.push(
-        String(error.message || "Gemini request failed").slice(0, 700)
-      );
-    }
-  } else {
-    errors.push("GEMINI_API_KEY is not configured");
-  }
-
-  // 3. Cloudflare Workers AI
-  try {
-    const answer = await askCloudflareAI(
-      prompt,
-      history,
-      env
-    );
-
-    return json({
-      success: true,
-      provider: "Cloudflare Workers AI",
-      answer,
-      fallback: true
-    });
-  } catch (error) {
-    errors.push(
-      String(error.message || "Cloudflare AI request failed").slice(0, 700)
+  if (!response.ok) {
+    throw new Error(
+      `OpenAI API error ${response.status}: ${
+        data.error?.message || "Request failed"
+      }`
     );
   }
 
-  return json({
-    success: false,
-    error: "তিনটি AI সংযোগেই সমস্যা হয়েছে।",
-    details: errors
-  }, 502);
+  const answer = data.choices?.[0]?.message?.content?.trim();
+
+  if (!answer) throw new Error("OpenAI returned an empty response");
+
+  return answer;
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (url.pathname === "/api/health") {
-      return json({
-        service: "NIVORA ONE",
-        worker: "ready",
-        aiEndpoint: "/api/ai/chat",
-        groqConfigured: Boolean(env.GROQ_API_KEY),
-        geminiConfigured: Boolean(env.GEMINI_API_KEY),
-        cloudflareAIConfigured: Boolean(
-          env.AI && typeof env.AI.run === "function"
-        ),
-        time: new Date().toISOString()
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders
       });
     }
 
-    if (url.pathname === "/api/ai/chat") {
-      return handleAI(request, env);
+    if (url.pathname === "/" && request.method === "GET") {
+      return json({
+        service: "NIVORA AI",
+        status: "online",
+        endpoint: "/api/ai/chat"
+      });
     }
 
-    if (!env.ASSETS) {
-      return new Response(
-        "NIVORA ONE: ASSETS binding is not configured.",
-        { status: 500 }
-      );
+    if (url.pathname === "/api/ai/chat" && request.method === "GET") {
+      return json({
+        service: "NIVORA AI",
+        status: "online",
+        method: "POST"
+      });
     }
 
-    const response = await env.ASSETS.fetch(request);
-    const headers = new Headers(response.headers);
+    if (url.pathname !== "/api/ai/chat") {
+      return json({ error: "Endpoint not found" }, 404);
+    }
 
-    headers.set("X-Content-Type-Options", "nosniff");
-    headers.set(
-      "Referrer-Policy",
-      "strict-origin-when-cross-origin"
-    );
+    if (request.method !== "POST") {
+      return json({ error: "Method not allowed" }, 405);
+    }
 
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers
-    });
+    let body;
+
+    try {
+      body = await request.json();
+    } catch {
+      return json({ error: "Invalid JSON request" }, 400);
+    }
+
+    const message =
+      typeof body.message === "string"
+        ? body.message.trim()
+        : typeof body.prompt === "string"
+          ? body.prompt.trim()
+          : "";
+
+    if (!message) {
+      return json({ error: "Please provide a message" }, 400);
+    }
+
+    if (message.length > 12000) {
+      return json({ error: "Message is too long" }, 413);
+    }
+
+    const history = Array.isArray(body.history)
+      ? body.history.slice(-20)
+      : Array.isArray(body.messages)
+        ? body.messages.slice(-20)
+        : [];
+
+    let geminiError = "";
+
+    try {
+      const answer = await askGemini(message, history, env);
+
+      return json({
+        success: true,
+        answer,
+        provider: "gemini"
+      });
+    } catch (error) {
+      geminiError = error.message || "Gemini request failed";
+    }
+
+    try {
+      const answer = await askOpenAI(message, history, env);
+
+      return json({
+        success: true,
+        answer,
+        provider: "openai",
+        fallback: true
+      });
+    } catch (error) {
+      return json({
+        success: false,
+        error: "AI service is temporarily unavailable.",
+        details: {
+          gemini: geminiError,
+          openai: error.message || "OpenAI request failed"
+        }
+      }, 502);
+    }
   }
 };
