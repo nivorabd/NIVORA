@@ -2,16 +2,8 @@
 <html lang="en" class="dark">
 <head>
 <script src="https://pl31898635.profitableratecpmnetwork.com/04/dc/b0/04dcb039e3f79d091c9c270b103cdf1b.js"></script>
-<script>
-  atOptions = {
-    'key' : 'a5d02f8d03c4bd8907626a78422157d9',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js"></script>
+<!-- Adsterra publisher script is loaded once in the document head; display units load once when Ad Center opens. -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIVORA ONE - Enterprise AI Studio & Management Platform</title>
@@ -58,16 +50,8 @@
 </head>
 <body class="bg-navy-900 text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
 
-<script>
-  atOptions = {
-    'key' : 'a5d02f8d03c4bd8907626a78422157d9',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js"></script>f
+<!-- Adsterra publisher script is loaded once in the document head; display units load once when Ad Center opens. -->
+
     <!-- TOP NAVIGATION BAR -->
     <header class="bg-navy-800 border-b border-navy-600 sticky top-0 z-50 px-4 py-2.5 flex items-center justify-between shadow-lg">
         <div class="flex items-center space-x-3">
@@ -116,6 +100,13 @@
             </button>
         </div>
     </header>
+
+    <!-- Live local time, date, and timezone -->
+    <div class="bg-navy-900 border-b border-navy-600 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs" aria-live="off">
+      <div class="flex items-center gap-2 text-cyan-300"><i class="fa-regular fa-clock"></i><span class="font-semibold">Local time</span><span id="nivoraLiveTime" class="text-white tabular-nums">--:--:--</span></div>
+      <div class="flex items-center gap-2 text-slate-300"><i class="fa-regular fa-calendar"></i><span id="nivoraLiveDate">Loading date…</span></div>
+      <div class="flex items-center gap-2 text-gold-400"><i class="fa-solid fa-globe"></i><span id="nivoraTimeZone">Detecting time zone…</span></div>
+    </div>
 
     <div class="flex flex-1 overflow-hidden relative">
         <!-- SIDE NAVIGATION PANEL -->
@@ -273,6 +264,9 @@
                             <span>Text to Image / Video Engine</span>
                         </h3>
                         <textarea id="mediaPrompt" rows="3" placeholder="Describe the image or video scenario in detail (e.g., A futuristic cyberpunk cityscape with golden lights)..." class="w-full bg-navy-900 border border-navy-600 rounded-lg p-3 text-xs text-white focus:border-cyan-400 focus:outline-none"></textarea>
+                        <button onclick="improveMediaPrompt()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 rounded-lg text-xs transition">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI দিয়ে প্রম্পট উন্নত করুন
+                        </button>
                         
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="generateAIImage()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-navy-900 font-bold py-2 rounded-lg text-xs transition flex items-center justify-center space-x-2">
@@ -288,6 +282,8 @@
                         <!-- Canvas Display -->
                         <div class="bg-navy-900 border border-navy-600 rounded-lg p-2 min-h-[200px] flex flex-col items-center justify-center relative overflow-hidden">
                             <canvas id="mediaCanvas" class="max-w-full rounded border border-navy-700"></canvas>
+                            <video id="generatedVideo" controls playsinline class="hidden max-w-full rounded" style="max-height:420px"></video>
+                            <div id="mediaStatus" class="text-xs text-slate-300 text-center py-2" role="status" aria-live="polite"></div>
                             <div id="mediaPlaceholder" class="text-center text-slate-500 py-8">
                                 <i class="fa-regular fa-image text-4xl mb-2"></i>
                                 <p class="text-xs">Generated Visual Output will render here</p>
@@ -362,11 +358,35 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label class="text-xs font-semibold text-slate-300 block mb-1">Voice style / announcement</label>
+                        <select id="ttsVoiceStyle" class="w-full bg-navy-900 border border-navy-600 text-xs text-white rounded-lg p-2.5">
+                          <option value="natural">Natural narration</option>
+                          <option value="announcement">Public announcement / মাইকিং</option>
+                          <option value="news">News presenter</option>
+                          <option value="calm">Calm and clear</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="text-xs font-semibold text-slate-300 block mb-1">Output volume: <span id="ttsVolumeValue">100%</span></label>
+                        <input type="range" id="ttsVolume" min="0" max="150" step="5" value="100" class="w-full mt-2 accent-purple-400" oninput="document.getElementById('ttsVolumeValue').textContent=this.value+'%';document.getElementById('generatedAudio').volume=Number(this.value)/100">
+                      </div>
+                    </div>
+                    <div class="rounded-lg border border-purple-500/30 bg-navy-900 p-3 space-y-2">
+                      <label class="text-xs font-semibold text-slate-200 block">Optional reference voice (consent required)</label>
+                      <input type="file" id="ttsReferenceAudio" accept="audio/*" class="block w-full text-xs text-slate-300">
+                      <label class="flex items-start gap-2 text-xs text-slate-300"><input type="checkbox" id="ttsVoiceConsent" class="mt-0.5 accent-purple-500"><span>I confirm I own this voice or have explicit permission from the speaker to use their voice likeness. I will not impersonate someone without consent.</span></label>
+                      <p class="text-[11px] text-amber-300">Voice cloning only works if your deployed /api/tts backend and provider explicitly support consent-based voice references. This page cannot enable provider-side cloning by itself.</p>
+                    </div>
+
                     <div>
                         <label class="text-xs font-semibold text-slate-300 block mb-1">Text Script for Voice Synthesis</label>
                         <textarea id="ttsTextInput" rows="5" placeholder="Enter text here to generate human-like natural audio stream..." class="w-full bg-navy-900 border border-navy-600 text-xs text-white rounded-lg p-3 focus:border-purple-400 focus:outline-none">Welcome to Nivora One Studio. Experience hyper-realistic voice synthesis across English, Bengali, Urdu, Hindi, and Arabic.</textarea>
                     </div>
 
+                    <div id="ttsStatus" class="text-xs text-slate-300" role="status" aria-live="polite"></div>
+                    <audio id="generatedAudio" controls class="w-full hidden"></audio>
                     <div class="flex items-center space-x-3">
                         <button onclick="synthesizeSpeech()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-play"></i>
@@ -708,22 +728,13 @@
                 <div class="bg-navy-800 p-4 rounded-xl border border-navy-600 space-y-3">
                     <h3 class="text-sm font-bold text-gold-400">Native Advertisement</h3>
                     <div id="container-bb41f7ae7e3578b16731281e445f41f8"></div>
-                    <script async="async" data-cfasync="false" src="https://pl31898636.profitableratecpmnetwork.com/bb41f7ae7e3578b16731281e445f41f8/invoke.js"></script>
+                    <div id="nivoraNativeAdLoader" data-ad-src="https://pl31898636.profitableratecpmnetwork.com/bb41f7ae7e3578b16731281e445f41f8/invoke.js" aria-label="Sponsored native advertisement"></div>
                 </div>
 
                 <div class="bg-navy-800 p-4 rounded-xl border border-navy-600 space-y-3">
                     <h3 class="text-sm font-bold text-gold-400">Banner Advertisement (320 × 50)</h3>
                     <div class="min-h-[60px] flex items-center justify-center overflow-hidden">
-                        <script>
-                          var atOptions = {
-                            'key': 'a5d02f8d03c4bd8907626a78422157d9',
-                            'format': 'iframe',
-                            'height': 50,
-                            'width': 320,
-                            'params': {}
-                          };
-                        </script>
-                        <script src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js"></script>
+                        <div id="nivoraBannerAdLoader" data-ad-src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js" aria-label="Sponsored banner advertisement"></div>
                     </div>
                 </div>
 
@@ -814,8 +825,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 
-    <!-- Adsterra Social Bar: provided publisher script -->
-    <script src="https://pl31898635.profitableratecpmnetwork.com/04/dc/b0/04dcb039e3f79d091c9c270b103cdf1b.js"></script>
+    <!-- Adsterra publisher script is loaded once in the document head. -->
 
     <!-- JAVASCRIPT LOGIC ENGINE -->
     <script>
@@ -832,6 +842,7 @@
             if (!target) { console.error("Tab not found:", tabId); return; }
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             target.classList.remove('hidden');
+            if (tabId === 'tab-adsterra') loadNivoraAdsterraUnits();
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-navy-700', 'text-cyan-400', 'active');
                 btn.setAttribute('aria-current', 'false');
@@ -840,6 +851,26 @@
             if (active) { active.classList.add('bg-navy-700', 'text-cyan-400', 'active'); active.setAttribute('aria-current', 'page'); }
             if (window.innerWidth < 768) document.getElementById('sidebar')?.classList.add('-translate-x-full');
         }
+        // Load display ad units only after the Ad Center is visible; each unit is injected once.
+        function loadNivoraAdsterraUnits() {
+            const nativeHost = document.getElementById('nivoraNativeAdLoader');
+            if (nativeHost && !nativeHost.dataset.loaded) {
+                nativeHost.dataset.loaded = '1';
+                const script = document.createElement('script');
+                script.async = true; script.dataset.cfasync = 'false';
+                script.src = nativeHost.dataset.adSrc;
+                nativeHost.appendChild(script);
+            }
+            const bannerHost = document.getElementById('nivoraBannerAdLoader');
+            if (bannerHost && !bannerHost.dataset.loaded) {
+                bannerHost.dataset.loaded = '1';
+                window.atOptions = { key: 'a5d02f8d03c4bd8907626a78422157d9', format: 'iframe', height: 50, width: 320, params: {} };
+                const script = document.createElement('script');
+                script.src = bannerHost.dataset.adSrc;
+                bannerHost.appendChild(script);
+            }
+        }
+
         document.getElementById('sidebarToggle')?.addEventListener('click', () => {
             document.getElementById('sidebar')?.classList.toggle('-translate-x-full');
         });
@@ -1013,29 +1044,68 @@
             voiceRecognition.start();
         }
 
-        // [2] MEDIA GENERATOR: no fake generated imagery. Requires configured backend image provider.
+        // [2] MEDIA GENERATOR: calls the secure Cloudflare Worker; never reports fake success.
+        let generatedMediaBlob = null;
+        async function improveMediaPrompt() {
+            const box=document.getElementById('mediaPrompt');
+            const status=document.getElementById('mediaStatus');
+            const prompt=box?.value?.trim();
+            if(!prompt){alert('আগে কী ছবি/ভিডিও চান তা সংক্ষেপে লিখুন।');return;}
+            status.textContent='AI প্রম্পট উন্নত করছে…';
+            const button=document.querySelector('button[onclick="improveMediaPrompt()"]'); if(button)button.disabled=true;
+            try {
+                const r=await fetch('/api/prompt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,kind:'image-video',language:document.documentElement.lang||'bn'})});
+                const d=await r.json().catch(()=>({}));
+                if(!r.ok)throw new Error(d.error||`Prompt API HTTP ${r.status}`);
+                if(!d.prompt||typeof d.prompt!=='string')throw new Error('AI কোনো উন্নত প্রম্পট ফেরত দেয়নি।');
+                box.value=d.prompt; status.textContent='প্রম্পট উন্নত হয়েছে। এখন ছবি অথবা ভিডিও তৈরি করুন।';
+            } catch(e) { status.textContent='প্রম্পট উন্নত হয়নি: '+e.message; alert(status.textContent); }
+            finally { if(button)button.disabled=false; }
+        }
         async function generateAIImage() {
-            const prompt=document.getElementById('mediaPrompt')?.value?.trim() || window.prompt('Describe the image to generate:');
-            if(!prompt) return;
-            const placeholder=document.getElementById('mediaPlaceholder'); if(placeholder) placeholder.textContent='Image generation requested…';
+            const prompt=document.getElementById('mediaPrompt')?.value?.trim();
+            const status=document.getElementById('mediaStatus');
+            if(!prompt){alert('ছবি তৈরির বর্ণনা লিখুন।');return;}
+            status.textContent='ছবি তৈরি হচ্ছে…';
+            const btns=document.querySelectorAll('button[onclick="generateAIImage()"],button[onclick="generateAIVideo()"]');btns.forEach(b=>b.disabled=true);
             try {
                 const res=await fetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
                 const data=await res.json().catch(()=>({}));
-                if(!res.ok) throw new Error(data.error||`HTTP ${res.status}`);
-                if(!data.imageUrl && !data.imageBase64) throw new Error('Backend returned no image. Configure a compatible image-generation provider.');
-                const canvas=document.getElementById('mediaCanvas'); const ctx=canvas.getContext('2d');
-                const img=new Image(); img.onload=()=>{canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);placeholder?.classList.add('hidden');document.getElementById('downloadMediaBtn')?.classList.remove('hidden');};
-                img.onerror=()=>alert('Generated image could not be displayed.'); img.src=data.imageUrl || `data:${data.mimeType||'image/png'};base64,${data.imageBase64}`;
-            } catch(e) { if(placeholder){placeholder.classList.remove('hidden');placeholder.textContent='Image generation unavailable: '+e.message;} else alert('Image generation unavailable: '+e.message); }
+                if(!res.ok)throw new Error(data.error||`Image API HTTP ${res.status}`);
+                const img=document.getElementById('mediaCanvas');img.classList.remove('hidden');
+                const video=document.getElementById('generatedVideo');video.pause();video.removeAttribute('src');video.classList.add('hidden');
+                let src=data.imageUrl || (data.imageBase64?`data:${data.mimeType||'image/png'};base64,${data.imageBase64}`:'');
+                if(!src)throw new Error('API কোনো ছবি ফেরত দেয়নি।');
+                await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>{img.width=image.naturalWidth;img.height=image.naturalHeight;img.getContext('2d').clearRect(0,0,img.width,img.height);img.getContext('2d').drawImage(image,0,0);generatedMediaBlob=null;document.getElementById('mediaPlaceholder').classList.add('hidden');document.getElementById('downloadMediaBtn').classList.remove('hidden');resolve();};image.onerror=()=>reject(new Error('তৈরি ছবি প্রদর্শন করা যায়নি।'));image.src=src;});
+                status.textContent='ছবি তৈরি হয়েছে। ডাউনলোড করতে নিচের বাটন চাপুন।';
+            } catch(e){status.textContent='ছবি তৈরি হয়নি: '+e.message;alert(status.textContent);} finally{btns.forEach(b=>b.disabled=false);}
         }
-        async function generateAIVideo() { alert('ভিডিও তৈরি করতে আলাদা ভিডিও-জেনারেশন provider ও /api/video backend প্রয়োজন। এই প্যাকেজে ভিডিও জেনারেশন ভুয়া সফল দেখানো হয় না।'); }
-        function downloadCanvasMedia() {
-            const canvas = document.getElementById('mediaCanvas');
-            const link = document.createElement('a');
-            link.download = 'nivora-ai-media.png';
-            link.href = canvas.toDataURL();
-            link.click();
+        async function generateAIVideo() {
+            const prompt=document.getElementById('mediaPrompt')?.value?.trim();
+            const status=document.getElementById('mediaStatus');
+            if(!prompt){alert('ভিডিও তৈরির বর্ণনা লিখুন।');return;}
+            const btns=document.querySelectorAll('button[onclick="generateAIImage()"],button[onclick="generateAIVideo()"]');btns.forEach(b=>b.disabled=true);
+            status.textContent='ভিডিও তৈরির কাজ শুরু হচ্ছে…';
+            try {
+                const res=await fetch('/api/video',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,model:'gen4.5',ratio:'1280:720',duration:5})});
+                const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||`Video API HTTP ${res.status}`);
+                if(data.videoUrl){showGeneratedVideo(data.videoUrl);status.textContent='ভিডিও তৈরি হয়েছে।';return;}
+                if(!data.taskId)throw new Error('ভিডিও API task ID ফেরত দেয়নি।');
+                status.textContent='ভিডিও তৈরি হচ্ছে; কাজ শেষ হতে কয়েক মিনিট লাগতে পারে…';
+                let done=false;
+                for(let i=0;i<60;i++){
+                    await new Promise(r=>setTimeout(r,5000));
+                    const poll=await fetch('/api/video/status?taskId='+encodeURIComponent(data.taskId));
+                    const pd=await poll.json().catch(()=>({}));if(!poll.ok)throw new Error(pd.error||'ভিডিও স্ট্যাটাস পাওয়া যায়নি।');
+                    if(pd.status==='SUCCEEDED'||pd.status==='succeeded'||pd.videoUrl){const url=pd.videoUrl||(Array.isArray(pd.output)?pd.output[0]:null);if(!url)throw new Error('ভিডিও তৈরি হয়েছে কিন্তু ভিডিও URL পাওয়া যায়নি।');showGeneratedVideo(url);status.textContent='ভিডিও তৈরি হয়েছে।';done=true;break;}
+                    if(pd.status==='FAILED'||pd.status==='failed'||pd.status==='CANCELED')throw new Error(pd.error||'ভিডিও তৈরি ব্যর্থ হয়েছে।');
+                    status.textContent=`ভিডিও তৈরি হচ্ছে… (${i+1}/60)`;
+                }
+                if(!done)throw new Error('ভিডিও তৈরিতে বেশি সময় লাগছে। পরে আবার চেষ্টা করুন; একই কাজ বারবার শুরু করবেন না।');
+            } catch(e){status.textContent='ভিডিও তৈরি হয়নি: '+e.message;alert(status.textContent);} finally{btns.forEach(b=>b.disabled=false);}
         }
+        function showGeneratedVideo(url){const v=document.getElementById('generatedVideo');v.src=url;v.classList.remove('hidden');document.getElementById('mediaCanvas').classList.add('hidden');document.getElementById('mediaPlaceholder').classList.add('hidden');document.getElementById('downloadMediaBtn').classList.remove('hidden');generatedMediaBlob=null;}
+        function downloadCanvasMedia(){const v=document.getElementById('generatedVideo');if(!v.classList.contains('hidden')&&v.src){const a=document.createElement('a');a.href=v.src;a.target='_blank';a.rel='noopener';a.download='nivora-generated-video.mp4';a.click();return;}const c=document.getElementById('mediaCanvas');c.toBlob(blob=>{if(!blob){alert('ছবি ডাউনলোড করা যায়নি।');return;}const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='nivora-generated-image.png';a.click();setTimeout(()=>URL.revokeObjectURL(u),3000);},'image/png');}
 
         async function processOCRImage(e) {
             const file=e.target.files?.[0]; const output=document.getElementById('ocrOutput'); if(!file)return;
@@ -1056,22 +1126,65 @@
             link.click();
         }
 
-        // [3] VOICE STUDIO ENGINE
-        function synthesizeSpeech() {
-            const text = document.getElementById('ttsTextInput').value;
-            if (!text) return;
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = parseFloat(document.getElementById('ttsSpeed').value);
-            speechSynthesis.speak(utterance);
-        }
-
-        function downloadGeneratedAudio() {
+        // [3] VOICE STUDIO ENGINE: server-side Gemini TTS; generated WAV can be played and downloaded.
+        let nivoraGeneratedAudioBlob=null;
+        async function synthesizeSpeech() {
             const text=document.getElementById('ttsTextInput').value.trim();
-            if(!text){alert('প্রথমে টেক্সট লিখুন।');return;}
-            downloadTextFile(text,'nivora-voice-script.txt');
-            alert('এই ব্রাউজারের Speech Synthesis থেকে সরাসরি WAV রেকর্ড করা হয়নি; টেক্সট স্ক্রিপ্ট ডাউনলোড হয়েছে।');
+            const status=document.getElementById('ttsStatus');const btn=document.querySelector('button[onclick="synthesizeSpeech()"]');
+            if(!text){alert('প্রথমে ভয়েসের লেখা লিখুন।');return;}
+            if(text.length>4000){alert('একবারে সর্বোচ্চ ৪০০০ অক্ষর দিন। বড় লেখা কয়েক ভাগে তৈরি করুন।');return;}
+            const lang=document.getElementById('ttsLang').value;
+            const mode=document.getElementById('ttsVoiceMode').value;
+            const speed=Number(document.getElementById('ttsSpeed').value||1);
+            const volume=Number(document.getElementById('ttsVolume')?.value||100)/100;
+            const voiceStyle=document.getElementById('ttsVoiceStyle')?.value||'natural';
+            const referenceFile=document.getElementById('ttsReferenceAudio')?.files?.[0];
+            const consent=!!document.getElementById('ttsVoiceConsent')?.checked;
+            if(referenceFile && !consent){alert('রেফারেন্স ভয়েস ব্যবহার করতে বক্তার অনুমতি/অধিকার নিশ্চিত করার checkbox টিক দিন।');return;}
+            if(referenceFile && referenceFile.size>2*1024*1024){alert('রেফারেন্স অডিও সর্বোচ্চ ২ MB হতে পারবে।');return;}
+            let voiceReferenceAudioBase64=null, voiceReferenceMimeType=null;
+            if(referenceFile){
+              status.textContent='রেফারেন্স অডিও প্রস্তুত হচ্ছে…';
+              voiceReferenceMimeType=referenceFile.type||'audio/*';
+              voiceReferenceAudioBase64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=()=>reject(new Error('রেফারেন্স অডিও পড়া যায়নি।'));reader.readAsDataURL(referenceFile);}).catch(e=>{status.textContent=e.message;return null;});
+              if(!voiceReferenceAudioBase64)return;
+            }
+            status.textContent='স্বাভাবিক কণ্ঠ তৈরি হচ্ছে…';if(btn)btn.disabled=true;
+            try{
+                const payload={text,language:lang,mode,speed,volume,voiceStyle,consentConfirmed:consent};
+                if(voiceReferenceAudioBase64){payload.voiceReferenceAudioBase64=voiceReferenceAudioBase64;payload.voiceReferenceMimeType=voiceReferenceMimeType;}
+                const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+                const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||`TTS API HTTP ${r.status}`);
+                if(!d.audioBase64)throw new Error(d.error||'TTS API অডিও ফেরত দেয়নি। আপনার Worker/provider voice reference বা নির্বাচিত voice style সমর্থন নাও করতে পারে।');
+                const bytes=Uint8Array.from(atob(d.audioBase64),c=>c.charCodeAt(0));
+                nivoraGeneratedAudioBlob=new Blob([bytes],{type:d.mimeType||'audio/wav'});
+                const audio=document.getElementById('generatedAudio');if(audio.dataset.objectUrl)URL.revokeObjectURL(audio.dataset.objectUrl);
+                const obj=URL.createObjectURL(nivoraGeneratedAudioBlob);audio.dataset.objectUrl=obj;audio.src=obj;audio.volume=Math.min(1,volume);audio.classList.remove('hidden');
+                await audio.play().catch(()=>{});status.textContent='অডিও তৈরি হয়েছে। ভলিউম নিয়ন্ত্রণ করুন বা Download Audio File চাপুন।';
+            }catch(e){status.textContent='ভয়েস তৈরি হয়নি: '+e.message;alert(status.textContent);}finally{if(btn)btn.disabled=false;}
         }
+        async function downloadGeneratedAudio(){
+          if(!nivoraGeneratedAudioBlob){alert('আগে Synthesize & Play Voice চাপুন, অডিও তৈরি হলে ডাউনলোড হবে।');return;}
+          const gain=Number(document.getElementById('ttsVolume')?.value||100)/100;
+          let blob=nivoraGeneratedAudioBlob;
+          try{
+            if(gain!==1 && window.AudioContext){
+              const ctx=new AudioContext();
+              const buffer=await ctx.decodeAudioData(await nivoraGeneratedAudioBlob.arrayBuffer());
+              const channelCount=buffer.numberOfChannels, frames=buffer.length, sampleRate=buffer.sampleRate;
+              const pcm=new ArrayBuffer(44+frames*channelCount*2), view=new DataView(pcm);
+              const write=(offset,str)=>{for(let i=0;i<str.length;i++)view.setUint8(offset+i,str.charCodeAt(i));};
+              write(0,'RIFF');view.setUint32(4,36+frames*channelCount*2,true);write(8,'WAVE');write(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channelCount,true);view.setUint32(24,sampleRate,true);view.setUint32(28,sampleRate*channelCount*2,true);view.setUint16(32,channelCount*2,true);view.setUint16(34,16,true);write(36,'data');view.setUint32(40,frames*channelCount*2,true);
+              const channels=Array.from({length:channelCount},(_,c)=>buffer.getChannelData(c));
+              let offset=44;
+              for(let i=0;i<frames;i++)for(let c=0;c<channelCount;c++){const v=Math.max(-1,Math.min(1,channels[c][i]*gain));view.setInt16(offset,v<0?v*32768:v*32767,true);offset+=2;}
+              blob=new Blob([pcm],{type:'audio/wav'});await ctx.close();
+            }
+          }catch(e){alert('অডিওর ভলিউম ফাইলে প্রয়োগ করা যায়নি; মূল অডিও ডাউনলোড হবে।');}
+          const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='nivora-voice-'+Date.now()+'.wav';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
+        }
+
 
         // [4] QURAN ENGINE: verified Quran text, surah/juz/page navigation, translations, audio and bookmarks.
         let currentQuranAudio = null;
@@ -1502,29 +1615,10 @@
             renderExcelTable(); renderLedger(); loadNivoraInventory(); initializeQuranNavigation().then(()=>loadQuranSurah(document.getElementById('surahSelect')?.value||'1')); initializeNivoraFirebaseAuth(); calculateEMI(); checkApiHealth(); updateAppLanguage(currentLang);
         });
     </script>
-<Script>
-/**
- * NIVORA ONE — Firebase Configuration
- * Firebase JS SDK v11
- */
-
-import { initializeApp, getApp, getApps }
-  from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-
-import { getAuth }
-  from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-
-import { getFirestore }
-  from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
-import { getStorage }
-  from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
-
-import { getAnalytics, isSupported }
-  from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-
-// আপনার Firebase Project-এর Config
-const firebaseConfig = {
+<script>
+// Firebase Web App configuration (public client config; protect data with Firebase Security Rules).
+// Defined synchronously before the Firebase compat SDK and login/register logic load.
+window.NIVORA_FIREBASE_CONFIG = {
   apiKey: "AIzaSyBiu3pj9P3MpY6d0juL1-pfCarkrI2eZ54",
   authDomain: "taskearn-bd-fa040.firebaseapp.com",
   projectId: "taskearn-bd-fa040",
@@ -1533,42 +1627,23 @@ const firebaseConfig = {
   appId: "1:177026495081:web:48bfaaf8e2e7688e3e68f8",
   measurementId: "G-RDSLSLBP0Q"
 };
-
-// Firebase App
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-
-// Firebase Services
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-// Analytics সমর্থিত পরিবেশে চালু হবে
-const analyticsReady = isSupported()
-  .then((supported) => supported ? getAnalytics(app) : null)
-  .catch(() => null);
-
-// অন্য JavaScript ফাইলে ব্যবহারের জন্য Export
-export {
-  app,
-  auth,
-  db,
-  storage,
-  analyticsReady
-};
 </script>
+<!-- Adsterra banner is configured once inside the Ad Center. -->
 <script>
-  atOptions = {
-    'key' : 'a5d02f8d03c4bd8907626a78422157d9',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
+(function(){
+  const timeEl=document.getElementById('nivoraLiveTime'), dateEl=document.getElementById('nivoraLiveDate'), zoneEl=document.getElementById('nivoraTimeZone');
+  function updateNivoraClock(){
+    const now=new Date();
+    try{
+      const zone=Intl.DateTimeFormat().resolvedOptions().timeZone||'Local time zone';
+      if(timeEl)timeEl.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(now);
+      if(dateEl)dateEl.textContent=new Intl.DateTimeFormat(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric'}).format(now);
+      if(zoneEl)zoneEl.textContent=zone+' · UTC'+(new Intl.DateTimeFormat('en', {timeZoneName:'shortOffset'}).formatToParts(now).find(p=>p.type==='timeZoneName')?.value?.replace('GMT','')||'');
+    }catch(e){if(timeEl)timeEl.textContent=now.toLocaleTimeString();if(dateEl)dateEl.textContent=now.toLocaleDateString();if(zoneEl)zoneEl.textContent='Device time zone';}
+  }
+  updateNivoraClock();setInterval(updateNivoraClock,1000);
+  document.addEventListener('DOMContentLoaded',()=>{const a=document.getElementById('generatedAudio');const v=document.getElementById('ttsVolume');if(a&&v)a.volume=Number(v.value)/100;});
+})();
 </script>
-<script src="https://www.highrevenueformat.com/a5d02f8d03c4bd8907626a78422157d9/invoke.js"></script><script >
-https://www.profitableratecpmnetwork.com/i2semq2cv?key=cc700b40da57eaf8d82400a54ca1743e</script >
-<script >
-<script async="async" data-cfasync="false" src="https://pl31898636.profitableratecpmnetwork.com/bb41f7ae7e3578b16731281e445f41f8/invoke.js"></script>
-<div id="container-bb41f7ae7e3578b16731281e445f41f8"></div></script >
 </body>
 </html>
