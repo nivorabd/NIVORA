@@ -1,246 +1,501 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nivora Universal AI Voice Studio - Full Suite</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #07090e; color: #f3f4f6; }
-        .gold-gradient { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gold-border { border-color: #d4af37; }
-        .gold-bg { background: linear-gradient(135deg, #d4af37, #aa771c); }
-        .gold-bg:hover { background: linear-gradient(135deg, #f3e5ab, #c59b27); }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d1b">
+<title>NIVORA Voice Clone Studio</title>
+<style>
+:root{--bg:#080d1b;--panel:#111b30;--panel2:#17243c;--line:#293954;--gold:#f4c66b;--cyan:#55d9e9;--text:#f5f7ff;--muted:#a1afc7;--green:#69e4ad;--red:#ff8585}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 70% -10%,#263b67 0,transparent 45%),var(--bg);color:var(--text);font-family:Arial,"Noto Sans Bengali",sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.top{height:68px;position:sticky;top:0;z-index:20;background:#091222ed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:10px 17px;backdrop-filter:blur(15px);gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.3px}
+.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--gold),#c58b2d);color:#152039;display:grid;place-items:center;font-size:22px}
+.brand small{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:4px}
+.topright{display:flex;align-items:center;gap:12px}
+.clock{font-size:11px;color:var(--muted)}
+.pill{border:1px solid #8c713e;background:#302719;color:var(--gold);padding:9px 12px;border-radius:11px;font-weight:bold;font-size:13px}
+.shell{max-width:1600px;margin:auto;display:grid;grid-template-columns:245px minmax(0,1fr);min-height:calc(100vh - 68px)}
+aside{background:#0c1527;border-right:1px solid var(--line);padding:17px 12px}
+.navtitle{color:#667895;font-size:10px;letter-spacing:1.5px;padding:13px 11px 5px}
+.nav{display:flex;align-items:center;gap:10px;width:100%;border:1px solid transparent;background:none;color:#aab8ce;padding:12px;border-radius:10px;text-align:left;margin:3px 0;font-size:13px}
+.nav:hover,.nav.active{background:#1b2a45;border-color:#344766;color:var(--gold)}
+main{padding:23px;min-width:0}
+.page{display:none}.page.active{display:block}
+h1{font-size:clamp(24px,4vw,35px);margin:3px 0 8px}
+h2{font-size:19px;margin:0 0 14px}
+h3{font-size:15px;margin:0 0 10px}
+p{color:var(--muted);line-height:1.6;font-size:13px}
+.muted{color:var(--muted);font-size:12px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.card{background:linear-gradient(145deg,var(--panel),#101a2c);border:1px solid var(--line);border-radius:16px;padding:17px;margin:13px 0;min-width:0}
+.stat{font-size:29px;font-weight:900;color:var(--gold);margin-top:8px}
+.btn{border:0;border-radius:10px;padding:11px 15px;background:linear-gradient(130deg,var(--gold),#d99b3d);color:#172139;font-weight:800;font-size:13px}
+.btn.cyan{background:linear-gradient(130deg,var(--cyan),#37a9c1);color:#061723}
+.btn.dark{background:#243450;color:#edf3ff;border:1px solid #3b4c68}
+.btn.red{background:#572a33;color:#ffd5d5;border:1px solid #85424b}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.field{margin:13px 0}
+label{display:block;color:#c8d4e7;font-size:12px;margin-bottom:7px}
+input,textarea,select{width:100%;background:#091426;color:white;border:1px solid #31415e;border-radius:10px;padding:12px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--cyan)}
+textarea{min-height:115px;resize:vertical}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1;min-width:120px}
+.status{padding:11px 13px;background:#192740;border:1px solid #2c405e;border-radius:10px;color:#cbd8ed;font-size:12px;line-height:1.6;overflow-wrap:anywhere;margin:11px 0}
+.status.ok{background:#17372d;color:#aaf2ce;border-color:#285b48}
+.status.err{background:#40232c;color:#ffd0d0;border-color:#76404a}
+.status.warn{background:#3b321f;color:#ffe1a0;border-color:#67552b}
+.hidden{display:none!important}
+.reward{background:linear-gradient(130deg,#302342,#172e45);border-color:#67518a}
+.rewardlink{display:inline-block;text-decoration:none;text-align:center;background:linear-gradient(120deg,#f6d17c,#df9f42);color:#19243a;border-radius:11px;padding:13px 18px;font-weight:900;font-size:13px}
+.consent{display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.consent input{width:auto;margin-top:2px}
+audio{width:100%;margin:12px 0}
+.voiceitem{border:1px solid var(--line);border-radius:11px;padding:12px;margin:8px 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.voiceitem strong{overflow-wrap:anywhere}
+.range{display:flex;align-items:center;gap:10px}
+.range input{padding:0}
+canvas{width:100%;height:70px;background:#091426;border:1px solid var(--line);border-radius:10px}
+.mobilemenu{display:none}
+footer{text-align:center;color:#687995;font-size:11px;padding:28px}
+@media(max-width:850px){.shell{grid-template-columns:1fr}aside{display:none;position:fixed;z-index:15;top:68px;bottom:0;width:270px;overflow:auto;box-shadow:10px 0 35px #0009}aside.open{display:block}.mobilemenu{display:inline-block}main{padding:14px}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.clock{display:none}.top{padding:9px}.brand small{display:none}main{padding:11px}.card{padding:13px}.row>*{min-width:100%}}
+</style>
 </head>
-<body class="min-h-screen flex flex-col w-full">
+<body>
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-gray-950 border-b border-yellow-600/30 px-6 py-4 flex flex-wrap justify-between items-center sticky top-0 z-50 shadow-2xl">
-        <div class="flex items-center space-x-3">
-            <div class="w-11 h-11 rounded-2xl gold-bg flex items-center justify-center text-gray-950 font-bold text-2xl shadow-lg shadow-yellow-600/20">
-                <i class="fa-solid fa-microphone-lines"></i>
-            </div>
-            <div>
-                <h1 class="text-2xl font-extrabold gold-gradient">Nivora Voice Studio Pro</h1>
-                <p class="text-xs text-gray-400">Powered by ElevenLabs AI Engine (Multi-Feature Suite)</p>
-            </div>
-        </div>
+<header class="top">
+  <div class="brand">
+    <button class="btn dark mobilemenu" id="menuBtn">☰</button>
+    <div class="logo">N</div>
+    <div>NIVORA VOICE STUDIO<small>AI VOICE • CLONING • DUBBING • AUDIO</small></div>
+  </div>
+  <div class="topright">
+    <div class="clock" id="clock"></div>
+    <div class="pill">★ <span id="creditCount">—</span> Credits</div>
+  </div>
+</header>
 
-        <div class="flex items-center space-x-4 my-2 sm:my-0">
-            <div class="bg-gray-900 border gold-border px-5 py-2 rounded-full flex items-center space-x-2 shadow-inner">
-                <i class="fa-solid fa-coins text-yellow-400"></i>
-                <span class="text-sm font-semibold">ক্রেডিট: <strong id="creditCount" class="text-yellow-400 text-base">15</strong></span>
-            </div>
-            <button onclick="watchAdForCredit()" class="gold-bg text-gray-950 font-bold px-5 py-2 rounded-full text-sm shadow-lg transition transform hover:scale-105 flex items-center space-x-2">
-                <i class="fa-solid fa-play"></i>
-                <span>অ্যাড দেখে ফ্রি ক্রেডিট নিন</span>
-            </button>
-        </div>
-    </header>
+<div class="shell">
+<aside id="sidebar">
+  <div class="navtitle">WORKSPACE</div>
+  <button class="nav active" data-page="dashboard">⌂ Dashboard</button>
+  <button class="nav" data-page="clone">✦ Voice Cloning</button>
+  <button class="nav" data-page="tts">♫ Text to Speech</button>
+  <button class="nav" data-page="changer">🎙 Voice Changer</button>
+  <button class="nav" data-page="transcribe">▤ Speech to Text</button>
+  <button class="nav" data-page="dubbing">🌐 Dubbing & Translation</button>
+  <button class="nav" data-page="isolate">✧ Voice Isolation</button>
+  <button class="nav" data-page="effects">🎚 Audio Effects</button>
+  <button class="nav" data-page="recorder">● Voice Recorder</button>
+  <div class="navtitle">MY CONTENT</div>
+  <button class="nav" data-page="library">▣ Voice Library</button>
+  <button class="nav" data-page="rewards">🎁 Earn Credits</button>
+  <button class="nav" data-page="settings">⚙ API Settings</button>
+</aside>
 
-    <!-- Main Workspace - Full Screen Grid -->
-    <main class="flex-1 w-full p-4 lg:p-6 grid grid-cols-1 xl:grid-cols-12 gap-6">
-        
-        <!-- Left Panel: Mode & Voice Selection (4 Cols) -->
-        <div class="xl:col-span-4 bg-gray-900/90 border border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6 flex flex-col justify-between backdrop-blur-md">
-            <div class="space-y-6">
-                <h2 class="text-xl font-bold text-yellow-400 border-b border-gray-800 pb-3 flex items-center">
-                    <i class="fa-solid fa-sliders mr-3 text-yellow-500"></i> ১. স্টাইল ও ভয়েস প্রিসেট
-                </h2>
+<main>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">ক্যাটাগরি সিলেক্ট করুন</label>
-                    <select id="audioCategory" class="w-full bg-gray-950 border border-gray-700 rounded-2xl p-3.5 text-sm focus:outline-none focus:border-yellow-500 text-gray-200">
-                        <option value="qirat">🕌 ক্বেরাত তিলাওয়াত (Digital Reverb & Arabic Tone)</option>
-                        <option value="islamic_song">🎵 ইসলামিক গজল ও নাশীদ (Melodic Chorus)</option>
-                        <option value="maiking">📢 ডিজিটাল মাইকিং ও অ্যানাউন্সমেন্ট (High Volume)</option>
-                        <option value="speech">🎙️ সাধারণ কথোপকথন / পডকাস্ট (HD Speech)</option>
-                    </select>
-                </div>
+<section class="page active" id="dashboard">
+  <h1>Professional Voice Studio</h1>
+  <p>একটি Workspace থেকে Voice Clone, Speech Generation, Voice Changer, Transcription, Dubbing এবং Audio Processing ব্যবহার করুন।</p>
+  <div class="grid">
+    <div class="card"><div class="muted">Saved Voices</div><div class="stat" id="voiceStat">0</div></div>
+    <div class="card"><div class="muted">Generated Audio</div><div class="stat" id="audioStat">0</div></div>
+    <div class="card"><div class="muted">API Connection</div><div class="stat" style="font-size:17px" id="apiStat">Not tested</div></div>
+  </div>
+  <div class="card reward">
+    <h2>🎁 বিজ্ঞাপন দেখে ক্রেডিট নিন</h2>
+    <p>নিচের লিংকটি আপনার দেওয়া বিজ্ঞাপন লিংক। বিজ্ঞাপন খোলা বা ক্লিক করলেই Reward সম্পন্ন হয়েছে বলে গণ্য করা হচ্ছে না।</p>
+    <a class="rewardlink" href="https://arwf.org/4/cc700b40da57eaf8d82400a54ca1743e" target="_blank" rel="noopener noreferrer">🎁 বিজ্ঞাপন দেখে ক্রেডিট নিন ↗</a>
+    <div class="status warn">Rewarded Ad-এর যাচাইকৃত Server Callback সংযুক্ত না হওয়া পর্যন্ত কোনো ক্রেডিট যোগ হবে না।</div>
+  </div>
+  <div class="card">
+    <h2>Quick Actions</h2>
+    <div class="row">
+      <button class="btn" data-go="clone">Create Voice Clone</button>
+      <button class="btn cyan" data-go="tts">Generate Speech</button>
+      <button class="btn dark" data-go="changer">Change Voice</button>
+    </div>
+  </div>
+</section>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">ElevenLabs Voice ID (বা কাস্টম আইডি)</label>
-                    <select id="voiceIdSelect" class="w-full bg-gray-950 border border-gray-700 rounded-2xl p-3.5 text-sm focus:outline-none focus:border-yellow-500 text-gray-200">
-                        <option value="21m00Tcm4TlvDq8ikWAM">Rachel (Calm & Professional)</option>
-                        <option value="AZnzlk1XvdvUeBnXmlld">Domi (Strong & Dynamic)</option>
-                        <option value="EXAVITQu4vr4xnSDxMaL">Bella (Soft & Melodic)</option>
-                        <option value="ErXwobaYiN019PkySvjV">Antoni (Deep Male Voice)</option>
-                        <option value="MF3mGyEYCl7XYWbV9V6O">Elli (Emotional Narration)</option>
-                    </select>
-                </div>
+<section class="page" id="clone">
+  <h1>Voice Cloning</h1>
+  <p>Instant Voice Cloning API। কেবল নিজের কণ্ঠ অথবা কণ্ঠের মালিকের স্পষ্ট অনুমতিসহ অডিও ব্যবহার করুন।</p>
+  <div class="card">
+    <div class="field"><label>Voice Name</label><input id="cloneName" maxlength="80" placeholder="My Bengali Voice"></div>
+    <div class="field"><label>Description</label><input id="cloneDesc" maxlength="300" placeholder="Voice description"></div>
+    <div class="field"><label>Audio Samples (কমপক্ষে ১০ সেকেন্ড; ভালো ফলের জন্য ১–২ মিনিট)</label><input id="cloneFiles" type="file" accept="audio/*" multiple></div>
+    <label class="consent"><input type="checkbox" id="cloneConsent"><span>আমি নিশ্চিত করছি যে এই কণ্ঠ আমার নিজের অথবা কণ্ঠের মালিকের স্পষ্ট অনুমতি রয়েছে। প্রতারণা বা পরিচয় জালিয়াতির জন্য ব্যবহার করব না।</span></label>
+    <div class="field"><button class="btn" id="cloneBtn">✦ Create Voice Clone</button></div>
+    <div class="status" id="cloneStatus">API সংযোগ পরীক্ষা করুন।</div>
+  </div>
+</section>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">ভয়েস স্যাম্পল আপলোড (ক্লোনিংয়ের জন্য)</label>
-                    <div class="border-2 border-dashed border-gray-700 rounded-2xl p-5 text-center hover:border-yellow-500 transition cursor-pointer bg-gray-950/50">
-                        <input type="file" id="audioFile" accept="audio/*" class="hidden" onchange="handleFileSelect(event)">
-                        <label for="audioFile" class="cursor-pointer">
-                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-yellow-500 mb-2"></i>
-                            <p class="text-xs text-gray-300" id="fileNameDisplay">অডিও ফাইল ড্রপ বা ব্রাউজ করুন (MP3/WAV)</p>
-                        </label>
-                    </div>
-                </div>
-            </div>
+<section class="page" id="tts">
+  <h1>Text to Speech</h1>
+  <p>আপনার Voice ID দিয়ে লিখিত টেক্সটকে AI Speech-এ রূপান্তর করুন।</p>
+  <div class="card">
+    <div class="field"><label>Voice ID</label><input id="ttsVoice" placeholder="Voice ID"></div>
+    <div class="field"><label>Text</label><textarea id="ttsText" maxlength="5000" placeholder="এখানে লিখুন..."></textarea><div class="muted"><span id="charCount">0</span>/5000</div></div>
+    <div class="field"><label>Model</label><select id="ttsModel"><option value="eleven_multilingual_v2">Eleven Multilingual v2</option><option value="eleven_turbo_v2_5">Eleven Turbo v2.5</option><option value="eleven_flash_v2_5">Eleven Flash v2.5</option></select></div>
+    <div class="grid">
+      <div class="field"><label>Stability</label><input id="stability" type="range" min="0" max="1" step=".05" value=".5"></div>
+      <div class="field"><label>Similarity</label><input id="similarity" type="range" min="0" max="1" step=".05" value=".75"></div>
+      <div class="field"><label>Speed</label><input id="speed" type="range" min=".7" max="1.2" step=".05" value="1"></div>
+    </div>
+    <button class="btn cyan" id="ttsBtn">♫ Generate Speech</button>
+    <div class="status" id="ttsStatus">Ready</div>
+    <audio id="ttsAudio" controls class="hidden"></audio>
+    <a id="ttsDownload" class="btn dark hidden" download="nivora-speech.mp3">Download Audio</a>
+  </div>
+</section>
 
-            <div class="text-xs text-gray-500 text-center pt-4 border-t border-gray-800">
-                ইলেভেনল্যাবস মাল্টিলিঙ্গুয়াল ভি-২ মডেল দ্বারা স্বয়ংক্রিয়ভাবে প্রসেস হয়।
-            </div>
-        </div>
+<section class="page" id="changer">
+  <h1>Voice Changer / Speech to Speech</h1>
+  <p>আপনার রেকর্ড করা কণ্ঠকে নির্বাচিত Voice ID-এর কণ্ঠে রূপান্তর করুন।</p>
+  <div class="card">
+    <div class="field"><label>Target Voice ID</label><input id="changeVoice" placeholder="Target Voice ID"></div>
+    <div class="field"><label>Source Audio</label><input id="changeFile" type="file" accept="audio/*"></div>
+    <div class="field"><label>Model</label><select id="changeModel"><option value="eleven_english_sts_v2">Eleven English STS v2</option><option value="eleven_multilingual_sts_v2">Eleven Multilingual STS v2</option></select></div>
+    <label class="consent"><input type="checkbox" id="changeConsent"><span>এই Source Audio ব্যবহারের অধিকার ও সংশ্লিষ্ট ব্যক্তির অনুমতি আমার রয়েছে।</span></label>
+    <div class="field"><button class="btn" id="changeBtn">Transform Voice</button></div>
+    <div class="status" id="changeStatus">Ready</div>
+    <audio id="changeAudio" controls class="hidden"></audio>
+    <a id="changeDownload" class="btn dark hidden" download="nivora-voice-changed.mp3">Download</a>
+  </div>
+</section>
 
-        <!-- Middle Panel: Text Input & AI Settings (5 Cols) -->
-        <div class="xl:col-span-5 bg-gray-900/90 border border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6 flex flex-col justify-between backdrop-blur-md">
-            <div class="space-y-6 flex-1 flex flex-col">
-                <h2 class="text-xl font-bold text-yellow-400 border-b border-gray-800 pb-3 flex items-center">
-                    <i class="fa-solid fa-pen-nib mr-3 text-yellow-500"></i> ২. টেক্সট ও এআই প্যারামিটার
-                </h2>
+<section class="page" id="transcribe">
+  <h1>Speech to Text</h1>
+  <p>Audio থেকে কথাগুলো Text-এ রূপান্তর করুন। এটি অনুবাদ নয়; এটি Speech Transcription।</p>
+  <div class="card">
+    <div class="field"><label>Audio File</label><input id="transcribeFile" type="file" accept="audio/*"></div>
+    <div class="field"><label>Language Code (ঐচ্ছিক)</label><input id="transcribeLang" placeholder="যেমন: ben, eng"></div>
+    <div class="field"><button class="btn cyan" id="transcribeBtn">Transcribe Audio</button></div>
+    <div class="status" id="transcribeStatus">Ready</div>
+    <div class="field"><label>Transcription Result</label><textarea id="transcribeResult" readonly></textarea></div>
+    <button class="btn dark" id="copyTranscript">Copy Text</button>
+  </div>
+</section>
 
-                <div class="flex-1 flex flex-col">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">স্ক্রিপ্ট বা টেক্সট লিখুন (বাংলা, আরবি বা ইংরেজি)</label>
-                    <textarea id="textInput" rows="6" class="w-full flex-1 bg-gray-950 border border-gray-700 rounded-2xl p-4 text-sm focus:outline-none focus:border-yellow-500 text-gray-100 resize-none custom-scrollbar" placeholder="এখানে আপনার ক্বেরাত, গজল, মাইকিংয়ের ঘোষণা বা সংলাপ লিখুন..."></textarea>
-                </div>
+<section class="page" id="dubbing">
+  <h1>AI Dubbing & Translation</h1>
+  <p>Audio বা Video অন্য ভাষায় Dub করার জন্য ElevenLabs Dubbing API ব্যবহার করুন। কাজটি Background Job হিসেবে চলতে পারে।</p>
+  <div class="card">
+    <div class="field"><label>Audio / Video File</label><input id="dubFile" type="file" accept="audio/*,video/*"></div>
+    <div class="grid">
+      <div class="field"><label>Source Language (ঐচ্ছিক)</label><input id="sourceLang" placeholder="যেমন: en"></div>
+      <div class="field"><label>Target Language</label><select id="targetLang"><option value="bn">বাংলা (bn)</option><option value="en">English (en)</option><option value="hi">Hindi (hi)</option><option value="ur">Urdu (ur)</option><option value="ar">Arabic (ar)</option><option value="es">Spanish (es)</option><option value="fr">French (fr)</option><option value="de">German (de)</option><option value="pt">Portuguese (pt)</option><option value="it">Italian (it)</option><option value="ja">Japanese (ja)</option><option value="ko">Korean (ko)</option></select></div>
+    </div>
+    <div class="field"><label>Project Name</label><input id="dubName" placeholder="My translated project"></div>
+    <button class="btn" id="dubBtn">🌐 Create Dubbing Project</button>
+    <div class="status" id="dubStatus">Dubbing API ব্যবহার করলে Provider-এর প্রযোজ্য চার্জ হতে পারে।</div>
+    <div class="field"><label>Dubbing Project ID</label><input id="dubId" placeholder="Project ID"></div>
+    <button class="btn dark" id="dubCheck">Check Dubbing Status</button>
+    <div class="field"><label>Output Language Code</label><input id="dubOutputLang" value="bn"></div>
+    <button class="btn cyan" id="dubDownloadBtn">Get Dubbed Audio</button>
+    <audio id="dubAudio" controls class="hidden"></audio>
+    <a id="dubDownload" class="btn dark hidden" download="nivora-dubbed-audio.mp3">Download Dubbed Audio</a>
+  </div>
+</section>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">স্ট্যাবিলিটি (Stability)</label>
-                        <input type="range" id="stabilityRange" min="0" max="1" step="0.05" value="0.75" class="w-full accent-yellow-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">ক্ল্যারিটি বুস্ট (Similarity)</label>
-                        <input type="range" id="similarityRange" min="0" max="1" step="0.05" value="0.85" class="w-full accent-yellow-500">
-                    </div>
-                </div>
-            </div>
+<section class="page" id="isolate">
+  <h1>Voice Isolation / Noise Removal</h1>
+  <p>Audio থেকে Background Noise কমিয়ে Voice আলাদা করার জন্য ElevenLabs Audio Isolation API।</p>
+  <div class="card">
+    <div class="field"><label>Audio File</label><input id="isolateFile" type="file" accept="audio/*"></div>
+    <button class="btn cyan" id="isolateBtn">✧ Isolate Voice</button>
+    <div class="status" id="isolateStatus">Ready</div>
+    <audio id="isolateAudio" controls class="hidden"></audio>
+    <a id="isolateDownload" class="btn dark hidden" download="nivora-isolated-audio.mp3">Download Clean Audio</a>
+  </div>
+</section>
 
-            <button onclick="processElevenLabsVoice()" class="w-full gold-bg text-gray-950 font-extrabold py-4 rounded-2xl shadow-xl transition transform hover:scale-[1.01] flex items-center justify-center space-x-2 text-base">
-                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
-                <span>এআই ভয়েস জেনারেট করুন (১ ক্রেডিট)</span>
-            </button>
-        </div>
+<section class="page" id="effects">
+  <h1>Audio Effects & Sound Control</h1>
+  <p>এই Effects আপনার Browser-এর Web Audio API দিয়ে প্লেব্যাকের সময় কাজ করে। এটি মূল Audio ফাইল স্থায়ীভাবে পরিবর্তন করে না।</p>
+  <div class="card">
+    <div class="field"><label>Audio File</label><input id="effectFile" type="file" accept="audio/*"></div>
+    <audio id="effectAudio" controls></audio>
+    <div class="field"><label>Volume: <span id="volVal">100%</span></label><input id="volume" type="range" min="0" max="2" step=".01" value="1"></div>
+    <div class="field"><label>Echo: <span id="echoVal">0%</span></label><input id="echo" type="range" min="0" max=".85" step=".01" value="0"></div>
+    <div class="field"><label>Reverb: <span id="reverbVal">0%</span></label><input id="reverb" type="range" min="0" max="1" step=".01" value="0"></div>
+    <div class="field"><label>Playback Speed: <span id="rateVal">1.0x</span></label><input id="rate" type="range" min=".5" max="2" step=".05" value="1"></div>
+    <div class="row"><button class="btn dark" id="effectReset">Reset Effects</button><button class="btn cyan" id="effectExport">Export Processed Audio</button></div>
+    <div class="status" id="effectStatus">অডিও নির্বাচন করুন। Export করতে Browser-এর Audio Recording সমর্থন প্রয়োজন।</div>
+  </div>
+</section>
 
-        <!-- Right Panel: Output, Visualizer & Player (3 Cols) -->
-        <div class="xl:col-span-3 bg-gray-900/90 border border-gray-800 rounded-3xl p-6 shadow-2xl flex flex-col justify-between backdrop-blur-md">
-            <div class="space-y-6">
-                <h2 class="text-xl font-bold text-yellow-400 border-b border-gray-800 pb-3 flex items-center">
-                    <i class="fa-solid fa-waveform-lines mr-3 text-yellow-500"></i> ৩. ফাইনাল আউটপুট
-                </h2>
+<section class="page" id="recorder">
+  <h1>Voice Recorder</h1>
+  <div class="card">
+    <div class="row">
+      <button class="btn" id="recStart">● Record</button>
+      <button class="btn dark" id="recPause" disabled>Pause</button>
+      <button class="btn red" id="recStop" disabled>Stop</button>
+    </div>
+    <div class="stat" id="recTimer">00:00</div>
+    <div class="status" id="recStatus">Microphone permission দিন।</div>
+    <audio id="recAudio" controls class="hidden"></audio>
+    <a id="recDownload" class="btn dark hidden" download="nivora-recording.webm">Download Recording</a>
+  </div>
+</section>
 
-                <div id="visualizer" class="bg-gray-950 border border-gray-800 rounded-2xl h-48 flex flex-col items-center justify-center p-6 text-center shadow-inner">
-                    <div class="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400 mb-3 animate-pulse">
-                        <i class="fa-solid fa-microphone text-xl"></i>
-                    </div>
-                    <p class="text-gray-400 text-sm" id="statusText">জেনারেট করার জন্য প্রস্তুত...</p>
-                </div>
-            </div>
+<section class="page" id="library">
+  <h1>My Voice Library</h1>
+  <div class="card">
+    <button class="btn cyan" id="refreshVoices">↻ Refresh ElevenLabs Voices</button>
+    <div class="status" id="libraryStatus">Voice Library লোড করুন।</div>
+    <div id="voiceList"></div>
+  </div>
+</section>
 
-            <div class="space-y-4 pt-4">
-                <audio id="audioPlayer" controls class="w-full hidden rounded-xl"></audio>
-                <a id="downloadBtn" href="#" download="nivora-ai-voice.mp3" class="hidden block w-full text-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-download"></i>
-                    <span>হাই-কোয়ালিটি অডিও ডাউনলোড</span>
-                </a>
-            </div>
-        </div>
+<section class="page" id="rewards">
+  <h1>Earn Credits</h1>
+  <div class="card reward">
+    <h2>🎁 Watch Ad & Earn Credits</h2>
+    <p>আপনার দেওয়া বিজ্ঞাপন লিংক। বিজ্ঞাপন দেখা সম্পন্ন হয়েছে কিনা তা যাচাই করতে Ad Provider-এর Reward Callback প্রয়োজন।</p>
+    <a class="rewardlink" href="https://arwf.org/4/cc700b40da57eaf8d82400a54ca1743e" target="_blank" rel="noopener noreferrer">বিজ্ঞাপন দেখে ক্রেডিট নিন ↗</a>
+    <div class="status warn">Reward Callback যুক্ত না হওয়া পর্যন্ত ক্রেডিট যোগ হবে না।</div>
+  </div>
+</section>
 
-    </main>
+<section class="page" id="settings">
+  <h1>API Settings</h1>
+  <div class="card">
+    <h2>Cloudflare Worker</h2>
+    <div class="field"><label>Worker Base URL</label><input id="apiUrl" placeholder="https://your-worker.your-account.workers.dev"></div>
+    <button class="btn" id="saveApi">Save URL</button>
+    <button class="btn cyan" id="testApi">Test Connection</button>
+    <div class="status" id="apiStatus">Worker URL সেট করুন।</div>
+  </div>
+  <div class="card">
+    <h2>ElevenLabs API Key</h2>
+    <div class="status warn">API Key HTML-এ বসাবেন না। Cloudflare Worker → Settings → Variables and Secrets → Add Secret-এ নাম দিন ELEVENLABS_API_KEY।</div>
+    <p>আপনার আগের প্রকাশিত API Key বাতিল করে নতুন Key Secret হিসেবে সংরক্ষণ করুন। নতুন Key এই পেজে বা GitHub-এ দেবেন না।</p>
+  </div>
+</section>
 
-    <!-- Core JavaScript with Integrated API Key -->
-    <script>
-        // Pre-configured ElevenLabs API Key securely injected
-        const ELEVEN_API_KEY = "sk_7cd8aa56553eaa21613a362bfcf1327e1b37c325a0f52dfa";
-        let userCredits = 15;
+<footer>NIVORA VOICE CLONE STUDIO • AI Audio Workspace</footer>
+</main>
+</div>
 
-        function updateCreditDisplay() {
-            document.getElementById('creditCount').innerText = userCredits;
-        }
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const state={voices:[],audioCount:0,recorder:null,stream:null,chunks:[],timer:null,seconds:0,audioContext:null,source:null,gain:null,delay:null,feedback:null,reverb:null,mediaDest:null,objectUrl:null};
+const base=()=>localStorage.getItem("nivora_worker_url")||"";
+function status(id,msg,type=""){const e=$(id);e.textContent=msg;e.className="status "+type}
+function go(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===id));$("sidebar").classList.remove("open");window.scrollTo(0,0)}
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>go(b.dataset.page));
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+$("menuBtn").onclick=()=>$("sidebar").classList.toggle("open");
+function updateClock(){$("clock").textContent=new Intl.DateTimeFormat("bn-BD",{dateStyle:"medium",timeStyle:"medium",timeZone:"Asia/Dhaka"}).format(new Date())+" • Asia/Dhaka"}
+updateClock();setInterval(updateClock,1000);
+$("apiUrl").value=base();
+function updateStats(){$("voiceStat").textContent=state.voices.length;$("audioStat").textContent=state.audioCount}
+function fileForm(file,key="file"){const f=new FormData();f.append(key,file,file.name);return f}
+async function api(path,options={}){
+  if(!base())throw Error("Settings-এ Cloudflare Worker URL দিন।");
+  const r=await fetch(base().replace(/\/+$/,"")+path,options);
+  if(!r.ok){let m="Request failed: "+r.status;try{const j=await r.json();m=j.error||j.detail||j.message||m}catch{}throw Error(m)}
+  return r;
+}
+async function audioResult(r,audioId,downloadId,filename){
+  const blob=await r.blob();if(!blob.size)throw Error("API থেকে Audio পাওয়া যায়নি");
+  const url=URL.createObjectURL(blob);
+  if($(audioId)){$(audioId).src=url;$(audioId).classList.remove("hidden")}
+  if($(downloadId)){$(downloadId).href=url;$(downloadId).download=filename;$(downloadId).classList.remove("hidden")}
+  state.audioCount++;updateStats();
+}
+$("saveApi").onclick=()=>{
+  try{const u=new URL($("apiUrl").value.trim());if(u.protocol!=="https:")throw Error("HTTPS URL ব্যবহার করুন");localStorage.setItem("nivora_worker_url",u.origin===u.href?u.href:u.href.replace(/\/+$/,""));status("apiStatus","Worker URL সংরক্ষিত হয়েছে।","ok")}
+  catch(e){status("apiStatus",e.message,"err")}
+};
+$("testApi").onclick=async()=>{
+  status("apiStatus","Testing...");
+  try{const r=await api("/api/health");const j=await r.json();status("apiStatus","Connected: "+JSON.stringify(j),"ok");$("apiStat").textContent="Connected"}
+  catch(e){status("apiStatus",e.message,"err");$("apiStat").textContent="Offline"}
+};
 
-        function watchAdForCredit() {
-            alert("সফলভাবে ভিডিও অ্যাড দেখা সম্পন্ন হয়েছে! আপনার অ্যাকাউন্টে ১০টি ফ্রি ক্রেডিট যোগ করা হয়েছে।");
-            userCredits += 10;
-            updateCreditDisplay();
-        }
+$("cloneBtn").onclick=async()=>{
+  const files=$("cloneFiles").files,name=$("cloneName").value.trim();
+  if(!name||!files.length)return status("cloneStatus","Voice Name এবং Audio Sample দিন।","err");
+  if(!$("cloneConsent").checked)return status("cloneStatus","Voice owner-এর সম্মতি নিশ্চিত করুন।","err");
+  for(const f of files)if(!f.type.startsWith("audio/"))return status("cloneStatus","শুধু Audio File দিন।","err");
+  const b=$("cloneBtn");b.disabled=true;status("cloneStatus","Voice Clone তৈরি হচ্ছে...");
+  try{
+    const fd=new FormData();fd.append("name",name);fd.append("description",$("cloneDesc").value);fd.append("remove_background_noise","false");
+    [...files].forEach(f=>fd.append("files",f,f.name));
+    const r=await api("/api/voices/clone",{method:"POST",body:fd});const j=await r.json();
+    if(!j.voice_id)throw Error("Voice ID পাওয়া যায়নি");
+    state.voices.push({voice_id:j.voice_id,name});renderVoices();updateStats();
+    status("cloneStatus","Voice Clone সফল। Voice ID: "+j.voice_id,"ok");
+    $("ttsVoice").value=j.voice_id;$("changeVoice").value=j.voice_id;
+  }catch(e){status("cloneStatus",e.message,"err")}finally{b.disabled=false}
+};
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if(file) {
-                document.getElementById('fileNameDisplay').innerText = "ফাইল লোড হয়েছে: " + file.name;
-            }
-        }
+$("ttsText").oninput=()=>$("charCount").textContent=$("ttsText").value.length;
+$("ttsBtn").onclick=async()=>{
+  const id=$("ttsVoice").value.trim(),text=$("ttsText").value.trim();
+  if(!id||!text)return status("ttsStatus","Voice ID ও Text লিখুন।","err");
+  const b=$("ttsBtn");b.disabled=true;status("ttsStatus","Generating...");
+  try{
+    const r=await api("/api/tts/"+encodeURIComponent(id),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,model_id:$("ttsModel").value,voice_settings:{stability:+$("stability").value,similarity_boost:+$("similarity").value,speed:+$("speed").value}})});
+    await audioResult(r,"ttsAudio","ttsDownload","nivora-speech.mp3");status("ttsStatus","Speech তৈরি হয়েছে।","ok");
+  }catch(e){status("ttsStatus",e.message,"err")}finally{b.disabled=false}
+};
 
-        async function processElevenLabsVoice() {
-            const textInput = document.getElementById('textInput').value.trim();
-            const voiceId = document.getElementById('voiceIdSelect').value;
-            const stability = document.getElementById('stabilityRange').value;
-            const similarity = document.getElementById('similarityRange').value;
-            const statusText = document.getElementById('statusText');
+$("changeBtn").onclick=async()=>{
+  const id=$("changeVoice").value.trim(),f=$("changeFile").files[0];
+  if(!id||!f)return status("changeStatus","Target Voice ID ও Audio দিন।","err");
+  if(!$("changeConsent").checked)return status("changeStatus","Audio ব্যবহারের অনুমতি নিশ্চিত করুন।","err");
+  const b=$("changeBtn");b.disabled=true;status("changeStatus","Voice Transformation চলছে...");
+  try{
+    const fd=fileForm(f,"audio");fd.append("model_id",$("changeModel").value);
+    const r=await api("/api/speech-to-speech/"+encodeURIComponent(id),{method:"POST",body:fd});
+    await audioResult(r,"changeAudio","changeDownload","nivora-voice-changed.mp3");status("changeStatus","Voice পরিবর্তন সম্পন্ন।","ok");
+  }catch(e){status("changeStatus",e.message,"err")}finally{b.disabled=false}
+};
 
-            if (!textInput) {
-                alert("দয়া করে টেক্সট বক্সে কিছু লিখুন!");
-                return;
-            }
+$("transcribeBtn").onclick=async()=>{
+  const f=$("transcribeFile").files[0];if(!f)return status("transcribeStatus","Audio File দিন।","err");
+  const b=$("transcribeBtn");b.disabled=true;status("transcribeStatus","Transcribing...");
+  try{
+    const fd=fileForm(f,"file");fd.append("model_id","scribe_v1");
+    if($("transcribeLang").value.trim())fd.append("language_code",$("transcribeLang").value.trim());
+    const r=await api("/api/transcribe",{method:"POST",body:fd});const j=await r.json();
+    $("transcribeResult").value=j.text||JSON.stringify(j,null,2);status("transcribeStatus","Transcription সম্পন্ন।","ok");
+  }catch(e){status("transcribeStatus",e.message,"err")}finally{b.disabled=false}
+};
+$("copyTranscript").onclick=async()=>{try{await navigator.clipboard.writeText($("transcribeResult").value);status("transcribeStatus","Text copied।","ok")}catch{status("transcribeStatus","Copy করতে Browser permission প্রয়োজন।","err")}};
 
-            if (userCredits <= 0) {
-                alert("আপনার ক্রেডিট শেষ! দয়া করে 'অ্যাড দেখে ফ্রি ক্রেডিট নিন' বাটনে ক্লিক করুন।");
-                return;
-            }
+$("dubBtn").onclick=async()=>{
+  const f=$("dubFile").files[0];if(!f)return status("dubStatus","Audio বা Video File দিন।","err");
+  const b=$("dubBtn");b.disabled=true;status("dubStatus","Dubbing Project তৈরি হচ্ছে...");
+  try{
+    const fd=fileForm(f,"file");fd.append("target_language",$("targetLang").value);
+    fd.append("name",$("dubName").value||"NIVORA Dubbing Project");
+    if($("sourceLang").value.trim())fd.append("source_language",$("sourceLang").value.trim());
+    const r=await api("/api/dubbing/project",{method:"POST",body:fd});const j=await r.json();
+    $("dubId").value=j.dubbing_id||"";status("dubStatus","Project তৈরি হয়েছে। ID: "+(j.dubbing_id||"Not returned"),"ok");
+  }catch(e){status("dubStatus",e.message,"err")}finally{b.disabled=false}
+};
+$("dubCheck").onclick=async()=>{
+  const id=$("dubId").value.trim();if(!id)return status("dubStatus","Dubbing Project ID দিন।","err");
+  try{const r=await api("/api/dubbing/"+encodeURIComponent(id));const j=await r.json();status("dubStatus","Project Status: "+JSON.stringify(j),"ok")}
+  catch(e){status("dubStatus",e.message,"err")}
+};
+$("dubDownloadBtn").onclick=async()=>{
+  const id=$("dubId").value.trim(),lang=$("dubOutputLang").value.trim();
+  if(!id||!lang)return status("dubStatus","Project ID এবং Language Code দিন।","err");
+  try{const r=await api("/api/dubbing/"+encodeURIComponent(id)+"/audio/"+encodeURIComponent(lang));await audioResult(r,"dubAudio","dubDownload","nivora-dubbed.mp3");status("dubStatus","Dubbed Audio পাওয়া গেছে।","ok")}
+  catch(e){status("dubStatus",e.message,"err")}
+};
 
-            userCredits--;
-            updateCreditDisplay();
+$("isolateBtn").onclick=async()=>{
+  const f=$("isolateFile").files[0];if(!f)return status("isolateStatus","Audio File দিন।","err");
+  const b=$("isolateBtn");b.disabled=true;status("isolateStatus","Noise isolation চলছে...");
+  try{const r=await api("/api/isolate",{method:"POST",body:fileForm(f,"audio")});await audioResult(r,"isolateAudio","isolateDownload","nivora-isolated.mp3");status("isolateStatus","Voice Isolation সম্পন্ন।","ok")}
+  catch(e){status("isolateStatus",e.message,"err")}finally{b.disabled=false}
+};
 
-            statusText.innerHTML = `
-                <div class="flex flex-col items-center space-y-3">
-                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-yellow-500"></div>
-                    <p class="text-yellow-400 text-sm font-semibold">ElevenLabs এআই ইঞ্জিন প্রসেস করছে...</p>
-                </div>
-            `;
+let rec;
+let recChunks=[];
+let recStream;
+let recTimer;
+let recSeconds=0;
+$("recStart").onclick=async()=>{
+  try{
+    recStream=await navigator.mediaDevices.getUserMedia({audio:true});recChunks=[];
+    rec=new MediaRecorder(recStream);rec.ondataavailable=e=>{if(e.data.size)recChunks.push(e.data)};
+    rec.onstop=()=>{
+      const blob=new Blob(recChunks,{type:rec.mimeType||"audio/webm"});const url=URL.createObjectURL(blob);
+      $("recAudio").src=url;$("recAudio").classList.remove("hidden");$("recDownload").href=url;$("recDownload").classList.remove("hidden");
+      recStream.getTracks().forEach(t=>t.stop());status("recStatus","Recording complete।","ok");
+    };
+    rec.start();$("recStart").disabled=true;$("recPause").disabled=false;$("recStop").disabled=false;
+    recTimer=setInterval(()=>{recSeconds++;$("recTimer").textContent=String(Math.floor(recSeconds/60)).padStart(2,"0")+":"+String(recSeconds%60).padStart(2,"0")},1000);
+    status("recStatus","Recording...","ok");
+  }catch(e){status("recStatus",e.message,"err")}
+};
+$("recPause").onclick=()=>{
+  if(!rec)return;
+  if(rec.state==="recording"){rec.pause();clearInterval(recTimer);$("recPause").textContent="Resume"}
+  else if(rec.state==="paused"){rec.resume();$("recPause").textContent="Pause";recTimer=setInterval(()=>{recSeconds++;$("recTimer").textContent=String(Math.floor(recSeconds/60)).padStart(2,"0")+":"+String(recSeconds%60).padStart(2,"0")},1000)}
+};
+$("recStop").onclick=()=>{if(rec&&rec.state!=="inactive")rec.stop();clearInterval(recTimer);$("recStart").disabled=false;$("recPause").disabled=true;$("recStop").disabled=true};
 
-            try {
-                const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-                    method: "POST",
-                    headers: {
-                        "Accept": "audio/mpeg",
-                        "Content-Type": "application/json",
-                        "xi-api-key": ELEVEN_API_KEY
-                    },
-                    body: JSON.stringify({
-                        "text": textInput,
-                        "model_id": "eleven_multilingual_v2",
-                        "voice_settings": {
-                            "stability": parseFloat(stability),
-                            "similarity_boost": parseFloat(similarity)
-                        }
-                    })
-                });
+function renderVoices(){
+  const box=$("voiceList");box.replaceChildren();
+  if(!state.voices.length){box.textContent="No saved voices loaded.";return}
+  state.voices.forEach(v=>{
+    const item=document.createElement("div");item.className="voiceitem";
+    const info=document.createElement("div");const strong=document.createElement("strong");strong.textContent=v.name||"Voice";
+    const small=document.createElement("div");small.className="muted";small.textContent=v.voice_id;info.append(strong,small);
+    const use=document.createElement("button");use.className="btn dark";use.textContent="Use";
+    use.onclick=()=>{$("ttsVoice").value=v.voice_id;$("changeVoice").value=v.voice_id;go("tts")};
+    const del=document.createElement("button");del.className="btn red";del.textContent="Delete";
+    del.onclick=async()=>{if(!confirm("এই Voice ElevenLabs Account থেকে Delete করবেন?"))return;try{await api("/api/voices/"+encodeURIComponent(v.voice_id),{method:"DELETE"});state.voices=state.voices.filter(x=>x.voice_id!==v.voice_id);renderVoices();updateStats();status("libraryStatus","Voice deleted।","ok")}catch(e){status("libraryStatus",e.message,"err")}};
+    item.append(info,use,del);box.append(item);
+  });
+}
+$("refreshVoices").onclick=async()=>{
+  status("libraryStatus","Loading voices...");
+  try{const r=await api("/api/voices");const j=await r.json();state.voices=j.voices||[];renderVoices();updateStats();status("libraryStatus","Voice Library loaded।","ok")}
+  catch(e){status("libraryStatus",e.message,"err")}
+};
 
-                if (response.ok) {
-                    const audioBlob = await response.blob();
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    
-                    const player = document.getElementById('audioPlayer');
-                    player.src = audioUrl;
-                    player.classList.remove('hidden');
-                    
-                    statusText.innerHTML = `
-                        <div class="text-emerald-400 font-bold flex items-center space-x-2">
-                            <i class="fa-solid fa-circle-check text-xl"></i>
-                            <span>ভয়েস সফলভাবে জেনারেট হয়েছে!</span>
-                        </div>
-                    `;
-                    
-                    const downloadBtn = document.getElementById('downloadBtn');
-                    downloadBtn.href = audioUrl;
-                    downloadBtn.classList.remove('hidden');
-                } else {
-                    const errData = await response.json();
-                    statusText.innerHTML = `<span class="text-red-400 text-xs">এআই এরর: ${errData.detail?.message || "অনুমোদন ত্রুটি!"}</span>`;
-                }
-            } catch (error) {
-                statusText.innerHTML = `<span class="text-red-400 text-xs">নেটওয়ার্ক বা সার্ভার কানেকশন সমস্যা!</span>`;
-            }
-        }
-    </script>
+let effectContext,effectSource,effectGain,effectDelay,effectFeedback,effectWet,effectDry,effectDest,effectRecorder;
+$("effectFile").onchange=async()=>{
+  const f=$("effectFile").files[0];if(!f)return;
+  const el=$("effectAudio");if(el.src)URL.revokeObjectURL(el.src);el.src=URL.createObjectURL(f);
+  try{
+    effectContext=new (window.AudioContext||window.webkitAudioContext)();
+    effectSource=effectContext.createMediaElementSource(el);
+    effectGain=effectContext.createGain();effectDelay=effectContext.createDelay(2);
+    effectFeedback=effectContext.createGain();effectWet=effectContext.createGain();effectDry=effectContext.createGain();
+    effectDest=effectContext.createMediaStreamDestination();
+    effectSource.connect(effectGain);
+    effectGain.connect(effectDry);effectDry.connect(effectContext.destination);effectDry.connect(effectDest);
+    effectGain.connect(effectDelay);effectDelay.connect(effectFeedback);effectFeedback.connect(effectDelay);effectDelay.connect(effectWet);effectWet.connect(effectContext.destination);effectWet.connect(effectDest);
+    setEffects();status("effectStatus","Audio loaded. Volume, Echo ও Reverb controls ready।","ok");
+  }catch(e){status("effectStatus","Audio Effects চালু হয়নি: "+e.message,"err")}
+};
+function setEffects(){
+  if(!effectContext)return;
+  const vol=+$("volume").value,echo=+$("echo").value,reverb=+$("reverb").value;
+  effectGain.gain.value=1;
+  effectDry.gain.value=1;
+  effectDelay.delayTime.value=.28;
+  effectFeedback.gain.value=echo*.65;
+  effectWet.gain.value=Math.max(echo,reverb*.45);
+  $("volVal").textContent=Math.round(vol*100)+"%";$("echoVal").textContent=Math.round(echo*100)+"%";$("reverbVal").textContent=Math.round(reverb*100)+"%";
+  $("rateVal").textContent=$("rate").value+"x";
+  $("effectAudio").volume=Math.min(1,vol);
+  $("effectAudio").playbackRate=+$("rate").value;
+}
+["volume","echo","reverb","rate"].forEach(id=>$(id).oninput=setEffects);
+$("effectReset").onclick=()=>{$("volume").value=1;$("echo").value=0;$("reverb").value=0;$("rate").value=1;setEffects()};
+$("effectExport").onclick=()=>{
+  if(!effectDest)return status("effectStatus","আগে Audio File নির্বাচন করুন।","err");
+  try{
+    const stream=effectDest.stream;const mime=MediaRecorder.isTypeSupported("audio/webm;codecs=opus")?"audio/webm;codecs=opus":"audio/webm";
+    const recorder=new MediaRecorder(stream,{mimeType:mime});const chunks=[];
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+    recorder.onstop=()=>{const blob=new Blob(chunks,{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="nivora-effects.webm";a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);status("effectStatus","Processed audio exported as WebM।","ok")};
+    recorder.start();$("effectAudio").currentTime=0;$("effectAudio").play();
+    $("effectAudio").onended=()=>{if(recorder.state!=="inactive")recorder.stop()};
+    status("effectStatus","Exporting audio in real time. Audio play শেষ হলে Export সম্পন্ন হবে।","ok");
+  }catch(e){status("effectStatus",e.message,"err")}
+};
+renderVoices();updateStats();
+</script>
 </body>
 </html>
