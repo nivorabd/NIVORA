@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d1b">
+<title>NIVORA Voice Clone Studio</title>
+<style>
+:root{--bg:#080d1b;--panel:#111a2d;--panel2:#17233a;--gold:#f5c76b;--cyan:#52d8e8;--text:#f4f7ff;--muted:#9eacc5;--border:#293751;--red:#ff7373;--green:#6ee7ad}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 80% 0,#18294a 0,transparent 38%),var(--bg);color:var(--text);font-family:Arial,"Noto Sans Bengali",sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:5;background:#0a1222ee;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.logo{width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#c38c34);display:grid;place-items:center;color:#172033;font-weight:900}
+.brand small{display:block;color:var(--muted);font-weight:400;font-size:11px;margin-top:3px}
+.topright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.clock{font-size:12px;color:var(--muted)}
+.credits{border:1px solid #8c713e;background:#302718;color:var(--gold);padding:9px 12px;border-radius:10px;font-weight:bold}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1500px;margin:auto;min-height:calc(100vh - 64px)}
+.sidebar{padding:20px 13px;border-right:1px solid var(--border);background:#0c1424}
+.navbtn{display:flex;width:100%;text-align:left;padding:12px;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:10px;margin:4px 0;gap:10px;align-items:center}
+.navbtn.active,.navbtn:hover{background:var(--panel2);border-color:var(--border);color:var(--gold)}
+main{padding:22px;min-width:0}
+h1{font-size:clamp(23px,4vw,34px);margin:5px 0 8px;color:#ffffff}
+h2{font-size:19px;margin:0 0 14px;color:var(--gold)}
+p{color:var(--muted);line-height:1.6}
+.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.card{background:linear-gradient(145deg,var(--panel),#101a2d);border:1px solid var(--border);border-radius:16px;padding:17px;margin-bottom:15px;min-width:0}
+.stat{font-size:27px;color:var(--gold);font-weight:800;margin-top:8px}
+.btn{border:0;border-radius:10px;padding:11px 15px;background:linear-gradient(135deg,var(--gold),#d69c42);color:#152035;font-weight:800;transition:all 0.2s}
+.btn:hover{opacity:0.9;transform:translateY(-1px)}
+.btn.secondary{background:#23314a;color:var(--text);border:1px solid var(--border)}
+.btn.cyan{background:linear-gradient(135deg,var(--cyan),#36a9c3);color:#071421}
+.btn.danger{background:#54252d;color:#ffdada;border:1px solid #86414a}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.field{margin:12px 0}
+label{display:block;color:#c5d1e5;font-size:13px;margin-bottom:7px}
+input,textarea,select{width:100%;padding:12px;border:1px solid var(--border);background:#091326;color:var(--text);border-radius:10px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--cyan)}
+textarea{min-height:130px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.status{padding:11px 13px;border-radius:10px;background:#17243a;color:#c9d7ec;font-size:13px;line-height:1.5;margin:12px 0;overflow-wrap:anywhere}
+.status.error{background:#3b2029;color:#ffc5c5;border:1px solid #733443}
+.status.success{background:#17352c;color:#a8f5d1;border:1px solid #285949}
+.status.warn{background:#3b321c;color:#ffe0a0;border:1px solid #6b5a32}
+.hidden{display:none!important}
+.voice-item{padding:12px;border:1px solid var(--border);border-radius:10px;margin:8px 0;display:flex;justify-content:space-between;gap:10px;align-items:center;background:#091326}
+.voice-item strong{overflow-wrap:anywhere;color:var(--gold)}
+.reward{background:linear-gradient(130deg,#28203d,#172d42);border-color:#62508b}
+.reward-link{display:inline-flex;text-decoration:none;align-items:center;justify-content:center;gap:8px;padding:13px 18px;background:linear-gradient(120deg,#f5c76b,#e8a74d);color:#172033;border-radius:12px;font-weight:900}
+audio{width:100%;margin-top:12px}
+.section{display:none}.section.active{display:block}
+.consent{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#c8d5e8;line-height:1.5;cursor:pointer}
+.consent input{width:auto;margin-top:3px}
+footer{text-align:center;color:#71819d;padding:25px;font-size:12px}
+.mobile-menu{display:none}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{display:none;position:fixed;z-index:10;top:64px;bottom:0;width:260px;box-shadow:10px 0 30px #0008}.sidebar.open{display:block}.mobile-menu{display:inline-block}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:15px}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.clock{display:none}.topbar{padding:10px}.brand small{display:none}main{padding:12px}.card{padding:14px}.row>*{flex-basis:100%}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <button class="btn secondary mobile-menu" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="logo">N</div>
+    <div>NIVORA VOICE CLONE STUDIO<small>Clone Your Voice. Create Without Limits.</small></div>
+  </div>
+  <div class="topright">
+    <div class="clock" id="clock">সময় দেখানো হচ্ছে…</div>
+    <div class="credits">★ <span id="creditDisplay">0</span> Credits</div>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <button class="navbtn active" data-section="dashboard">⌂ Dashboard</button>
+  <button class="navbtn" data-section="record">🎙 Voice Recording</button>
+  <button class="navbtn" data-section="clone">✦ Voice Cloning</button>
+  <button class="navbtn" data-section="tts">♫ Text to Speech</button>
+  <button class="navbtn" data-section="library">▤ Voice Library</button>
+  <button class="navbtn" data-section="reward">🎁 Earn Credits</button>
+  <button class="navbtn" data-section="settings">⚙ Settings & API</button>
+</aside>
+
+<main>
+<section class="section active" id="dashboard">
+  <h1>Welcome to NIVORA Studio</h1>
+  <p>আপনার কণ্ঠ রেকর্ড করুন, সম্মতিসহ ভয়েস ক্লোন তৈরি করুন এবং AI Text-to-Speech ব্যবহার করুন।</p>
+  <div class="grid">
+    <div class="card"><div class="muted">Available Credits</div><div class="stat" id="statCredits">0</div></div>
+    <div class="card"><div class="muted">Saved Voices</div><div class="stat" id="statVoices">0</div></div>
+    <div class="card"><div class="muted">Generated Audio</div><div class="stat" id="statAudio">0</div></div>
+  </div>
+  <div class="card reward">
+    <h2>🎁 বিজ্ঞাপন দেখে ক্রেডিট নিন</h2>
+    <p>বিজ্ঞাপন দেখতে নিচের বাটনে চাপ দিন। বিজ্ঞাপন লিংক খোলা মানেই Reward সম্পন্ন হয়েছে এমন নয়। যাচাইকৃত Reward Callback ছাড়া ক্রেডিট যোগ হবে না।</p>
+    <a class="reward-link" href="https://arwf.org/4/cc700b40da57eaf8d82400a54ca1743e" target="_blank" rel="noopener noreferrer">🎁 বিজ্ঞাপন দেখে ক্রেডিট নিন ↗</a>
+    <div class="status warn">Reward Verification এখনো Backend Provider Callback-এর সঙ্গে সংযুক্ত নয়। তাই শুধু বিজ্ঞাপন লিংকে প্রবেশের জন্য ক্রেডিট দেওয়া হচ্ছে না।</div>
+  </div>
+  <div class="card">
+    <h2>Quick Start</h2>
+    <div class="row">
+      <button class="btn" data-goto="record">রেকর্ড শুরু করুন</button>
+      <button class="btn cyan" data-goto="clone">Voice Clone তৈরি করুন</button>
+      <button class="btn secondary" data-goto="tts">Text to Speech</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="record">
+  <h1>Voice Recording Studio</h1>
+  <p>পরিষ্কার পরিবেশে নিজের কণ্ঠ রেকর্ড করুন।</p>
+  <div class="card">
+    <div class="row">
+      <button class="btn" id="startRecord">● Start Recording</button>
+      <button class="btn secondary" id="pauseRecord" disabled>Ⅱ Pause</button>
+      <button class="btn danger" id="stopRecord" disabled>■ Stop</button>
+    </div>
+    <div class="status" id="recordStatus">Microphone ব্যবহারের জন্য Start Recording চাপ দিন।</div>
+    <div id="recordTime" class="stat">00:00</div>
+    <audio id="recordPlayer" controls class="hidden"></audio>
+    <div style="margin-top:12px;">
+      <a id="recordDownload" class="btn secondary hidden" download="nivora-recording.webm">Download Recording</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="clone">
+  <h1>AI Voice Cloning</h1>
+  <p>শুধু নিজের কণ্ঠ অথবা স্পষ্ট অনুমতিপ্রাপ্ত ব্যক্তির কণ্ঠ ব্যবহার করুন।</p>
+  <div class="card">
+    <h2>Create Instant Voice Clone</h2>
+    <div class="field"><label>Voice Name</label><input id="voiceName" maxlength="80" placeholder="যেমন: My Bengali Voice"></div>
+    <div class="field"><label>Voice Description</label><input id="voiceDescription" maxlength="300" placeholder="কণ্ঠের সংক্ষিপ্ত বর্ণনা"></div>
+    <div class="field"><label>Audio Sample (MP3, WAV, M4A, WEBM)</label><input id="voiceFile" type="file" accept="audio/*"></div>
+    <label class="consent"><input id="consent" type="checkbox"><span>আমি নিশ্চিত করছি যে এই কণ্ঠ আমার নিজের অথবা কণ্ঠের মালিকের স্পষ্ট, অবগত ও বৈধ অনুমতি রয়েছে। প্রতারণা বা পরিচয় জালিয়াতির জন্য এটি ব্যবহার করব না।</span></label>
+    <div class="field" style="margin-top:15px;"><button class="btn" id="cloneBtn">✦ Create Voice Clone</button></div>
+    <div class="status" id="cloneStatus">Backend API সংযুক্ত না থাকলে Voice Clone তৈরি করা যাবে না।</div>
+  </div>
+</section>
+
+<section class="section" id="tts">
+  <h1>AI Text to Speech</h1>
+  <p>সংরক্ষিত Voice ID ব্যবহার করে লেখা থেকে অডিও তৈরি করুন।</p>
+  <div class="card">
+    <div class="field"><label>Voice ID</label><input id="ttsVoiceId" placeholder="আপনার সংরক্ষিত Voice ID"></div>
+    <div class="field">
+      <label>Text</label>
+      <textarea id="ttsText" maxlength="5000" placeholder="এখানে আপনার লেখা লিখুন..."></textarea>
+      <div class="muted" style="text-align:right;margin-top:4px;"><span id="charCount">0</span> / 5000 characters</div>
+    </div>
+    <div class="field">
+      <label>Model</label>
+      <select id="ttsModel">
+        <option value="eleven_multilingual_v2">Eleven Multilingual v2</option>
+        <option value="eleven_turbo_v2_5">Eleven Turbo v2.5</option>
+        <option value="eleven_flash_v2_5">Eleven Flash v2.5</option>
+      </select>
+    </div>
+    <div class="grid">
+      <div class="field"><label>Stability</label><input id="stability" type="range" min="0" max="1" step=".05" value=".5"></div>
+      <div class="field"><label>Similarity</label><input id="similarity" type="range" min="0" max="1" step=".05" value=".75"></div>
+      <div class="field"><label>Speed</label><input id="speed" type="range" min=".7" max="1.2" step=".05" value="1"></div>
+    </div>
+    <button class="btn cyan" id="ttsBtn">♫ Generate Speech</button>
+    <div class="status" id="ttsStatus">Text-to-Speech API প্রস্তুত করতে Backend সংযোগ প্রয়োজন।</div>
+    <audio id="ttsPlayer" controls class="hidden"></audio>
+    <div style="margin-top:12px;">
+      <a id="ttsDownload" class="btn secondary hidden" download="nivora-generated-audio.mp3">Download Audio</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="library">
+  <h1>My Voice Library</h1>
+  <p>এই Browser-এ সংরক্ষিত Voice ID তালিকা। নিরাপদ স্থায়ী সংরক্ষণের জন্য Backend Database প্রয়োজন।</p>
+  <div class="card"><div id="voiceList" class="muted">এখনো কোনো Voice সংরক্ষিত নেই।</div></div>
+</section>
+
+<section class="section" id="reward">
+  <h1>Credit Wallet & Rewards</h1>
+  <div class="card reward">
+    <div class="muted">Available Credits</div>
+    <div class="stat" id="walletCredits">0</div>
+    <p>বিজ্ঞাপন দেখার জন্য নিচের লিংক ব্যবহার করুন। Provider-এর যাচাইকৃত Reward Callback না থাকলে কোনো ক্রেডিট যোগ হবে না।</p>
+    <a class="reward-link" href="https://arwf.org/4/cc700b40da57eaf8d82400a54ca1743e" target="_blank" rel="noopener noreferrer">🎁 বিজ্ঞাপন দেখে ক্রেডিট নিন ↗</a>
+    <div class="status warn">Reward Callback: Not Connected</div>
+  </div>
+  <div class="card"><h2>Credit Transactions</h2><p>স্থায়ী Credit Wallet ও Transaction History চালুর জন্য নিরাপদ Backend Database প্রয়োজন।</p></div>
+</section>
+
+<section class="section" id="settings">
+  <h1>Settings & API Configuration</h1>
+  <div class="card">
+    <h2>ElevenLabs API Key Security</h2>
+    <div class="status error">API Key সরাসরি HTML-এ রাখা হয়নি। নিরাপত্তার জন্য Cloudflare Worker Secret ব্যবহার করুন।</div>
+    <p>Cloudflare Worker Secret-এর নাম:</p>
+    <input value="ELEVENLABS_API_KEY" readonly style="color:var(--gold);font-family:monospace;">
+    <p style="margin-top:10px;">Worker Environment থেকে Key পড়তে হবে:</p>
+    <pre style="white-space:pre-wrap;background:#091326;padding:12px;border-radius:10px;color:#9ee7f0;font-family:monospace;border:1px solid var(--border)">const apiKey = env.ELEVENLABS_API_KEY;</pre>
+    <p>API Key কখনো এই HTML, GitHub বা Browser Storage-এ লিখবেন না।</p>
+  </div>
+  <div class="card">
+    <h2>Backend Endpoint Connection</h2>
+    <div class="field"><label>Cloudflare Worker Base URL</label><input id="apiBase" placeholder="https://your-worker.your-subdomain.workers.dev"></div>
+    <div class="row">
+      <button class="btn secondary" id="saveApi">Save Backend URL</button>
+      <button class="btn cyan" id="testApi">Test Connection</button>
+    </div>
+    <div class="status" id="apiStatus">Backend URL এখনো সেট করা হয়নি।</div>
+  </div>
+</section>
+
+<footer>NIVORA VOICE CLONE STUDIO • Professional AI Voice Workspace</footer>
+</main>
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const state = {voices:[],audioCount:0,recorder:null,stream:null,chunks:[],timer:null,seconds:0,recordBlob:null};
+
+function getApiBase(){return (localStorage.getItem("nivora_voice_api")||"").trim().replace(/\/+$/,"")}
+function updateStats(){
+  const credits=0;
+  $("creditDisplay").textContent=credits;
+  $("statCredits").textContent=credits;
+  $("walletCredits").textContent=credits;
+  $("statVoices").textContent=state.voices.length;
+  $("statAudio").textContent=state.audioCount;
+}
+function setStatus(id,message,type=""){
+  const el=$(id);el.textContent=message;el.className="status "+type;
+}
+function navigate(section){
+  document.querySelectorAll(".section").forEach(x=>x.classList.toggle("active",x.id===section));
+  document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.section===section));
+  $("sidebar").classList.remove("open");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".navbtn").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.section)));
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.goto)));
+$("menuBtn").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
+
+function clock(){
+  $("clock").textContent=new Intl.DateTimeFormat("bn-BD",{dateStyle:"medium",timeStyle:"medium",timeZone:"Asia/Dhaka"}).format(new Date())+" • Asia/Dhaka";
+}
+clock();setInterval(clock,1000);
+
+function renderVoices(){
+  const list=$("voiceList");list.replaceChildren();
+  if(!state.voices.length){list.textContent="এখনো কোনো Voice সংরক্ষিত নেই।";return}
+  state.voices.forEach(v=>{
+    const item=document.createElement("div");item.className="voice-item";
+    const info=document.createElement("div");
+    const strong=document.createElement("strong");strong.textContent=v.name;
+    const small=document.createElement("div");small.className="muted";small.textContent="Voice ID: "+v.voice_id;
+    info.append(strong,small);
+    const use=document.createElement("button");use.className="btn secondary";use.textContent="Use in TTS";
+    use.addEventListener("click",()=>{$("ttsVoiceId").value=v.voice_id;navigate("tts")});
+    item.append(info,use);list.append(item);
+  });
+}
+function saveVoice(v){
+  state.voices.push(v);
+  try{localStorage.setItem("nivora_voice_profiles",JSON.stringify(state.voices))}catch(e){}
+  renderVoices();updateStats();
+}
+try{
+  const saved=JSON.parse(localStorage.getItem("nivora_voice_profiles")||"[]");
+  if(Array.isArray(saved))state.voices=saved.filter(v=>v&&v.voice_id&&v.name);
+}catch(e){state.voices=[]}
+renderVoices();updateStats();
+
+async function apiRequest(path,options={}){
+  const base=getApiBase();
+  if(!base)throw new Error("Backend URL সেট করা হয়নি। Settings থেকে Cloudflare Worker URL যুক্ত করুন।");
+  const response=await fetch(base+path,options);
+  const contentType=response.headers.get("content-type")||"";
+  const data=contentType.includes("application/json")?await response.json():null;
+  if(!response.ok)throw new Error(data?.error||data?.message||"Backend request failed ("+response.status+")");
+  return {response,data};
+}
+
+$("startRecord").addEventListener("click",async()=>{
+  try{
+    if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw new Error("এই Browser-এ Audio Recording সমর্থিত নয়।");
+    state.stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    state.chunks=[];state.seconds=0;
+    state.recorder=new MediaRecorder(state.stream);
+    state.recorder.ondataavailable=e=>{if(e.data.size)state.chunks.push(e.data)};
+    state.recorder.onstop=()=>{
+      state.recordBlob=new Blob(state.chunks,{type:state.recorder.mimeType||"audio/webm"});
+      const url=URL.createObjectURL(state.recordBlob);
+      $("recordPlayer").src=url;$("recordPlayer").classList.remove("hidden");
+      $("recordDownload").href=url;$("recordDownload").classList.remove("hidden");
+      state.stream?.getTracks().forEach(t=>t.stop());
+      setStatus("recordStatus","রেকর্ডিং সম্পন্ন হয়েছে। আপনি শুনতে বা Download করতে পারবেন।","success");
+    };
+    state.recorder.start();
+    $("startRecord").disabled=true;$("pauseRecord").disabled=false;$("stopRecord").disabled=false;
+    setStatus("recordStatus","রেকর্ডিং চলছে…","success");
+    state.timer=setInterval(()=>{
+      state.seconds++;
+      $("recordTime").textContent=String(Math.floor(state.seconds/60)).padStart(2,"0")+":"+String(state.seconds%60).padStart(2,"0");
+    },1000);
+  }catch(e){setStatus("recordStatus",e.message,"error")}
+});
+$("pauseRecord").addEventListener("click",()=>{
+  if(!state.recorder)return;
+  if(state.recorder.state==="recording"){
+    state.recorder.pause();$("pauseRecord").textContent="▶ Resume";
+    clearInterval(state.timer);
+  }else if(state.recorder.state==="paused"){
+    state.recorder.resume();$("pauseRecord").textContent="Ⅱ Pause";
+    state.timer=setInterval(()=>{
+      state.seconds++;
+      $("recordTime").textContent=String(Math.floor(state.seconds/60)).padStart(2,"0")+":"+String(state.seconds%60).padStart(2,"0");
+    },1000);
+  }
+});
+$("stopRecord").addEventListener("click",()=>{
+  if(state.recorder&&state.recorder.state!=="inactive")state.recorder.stop();
+  clearInterval(state.timer);
+  $("startRecord").disabled=false;$("pauseRecord").disabled=true;$("stopRecord").disabled=true;
+  $("pauseRecord").textContent="Ⅱ Pause";
+});
+
+$("cloneBtn").addEventListener("click",async()=>{
+  if(!$("consent").checked){setStatus("cloneStatus","Voice Clone করার আগে সম্মতি নিশ্চিত করুন।","error");return}
+  const file=$("voiceFile").files[0],name=$("voiceName").value.trim();
+  if(!file||!name){setStatus("cloneStatus","Voice Name এবং Audio Sample নির্বাচন করুন।","error");return}
+  if(!file.type.startsWith("audio/")){setStatus("cloneStatus","সঠিক Audio File নির্বাচন করুন।","error");return}
+  if(file.size>25*1024*1024){setStatus("cloneStatus","ফাইলটি 25 MB-এর বেশি। ছোট Audio Sample ব্যবহার করুন।","error");return}
+  const btn=$("cloneBtn");btn.disabled=true;setStatus("cloneStatus","Voice Clone Request পাঠানো হচ্ছে…");
+  try{
+    const form=new FormData();
+    form.append("name",name);form.append("description",$("voiceDescription").value.trim());
+    form.append("files",file,file.name);
+    form.append("remove_background_noise","true");
+    const {data}=await apiRequest("/api/voices/clone",{method:"POST",body:form});
+    if(!data?.voice_id)throw new Error("Backend থেকে Voice ID পাওয়া যায়নি।");
+    saveVoice({name,voice_id:data.voice_id,created_at:new Date().toISOString()});
+    setStatus("cloneStatus","Voice Clone সফল হয়েছে। Voice ID: "+data.voice_id,"success");
+    $("ttsVoiceId").value=data.voice_id;
+    $("voiceFile").value="";
+  }catch(e){setStatus("cloneStatus",e.message,"error")}
+  finally{btn.disabled=false}
+});
+
+$("ttsText").addEventListener("input",()=>$("charCount").textContent=$("ttsText").value.length);
+$("ttsBtn").addEventListener("click",async()=>{
+  const voiceId=$("ttsVoiceId").value.trim(),text=$("ttsText").value.trim();
+  if(!voiceId||!text){setStatus("ttsStatus","Voice ID এবং Text লিখুন।","error");return}
+  const btn=$("ttsBtn");btn.disabled=true;setStatus("ttsStatus","Audio তৈরি হচ্ছে…");
+  try{
+    const {response}=await apiRequest("/api/tts/"+encodeURIComponent(voiceId),{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        text,
+        model_id:$("ttsModel").value,
+        voice_settings:{
+          stability:Number($("stability").value),
+          similarity_boost:Number($("similarity").value),
+          speed:Number($("speed").value)
+        }
+      })
+    });
+    const blob=await response.blob();
+    if(!blob.size)throw new Error("খালি Audio Response পাওয়া গেছে।");
+    const url=URL.createObjectURL(blob);
+    $("ttsPlayer").src=url;$("ttsPlayer").classList.remove("hidden");
+    $("ttsDownload").href=url;$("ttsDownload").classList.remove("hidden");
+    state.audioCount++;updateStats();
+    setStatus("ttsStatus","Audio সফলভাবে তৈরি হয়েছে।","success");
+  }catch(e){setStatus("ttsStatus",e.message,"error")}
+  finally{btn.disabled=false}
+});
+
+$("saveApi").addEventListener("click",()=>{
+  const value=$("apiBase").value.trim().replace(/\/+$/,"");
+  try{
+    const url=new URL(value);
+    if(url.protocol!=="https:")throw new Error("HTTPS Worker URL ব্যবহার করুন।");
+    localStorage.setItem("nivora_voice_api",url.origin===value?value:value);
+    setStatus("apiStatus","Backend URL সংরক্ষিত হয়েছে।","success");
+  }catch(e){setStatus("apiStatus",e.message||"সঠিক Worker URL দিন।","error")}
+});
+$("apiBase").value=getApiBase();
+$("testApi").addEventListener("click",async()=>{
+  setStatus("apiStatus","Backend পরীক্ষা করা হচ্ছে…");
+  try{
+    const {data}=await apiRequest("/api/health");
+    setStatus("apiStatus","Backend সংযুক্ত। "+JSON.stringify(data),"success");
+  }catch(e){setStatus("apiStatus",e.message,"error")}
+});
+</script>
+</body>
+</html>
