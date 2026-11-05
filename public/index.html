@@ -1,2000 +1,406 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIVORA WORLD - Universal AI & Business Suite</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            800: '#1c2541',
-                            900: '#0b132b',
-                            950: '#070c1b'
-                        },
-                        gold: {
-                            400: '#ffd166',
-                            500: '#f7b801',
-                            600: '#e6af2e'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Hind Siliguri', 'Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0b132b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1c2541;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #f7b801;
-        }
-        .gold-gradient {
-            background: linear-gradient(135deg, #f7b801 0%, #e6af2e 100%);
-        }
-        .gold-text-gradient {
-            background: linear-gradient(135deg, #ffd166 0%, #f7b801 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .navy-card {
-            background: rgba(28, 37, 65, 0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(247, 184, 1, 0.15);
-        }
-        .canvas-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        /* Mobile responsive adjustments */
-        @media (max-width: 768px) {
-            .sidebar-collapsed {
-                transform: translateX(-100%);
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101a35">
+<title>NIVORA WORLD — All-in-One Digital Hub & Reward Studio</title>
+
+<!-- Firebase Compatibility SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<style>
+:root{--bg:#0b1222;--panel:#121d32;--panel2:#1a2943;--text:#edf3ff;--muted:#a6b4cb;--line:#293955;--primary:#315ee8;--primary2:#7547e8;--gold:#eab308;--shadow:0 12px 35px rgba(0,0,0,.35)}
+[data-theme=light]{--bg:#f4f7fc;--panel:#fff;--panel2:#edf2fb;--text:#17233d;--muted:#64748b;--line:#dce4f0;--primary:#315ee8;--primary2:#7547e8;--shadow:0 12px 35px rgba(24,45,90,.09)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Bengali",Arial,sans-serif;min-height:100vh}button,input,select{font:inherit}a{color:inherit;text-decoration:none}
+
+.topbar{position:sticky;top:0;z-index:50;background:var(--panel);border-bottom:1px solid var(--line)}.top-inner{max-width:1250px;margin:auto;padding:11px 16px;display:flex;align-items:center;gap:10px}.brand{display:flex;align-items:center;gap:9px}.logo{width:41px;height:41px;border-radius:13px;background:linear-gradient(135deg,#2864ed,#8b45dc);display:grid;place-items:center;color:white;font-weight:900;font-size:19px}.brand-name{font-weight:900;letter-spacing:1px;font-size:16px}.brand-tag{font-size:10px;color:var(--muted)}.top-actions{margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap}.icon-btn,.small-btn,.select{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 10px;cursor:pointer;font-weight:700}.icon-btn{min-width:38px}.select{max-width:130px;font-size:12px}
+
+.container{max-width:1250px;margin:auto;padding:21px 16px 45px}
+.hero{position:relative;overflow:hidden;border-radius:23px;padding:29px;background:linear-gradient(120deg,#132957,#315ee8 58%,#7748dc);color:white;box-shadow:var(--shadow)}.hero h1{font-size:clamp(22px,4vw,36px);margin:0 0 8px}.hero p{margin:0;color:#e1e9ff;max-width:680px;line-height:1.65;font-size:14px}.hero-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.hero-pill{border:1px solid #ffffff55;background:#ffffff18;color:white;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:700}
+
+.info-strip{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0;align-items:center}
+.info-chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 12px;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px}
+.wallet-chip{background:linear-gradient(135deg,#16a34a,#15803d);color:white!important;font-weight:bold;border:none}
+.reward-btn{background:linear-gradient(110deg,var(--gold),#f59e0b);color:#000;border:0;border-radius:12px;padding:10px 16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(234,179,8,.3);transition:.2s}
+.reward-btn:disabled{background:#64748b;color:#cbd5e1;cursor:not-allowed;box-shadow:none}
+
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:27px 0 13px}.section-head h2{font-size:20px;margin:0}.section-head p{margin:5px 0 0;color:var(--muted);font-size:12px}.search-wrap{max-width:420px;width:100%}.search-wrap input{width:100%;padding:11px 13px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;outline:none}
+
+.category-tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}.cat-tab{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:8px 13px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700}.cat-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+
+.tool-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.tool-card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px;display:flex;flex-direction:column;min-height:174px;transition:.2s}.tool-card:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:var(--shadow)}.tool-icon{width:43px;height:43px;border-radius:13px;background:var(--panel2);display:grid;place-items:center;font-size:22px;margin-bottom:11px}.tool-card h3{font-size:14px;margin:0 0 6px}.tool-card p{font-size:11px;color:var(--muted);line-height:1.5;margin:0 0 13px;flex:1}.open-tool{display:flex;justify-content:center;align-items:center;gap:7px;background:linear-gradient(110deg,var(--primary),var(--primary2));color:white;border-radius:10px;padding:9px 11px;font-size:12px;font-weight:800}.empty{display:none;text-align:center;padding:28px;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:15px}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:17px;margin-top:21px}.panel h2{margin:0 0 8px;font-size:17px}.muted{color:var(--muted);font-size:12px;line-height:1.65}.auth-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.primary-btn,.secondary-btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.primary-btn{background:var(--primary);color:white}.secondary-btn{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+
+.ad-banner-box{background:var(--panel2);border:1px dashed var(--line);border-radius:15px;padding:20px;text-align:center;margin-top:25px;color:var(--muted);font-size:13px}
+.footer{text-align:center;color:var(--muted);font-size:11px;padding:26px 8px 4px}
+.modal{position:fixed;inset:0;background:#081126b8;z-index:100;display:none;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.modal-box{width:min(100%,440px);background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:20px;max-height:90vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modal-head h2{margin:0;font-size:19px}.close{border:0;background:var(--panel2);color:var(--text);border-radius:9px;padding:7px 10px;cursor:pointer}.field{margin:11px 0}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}.field input{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);outline:none}.status{margin-top:11px;padding:9px 11px;border-radius:9px;font-size:12px;display:none}.status.show{display:block}.status.error{background:#ffe8ec;color:#a91f38}.status.ok{background:#e4f8ee;color:#126b48}
+
+@media(max-width:900px){.tool-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.tool-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+</style>
 </head>
-<body class="bg-navy-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-gold-500 selection:text-navy-950">
+<body>
 
-    <!-- Header Navigation Bar -->
-    <header class="h-16 border-b border-gold-500/20 bg-navy-900 sticky top-0 z-40 px-4 flex items-center justify-between shadow-lg">
-        <div class="flex items-center gap-3">
-            <button id="toggle-sidebar" class="p-2 rounded-lg bg-navy-800 hover:bg-gold-500 hover:text-navy-950 text-gold-500 transition-all">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
-            <div class="flex items-center gap-2">
-                <div class="w-9 h-9 rounded-xl gold-gradient flex items-center justify-center font-bold text-navy-950 text-xl shadow-md">
-                    N
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight gold-text-gradient tracking-wide">NIVORA WORLD</h1>
-                    <p class="text-xs text-slate-400 hidden sm:block" data-i18n="tagline">Universal AI & Business Suite</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Global Selectors & Quick Tools -->
-        <div class="flex items-center gap-2 sm:gap-4">
-            <!-- Back Button -->
-            <button id="global-back-btn" onclick="switchTab('dashboard')" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-navy-800 hover:bg-navy-700 text-xs font-semibold text-slate-300 border border-slate-700 transition">
-                <i class="fa-solid fa-arrow-left"></i> <span data-i18n="back_to_dashboard">ড্যাশবোর্ড</span>
-            </button>
-
-            <!-- Language Switcher -->
-            <div class="flex items-center bg-navy-800 rounded-lg p-1 border border-slate-700">
-                <button id="lang-bn" onclick="setLanguage('bn')" class="px-2 py-1 rounded text-xs font-medium bg-gold-500 text-navy-950 shadow">বাংলা</button>
-                <button id="lang-en" onclick="setLanguage('en')" class="px-2 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-100">ENG</button>
-            </div>
-
-            <!-- Currency Switcher -->
-            <div class="flex items-center bg-navy-800 rounded-lg px-2 py-1 border border-slate-700">
-                <i class="fa-solid fa-coins text-gold-500 text-xs mr-1.5"></i>
-                <select id="currency-select" onchange="setCurrency(this.value)" class="bg-transparent text-xs text-slate-200 outline-none cursor-pointer">
-                    <option value="BDT" class="bg-navy-900">BDT (৳)</option>
-                    <option value="USD" class="bg-navy-900">USD ($)</option>
-                    <option value="INR" class="bg-navy-900">INR (₹)</option>
-                    <option value="PKR" class="bg-navy-900">PKR (₨)</option>
-                </select>
-            </div>
-        </div>
-    </header>
-
-    <!-- Top Ad Banner Space -->
-    <div class="w-full bg-navy-900/80 border-b border-gold-500/10 py-1.5 px-4 text-center">
-        <div class="max-w-4xl mx-auto h-12 bg-navy-800/50 border border-dashed border-gold-500/30 rounded flex items-center justify-center text-xs text-slate-400 gap-2">
-            <i class="fa-solid fa-rectangle-ad text-gold-500"></i>
-            <span data-i18n="ad_space_top">স্পন্সরড অ্যাডভারটাইজমেন্ট স্পেস (Google AdSense Ready Slot)</span>
-        </div>
+<header class="topbar">
+  <div class="top-inner">
+    <button class="icon-btn" onclick="history.back()" title="Back">←</button>
+    <a class="brand" href="/"><div class="logo">N</div><div><div class="brand-name">NIVORA WORLD</div><div class="brand-tag">One World. Unlimited Tools.</div></div></a>
+    <div class="top-actions">
+      <!-- Language Selector -->
+      <select class="select" id="languageSelect" onchange="changeLanguage(this.value)">
+        <option value="bn">বাংলা</option>
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="ur">اردو</option>
+        <option value="ar">العربية</option>
+      </select>
+      <!-- Currency Selector -->
+      <select class="select" id="currencySelect" onchange="changeCurrency(this.value)">
+        <option value="BDT">BDT ৳</option>
+        <option value="INR">INR ₹</option>
+        <option value="PKR">PKR ₨</option>
+        <option value="USD">USD $</option>
+      </select>
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Theme">☀</button>
+      <button class="small-btn" id="loginOpen" onclick="openAuthModal('login')">লগইন</button>
+      <button class="small-btn" id="registerOpen" onclick="openAuthModal('register')">রেজিস্টার</button>
+      <button class="small-btn" id="logoutBtn" onclick="handleLogout()" style="display:none">লগআউট</button>
     </div>
-
-    <!-- Main Workspace Container -->
-    <div class="flex-1 flex overflow-hidden relative">
-
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="w-64 bg-navy-900 border-r border-gold-500/10 flex flex-col justify-between absolute md:relative inset-y-0 left-0 z-30 transition-transform duration-300 ease-in-out sidebar-collapsed md:transform-none">
-            <div class="p-3 overflow-y-auto max-h-[calc(100vh-8rem)] space-y-1">
-                <p class="px-3 py-2 text-[10px] font-bold text-slate-400 tracking-wider uppercase" data-i18n="core_modules">প্রধান মডিউলসমূহ</p>
-
-                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="dashboard">
-                    <i class="fa-solid fa-grip text-gold-500 w-5"></i>
-                    <span data-i18n="nav_dashboard">ড্যাশবোর্ড</span>
-                </button>
-
-                <button onclick="switchTab('voice-clone')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="voice-clone">
-                    <i class="fa-solid fa-microphone-lines text-gold-500 w-5"></i>
-                    <span data-i18n="nav_voice_clone">ভয়েস ও ফেস ক্লোন</span>
-                </button>
-
-                <button onclick="switchTab('av-editor')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="av-editor">
-                    <i class="fa-solid fa-compact-disc text-gold-500 w-5"></i>
-                    <span data-i18n="nav_av_editor">অডিও-ভিডিও এডিটর</span>
-                </button>
-
-                <button onclick="switchTab('banner-maker')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="banner-maker">
-                    <i class="fa-solid fa-palette text-gold-500 w-5"></i>
-                    <span data-i18n="nav_banner_maker">ব্যানার ও পোস্টার মেকার</span>
-                </button>
-
-                <button onclick="switchTab('image-studio')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="image-studio">
-                    <i class="fa-solid fa-image text-gold-500 w-5"></i>
-                    <span data-i18n="nav_image_studio">ইমেজ ও বিজি রিমুভার</span>
-                </button>
-
-                <button onclick="switchTab('business-radar')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="business-radar">
-                    <i class="fa-solid fa-chart-pie text-gold-500 w-5"></i>
-                    <span data-i18n="nav_business_radar">বিজনেস ও মার্কেট রাডার</span>
-                </button>
-
-                <button onclick="switchTab('multi-ai')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="multi-ai">
-                    <i class="fa-solid fa-brain text-gold-500 w-5"></i>
-                    <span data-i18n="nav_multi_ai">মাল্টি এআই ক্লায়েন্ট</span>
-                </button>
-
-                <button onclick="switchTab('qr-pass')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="qr-pass">
-                    <i class="fa-solid fa-qrcode text-gold-500 w-5"></i>
-                    <span data-i18n="nav_qr_pass">কিউআর ও পাসওয়ার্ড</span>
-                </button>
-
-                <button onclick="switchTab('pdf-builder')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="pdf-builder">
-                    <i class="fa-solid fa-file-pdf text-gold-500 w-5"></i>
-                    <span data-i18n="nav_pdf_builder">পিডিএফ ও ইনভয়েস</span>
-                </button>
-
-                <button onclick="switchTab('universal-excel')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="universal-excel">
-                    <i class="fa-solid fa-file-excel text-gold-500 w-5"></i>
-                    <span data-i18n="nav_universal_excel">ইউনিভার্সাল এক্সেল ও হিসাব</span>
-                </button>
-
-                <button onclick="switchTab('math-calc')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="math-calc">
-                    <i class="fa-solid fa-calculator text-gold-500 w-5"></i>
-                    <span data-i18n="nav_math_calc">এডভান্সড ক্যালকুলেটর</span>
-                </button>
-
-                <button onclick="switchTab('ai-media')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="ai-media">
-                    <i class="fa-solid fa-wand-magic-sparkles text-gold-500 w-5"></i>
-                    <span data-i18n="nav_ai_media">এআই মিডিয়া মেকার</span>
-                </button>
-
-                <div class="pt-2 border-t border-slate-800">
-                    <button onclick="switchTab('admin-panel')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-navy-800 hover:text-gold-500 transition text-sm font-medium" data-tab="admin-panel">
-                        <i class="fa-solid fa-shield-halved text-amber-500 w-5"></i>
-                        <span data-i18n="nav_admin_panel">এডমিন সিকিউরিটি</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Sidebar Footer Status -->
-            <div class="p-3 border-t border-gold-500/10 bg-navy-950/60 text-xs text-slate-400">
-                <div class="flex items-center justify-between mb-1">
-                    <span data-i18n="system_status">সিস্টেম স্ট্যাটাস</span>
-                    <span class="inline-flex items-center gap-1 text-emerald-400 font-medium">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                        <span data-i18n="active">সক্রিয়</span>
-                    </span>
-                </div>
-                <p class="text-[10px] text-slate-500">v3.5 Universal Edition</p>
-            </div>
-        </aside>
-
-        <!-- Main Dynamic Content Panel -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-950/50">
-
-            <!-- Dynamic Notification Toast Container -->
-            <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm"></div>
-
-            <!-- TAB 0: DASHBOARD -->
-            <section id="tab-dashboard" class="tab-content space-y-6">
-                <!-- Welcome Banner -->
-                <div class="navy-card rounded-2xl p-6 relative overflow-hidden">
-                    <div class="max-w-2xl relative z-10">
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-gold-500/20 text-gold-400 border border-gold-500/30 mb-3 inline-block" data-i18n="dash_badge">অল-ইন-ওয়ান ইউনিভার্সাল এআই হাব</span>
-                        <h2 class="text-2xl md:text-3xl font-bold mb-2 text-slate-100" data-i18n="dash_welcome_title">স্বাগতম NIVORA WORLD ড্যাশবোর্ডে</h2>
-                        <p class="text-slate-300 text-sm leading-relaxed mb-4" data-i18n="dash_welcome_desc">দৈনন্দিন অফিশিয়াল, এআই ভয়েস ক্লোনিং, অডিও-ভিডিও এডিটিং, বিজনেস গ্রাফিক্স এবং ইউনিভার্সাল ফাইনান্সিয়াল হিসাব-নিকাশের সেরা সমাধান এখন একক প্লাটফর্মে।</p>
-                        <div class="flex flex-wrap gap-3">
-                            <button onclick="switchTab('voice-clone')" class="px-4 py-2 rounded-xl gold-gradient text-navy-950 font-bold text-sm shadow-md hover:brightness-110 transition flex items-center gap-2">
-                                <i class="fa-solid fa-bolt"></i> <span data-i18n="start_now">এখনই শুরু করুন</span>
-                            </button>
-                            <button onclick="switchTab('universal-excel')" class="px-4 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 text-slate-200 border border-slate-700 font-semibold text-sm transition flex items-center gap-2">
-                                <i class="fa-solid fa-table"></i> <span data-i18n="quick_calc">হিসাব পাতা</span>
-                            </button>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-layer-group text-8xl text-gold-500/10 absolute -right-4 -bottom-4 pointer-events-none"></i>
-                </div>
-
-                <!-- Feature Grid Cards -->
-                <div>
-                    <h3 class="text-lg font-bold mb-4 gold-text-gradient" data-i18n="all_tools_grid">প্রধান সরঞ্জামসমূহ (১৪টি পাওয়ারফুল টুল)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-
-                        <!-- Card 1 -->
-                        <div onclick="switchTab('voice-clone')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-microphone-lines text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool1_title">১. ভয়েস ও ফেস ক্লোন</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool1_desc">ক্বেরাত, গান বা মাইকিং কন্ঠে ভয়েস ও ফেস ক্লোনিং স্টুডিও।</p>
-                        </div>
-
-                        <!-- Card 2 -->
-                        <div onclick="switchTab('av-editor')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-sliders text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool2_title">২. ক্যানভাস এডিটিং টুল</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool2_desc">ওয়েবক্যাম, নয়েজ রিডাকশন ও ভিজ্যুয়াল এনহ্যান্সার।</p>
-                        </div>
-
-                        <!-- Card 3 -->
-                        <div onclick="switchTab('banner-maker')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-paintbrush text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool3_title">৩. ব্যানার ও পোস্টার</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool3_desc">কালার কম্বিনেশন, টেক্সট স্টাইল ও অবতার মেকার।</p>
-                        </div>
-
-                        <!-- Card 4 -->
-                        <div onclick="switchTab('image-studio')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-scissors text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool4_title">৪. ইমেজ ব্যাকগ্রাউন্ড</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool4_desc">ব্যাকগ্রাউন্ড পরিবর্তন, পাসপোর্ট সাইজ ও প্রিন্ট অপশন।</p>
-                        </div>
-
-                        <!-- Card 5 -->
-                        <div onclick="switchTab('business-radar')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-radar text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool5_title">৫. বিজনেস ও মার্কেট রাডার</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool5_desc">প্রোডাক্ট ট্র্যাকিং, চাহিদা বিশ্লেষণ ও সিজনাল রাডার।</p>
-                        </div>
-
-                        <!-- Card 6 -->
-                        <div onclick="switchTab('multi-ai')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-robot text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool6_title">৬. মাল্টি-এআই কানেক্টর</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool6_desc">ChatGPT, Gemini এবং Groq AI সমন্বিত হাব।</p>
-                        </div>
-
-                        <!-- Card 7 -->
-                        <div onclick="switchTab('qr-pass')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-key text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool7_title">৭. কিউআর ও পাসওয়ার্ড</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool7_desc">ডায়নামিক QR Code ও হাই-সিকিউরিটি পাসওয়ার্ড জেনারেটর।</p>
-                        </div>
-
-                        <!-- Card 8 -->
-                        <div onclick="switchTab('pdf-builder')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-file-export text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool8_title">৮. পিডিএফ ইনভয়েস</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool8_desc">প্রফেশনাল ইনভয়েস ও মেমো জেনারেটর এবং মেকার।</p>
-                        </div>
-
-                        <!-- Card 9 -->
-                        <div onclick="switchTab('universal-excel')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-[#107c41] fa-table-cells text-xl text-gold-500"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool9_title">৯. ডাইনামিক ইউনিভার্সাল হিসাব</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool9_desc">দোকান, কারখানা, অফিশিয়াল ও সুদি হিসাব সিস্টেম।</p>
-                        </div>
-
-                        <!-- Card 10 -->
-                        <div onclick="switchTab('math-calc')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-square-root-variable text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool10_title">১০. সায়েন্টিফিক ক্যালকুলেটর</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool10_desc">EMI, লাভ-ক্ষতি, সুদের হিসাব ও ইউনিট কনভার্টার।</p>
-                        </div>
-
-                        <!-- Card 11 -->
-                        <div onclick="switchTab('ai-media')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-clapperboard text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool12_title">১২. এআই টেক্সট-টু-ভিডিও/ভয়েস</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool12_desc">প্রম্পট থেকে ভিডিও এবং স্পিচ সিন্থেসাইজার।</p>
-                        </div>
-
-                        <!-- Card 12 -->
-                        <div onclick="switchTab('admin-panel')" class="navy-card p-4 rounded-xl cursor-pointer hover:border-gold-500/50 transition group">
-                            <div class="w-12 h-12 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-amber-500 mb-3 group-hover:scale-110 transition">
-                                <i class="fa-solid fa-user-shield text-xl"></i>
-                            </div>
-                            <h4 class="font-semibold text-slate-200 text-base mb-1" data-i18n="tool14_title">১৪. সিকিউরিটি এডমিন প্যানেল</h4>
-                            <p class="text-xs text-slate-400" data-i18n="tool14_desc">পাসকোড সিকিউরিটি ও সিস্টেম ম্যানেজমেন্ট।</p>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 1: VOICE & FACE CLONE STUDIO -->
-            <section id="tab-voice-clone" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="vclone_title">ভয়েস ক্লোন ও ফেস স্পিকিং স্টুডিও</h2>
-                        <p class="text-xs text-slate-400" data-i18n="vclone_subtitle">নির্দিষ্ট চেহারায় ক্বেরাত, গান বা মাইকিং এর শব্দযুক্ত এআই ভয়েস ক্লোনিং</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Setup Panel -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="vclone_step1">১. ফেস ও ভয়েস ইনপুট নির্বাচন করুন</h3>
-
-                        <!-- Target Face Upload -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1" data-i18n="vclone_face_label">টার্গেট ফেস বা অবতার সিলেক্ট করুন:</label>
-                            <div class="flex items-center gap-3">
-                                <div id="avatar-preview-box" class="w-16 h-16 rounded-xl bg-navy-800 border border-dashed border-gold-500/40 flex items-center justify-center text-slate-500 overflow-hidden">
-                                    <i class="fa-solid fa-user-astronaut text-2xl"></i>
-                                </div>
-                                <input type="file" id="face-file-input" accept="image/*" class="hidden" onchange="previewFaceImage(this)">
-                                <button onclick="document.getElementById('face-file-input').click()" class="px-3 py-2 rounded-lg bg-navy-800 hover:bg-navy-700 text-xs font-semibold text-slate-300 border border-slate-700">
-                                    <i class="fa-solid fa-upload mr-1"></i> <span data-i18n="upload_image">ছবি আপলোড</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Voice Mode Preset -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1" data-i18n="vclone_mode">কণ্ঠের স্টাইল মোড:</label>
-                            <select id="voice-style-mode" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-gold-500">
-                                <option value="kerat">ক্বেরাত ও তিলাওয়াত মোড (Surah & Quranic Accent)</option>
-                                <option value="singing">সংগীত ও মেলোডি মোড (Singing Vocal)</option>
-                                <option value="announcement">জনসাধারণের মাইকিং মোড (Public Announcement)</option>
-                                <option value="speech">সাধারণ বক্তব্য ও প্রেজেন্টেশন (Speech & Lecture)</option>
-                            </select>
-                        </div>
-
-                        <!-- Sample Audio Input -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1" data-i18n="vclone_audio">ভয়েস স্যাম্পল আপলোড / রেকর্ড করুন:</label>
-                            <div class="flex items-center gap-2">
-                                <button id="btn-rec-voice" onclick="toggleVoiceRecord()" class="flex-1 py-2 rounded-xl bg-red-600/20 border border-red-500/40 text-red-400 font-semibold text-xs hover:bg-red-600/30 transition flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-circle text-[10px]"></i> <span id="rec-status-text" data-i18n="rec_sample">স্যাম্পল রেকর্ড</span>
-                                </button>
-                                <input type="file" id="voice-sample-file" accept="audio/*" class="hidden">
-                                <button onclick="document.getElementById('voice-sample-file').click()" class="px-3 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 text-xs text-slate-300 border border-slate-700">
-                                    <i class="fa-solid fa-file-audio"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Input Script -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1" data-i18n="vclone_text">বক্তব্য/ক্বেরাত/মাইকিং এর স্ক্রিপ্ট লিখুন:</label>
-                            <textarea id="voice-script-text" rows="3" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:border-gold-500 outline-none" placeholder="যে কথা বা ক্বেরাত বলাতে চান তা এখানে লিখুন..."></textarea>
-                        </div>
-
-                        <button onclick="synthesizeVoiceClone()" class="w-full py-2.5 rounded-xl gold-gradient text-navy-950 font-bold text-xs shadow hover:brightness-110 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="generate_clone">ভয়েস ও ফেস সিন্থেসাইজ চালু করুন</span>
-                        </button>
-                    </div>
-
-                    <!-- Visualizer Output -->
-                    <div class="navy-card p-5 rounded-2xl flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm mb-4" data-i18n="vclone_preview">লাইভ এআই আউটপুট প্রিভিউ</h3>
-
-                            <div class="relative w-full aspect-video bg-navy-900 rounded-xl border border-gold-500/20 overflow-hidden flex items-center justify-center">
-                                <div id="avatar-visual-display" class="w-full h-full flex flex-col items-center justify-center">
-                                    <div class="w-24 h-24 rounded-full border-2 border-gold-500 p-1 mb-2 relative">
-                                        <img id="face-img-target" src="https://placehold.co/200x200/1c2541/ffd166?text=Avatar" class="w-full h-full rounded-full object-cover">
-                                        <div id="speaking-ring" class="absolute inset-0 rounded-full border-2 border-gold-400 animate-ping opacity-0"></div>
-                                    </div>
-                                    <span id="clone-status-badge" class="px-2.5 py-0.5 rounded-full text-[10px] bg-navy-800 text-slate-400 border border-slate-700" data-i18n="ready">রেডি</span>
-                                </div>
-                                <canvas id="waveform-canvas" class="absolute bottom-0 inset-x-0 h-16 w-full opacity-60 pointer-events-none"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Audio Playback Controls -->
-                        <div class="mt-4 p-3 bg-navy-900 rounded-xl border border-slate-800 space-y-2">
-                            <div class="flex items-center justify-between text-xs text-slate-400">
-                                <span>Output Audio Wave</span>
-                                <span id="clone-timer">00:00</span>
-                            </div>
-                            <audio id="clone-audio-player" controls class="w-full h-8 outline-none"></audio>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 2: AUDIO & VIDEO EDITING SUITE -->
-            <section id="tab-av-editor" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="aveditor_title">অডিও ও ভিডিও এডিটিং স্টুডিও (Canvas Style)</h2>
-                        <p class="text-xs text-slate-400" data-i18n="aveditor_subtitle">ওয়েবক্যাম রেকর্ডিং, ব্যাকগ্রাউন্ড নয়েজ রিডাকশন ও লাইভ ফিল্টার</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Recorder Controls -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="capture_sources">ক্যাপচার ও রেকর্ড সোর্স</h3>
-
-                        <div class="space-y-2">
-                            <button id="btn-webcam-toggle" onclick="toggleWebcam()" class="w-full py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 text-xs font-semibold text-slate-200 transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-video text-gold-500"></i> <span id="webcam-btn-text" data-i18n="start_webcam">ওয়েবক্যাম চালু করুন</span>
-                            </button>
-                            <button id="btn-screen-toggle" onclick="toggleScreenShare()" class="w-full py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 text-xs font-semibold text-slate-200 transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-desktop text-gold-500"></i> <span data-i18n="share_screen">স্ক্রিন রেকর্ড শুরু</span>
-                            </button>
-                        </div>
-
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm pt-2" data-i18n="av_enhancements">ফিল্টার ও সাউন্ড এনহ্যান্সমেন্ট</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="text-xs text-slate-300 block mb-1" data-i18n="noise_reduction">নয়েজ রিডাকশন (Noise Filter):</label>
-                                <input type="range" id="noise-filter-range" min="0" max="100" value="70" class="w-full accent-gold-500 cursor-pointer">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-300 block mb-1" data-i18n="video_filter">ভিডিও কালার ফিল্টার:</label>
-                                <select id="video-filter-select" onchange="applyVideoFilter(this.value)" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                                    <option value="none">Normal (কোন ফিল্টার নেই)</option>
-                                    <option value="grayscale(100%)">Black & White (ব্ল্যাক-হোয়াইট)</option>
-                                    <option value="sepia(80%)">Sepia Retro (সেপিয়া ভিনটেজ)</option>
-                                    <option value="contrast(150%)">High Contrast (উচ্চ কনট্রাস্ট)</option>
-                                    <option value="hue-rotate(90deg)">Vibrant Neon (নিয়ন শেড)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="pt-2">
-                            <button id="record-media-btn" onclick="toggleMediaRecording()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white shadow transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-circle"></i> <span id="rec-btn-label" data-i18n="start_recording">রেকর্ডিং শুরু করুন</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Main Canvas Timeline Monitor -->
-                    <div class="lg:col-span-2 navy-card p-5 rounded-2xl flex flex-col">
-                        <div class="flex-1 bg-navy-900 rounded-xl border border-slate-800 overflow-hidden relative min-h-[280px] flex items-center justify-center">
-                            <video id="editor-video-preview" autoplay playsinline muted class="w-full h-full object-contain max-h-[360px]"></video>
-                            <div id="no-signal-text" class="text-slate-500 text-xs flex flex-col items-center gap-2">
-                                <i class="fa-solid fa-video-slash text-3xl"></i>
-                                <span data-i18n="no_video_stream">ক্যামেরা বা ভিডিও স্ট্রিম বন্ধ রয়েছে</span>
-                            </div>
-                        </div>
-
-                        <!-- Canvas Timeline Bar -->
-                        <div class="mt-4 p-3 bg-navy-900 rounded-xl border border-slate-800 space-y-2">
-                            <div class="flex items-center justify-between text-xs text-slate-400">
-                                <span data-i18n="timeline">টাইমলাইন সম্পাদক (Canvas Style)</span>
-                                <span id="recording-timer">00:00:00</span>
-                            </div>
-                            <div class="h-8 bg-navy-950 rounded border border-slate-800 relative flex items-center px-2 gap-1 overflow-x-auto">
-                                <div class="h-4 w-full bg-gold-500/20 rounded border border-gold-500/40 relative">
-                                    <div id="timeline-progress" class="h-full bg-gold-500 w-0"></div>
-                                </div>
-                            </div>
-                            <div class="flex justify-end gap-2 pt-1">
-                                <button onclick="downloadRecordedMedia()" class="px-3 py-1.5 rounded-lg bg-gold-500 text-navy-950 font-bold text-xs hover:brightness-110">
-                                    <i class="fa-solid fa-download mr-1"></i> <span data-i18n="download_edited">ডাউনলোড ফাইল</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 3: BANNER & POSTER MAKER -->
-            <section id="tab-banner-maker" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="bannermaker_title">ব্যানার ও পোস্টার মেকার স্টুডিও</h2>
-                        <p class="text-xs text-slate-400" data-i18n="bannermaker_subtitle">কাস্টম কালার কম্বিনেশন, ফ্রেম ও টেক্সট স্টাইলিং টুলস</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Controls -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="design_tools">ডিজাইন টুলস</h3>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1" data-i18n="banner_title_text">প্রধান শিরোনাম টেক্সট:</label>
-                            <input type="text" id="banner-text-heading" value="বিশেষ ঘোষণা" oninput="renderBannerCanvas()" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none focus:border-gold-500">
-                        </div>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1" data-i18n="banner_sub_text">সাব-টাইটেল / বিবরণ:</label>
-                            <input type="text" id="banner-text-sub" value="NIVORA WORLD ইউনিভার্সাল প্ল্যাটফর্মের শুভ উদ্বোধন" oninput="renderBannerCanvas()" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none focus:border-gold-500">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-xs text-slate-300 block mb-1" data-i18n="bg_color">ব্যাকগ্রাউন্ড কালার:</label>
-                                <input type="color" id="banner-bg-color" value="#0b132b" onchange="renderBannerCanvas()" class="w-full h-9 rounded cursor-pointer bg-transparent border border-slate-700">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-300 block mb-1" data-i18n="text_color">টেক্সট কালার:</label>
-                                <input type="color" id="banner-text-color" value="#f7b801" onchange="renderBannerCanvas()" class="w-full h-9 rounded cursor-pointer bg-transparent border border-slate-700">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1" data-i18n="font_style">ফন্ট স্টাইল:</label>
-                            <select id="banner-font-family" onchange="renderBannerCanvas()" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                                <option value="Hind Siliguri">Hind Siliguri (Bengali Standard)</option>
-                                <option value="Inter">Inter Modern Bold</option>
-                                <option value="serif">Classic Serif</option>
-                            </select>
-                        </div>
-
-                        <button onclick="downloadBannerImage()" class="w-full py-2.5 rounded-xl gold-gradient text-navy-950 font-bold text-xs shadow hover:brightness-110 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-download"></i> <span data-i18n="download_poster">পোস্টার ডাউনলোড করুন</span>
-                        </button>
-                    </div>
-
-                    <!-- Canvas Workspace -->
-                    <div class="lg:col-span-2 navy-card p-5 rounded-2xl flex flex-col items-center justify-center">
-                        <div class="w-full aspect-video bg-navy-950 rounded-xl border border-gold-500/30 overflow-hidden shadow-2xl flex items-center justify-center p-2">
-                            <canvas id="poster-canvas" width="800" height="450" class="max-w-full max-h-full border border-slate-800 rounded"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 4: IMAGE STUDIO & BG REMOVER -->
-            <section id="tab-image-studio" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="imgstudio_title">ইমেজ স্টুডিও ও ব্যাকগ্রাউন্ড রিমুভার</h2>
-                        <p class="text-xs text-slate-400" data-i18n="imgstudio_subtitle">ছবি এডিটিং, ব্যাকগ্রাউন্ড রিমুভ, পাসপোর্ট সাইজ ও ডাইরেক্ট প্রিন্ট</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Controls -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="img_processing">ইমেজ প্রসেসিং অপশন</h3>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1" data-i18n="select_photo">ছবি চয়ন করুন:</label>
-                            <input type="file" id="studio-img-input" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-navy-800 file:text-gold-500 hover:file:bg-navy-700" onchange="loadStudioImage(this)">
-                        </div>
-
-                        <div>
-                            <button onclick="simulateBgRemoval()" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs text-white transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-wand-magic"></i> <span data-i18n="remove_bg">ব্যাকগ্রাউন্ড রিমুভ করুন (Auto Removal)</span>
-                            </button>
-                        </div>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1" data-i18n="preset_size">ছবি সাইজ নির্ধারন (Resize Presets):</label>
-                            <select id="preset-size-select" onchange="applyPresetSize(this.value)" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                                <option value="original">মূল সাইজ (Original)</option>
-                                <option value="passport">পাসপোর্ট সাইজ (Passport Size: 45x55mm)</option>
-                                <option value="stamp">স্ট্যাম্প সাইজ (Stamp Size)</option>
-                                <option value="square">স্কয়ার প্রোফাইল (Square 1:1)</option>
-                            </select>
-                        </div>
-
-                        <div class="flex gap-2 pt-2">
-                            <button onclick="downloadStudioImage()" class="flex-1 py-2.5 rounded-xl gold-gradient text-navy-950 font-bold text-xs shadow hover:brightness-110 transition flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-download"></i> <span data-i18n="download">ডাউনলোড</span>
-                            </button>
-                            <button onclick="printStudioImage()" class="flex-1 py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 text-slate-200 border border-slate-700 font-bold text-xs transition flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-print"></i> <span data-i18n="print">প্রিন্ট ছবি</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Canvas Workspace -->
-                    <div class="lg:col-span-2 navy-card p-5 rounded-2xl flex flex-col items-center justify-center">
-                        <div id="studio-canvas-container" class="w-full aspect-video bg-navy-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center p-4 relative">
-                            <canvas id="img-studio-canvas" class="max-w-full max-h-full object-contain rounded shadow-lg"></canvas>
-                            <p id="studio-placeholder-text" class="text-slate-500 text-xs text-center"><i class="fa-solid fa-cloud-arrow-up text-3xl block mb-2"></i>সম্পাদনার জন্য একটি ছবি আপলোড করুন</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 5: INTERNATIONAL BUSINESS MANAGEMENT & RADAR -->
-            <section id="tab-business-radar" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="bizradar_title">বিজনেস ম্যানেজমেন্ট ও মৌসুমী মার্কেট রাডার</h2>
-                        <p class="text-xs text-slate-400" data-i18n="bizradar_subtitle">প্রোডাক্ট ট্র্যাকিং, বিক্রয় গ্রাফ এবং বাজারের মৌসুমী চাহিদা রাডার</p>
-                    </div>
-                </div>
-
-                <!-- Stats Overview Bar -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="navy-card p-4 rounded-xl border-l-4 border-gold-500">
-                        <span class="text-xs text-slate-400" data-i18n="total_revenue">মোট রাজস্ব (Total Revenue)</span>
-                        <h4 class="text-xl font-bold text-slate-100 mt-1" id="stat-revenue">৳ 450,000</h4>
-                    </div>
-                    <div class="navy-card p-4 rounded-xl border-l-4 border-emerald-500">
-                        <span class="text-xs text-slate-400" data-i18n="active_orders">সক্রিয় অর্ডার (Active Orders)</span>
-                        <h4 class="text-xl font-bold text-slate-100 mt-1">128 টি</h4>
-                    </div>
-                    <div class="navy-card p-4 rounded-xl border-l-4 border-indigo-500">
-                        <span class="text-xs text-slate-400" data-i18n="seasonal_demand">মৌসুমী চাহিদা সূচক</span>
-                        <h4 class="text-xl font-bold text-slate-100 mt-1">+84.5% High</h4>
-                    </div>
-                    <div class="navy-card p-4 rounded-xl border-l-4 border-purple-500">
-                        <span class="text-xs text-slate-400" data-i18n="stock_items">ইনভেন্টরি আইটেম</span>
-                        <h4 class="text-xl font-bold text-slate-100 mt-1">45 টি ক্যাটাগরি</h4>
-                    </div>
-                </div>
-
-                <!-- Interactive Seasonal Radar Visualizer -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="navy-card p-5 rounded-2xl">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm mb-4" data-i18n="radar_heading">মৌসুমী বাজার চাহিদা রাডার (Seasonal Market Radar)</h3>
-                        <div class="aspect-square w-full max-w-[340px] mx-auto relative flex items-center justify-center">
-                            <canvas id="market-radar-canvas" width="350" height="350" class="w-full h-full"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Inventory Tracker Table -->
-                    <div class="navy-card p-5 rounded-2xl flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm mb-3" data-i18n="product_tracker">প্রোডাক্ট ট্র্যাকিং ও স্টক স্ট্যাটাস</h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-xs text-slate-300">
-                                    <thead class="bg-navy-900 text-gold-500">
-                                        <tr>
-                                            <th class="p-2">প্রোডাক্ট কোড</th>
-                                            <th class="p-2">পণ্যের নাম</th>
-                                            <th class="p-2">স্টক পরিমাপ</th>
-                                            <th class="p-2">অবস্থা</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-800">
-                                        <tr>
-                                            <td class="p-2 font-mono">PRD-8801</td>
-                                            <td class="p-2">প্রিমিয়াম সিল্ক শাড়ি</td>
-                                            <td class="p-2">150 পিস</td>
-                                            <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ইন স্টক</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-2 font-mono">PRD-8802</td>
-                                            <td class="p-2">অর্গানিক ফুড প্যাক</td>
-                                            <td class="p-2">12 পিস</td>
-                                            <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30">স্টক কম</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-2 font-mono">PRD-8803</td>
-                                            <td class="p-2">স্মার্ট ওয়াচ সিরিজ 9</td>
-                                            <td class="p-2">85 পিস</td>
-                                            <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ইন স্টক</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <button class="w-full mt-4 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 text-xs font-semibold text-slate-300" data-i18n="add_new_stock">+ নতুন স্টক আইটেম যোগ করুন</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 6: MULTI-AI ECOSYSTEM CLIENT -->
-            <section id="tab-multi-ai" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="multiai_title">মাল্টি-এআই ইকোসিস্টেম হাব (ChatGPT, Gemini, Groq)</h2>
-                        <p class="text-xs text-slate-400" data-i18n="multiai_subtitle">একই স্থানে পৃথিবীর সেরা এআই মডেলসমূহের সাথে কথা বলুন</p>
-                    </div>
-                </div>
-
-                <div class="navy-card p-5 rounded-2xl space-y-4 max-w-4xl mx-auto">
-                    <!-- Model Selector Bar -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 bg-navy-900 p-2 rounded-xl border border-slate-800">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400 font-semibold px-2" data-i18n="active_model">মডেল:</span>
-                            <button onclick="selectAiModel('gemini')" id="model-btn-gemini" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-gold-500 text-navy-950 transition">Gemini 1.5 Pro</button>
-                            <button onclick="selectAiModel('chatgpt')" id="model-btn-chatgpt" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-100 transition">ChatGPT-4o</button>
-                            <button onclick="selectAiModel('groq')" id="model-btn-groq" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-100 transition">Groq Llama-3</button>
-                        </div>
-                        <span id="active-model-badge" class="text-[10px] px-2 py-0.5 rounded bg-navy-800 text-gold-400 border border-gold-500/30">Google Gemini API Connected</span>
-                    </div>
-
-                    <!-- Chat Window -->
-                    <div id="ai-chat-box" class="h-80 overflow-y-auto bg-navy-950 rounded-xl p-4 border border-slate-800 space-y-3 font-sans text-xs">
-                        <div class="bg-navy-900 border border-slate-800 p-3 rounded-xl max-w-[85%] text-slate-200">
-                            <div class="font-bold text-gold-500 mb-1 flex items-center gap-1.5">
-                                <i class="fa-solid fa-robot"></i> <span>NIVORA AI Assistant</span>
-                            </div>
-                            <p data-i18n="ai_greeting">হ্যালো! আমি আপনার সার্বিক ব্যবসায়িক ও ব্যক্তিগত এআই সহকারী। কীভাবে আপনাকে সাহায্য করতে পারি?</p>
-                        </div>
-                    </div>
-
-                    <!-- Input Prompt Box -->
-                    <div class="flex gap-2">
-                        <input type="text" id="ai-prompt-input" placeholder="আপনার প্রশ্ন বা প্রম্পট এখানে লিখুন..." class="flex-1 bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-slate-200 outline-none focus:border-gold-500">
-                        <button onclick="sendAiMessage()" class="px-5 py-3 rounded-xl gold-gradient text-navy-950 font-bold text-xs shadow hover:brightness-110 transition flex items-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> <span data-i18n="send">পাঠান</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 7: QR CODE & PASSWORD SECURITY SUITE -->
-            <section id="tab-qr-pass" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="qrpass_title">কিউআর কোড ও পাসওয়ার্ড সিকিউরিটি স্টুডিও</h2>
-                        <p class="text-xs text-slate-400" data-i18n="qrpass_subtitle">স্মার্ট QR Code জেনারেটর এবং মিলিটারি গ্রেড পাসওয়ার্ড মেকার</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- QR Code Generator -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="qr_gen_title">১. ডায়নামিক QR Code মেকার</h3>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1" data-i18n="qr_input_label">ইউআরএল বা টেক্সট প্রদান করুন:</label>
-                            <input type="text" id="qr-text-input" value="https://nivoraworld.com" oninput="generateQRCode()" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none focus:border-gold-500">
-                        </div>
-
-                        <div class="flex flex-col items-center justify-center p-4 bg-navy-950 rounded-xl border border-slate-800">
-                            <canvas id="qr-canvas" width="180" height="180" class="bg-white p-2 rounded-lg shadow"></canvas>
-                        </div>
-
-                        <button onclick="downloadQRCode()" class="w-full py-2.5 rounded-xl gold-gradient text-navy-950 font-bold text-xs shadow hover:brightness-110 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-download"></i> <span data-i18n="download_qr">কিউআর কোড ডাউনলোড</span>
-                        </button>
-                    </div>
-
-                    <!-- Password Generator -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="pass_gen_title">২. নিরাপদ পাসওয়ার্ড জেনারেটর</h3>
-
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="generated-pass-display" readonly class="flex-1 bg-navy-900 border border-slate-700 rounded-xl p-3 text-sm font-mono text-gold-400 font-bold outline-none">
-                            <button onclick="copyGeneratedPassword()" class="px-4 py-3 rounded-xl bg-navy-800 hover:bg-navy-700 text-slate-200 border border-slate-700 text-xs font-semibold">
-                                <i class="fa-solid fa-copy"></i>
-                            </button>
-                        </div>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1" data-i18n="pass_length">পাসওয়ার্ড দৈর্ঘ্য: <span id="pass-length-num" class="text-gold-500 font-bold">16</span></label>
-                            <input type="range" id="pass-length-slider" min="8" max="32" value="16" oninput="document.getElementById('pass-length-num').innerText = this.value; generateSecurePassword();" class="w-full accent-gold-500 cursor-pointer">
-                        </div>
-
-                        <div class="space-y-2 text-xs text-slate-300">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="chk-symbols" checked onchange="generateSecurePassword()" class="rounded accent-gold-500">
-                                <span>স্পেশাল ক্যারেক্টার (#@$%&*) অন্তর্ভুক্ত করুন</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="chk-numbers" checked onchange="generateSecurePassword()" class="rounded accent-gold-500">
-                                <span>সংখ্যা (0-9) অন্তর্ভুক্ত করুন</span>
-                            </label>
-                        </div>
-
-                        <button onclick="generateSecurePassword()" class="w-full py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 text-xs font-bold text-slate-200 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-rotate"></i> <span data-i18n="regen_pass">নতুন পাসওয়ার্ড তৈরি করুন</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 8: PDF & INVOICE BUILDER -->
-            <section id="tab-pdf-builder" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="pdfbuilder_title">পিডিএফ ও ব্যবসায়িক ইনভয়েস মেকার</h2>
-                        <p class="text-xs text-slate-400" data-i18n="pdfbuilder_subtitle">অফিসিয়াল মেমো, বিল এবং পিডিএফ ইনভয়েস জেনারেটর</p>
-                    </div>
-                    <button onclick="printInvoicePDF()" class="px-4 py-2 rounded-xl gold-gradient text-navy-950 font-bold text-xs shadow hover:brightness-110 flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i> <span data-i18n="print_pdf">পিডিএফ ডাউনলোড / প্রিন্ট</span>
-                    </button>
-                </div>
-
-                <!-- Printable Invoice Template -->
-                <div id="invoice-print-area" class="bg-white text-slate-900 p-8 rounded-2xl shadow-xl max-w-3xl mx-auto space-y-6 font-sans">
-                    <!-- Invoice Header -->
-                    <div class="flex justify-between items-start border-b pb-4">
-                        <div>
-                            <h2 class="text-2xl font-bold text-navy-950">NIVORA ENTERPRISE</h2>
-                            <p class="text-xs text-slate-500">Universal Business Solutions Hub</p>
-                            <p class="text-xs text-slate-500">ঢাকা, বাংলাদেশ | হটলাইন: +৮৮০ ১৭০০ ০০০০০০</p>
-                        </div>
-                        <div class="text-right">
-                            <h3 class="text-xl font-bold text-slate-700 uppercase tracking-widest">INVOICE</h3>
-                            <p class="text-xs text-slate-500 mt-1">বিল নং: <span class="font-mono font-bold">#NVR-2026-904</span></p>
-                            <p class="text-xs text-slate-500">তারিখ: 02 Nov, 2026</p>
-                        </div>
-                    </div>
-
-                    <!-- Client Info -->
-                    <div class="grid grid-cols-2 gap-4 text-xs">
-                        <div class="bg-slate-50 p-3 rounded-lg border">
-                            <span class="font-bold text-slate-700 block mb-1">গ্রাহকের তথ্য (Bill To):</span>
-                            <p class="font-semibold text-slate-900">মেসার্স গ্লোবাল ট্রেডিং লিমিটেড</p>
-                            <p class="text-slate-600">মতিঝিল বা/এ, ঢাকা-১০০০</p>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-lg border text-right">
-                            <span class="font-bold text-slate-700 block mb-1">পেমেন্ট মেথড:</span>
-                            <p class="font-semibold text-emerald-600">ব্যাংক ট্রান্সফার / বিকাশ অনলাইন</p>
-                            <p class="text-slate-600">স্ট্যাটাস: পরিশোধিত (Paid)</p>
-                        </div>
-                    </div>
-
-                    <!-- Line Items Table -->
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-navy-900 text-white">
-                                <th class="p-2.5">বিবরণ (Item Description)</th>
-                                <th class="p-2.5 text-center">পরিমাণ</th>
-                                <th class="p-2.5 text-right">একক মূল্য</th>
-                                <th class="p-2.5 text-right">মোট টাকা</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y border-b">
-                            <tr>
-                                <td class="p-2.5 font-medium">এআই ভয়েস ক্লোনিং সফটওয়্যার লাইসেন্স</td>
-                                <td class="p-2.5 text-center">1</td>
-                                <td class="p-2.5 text-right font-mono">৳ 15,000</td>
-                                <td class="p-2.5 text-right font-mono">৳ 15,000</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2.5 font-medium">বিজনেস মার্কেট এ্যানালাইসিস রাডার টুল</td>
-                                <td class="p-2.5 text-center">1</td>
-                                <td class="p-2.5 text-right font-mono">৳ 8,500</td>
-                                <td class="p-2.5 text-right font-mono">৳ 8,500</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Calculation Footer -->
-                    <div class="flex justify-end text-xs">
-                        <div class="w-64 space-y-1.5 border-t pt-2">
-                            <div class="flex justify-between text-slate-600">
-                                <span>সাব-টোটাল:</span>
-                                <span class="font-mono">৳ 23,500</span>
-                            </div>
-                            <div class="flex justify-between text-slate-600">
-                                <span>ভ্যাট/ট্যাক্স (5%):</span>
-                                <span class="font-mono">৳ 1,175</span>
-                            </div>
-                            <div class="flex justify-between font-bold text-sm text-navy-950 border-t pt-1">
-                                <span>সর্বমোট প্রদেয়:</span>
-                                <span class="font-mono text-emerald-600">৳ 24,675</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 9: UNIVERSAL DYNAMIC EXCEL & LEDGER -->
-            <section id="tab-universal-excel" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="excel_title">ইউনিভার্সাল ডাইনামিক হিসাব ও লেজার (Excel Style)</h2>
-                        <p class="text-xs text-slate-400" data-i18n="excel_subtitle">দোকান, কারখানা, অফিশিয়াল ও সুদি হিসাব সহ সকল ধরনের ক্যাশবুক</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="exportExcelData()" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-500">
-                            <i class="fa-solid fa-file-excel mr-1"></i> Export Data
-                        </button>
-                    </div>
-                </div>
-
-                <div class="navy-card p-5 rounded-2xl space-y-4">
-                    <!-- Excel Toolbar -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 bg-navy-900 p-3 rounded-xl border border-slate-800">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400 font-semibold" data-i18n="ledger_type">লেজার মোড:</span>
-                            <select id="excel-mode-select" class="bg-navy-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 outline-none">
-                                <option value="general">সাধারণ দোকান/অফিস ডেইলি ক্যাশবুক</option>
-                                <option value="factory">কলকারখানা ও প্রডাকশন কস্ট লেজার</option>
-                                <option value="interest">সুদ ভিত্তিক / ব্যাংক লোন ও EMI হিসাব</option>
-                                <option value="official">সরকারী/বেসরকারী প্রজেক্ট লেজার</option>
-                            </select>
-                        </div>
-                        <button onclick="addExcelRow()" class="px-3 py-1.5 rounded-lg bg-gold-500 text-navy-950 font-bold text-xs hover:brightness-110">
-                            + নতুন রো যোগ করুন
-                        </button>
-                    </div>
-
-                    <!-- Dynamic Sheet Grid -->
-                    <div class="overflow-x-auto rounded-xl border border-slate-800">
-                        <table class="w-full text-left text-xs text-slate-300 min-w-[700px]">
-                            <thead class="bg-navy-900 text-gold-500 font-bold">
-                                <tr>
-                                    <th class="p-3">তারিখ</th>
-                                    <th class="p-3">হিসাবের বিবরণ / খাত</th>
-                                    <th class="p-3">জমা / আয় (+)</th>
-                                    <th class="p-3">খরচ / ব্যয় (-)</th>
-                                    <th class="p-3">অবশিষ্ট ব্যালেন্স</th>
-                                    <th class="p-3 text-center">মুছে ফেলুন</th>
-                                </tr>
-                            </thead>
-                            <tbody id="excel-sheet-body" class="divide-y divide-slate-800 bg-navy-950">
-                                <!-- Dynamic rows generated via JS -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Summary Footers -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                        <div class="bg-navy-900 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-xs text-slate-400 block" data-i18n="total_income">মোট আয় (+)</span>
-                            <span id="excel-total-in" class="text-lg font-bold text-emerald-400 font-mono">৳ 0</span>
-                        </div>
-                        <div class="bg-navy-900 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-xs text-slate-400 block" data-i18n="total_expense">মোট ব্যয় (-)</span>
-                            <span id="excel-total-out" class="text-lg font-bold text-red-400 font-mono">৳ 0</span>
-                        </div>
-                        <div class="bg-navy-900 p-3 rounded-xl border border-gold-500/30 text-center">
-                            <span class="text-xs text-slate-400 block" data-i18n="net_balance">নীট ক্যাশ ব্যালেন্স</span>
-                            <span id="excel-net-balance" class="text-lg font-bold text-gold-400 font-mono">৳ 0</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 10: ADVANCED MATH & FINANCIAL CALCULATOR -->
-            <section id="tab-math-calc" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="mathcalc_title">এডভান্সড ম্যাথ ও ফাইনান্সিয়াল ক্যালকুলেটর হাব</h2>
-                        <p class="text-xs text-slate-400" data-i18n="mathcalc_subtitle">সায়েন্টিফিক, লোন EMI, লাভ-ক্ষতি ও ভ্যাট হিসাব</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Scientific Calculator -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="sci_calc">সায়েন্টিফিক ক্যালকুলেটর</h3>
-                        
-                        <input type="text" id="calc-display" readonly class="w-full bg-navy-950 border border-slate-700 rounded-xl p-3 text-right text-xl font-mono text-gold-400 font-bold outline-none">
-                        
-                        <div class="grid grid-cols-4 gap-2">
-                            <button onclick="calcInput('C')" class="p-3 rounded-xl bg-red-600/20 text-red-400 font-bold text-xs hover:bg-red-600/30">C</button>
-                            <button onclick="calcInput('(')" class="p-3 rounded-xl bg-navy-800 text-slate-200 font-bold text-xs hover:bg-navy-700">(</button>
-                            <button onclick="calcInput(')')" class="p-3 rounded-xl bg-navy-800 text-slate-200 font-bold text-xs hover:bg-navy-700">)</button>
-                            <button onclick="calcInput('/')" class="p-3 rounded-xl bg-gold-500/20 text-gold-400 font-bold text-xs hover:bg-gold-500/30">/</button>
-
-                            <button onclick="calcInput('7')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">7</button>
-                            <button onclick="calcInput('8')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">8</button>
-                            <button onclick="calcInput('9')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">9</button>
-                            <button onclick="calcInput('*')" class="p-3 rounded-xl bg-gold-500/20 text-gold-400 font-bold hover:bg-gold-500/30">*</button>
-
-                            <button onclick="calcInput('4')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">4</button>
-                            <button onclick="calcInput('5')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">5</button>
-                            <button onclick="calcInput('6')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">6</button>
-                            <button onclick="calcInput('-')" class="p-3 rounded-xl bg-gold-500/20 text-gold-400 font-bold hover:bg-gold-500/30">-</button>
-
-                            <button onclick="calcInput('1')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">1</button>
-                            <button onclick="calcInput('2')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">2</button>
-                            <button onclick="calcInput('3')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">3</button>
-                            <button onclick="calcInput('+')" class="p-3 rounded-xl bg-gold-500/20 text-gold-400 font-bold hover:bg-gold-500/30">+</button>
-
-                            <button onclick="calcInput('0')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">0</button>
-                            <button onclick="calcInput('.')" class="p-3 rounded-xl bg-navy-900 text-slate-200 font-bold hover:bg-navy-800">.</button>
-                            <button onclick="calcInput('sqrt')" class="p-3 rounded-xl bg-navy-800 text-slate-200 font-bold text-xs hover:bg-navy-700">√</button>
-                            <button onclick="calcCompute()" class="p-3 rounded-xl gold-gradient text-navy-950 font-bold shadow hover:brightness-110">=</button>
-                        </div>
-                    </div>
-
-                    <!-- Financial EMI Calculator -->
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="emi_calc">ঋণ/সুদ EMI ক্যালকুলেটর</h3>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1" data-i18n="principal_amt">ঋণের পরিমাণ (Principal Amount):</label>
-                            <input type="number" id="emi-principal" value="100000" oninput="calculateEMI()" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-xs text-slate-300 block mb-1" data-i18n="interest_rate">সুদের হার (% বার্ষিক):</label>
-                                <input type="number" id="emi-rate" value="9" oninput="calculateEMI()" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-300 block mb-1" data-i18n="tenure_months">মেয়াদ (মাস):</label>
-                                <input type="number" id="emi-months" value="12" oninput="calculateEMI()" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none">
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-navy-950 rounded-xl border border-slate-800 space-y-2">
-                            <div class="flex justify-between text-xs text-slate-400">
-                                <span data-i18n="monthly_emi">মাসিক কিস্তি (Monthly EMI):</span>
-                                <span id="emi-result-monthly" class="font-bold text-gold-500 font-mono">৳ 8,745</span>
-                            </div>
-                            <div class="flex justify-between text-xs text-slate-400">
-                                <span data-i18n="total_interest">মোট প্রদেয় সুদ:</span>
-                                <span id="emi-result-interest" class="font-bold text-slate-200 font-mono">৳ 4,942</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 12: AI MEDIA SUITE -->
-            <section id="tab-ai-media" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold gold-text-gradient" data-i18n="aimedia_title">এআই ভিডিও ও ভয়েস মেকার (Media Suite)</h2>
-                        <p class="text-xs text-slate-400" data-i18n="aimedia_subtitle">Text-to-Video, Text-to-Speech এবং Image-to-Video স্টুডিও</p>
-                    </div>
-                </div>
-
-                <div class="navy-card p-5 rounded-2xl space-y-4 max-w-3xl mx-auto">
-                    <div>
-                        <label class="text-xs text-slate-300 block mb-1" data-i18n="prompt_label">ভিডিও বা ভয়েসের প্রম্পট লিখুন:</label>
-                        <textarea id="ai-media-prompt" rows="3" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 outline-none focus:border-gold-500" placeholder="A futuristic drone flying over Dhaka city in sunset 4k resolution..."></textarea>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <button onclick="generateAiTextToVoice()" class="py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 font-bold text-xs text-slate-200 transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-volume-high text-gold-500"></i> <span data-i18n="text_to_voice">Text to Voice</span>
-                        </button>
-                        <button onclick="generateAiTextToVideo()" class="py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 font-bold text-xs text-slate-200 transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-film text-gold-500"></i> <span data-i18n="text_to_video">Text to Video</span>
-                        </button>
-                        <button onclick="generateAiTextToPrompt()" class="py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 font-bold text-xs text-slate-200 transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-sparkles text-gold-500"></i> <span data-i18n="prompt_enhancer">Prompt Enhancer</span>
-                        </button>
-                    </div>
-
-                    <!-- Media Output Render Screen -->
-                    <div class="bg-navy-950 rounded-xl border border-slate-800 p-4 aspect-video flex flex-col items-center justify-center relative overflow-hidden">
-                        <div id="media-render-display" class="text-center text-slate-500 space-y-2">
-                            <i class="fa-solid fa-clapperboard text-4xl text-slate-600"></i>
-                            <p class="text-xs" data-i18n="media_placeholder">জেনারেট বাটনে ক্লিক করলে আউটপুট এখানে দেখাবে</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 14: ADMIN & SECURITY PANEL -->
-            <section id="tab-admin-panel" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold text-amber-500" data-i18n="admin_title">সিকিউরিটি ও এডমিন ড্যাশবোর্ড</h2>
-                        <p class="text-xs text-slate-400" data-i18n="admin_subtitle">সিস্টেম কনফিগারেশন, API Keys ও পাসকোড সিকিউরিটি</p>
-                    </div>
-                </div>
-
-                <div id="admin-lock-screen" class="navy-card p-6 rounded-2xl max-w-md mx-auto text-center space-y-4">
-                    <i class="fa-solid fa-lock text-4xl text-amber-500"></i>
-                    <h3 class="font-bold text-slate-200 text-sm" data-i18n="enter_admin_pass">এডমিন পাসকোড লিখুন</h3>
-                    <input type="password" id="admin-passcode-input" placeholder="ডিফল্ট পাসকোড: 1234" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-center text-slate-200 outline-none">
-                    <button onclick="unlockAdminPanel()" class="w-full py-2.5 rounded-xl bg-amber-500 text-navy-950 font-bold text-xs shadow hover:bg-amber-400">
-                        আনলক করুন
-                    </button>
-                </div>
-
-                <div id="admin-content-screen" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="api_config">এআই API Key কনফিগারেশন</h3>
-
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1">Google Gemini API Key:</label>
-                            <input type="password" value="AIzaSyA-ExampleKey" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1">OpenAI ChatGPT Key:</label>
-                            <input type="password" value="sk-proj-ExampleKey" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 outline-none">
-                        </div>
-
-                        <button onclick="showToast('API Keys সংরক্ষিত হয়েছে')" class="w-full py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs">
-                            সেভ করুন
-                        </button>
-                    </div>
-
-                    <div class="navy-card p-5 rounded-2xl space-y-4">
-                        <h3 class="font-semibold text-slate-200 border-b border-slate-700/50 pb-2 text-sm" data-i18n="monetization_settings">মনিটাইজেশন ও কাস্টম সেটিংস</h3>
-
-                        <label class="flex items-center justify-between text-xs text-slate-300">
-                            <span>Google AdSense বিজ্ঞাপন দেখান:</span>
-                            <input type="checkbox" checked class="accent-gold-500 w-4 h-4">
-                        </label>
-
-                        <label class="flex items-center justify-between text-xs text-slate-300">
-                            <span>সাউথ এশিয়ান অটো কারেন্সি এক্সচেঞ্জ:</span>
-                            <input type="checkbox" checked class="accent-gold-500 w-4 h-4">
-                        </label>
-
-                        <button onclick="showToast('সিস্টেম রিসেট সম্পন্ন হয়েছে')" class="w-full py-2 rounded-xl bg-red-600/20 border border-red-500/40 text-red-400 font-bold text-xs">
-                            সমস্ত ডাটা ক্যাশ ক্লিয়ার করুন
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-        </main>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <h1 data-i18n="welcome">NIVORA WORLD-এ স্বাগতম</h1>
+    <p data-i18n="intro">আপনার প্রয়োজনীয় ডিজিটাল টুলস এবং ফ্রি এআই ক্রেডিট সিস্টেম এখন এক প্ল্যাটফর্মে।</p>
+    <div class="hero-row">
+      <span class="hero-pill" data-i18n="pill1">✦ All-in-One Platform</span>
+      <span class="hero-pill" data-i18n="pill2">🎁 Rewarded Credit System</span>
     </div>
-
-    <!-- Bottom Ad Banner Space -->
-    <footer class="bg-navy-900 border-t border-gold-500/10 py-1.5 px-4 text-center">
-        <div class="max-w-4xl mx-auto h-10 bg-navy-800/50 border border-dashed border-gold-500/30 rounded flex items-center justify-center text-xs text-slate-400 gap-2">
-            <i class="fa-solid fa-rectangle-ad text-gold-500"></i>
-            <span data-i18n="ad_space_bottom">ফুটার স্পন্সরড অ্যাডভারটাইজমেন্ট (Google AdSense Responsive Slot)</span>
-        </div>
-    </footer>
-
-    <!-- JavaScript Application Logic Engine -->
-    <script>
-        // GLOBAL STATE & DICTIONARY
-        let currentLang = 'bn';
-        let currentCurrency = 'BDT';
-        const currencySymbols = { BDT: '৳', USD: '$', INR: '₹', PKR: '₨' };
-
-        // Real-time Translation Dictionary for ALL UI Elements
-        const i18n = {
-            bn: {
-                tagline: "Universal AI & Business Suite",
-                back_to_dashboard: "ড্যাশবোর্ড",
-                ad_space_top: "স্পন্সরড অ্যাডভারটাইজমেন্ট স্পেস (Google AdSense Ready Slot)",
-                ad_space_bottom: "ফুটার স্পন্সরড অ্যাডভারটাইজমেন্ট (Google AdSense Responsive Slot)",
-                core_modules: "প্রধান মডিউলসমূহ",
-                nav_dashboard: "ড্যাশবোর্ড",
-                nav_voice_clone: "ভয়েস ও ফেস ক্লোন",
-                nav_av_editor: "অডিও-ভিডিও এডিটর",
-                nav_banner_maker: "ব্যানার ও পোস্টার মেকার",
-                nav_image_studio: "ইমেজ ও বিজি রিমুভার",
-                nav_business_radar: "বিজনেস ও মার্কেট রাডার",
-                nav_multi_ai: "মাল্টি এআই ক্লায়েন্ট",
-                nav_qr_pass: "কিউআর ও পাসওয়ার্ড",
-                nav_pdf_builder: "পিডিএফ ও ইনভয়েস",
-                nav_universal_excel: "ইউনিভার্সাল এক্সেল ও হিসাব",
-                nav_math_calc: "এডভান্সড ক্যালকুলেটর",
-                nav_ai_media: "এআই মিডিয়া মেকার",
-                nav_admin_panel: "এডমিন সিকিউরিটি",
-                system_status: "সিস্টেম স্ট্যাটাস",
-                active: "সক্রিয়",
-                dash_badge: "অল-ইন-ওয়ান ইউনিভার্সাল এআই হাব",
-                dash_welcome_title: "স্বাগতম NIVORA WORLD ড্যাশবোর্ডে",
-                dash_welcome_desc: "দৈনন্দিন অফিশিয়াল, এআই ভয়েস ক্লোনিং, অডিও-ভিডিও এডিটিং, বিজনেস গ্রাফিক্স এবং ইউনিভার্সাল ফাইনান্সিয়াল হিসাব-নিকাশের সেরা সমাধান এখন একক প্ল্যাটফর্মে।",
-                start_now: "এখনই শুরু করুন",
-                quick_calc: "হিসাব পাতা",
-                all_tools_grid: "প্রধান সরঞ্জামসমূহ (১৪টি পাওয়ারফুল টুল)",
-                tool1_title: "১. ভয়েস ও ফেস ক্লোন",
-                tool1_desc: "ক্বেরাত, গান বা মাইকিং কন্ঠে ভয়েস ও ফেস ক্লোনিং স্টুডিও।",
-                tool2_title: "২. ক্যানভাস এডিটিং টুল",
-                tool2_desc: "ওয়েবক্যাম, নয়েজ রিডাকশন ও ভিজ্যুয়াল এনহ্যান্সার।",
-                tool3_title: "৩. ব্যানার ও পোস্টার",
-                tool3_desc: "কালার কম্বিনেশন, টেক্সট স্টাইল ও অবতার মেকার।",
-                tool4_title: "৪. ইমেজ ব্যাকগ্রাউন্ড",
-                tool4_desc: "ব্যাকগ্রাউন্ড পরিবর্তন, পাসপোর্ট সাইজ ও প্রিন্ট অপশন।",
-                tool5_title: "৫. বিজনেস ও মার্কেট রাডার",
-                tool5_desc: "প্রোডাক্ট ট্র্যাকিং, চাহিদা বিশ্লেষণ ও সিজনাল রাডার।",
-                tool6_title: "৬. মাল্টি-এআই কানেক্টর",
-                tool6_desc: "ChatGPT, Gemini এবং Groq AI সমন্বিত হাব।",
-                tool7_title: "৭. কিউআর ও পাসওয়ার্ড",
-                tool7_desc: "ডায়নামিক QR Code ও হাই-সিকিউরিটি পাসওয়ার্ড জেনারেটর।",
-                tool8_title: "৮. পিডিএফ ইনভয়েস",
-                tool8_desc: "প্রফেশনাল ইনভয়েস ও মেমো জেনারেটর এবং মেকার।",
-                tool9_title: "৯. ডাইনামিক ইউনিভার্সাল হিসাব",
-                tool9_desc: "দোকান, কারখানা, অফিশিয়াল ও সুদি হিসাব সিস্টেম।",
-                tool10_title: "১০. সায়েন্টিফিক ক্যালকুলেটর",
-                tool10_desc: "EMI, লাভ-ক্ষতি, সুদের হিসাব ও ইউনিট কনভার্টার।",
-                tool12_title: "১২. এআই টেক্সট-টু-ভিডিও/ভয়েস",
-                tool12_desc: "প্রম্পট থেকে ভিডিও এবং স্পিচ সিন্থেসাইজার।",
-                tool14_title: "১৪. সিকিউরিটি এডমিন প্যানেল",
-                tool14_desc: "পাসকোড সিকিউরিটি ও সিস্টেম ম্যানেজমেন্ট।",
-                vclone_title: "ভয়েস ক্লোন ও ফেস স্পিকিং স্টুডিও",
-                vclone_subtitle: "নির্দিষ্ট চেহারায় ক্বেরাত, গান বা মাইকিং এর শব্দযুক্ত এআই ভয়েস ক্লোনিং",
-                vclone_step1: "১. ফেস ও ভয়েস ইনপুট নির্বাচন করুন",
-                vclone_face_label: "টার্গেট ফেস বা অবতার সিলেক্ট করুন:",
-                upload_image: "ছবি আপলোড",
-                vclone_mode: "কণ্ঠের স্টাইল মোড:",
-                vclone_audio: "ভয়েস স্যাম্পল আপলোড / রেকর্ড করুন:",
-                rec_sample: "স্যাম্পল রেকর্ড",
-                vclone_text: "বক্তব্য/ক্বেরাত/মাইকিং এর স্ক্রিপ্ট লিখুন:",
-                generate_clone: "ভয়েস ও ফেস সিন্থেসাইজ চালু করুন",
-                vclone_preview: "লাইভ এআই আউটপুট প্রিভিউ",
-                ready: "রেডি",
-                aveditor_title: "অডিও ও ভিডিও এডিটিং স্টুডিও (Canvas Style)",
-                aveditor_subtitle: "ওয়েবক্যাম রেকর্ডিং, ব্যাকগ্রাউন্ড নয়েজ রিডাকশন ও লাইভ ফিল্টার",
-                capture_sources: "ক্যাপচার ও রেকর্ড সোর্স",
-                start_webcam: "ওয়েবক্যাম চালু করুন",
-                share_screen: "স্ক্রিন রেকর্ড শুরু",
-                av_enhancements: "ফিল্টার ও সাউন্ড এনহ্যান্সমেন্ট",
-                noise_reduction: "নয়েজ রিডাকশন (Noise Filter):",
-                video_filter: "ভিডিও কালার ফিল্টার:",
-                start_recording: "রেকর্ডিং শুরু করুন",
-                no_video_stream: "ক্যামেরা বা ভিডিও স্ট্রিম বন্ধ রয়েছে",
-                timeline: "টাইমলাইন সম্পাদক (Canvas Style)",
-                download_edited: "ডাউনলোড ফাইল",
-                bannermaker_title: "ব্যানার ও পোস্টার মেকার স্টুডিও",
-                bannermaker_subtitle: "কাস্টম কালার কম্বিনেশন, ফ্রেম ও টেক্সট স্টাইলিং টুলস",
-                design_tools: "ডিজাইন টুলস",
-                banner_title_text: "প্রধান শিরোনাম টেক্সট:",
-                banner_sub_text: "সাব-টাইটেল / বিবরণ:",
-                bg_color: "ব্যাকগ্রাউন্ড কালার:",
-                text_color: "টেক্সট কালার:",
-                font_style: "ফন্ট স্টাইল:",
-                download_poster: "পোস্টার ডাউনলোড করুন",
-                imgstudio_title: "ইমেজ স্টুডিও ও ব্যাকগ্রাউন্ড রিমুভার",
-                imgstudio_subtitle: "ছবি এডিটিং, ব্যাকগ্রাউন্ড রিমুভ, পাসপোর্ট সাইজ ও ডাইরেক্ট প্রিন্ট",
-                img_processing: "ইমেজ প্রসেসিং অপশন",
-                select_photo: "ছবি চয়ন করুন:",
-                remove_bg: "ব্যাকগ্রাউন্ড রিমুভ করুন (Auto Removal)",
-                preset_size: "ছবি সাইজ নির্ধারন (Resize Presets):",
-                download: "ডাউনলোড",
-                print: "প্রিন্ট ছবি",
-                bizradar_title: "বিজনেস ম্যানেজমেন্ট ও মৌসুমী মার্কেট রাডার",
-                bizradar_subtitle: "প্রোডাক্ট ট্র্যাকিং, বিক্রয় গ্রাফ এবং বাজারের মৌসুমী চাহিদা রাডার",
-                total_revenue: "মোট রাজস্ব (Total Revenue)",
-                active_orders: "সক্রিয় অর্ডার (Active Orders)",
-                seasonal_demand: "মৌসুমী চাহিদা সূচক",
-                stock_items: "ইনভেন্টরি আইটেম",
-                radar_heading: "মৌসুমী বাজার চাহিদা রাডার (Seasonal Market Radar)",
-                product_tracker: "প্রোডাক্ট ট্র্যাকিং ও স্টক স্ট্যাটাস",
-                add_new_stock: "+ নতুন স্টক আইটেম যোগ করুন",
-                multiai_title: "মাল্টি-এআই ইকোসিস্টেম হাব (ChatGPT, Gemini, Groq)",
-                multiai_subtitle: "একই স্থানে পৃথিবীর সেরা এআই মডেলসমূহের সাথে কথা বলুন",
-                active_model: "মডেল:",
-                ai_greeting: "হ্যালো! আমি আপনার সার্বিক ব্যবসায়িক ও ব্যক্তিগত এআই সহকারী। কীভাবে আপনাকে সাহায্য করতে পারি?",
-                send: "পাঠান",
-                qrpass_title: "কিউআর কোড ও পাসওয়ার্ড সিকিউরিটি স্টুডিও",
-                qrpass_subtitle: "স্মার্ট QR Code জেনারেটর এবং মিলিটারি গ্রেড পাসওয়ার্ড মেকার",
-                qr_gen_title: "১. ডায়নামিক QR Code মেকার",
-                qr_input_label: "ইউআরএল বা টেক্সট প্রদান করুন:",
-                download_qr: "কিউআর কোড ডাউনলোড",
-                pass_gen_title: "২. নিরাপদ পাসওয়ার্ড জেনারেটর",
-                pass_length: "পাসওয়ার্ড দৈর্ঘ্য:",
-                regen_pass: "নতুন পাসওয়ার্ড তৈরি করুন",
-                pdfbuilder_title: "পিডিএফ ও ব্যবসায়িক ইনভয়েস মেকার",
-                pdfbuilder_subtitle: "অফিসিয়াল মেমো, বিল এবং পিডিএফ ইনভয়েস জেনারেটর",
-                print_pdf: "পিডিএফ ডাউনলোড / প্রিন্ট",
-                excel_title: "ইউনিভার্সাল ডাইনামিক হিসাব ও লেজার (Excel Style)",
-                excel_subtitle: "দোকান, কারখানা, অফিশিয়াল ও সুদি হিসাব সহ সকল ধরনের ক্যাশবুক",
-                ledger_type: "লেজার মোড:",
-                total_income: "মোট আয় (+)",
-                total_expense: "মোট ব্যয় (-)",
-                net_balance: "নীট ক্যাশ ব্যালেন্স",
-                mathcalc_title: "এডভান্সড ম্যাথ ও ফাইনান্সিয়াল ক্যালকুলেটর হাব",
-                mathcalc_subtitle: "সায়েন্টিফিক, লোন EMI, লাভ-ক্ষতি ও ভ্যাট হিসাব",
-                sci_calc: "সায়েন্টিফিক ক্যালকুলেটর",
-                emi_calc: "ঋণ/সুদ EMI ক্যালকুলেটর",
-                principal_amt: "ঋণের পরিমাণ (Principal Amount):",
-                interest_rate: "সুদের হার (% বার্ষিক):",
-                tenure_months: "মেয়াদ (মাস):",
-                monthly_emi: "মাসিক কিস্তি (Monthly EMI):",
-                total_interest: "মোট প্রদেয় সুদ:",
-                aimedia_title: "এআই ভিডিও ও ভয়েস মেকার (Media Suite)",
-                aimedia_subtitle: "Text-to-Video, Text-to-Speech এবং Image-to-Video স্টুডিও",
-                prompt_label: "ভিডিও বা ভয়েসের প্রম্পট লিখুন:",
-                text_to_voice: "Text to Voice",
-                text_to_video: "Text to Video",
-                prompt_enhancer: "Prompt Enhancer",
-                media_placeholder: "জেনারেট বাটনে ক্লিক করলে আউটপুট এখানে দেখাবে",
-                admin_title: "সিকিউরিটি ও এডমিন ড্যাশবোর্ড",
-                admin_subtitle: "সিস্টেম কনফিগারেশন, API Keys ও পাসকোড সিকিউরিটি",
-                enter_admin_pass: "এডমিন পাসকোড লিখুন",
-                api_config: "এআই API Key কনফিগারেশন",
-                monetization_settings: "মনিটাইজেশন ও কাস্টম সেটিংস"
-            },
-            en: {
-                tagline: "Universal AI & Business Suite",
-                back_to_dashboard: "Dashboard",
-                ad_space_top: "Sponsored Advertisement Space (Google AdSense Ready Slot)",
-                ad_space_bottom: "Footer Sponsored Advertisement (Google AdSense Responsive Slot)",
-                core_modules: "CORE MODULES",
-                nav_dashboard: "Dashboard",
-                nav_voice_clone: "Voice & Face Clone",
-                nav_av_editor: "Audio-Video Editor",
-                nav_banner_maker: "Banner & Poster Maker",
-                nav_image_studio: "Image & BG Remover",
-                nav_business_radar: "Business & Market Radar",
-                nav_multi_ai: "Multi-AI Ecosystem",
-                nav_qr_pass: "QR & Passwords",
-                nav_pdf_builder: "PDF & Invoices",
-                nav_universal_excel: "Universal Excel & Ledger",
-                nav_math_calc: "Advanced Calculators",
-                nav_ai_media: "AI Media Maker",
-                nav_admin_panel: "Admin Security",
-                system_status: "SYSTEM STATUS",
-                active: "Active",
-                dash_badge: "ALL-IN-ONE UNIVERSAL AI HUB",
-                dash_welcome_title: "Welcome to NIVORA WORLD Dashboard",
-                dash_welcome_desc: "The ultimate platform for AI Voice cloning, audio-video editing, business graphics, and universal financial accounting in one unified space.",
-                start_now: "Get Started Now",
-                quick_calc: "Open Ledger",
-                all_tools_grid: "Primary Tools (14 Powerful Modules)",
-                tool1_title: "1. Voice & Face Clone",
-                tool1_desc: "Voice and Face cloning studio with recitation, song, and announcement modes.",
-                tool2_title: "2. Canvas Editing Suite",
-                tool2_desc: "Webcam recorder, noise reduction, and visual enhancer timeline.",
-                tool3_title: "3. Banner & Poster Maker",
-                tool3_desc: "Custom color combinations, text typography, and avatar stickers.",
-                tool4_title: "4. Image Studio & BG Remover",
-                tool4_desc: "Background replacement, passport size presets, and direct printing.",
-                tool5_title: "5. Business & Market Radar",
-                tool5_desc: "Inventory tracking, sales analytics, and seasonal trend radar.",
-                tool6_title: "6. Multi-AI Ecosystem Hub",
-                tool6_desc: "Integrated portal for ChatGPT, Gemini, and Groq AI models.",
-                tool7_title: "7. QR & Password Suite",
-                tool7_desc: "Dynamic QR code creator and military-grade password generator.",
-                tool8_title: "8. PDF & Invoice Builder",
-                tool8_desc: "Professional invoices, bills, and memo document generator.",
-                tool9_title: "9. Universal Dynamic Excel",
-                tool9_desc: "Daily cashbook for shops, factories, official projects, and interest ledgers.",
-                tool10_title: "10. Scientific & Financial Calc",
-                tool10_desc: "Scientific calculator, EMI loan, profit/loss, and VAT system.",
-                tool12_title: "12. AI Text-to-Video / Voice",
-                tool12_desc: "AI video renderer from text prompts and speech synthesizer.",
-                tool14_title: "14. Admin & Security Control",
-                tool14_desc: "Passcode protection, system diagnostics, and API keys.",
-                vclone_title: "Voice & Face Speaking Studio",
-                vclone_subtitle: "AI voice cloning with specific avatar speech, Quranic recitation, and singing styles.",
-                vclone_step1: "1. Select Face and Voice Input",
-                vclone_face_label: "Select Target Avatar Face:",
-                upload_image: "Upload Image",
-                vclone_mode: "Voice Vocal Style Mode:",
-                vclone_audio: "Upload or Record Voice Sample:",
-                rec_sample: "Record Sample",
-                vclone_text: "Input Speech / Recitation Script:",
-                generate_clone: "Start Synthesis Engine",
-                vclone_preview: "Live AI Output Preview",
-                ready: "Ready",
-                aveditor_title: "Audio & Video Canvas Studio",
-                aveditor_subtitle: "Webcam recording, noise reduction filtering, and live canvas enhancement.",
-                capture_sources: "Capture & Recording Sources",
-                start_webcam: "Start Webcam",
-                share_screen: "Share Screen",
-                av_enhancements: "Filters & Audio Enhancements",
-                noise_reduction: "Noise Reduction Filter:",
-                video_filter: "Video Color Filter:",
-                start_recording: "Start Recording",
-                no_video_stream: "Camera or Video Stream is Inactive",
-                timeline: "Canvas Timeline Editor",
-                download_edited: "Download Media",
-                bannermaker_title: "Banner & Poster Maker Studio",
-                bannermaker_subtitle: "Custom color combinations, frames, and text styling tools.",
-                design_tools: "Design Tools",
-                banner_title_text: "Heading Title Text:",
-                banner_sub_text: "Sub-Title / Description:",
-                bg_color: "Background Color:",
-                text_color: "Text Color:",
-                font_style: "Font Family:",
-                download_poster: "Download Poster",
-                imgstudio_title: "Image Studio & Background Remover",
-                imgstudio_subtitle: "Photo editing, BG removal, passport size presets, and direct printing.",
-                img_processing: "Image Processing Options",
-                select_photo: "Choose Photo:",
-                remove_bg: "Remove Background (Auto Clear)",
-                preset_size: "Resize Presets:",
-                download: "Download",
-                print: "Print Image",
-                bizradar_title: "Business Management & Market Radar",
-                bizradar_subtitle: "Product inventory tracking, sales metrics, and seasonal demand radar.",
-                total_revenue: "Total Revenue",
-                active_orders: "Active Orders",
-                seasonal_demand: "Seasonal Demand Index",
-                stock_items: "Inventory Items",
-                radar_heading: "Seasonal Market Demand Radar",
-                product_tracker: "Product Inventory & Tracking",
-                add_new_stock: "+ Add New Stock Item",
-                multiai_title: "Multi-AI Ecosystem Client (ChatGPT, Gemini, Groq)",
-                multiai_subtitle: "Interact with world-class AI models in one single interface.",
-                active_model: "Active Model:",
-                ai_greeting: "Hello! I am your universal AI assistant. How can I help you today?",
-                send: "Send",
-                qrpass_title: "QR Code & Password Security Suite",
-                qrpass_subtitle: "Smart QR Code creator and military-grade password generator.",
-                qr_gen_title: "1. Dynamic QR Code Maker",
-                qr_input_label: "Enter URL or Text Data:",
-                download_qr: "Download QR Code",
-                pass_gen_title: "2. Secure Password Generator",
-                pass_length: "Password Length:",
-                regen_pass: "Generate New Password",
-                pdfbuilder_title: "PDF & Business Invoice Builder",
-                pdfbuilder_subtitle: "Official invoice, memo, and document PDF generator.",
-                print_pdf: "Print / Save PDF",
-                excel_title: "Universal Dynamic Ledger & Excel",
-                excel_subtitle: "Daily cashbook for shops, factories, official projects, and loan ledgers.",
-                ledger_type: "Ledger Mode:",
-                total_income: "Total Income (+)",
-                total_expense: "Total Expense (-)",
-                net_balance: "Net Balance",
-                mathcalc_title: "Advanced Math & Financial Calculators",
-                mathcalc_subtitle: "Scientific calculator, EMI loan calculator, profit/loss, and VAT.",
-                sci_calc: "Scientific Calculator",
-                emi_calc: "Loan EMI Calculator",
-                principal_amt: "Principal Loan Amount:",
-                interest_rate: "Interest Rate (% Annual):",
-                tenure_months: "Tenure (Months):",
-                monthly_emi: "Monthly EMI:",
-                total_interest: "Total Payable Interest:",
-                aimedia_title: "AI Media Generator (Video & Voice)",
-                aimedia_subtitle: "Text-to-Video, Text-to-Speech, and Prompt Enhancer.",
-                prompt_label: "Enter Prompt Script:",
-                text_to_voice: "Text to Voice",
-                text_to_video: "Text to Video",
-                prompt_enhancer: "Prompt Enhancer",
-                media_placeholder: "Output will appear here after generation",
-                admin_title: "Security & Admin Control Panel",
-                admin_subtitle: "System configuration, API key storage, and security.",
-                enter_admin_pass: "Enter Admin Passcode",
-                api_config: "AI API Key Configuration",
-                monetization_settings: "Monetization & Custom Settings"
-            }
-        };
-
-        // UI Initialization on DOM Load
-        window.onload = function() {
-            // Sidebar Toggle
-            document.getElementById('toggle-sidebar').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
-            });
-
-            // Init Canvas Renderers
-            renderBannerCanvas();
-            renderMarketRadar();
-            generateQRCode();
-            generateSecurePassword();
-            initExcelSheet();
-            calculateEMI();
-
-            // Web Speech API Voice Synthesis Support
-            if ('speechSynthesis' in window) {
-                console.log("Speech Synthesis is Supported.");
-            }
-        };
-
-        // Navigation Switcher
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            const targetTab = document.getElementById('tab-' + tabId);
-            if (targetTab) {
-                targetTab.classList.remove('hidden');
-            }
-
-            // Update active state in sidebar
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                if (btn.dataset.tab === tabId) {
-                    btn.classList.add('bg-navy-800', 'text-gold-500');
-                } else {
-                    btn.classList.remove('bg-navy-800', 'text-gold-500');
-                }
-            });
-
-            // Toggle Global Back Button
-            const backBtn = document.getElementById('global-back-btn');
-            if (tabId === 'dashboard') {
-                backBtn.classList.add('hidden');
-            } else {
-                backBtn.classList.remove('hidden');
-            }
-
-            // Mobile menu auto collapse
-            if (window.innerWidth < 768) {
-                document.getElementById('sidebar').classList.add('sidebar-collapsed');
-            }
-        }
-
-        // Global Reactive Language Switcher
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('lang-bn').className = lang === 'bn' ? 'px-2 py-1 rounded text-xs font-medium bg-gold-500 text-navy-950 shadow' : 'px-2 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-100';
-            document.getElementById('lang-en').className = lang === 'en' ? 'px-2 py-1 rounded text-xs font-medium bg-gold-500 text-navy-950 shadow' : 'px-2 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-100';
-
-            // Translate all elements with data-i18n attribute
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[lang] && i18n[lang][key]) {
-                    el.innerText = i18n[lang][key];
-                }
-            });
-            showToast(lang === 'bn' ? 'ভাষা পরিবর্তন করা হয়েছে (বাংলা)' : 'Language changed to English');
-        }
-
-        // Global Currency Switcher
-        function setCurrency(curr) {
-            currentCurrency = curr;
-            const symbol = currencySymbols[curr];
-            document.getElementById('stat-revenue').innerText = `${symbol} 450,000`;
-            calculateExcelTotals();
-            calculateEMI();
-            showToast(`Currency updated to ${curr} (${symbol})`);
-        }
-
-        // Dynamic Toast Notification
-        function showToast(message) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'navy-card text-xs text-gold-400 px-4 py-3 rounded-xl shadow-lg border border-gold-500/30 flex items-center gap-2 animate-bounce';
-            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // MODULE 1: VOICE & FACE CLONE LOGIC
-        function previewFaceImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('face-img-target').src = e.target.result;
-                    document.getElementById('avatar-preview-box').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-xl">`;
-                    showToast('টার্গেট ফেস লোড হয়েছে');
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function synthesizeVoiceClone() {
-            const script = document.getElementById('voice-script-text').value;
-            const mode = document.getElementById('voice-style-mode').value;
-            if (!script) {
-                showToast('অনুগ্রহ করে বক্তব্য বা স্ক্রিপ্ট লিখুন');
-                return;
-            }
-
-            const ring = document.getElementById('speaking-ring');
-            const status = document.getElementById('clone-status-badge');
-            ring.classList.remove('opacity-0');
-            status.innerText = 'সিন্থেসাইজিং চালু...';
-            status.className = 'px-2.5 py-0.5 rounded-full text-[10px] bg-gold-500/20 text-gold-400 border border-gold-500/30 animate-pulse';
-
-            // Web Speech API Synthesis Simulation
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(script);
-                utterance.lang = currentLang === 'bn' ? 'bn-BD' : 'en-US';
-                utterance.pitch = mode === 'kerat' ? 0.8 : (mode === 'singing' ? 1.2 : 1.0);
-                utterance.rate = mode === 'announcement' ? 1.1 : 0.9;
-                
-                utterance.onend = function() {
-                    ring.classList.add('opacity-0');
-                    status.innerText = 'সম্পন্ন';
-                    status.className = 'px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-                };
-                window.speechSynthesis.speak(utterance);
-            }
-            showToast('ভয়েস ও ফেস ক্লোন প্রসেস হচ্ছে');
-        }
-
-        // MODULE 2: AUDIO-VIDEO EDITOR CANVAS & WEBCAM
-        let mediaStream = null;
-        let mediaRecorder = null;
-        let recordedChunks = [];
-
-        async function toggleWebcam() {
-            const videoEl = document.getElementById('editor-video-preview');
-            const noSig = document.getElementById('no-signal-text');
-            if (!mediaStream) {
-                try {
-                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                    videoEl.srcObject = mediaStream;
-                    noSig.classList.add('hidden');
-                    document.getElementById('webcam-btn-text').innerText = 'ওয়েবক্যাম বন্ধ করুন';
-                } catch (e) {
-                    showToast('ক্যামেরা ব্যবহারের অনুমতি পাওয়া যায়নি');
-                }
-            } else {
-                mediaStream.getTracks().forEach(track => track.stop());
-                videoEl.srcObject = null;
-                mediaStream = null;
-                noSig.classList.remove('hidden');
-                document.getElementById('webcam-btn-text').innerText = 'ওয়েবক্যাম চালু করুন';
-            }
-        }
-
-        function applyVideoFilter(filter) {
-            document.getElementById('editor-video-preview').style.filter = filter;
-        }
-
-        function toggleMediaRecording() {
-            if (!mediaStream) {
-                showToast('আগে ওয়েবক্যাম বা সোর্স সিলেক্ট করুন');
-                return;
-            }
-            const btnLabel = document.getElementById('rec-btn-label');
-            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
-                recordedChunks = [];
-                mediaRecorder = new MediaRecorder(mediaStream);
-                mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
-                mediaRecorder.onstop = () => showToast('রেকর্ডিং সমাপ্ত ও প্রস্তুত');
-                mediaRecorder.start();
-                btnLabel.innerText = 'রেকর্ডিং বন্ধ করুন';
-                document.getElementById('timeline-progress').style.width = '100%';
-                document.getElementById('timeline-progress').style.transition = 'width 10s linear';
-            } else {
-                mediaRecorder.stop();
-                btnLabel.innerText = 'রেকর্ডিং শুরু করুন';
-            }
-        }
-
-        // MODULE 3: BANNER & POSTER CANVAS RENDERER
-        function renderBannerCanvas() {
-            const canvas = document.getElementById('poster-canvas');
-            const ctx = canvas.getContext('2d');
-            const heading = document.getElementById('banner-text-heading').value;
-            const sub = document.getElementById('banner-text-sub').value;
-            const bgColor = document.getElementById('banner-bg-color').value;
-            const textColor = document.getElementById('banner-text-color').value;
-            const font = document.getElementById('banner-font-family').value;
-
-            // Background Fill
-            ctx.fillStyle = bgColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Decorative Border
-            ctx.strokeStyle = textColor;
-            ctx.lineWidth = 8;
-            ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
-
-            // Heading Text
-            ctx.fillStyle = textColor;
-            ctx.font = `bold 36px ${font}`;
-            ctx.textAlign = 'center';
-            ctx.fillText(heading, canvas.width / 2, 200);
-
-            // Sub-Title Text
-            ctx.fillStyle = '#ffffff';
-            ctx.font = `20px ${font}`;
-            ctx.fillText(sub, canvas.width / 2, 260);
-        }
-
-        function downloadBannerImage() {
-            const canvas = document.getElementById('poster-canvas');
-            const link = document.createElement('a');
-            link.download = 'poster-design.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        // MODULE 4: IMAGE STUDIO CANVAS & BG REMOVER
-        let studioImg = new Image();
-
-        function loadStudioImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    studioImg.onload = function() {
-                        const canvas = document.getElementById('img-studio-canvas');
-                        const ctx = canvas.getContext('2d');
-                        canvas.width = studioImg.width;
-                        canvas.height = studioImg.height;
-                        ctx.drawImage(studioImg, 0, 0);
-                        document.getElementById('studio-placeholder-text').classList.add('hidden');
-                    }
-                    studioImg.src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function simulateBgRemoval() {
-            const canvas = document.getElementById('img-studio-canvas');
-            const ctx = canvas.getContext('2d');
-            if (!studioImg.src) return;
-
-            // Color-key based simulated background clearing
-            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imgData.data;
-            for (let i = 0; i < data.length; i += 4) {
-                // Clear white/light pixels
-                if (data[i] > 200 && data[i+1] > 200 && data[i+2] > 200) {
-                    data[i+3] = 0;
-                }
-            }
-            ctx.putImageData(imgData, 0, 0);
-            showToast('অটোমেটিক ব্যাকগ্রাউন্ড রিমুভ সম্পন্ন');
-        }
-
-        function printStudioImage() {
-            window.print();
-        }
-
-        // MODULE 5: BUSINESS MARKET RADAR CANVAS
-        function renderMarketRadar() {
-            const canvas = document.getElementById('market-radar-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const cX = canvas.width / 2;
-            const cY = canvas.height / 2;
-            const radius = 120;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw radar concentric circles
-            ctx.strokeStyle = 'rgba(247, 184, 1, 0.2)';
-            ctx.lineWidth = 1;
-            for (let r = 30; r <= radius; r += 30) {
-                ctx.beginPath();
-                ctx.arc(cX, cY, r, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            // Draw Radar Scanner Line
-            let angle = 0;
-            function animateRadar() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let r = 30; r <= radius; r += 30) {
-                    ctx.beginPath();
-                    ctx.arc(cX, cY, r, 0, Math.PI * 2);
-                    ctx.strokeStyle = 'rgba(247, 184, 1, 0.2)';
-                    ctx.stroke();
-                }
-
-                ctx.beginPath();
-                ctx.moveTo(cX, cY);
-                ctx.arc(cX, cY, radius, angle, angle + 0.4);
-                ctx.lineTo(cX, cY);
-                ctx.fillStyle = 'rgba(247, 184, 1, 0.25)';
-                ctx.fill();
-
-                angle += 0.03;
-                requestAnimationFrame(animateRadar);
-            }
-            animateRadar();
-        }
-
-        // MODULE 6: MULTI-AI CLIENT LOGIC
-        function selectAiModel(model) {
-            document.querySelectorAll('#model-btn-gemini, #model-btn-chatgpt, #model-btn-groq').forEach(btn => {
-                btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-100 transition';
-            });
-            document.getElementById(`model-btn-${model}`).className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-gold-500 text-navy-950 transition';
-            const badge = document.getElementById('active-model-badge');
-            badge.innerText = model === 'gemini' ? 'Google Gemini API Connected' : (model === 'chatgpt' ? 'OpenAI GPT-4o Active' : 'Groq Llama-3 Ultra-Fast');
-        }
-
-        function sendAiMessage() {
-            const input = document.getElementById('ai-prompt-input');
-            const chatBox = document.getElementById('ai-chat-box');
-            if (!input.value) return;
-
-            // Append User Message
-            const userMsg = document.createElement('div');
-            userMsg.className = 'bg-gold-500/10 border border-gold-500/30 p-3 rounded-xl max-w-[85%] ml-auto text-slate-100';
-            userMsg.innerHTML = `<p>${input.value}</p>`;
-            chatBox.appendChild(userMsg);
-
-            const promptText = input.value;
-            input.value = '';
-
-            // AI Simulated Streaming Reply
-            setTimeout(() => {
-                const aiMsg = document.createElement('div');
-                aiMsg.className = 'bg-navy-900 border border-slate-800 p-3 rounded-xl max-w-[85%] text-slate-200';
-                aiMsg.innerHTML = `<div class="font-bold text-gold-500 mb-1"><i class="fa-solid fa-robot"></i> NIVORA AI</div><p>"${promptText}" - এই বিষয়ে আপনার এআই প্রসেসিং সম্পন্ন হয়েছে। আপনার ব্যবসায়িক সিদ্ধান্তের জন্য বিস্তারিত তথ্য তৈরি।</p>`;
-                chatBox.appendChild(aiMsg);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
-        }
-
-        // MODULE 7: QR CODE & PASSWORD GENERATOR
-        function generateQRCode() {
-            const text = document.getElementById('qr-text-input').value;
-            const canvas = document.getElementById('qr-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Grid-based simulated QR Pattern generator
-            ctx.fillStyle = '#0b132b';
-            const size = 10;
-            for (let i = 0; i < canvas.width; i += size) {
-                for (let j = 0; j < canvas.height; j += size) {
-                    if (Math.random() > 0.5) {
-                        ctx.fillRect(i, j, size - 1, size - 1);
-                    }
-                }
-            }
-        }
-
-        function downloadQRCode() {
-            const link = document.createElement('a');
-            link.download = 'qrcode.png';
-            link.href = document.getElementById('qr-canvas').toDataURL();
-            link.click();
-        }
-
-        function generateSecurePassword() {
-            const len = parseInt(document.getElementById('pass-length-slider').value);
-            const useSymbols = document.getElementById('chk-symbols').checked;
-            const useNumbers = document.getElementById('chk-numbers').checked;
-
-            let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-            if (useNumbers) chars += '0123456789';
-            if (useSymbols) chars += '!@#$%^&*()_+-=[]{}';
-
-            let res = '';
-            for (let i = 0; i < len; i++) {
-                res += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            document.getElementById('generated-pass-display').value = res;
-        }
-
-        function copyGeneratedPassword() {
-            const pass = document.getElementById('generated-pass-display').value;
-            navigator.clipboard.writeText(pass);
-            showToast('পাসওয়ার্ড ক্লিপবোর্ডে কপি করা হয়েছে');
-        }
-
-        // MODULE 8: PRINT INVOICE PDF
-        function printInvoicePDF() {
-            window.print();
-        }
-
-        // MODULE 9: UNIVERSAL EXCEL & LEDGER SYSTEM
-        let excelRows = [
-            { date: '02/11/2026', desc: 'মাসের শুরু জমার ক্যাশ ওপেনিং', inVal: 50000, outVal: 0 },
-            { date: '02/11/2026', desc: 'অফিস সাপ্লাই ও প্রিন্টিং খরচ', inVal: 0, outVal: 2500 }
-        ];
-
-        function initExcelSheet() {
-            renderExcelRows();
-        }
-
-        function renderExcelRows() {
-            const tbody = document.getElementById('excel-sheet-body');
-            tbody.innerHTML = '';
-            excelRows.forEach((row, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-2"><input type="text" value="${row.date}" onchange="excelRows[${idx}].date=this.value" class="bg-navy-900 border border-slate-700 rounded p-1 w-full text-xs text-slate-200"></td>
-                    <td class="p-2"><input type="text" value="${row.desc}" onchange="excelRows[${idx}].desc=this.value" class="bg-navy-900 border border-slate-700 rounded p-1 w-full text-xs text-slate-200"></td>
-                    <td class="p-2"><input type="number" value="${row.inVal}" onchange="excelRows[${idx}].inVal=parseFloat(this.value)||0; calculateExcelTotals();" class="bg-navy-900 border border-slate-700 rounded p-1 w-full text-xs text-emerald-400 font-mono"></td>
-                    <td class="p-2"><input type="number" value="${row.outVal}" onchange="excelRows[${idx}].outVal=parseFloat(this.value)||0; calculateExcelTotals();" class="bg-navy-900 border border-slate-700 rounded p-1 w-full text-xs text-red-400 font-mono"></td>
-                    <td class="p-2 font-mono text-gold-400 font-bold" id="row-bal-${idx}">৳ 0</td>
-                    <td class="p-2 text-center"><button onclick="deleteExcelRow(${idx})" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-            calculateExcelTotals();
-        }
-
-        function addExcelRow() {
-            excelRows.push({ date: '02/11/2026', desc: 'নতুন বিবরণ', inVal: 0, outVal: 0 });
-            renderExcelRows();
-        }
-
-        function deleteExcelRow(idx) {
-            excelRows.splice(idx, 1);
-            renderExcelRows();
-        }
-
-        function calculateExcelTotals() {
-            let totalIn = 0;
-            let totalOut = 0;
-            let runningBal = 0;
-
-            excelRows.forEach((row, idx) => {
-                totalIn += row.inVal;
-                totalOut += row.outVal;
-                runningBal += (row.inVal - row.outVal);
-                const balEl = document.getElementById(`row-bal-${idx}`);
-                if (balEl) balEl.innerText = `${currencySymbols[currentCurrency]} ${runningBal.toLocaleString()}`;
-            });
-
-            const net = totalIn - totalOut;
-            document.getElementById('excel-total-in').innerText = `${currencySymbols[currentCurrency]} ${totalIn.toLocaleString()}`;
-            document.getElementById('excel-total-out').innerText = `${currencySymbols[currentCurrency]} ${totalOut.toLocaleString()}`;
-            document.getElementById('excel-net-balance').innerText = `${currencySymbols[currentCurrency]} ${net.toLocaleString()}`;
-        }
-
-        function exportExcelData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(excelRows));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", "nivora-ledger-data.json");
-            dlAnchor.click();
-        }
-
-        // MODULE 10: MATH & FINANCIAL CALCULATOR LOGIC
-        function calcInput(val) {
-            const display = document.getElementById('calc-display');
-            if (val === 'C') {
-                display.value = '';
-            } else if (val === 'sqrt') {
-                display.value = Math.sqrt(parseFloat(display.value) || 0);
-            } else {
-                display.value += val;
-            }
-        }
-
-        function calcCompute() {
-            const display = document.getElementById('calc-display');
-            try {
-                display.value = eval(display.value);
-            } catch (e) {
-                display.value = 'Error';
-            }
-        }
-
-        function calculateEMI() {
-            const P = parseFloat(document.getElementById('emi-principal').value) || 0;
-            const annualRate = parseFloat(document.getElementById('emi-rate').value) || 0;
-            const N = parseFloat(document.getElementById('emi-months').value) || 1;
-
-            const R = (annualRate / 12) / 100;
-            const emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
-            const totalPayment = emi * N;
-            const totalInterest = totalPayment - P;
-
-            const symbol = currencySymbols[currentCurrency];
-            document.getElementById('emi-result-monthly').innerText = `${symbol} ${isNaN(emi) ? 0 : Math.round(emi).toLocaleString()}`;
-            document.getElementById('emi-result-interest').innerText = `${symbol} ${isNaN(totalInterest) ? 0 : Math.round(totalInterest).toLocaleString()}`;
-        }
-
-        // MODULE 12: AI MEDIA SUITE GENERATOR
-        function generateAiTextToVoice() {
-            showToast('AI Text to Speech সিন্থেসাইজ চালু হয়েছে');
-        }
-
-        function generateAiTextToVideo() {
-            const display = document.getElementById('media-render-display');
-            display.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-4xl text-gold-500 mb-2"></i><p class="text-xs text-gold-400">এআই ভিডিও রেন্ডারিং চলছে...</p>`;
-            setTimeout(() => {
-                display.innerHTML = `<div class="bg-navy-900 w-full h-full flex flex-col items-center justify-center p-4 border border-gold-500/30 rounded-xl"><i class="fa-solid fa-circle-play text-5xl text-gold-500 mb-2"></i><p class="text-xs text-slate-200">AI Video Generation Complete!</p></div>`;
-            }, 2500);
-        }
-
-        function generateAiTextToPrompt() {
-            document.getElementById('ai-media-prompt').value = "Masterpiece 8k resolution cinematic lighting hyper-realistic photo of a futuristic business hub.";
-            showToast('প্রম্পট এনহ্যান্স সম্পন্ন');
-        }
-
-        // MODULE 14: ADMIN SECURITY UNLOCK
-        function unlockAdminPanel() {
-            const pass = document.getElementById('admin-passcode-input').value;
-            if (pass === '1234' || pass === 'admin') {
-                document.getElementById('admin-lock-screen').classList.add('hidden');
-                document.getElementById('admin-content-screen').classList.remove('hidden');
-                showToast('এডমিন প্যানেল সিকিউরলি আনলক হয়েছে');
-            } else {
-                showToast('ভুল পাসকোড প্রদান করা হয়েছে');
-            }
-        }
-    </script>
+  </section>
+
+  <div class="info-strip">
+    <div class="info-chip" id="dateTime">📅 লোড হচ্ছে...</div>
+    <div class="info-chip" id="authStatus">👤 Guest Mode</div>
+    <div class="info-chip wallet-chip" id="userWallet">💎 Credit: 0</div>
+    <div class="info-chip" id="currencyDisplay">💱 BDT (৳)</div>
+    <button class="reward-btn" id="watchAdBtn" onclick="startAdRewardProcess()" data-i18n="earnBtn">🎁 ফ্রি অ্যাড দেখে ৫ ক্রেডিট নিন</button>
+  </div>
+  <div id="timer-display" style="color: var(--gold); font-weight: bold; margin-top: 5px; font-size: 14px; min-height: 20px;"></div>
+
+  <div class="section-head">
+    <div>
+      <h2 data-i18n="toolsTitle">আপনার টুলস</h2>
+      <p data-i18n="toolsSub">যে টুলটি ব্যবহার করতে চান সেটির বাটনে চাপ দিন।</p>
+    </div>
+    <div class="search-wrap">
+      <input id="toolSearch" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="টুলের নাম লিখে খুঁজুন…">
+    </div>
+  </div>
+
+  <div class="category-tabs" id="categoryTabs">
+    <button class="cat-tab active" data-cat="all" data-i18n="catAll">সব টুল</button>
+    <button class="cat-tab" data-cat="ai" data-i18n="catAi">AI Studios</button>
+    <button class="cat-tab" data-cat="audio" data-i18n="catAudio">Audio & Voice</button>
+    <button class="cat-tab" data-cat="video" data-i18n="catVideo">Video & Design</button>
+    <button class="cat-tab" data-cat="business" data-i18n="catBusiness">Business</button>
+    <button class="cat-tab" data-cat="utility" data-i18n="catUtility">Daily Tools</button>
+    <button class="cat-tab" data-cat="islamic" data-i18n="catIslamic">Islamic</button>
+  </div>
+
+  <section class="tool-grid" id="toolGrid"></section>
+  <div class="empty" id="emptyState" data-i18n="noTools">কোনো টুল পাওয়া যায়নি।</div>
+
+  <div class="ad-banner-box">
+    <p style="margin:0 0 10px; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted);">Sponsored Advertisement</p>
+    <div>[ --- Adsterra / Monetag Banner Placement Area --- ]</div>
+  </div>
+
+  <footer class="footer">© <span id="year"></span> NIVORA WORLD • All Rights Reserved.</footer>
+</main>
+
+<div class="modal" id="authModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modalTitle">লগইন</h2>
+      <button class="close" onclick="closeAuthModal()">✕</button>
+    </div>
+    <form id="authForm" onsubmit="handleAuthSubmit(event)">
+      <div class="field" id="nameField" style="display:none">
+        <label>আপনার নাম</label><input id="displayName" placeholder="নাম লিখুন">
+      </div>
+      <div class="field">
+        <label>ইমেইল</label><input id="email" type="email" required placeholder="example@gmail.com">
+      </div>
+      <div class="field">
+        <label>পাসওয়ার্ড</label><input id="password" type="password" required minlength="6" placeholder="******">
+      </div>
+      <button class="primary-btn" id="submitAuth" type="submit" style="width:100%">লগইন করুন</button>
+      <div class="status" id="modalStatus"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ১. ফায়ারবেস কনফিগারেশন
+const firebaseConfig = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null;
+let currentAuthMode = 'login';
+const ADSTERRA_DIRECT_LINK = "https://www.highrevenuegate.com/your-adsterra-direct-link";
+
+// ২. মাল্টি-ল্যাঙ্গুয়েজ ডিকশনারি (Translations)
+const I18N = {
+  bn: {
+    welcome: "NIVORA WORLD-এ স্বাগতম",
+    intro: "আপনার প্রয়োজনীয় ডিজিটাল টুলস এবং ফ্রি এআই ক্রেডিট সিস্টেম এখন এক প্ল্যাটফর্মে।",
+    pill1: "✦ All-in-One Platform",
+    pill2: "🎁 Rewarded Credit System",
+    earnBtn: "🎁 ফ্রি অ্যাড দেখে ৫ ক্রেডিট নিন",
+    toolsTitle: "আপনার টুলস",
+    toolsSub: "যে টুলটি ব্যবহার করতে চান সেটির বাটনে চাপ দিন।",
+    searchPlaceholder: "টুলের নাম লিখে খুঁজুন…",
+    catAll: "সব টুল", catAi: "AI Studios", catAudio: "Audio & Voice", catVideo: "Video & Design", catBusiness: "Business", catUtility: "Daily Tools", catIslamic: "Islamic",
+    noTools: "কোনো টুল পাওয়া যায়নি।", openTool: "টুল খুলুন"
+  },
+  en: {
+    welcome: "Welcome to NIVORA WORLD",
+    intro: "Your essential digital tools and free AI credit system in one platform.",
+    pill1: "✦ All-in-One Platform",
+    pill2: "🎁 Rewarded Credit System",
+    earnBtn: "🎁 Watch Ad & Earn 5 Credits",
+    toolsTitle: "Your Tools",
+    toolsSub: "Select a button to open the tool.",
+    searchPlaceholder: "Search tools…",
+    catAll: "All Tools", catAi: "AI Studios", catAudio: "Audio & Voice", catVideo: "Video & Design", catBusiness: "Business", catUtility: "Daily Tools", catIslamic: "Islamic",
+    noTools: "No tools found.", openTool: "Open Tool"
+  },
+  hi: {
+    welcome: "NIVORA WORLD में आपका स्वागत है",
+    intro: "आपके आवश्यक डिजिटल टूल और मुफ्त एआई क्रेडिट सिस्टम एक ही प्लेटफॉर्म पर।",
+    pill1: "✦ All-in-One Platform",
+    pill2: "🎁 Rewarded Credit System",
+    earnBtn: "🎁 विज्ञापन देखें और 5 क्रेडिट पाएं",
+    toolsTitle: "आपके टूल",
+    toolsSub: "टूल खोलने के लिए उसके बटन पर क्लिक करें।",
+    searchPlaceholder: "टूल खोजें…",
+    catAll: "सभी टूल", catAi: "AI Studios", catAudio: "Audio & Voice", catVideo: "Video & Design", catBusiness: "Business", catUtility: "Daily Tools", catIslamic: "Islamic",
+    noTools: "कोई टूल नहीं मिला।", openTool: "टूल खोलें"
+  },
+  ur: {
+    welcome: "NIVORA WORLD میں خوش آمدید",
+    intro: "آپ کے ضروری ڈیجیٹل ٹولز اور مفت کریڈٹ سسٹم ایک پلیٹ فارم پر۔",
+    pill1: "✦ All-in-One Platform",
+    pill2: "🎁 Rewarded Credit System",
+    earnBtn: "🎁 ایڈ دیکھیں اور 5 کریڈٹ حاصل کریں",
+    toolsTitle: "آپ کے ٹولز",
+    toolsSub: "ٹول کھولنے کے لیے بٹن دبائیں۔",
+    searchPlaceholder: "ٹول تلاش کریں…",
+    catAll: "تمام ٹولز", catAi: "AI Studios", catAudio: "Audio & Voice", catVideo: "Video & Design", catBusiness: "Business", catUtility: "Daily Tools", catIslamic: "Islamic",
+    noTools: "کوئی ٹول نہیں ملا۔", openTool: "ٹول کھولیں"
+  },
+  ar: {
+    welcome: "مرحباً بك في NIVORA WORLD",
+    intro: "أدواتك الرقمية ونظام رصيد الذكاء الاصطناعي في منصة واحدة.",
+    pill1: "✦ All-in-One Platform",
+    pill2: "🎁 Rewarded Credit System",
+    earnBtn: "🎁 شاهد الإعلان واكسب 5 رصيد",
+    toolsTitle: "أدواتك",
+    toolsSub: "اضغط على الزر لفتح الأداة.",
+    searchPlaceholder: "ابحث عن أداة…",
+    catAll: "كل الأدوات", catAi: "AI Studios", catAudio: "Audio & Voice", catVideo: "Video & Design", catBusiness: "Business", catUtility: "Daily Tools", catIslamic: "Islamic",
+    noTools: "لم يتم العثور على أدوات.", openTool: "افتح الأداة"
+  }
+};
+
+let currentLang = localStorage.getItem('nivora_lang') || 'bn';
+let currentCurrency = localStorage.getItem('nivora_curr') || 'BDT';
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('nivora_lang', lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = ['ur', 'ar'].includes(lang) ? 'rtl' : 'ltr';
+  
+  const dict = I18N[lang] || I18N.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (dict[key]) el.placeholder = dict[key];
+  });
+  renderTools();
+}
+
+function changeCurrency(curr) {
+  currentCurrency = curr;
+  localStorage.setItem('nivora_curr', curr);
+  document.getElementById('currencyDisplay').textContent = "💱 " + curr;
+}
+
+// ৩. ১৬টি আসল টুলের লিস্ট
+const TOOLS = [
+  {name:"Voice Clone Studio",desc:"Voice cloning workspace — API required.",icon:"🎙️",cat:"audio",href:"tools/voice-clone.html"},
+  {name:"Voice & Recitation Studio",desc:"Voice, recitation and audio tools.",icon:"🗣️",cat:"audio",href:"tools/voice-recitation.html"},
+  {name:"Hybrid Professional Studio",desc:"Professional audio and video workspace.",icon:"🎚️",cat:"video",href:"tools/hybrid-professional-studio.html"},
+  {name:"Video Editor Studio",desc:"Video editing and project workspace.",icon:"🎬",cat:"video",href:"tools/video-editor.html"},
+  {name:"Audio Editor Studio",desc:"Cut, trim, mix and export audio.",icon:"🎧",cat:"audio",href:"tools/audio-editor.html"},
+  {name:"Canva-Style Design Studio",desc:"Graphic design and canvas workspace.",icon:"🎨",cat:"video",href:"tools/design-studio.html"},
+  {name:"Banner & Poster Maker",desc:"Create banners and social graphics.",icon:"🖼️",cat:"video",href:"tools/banner-poster.html"},
+  {name:"Business Card Maker",desc:"Digital and printable business cards.",icon:"💳",cat:"video",href:"tools/business-card.html"},
+  {name:"AI Chat Studio",desc:"AI conversation and split editor.",icon:"🤖",cat:"ai",href:"tools/ai-studio.html"},
+  {name:"AI Media Generator",desc:"AI image and media generation.",icon:"✨",cat:"ai",href:"tools/ai-media.html"},
+  {name:"Quran Hub & Tafsir",desc:"Quran, translation and tafsir.",icon:"📖",cat:"islamic",href:"tools/quran-hub.html"},
+  {name:"Business Management",desc:"Sales, purchases and reports.",icon:"🏪",cat:"business",href:"tools/business-management.html"},
+  {name:"Tally Khata & Ledger",desc:"Customer balances and dues.",icon:"📒",cat:"business",href:"tools/tally-khata.html"},
+  {name:"Stock & Inventory",desc:"Products, inventory and stock alerts.",icon:"📦",cat:"business",href:"tools/stock-management.html"},
+  {name:"Excel Grid Studio",desc:"Spreadsheet and calculations.",icon:"📊",cat:"business",href:"tools/excel-grid.html"},
+  {name:"Calculator & Converter",desc:"Daily calculator, VAT and profit.",icon:"🧮",cat:"utility",href:"tools/calculator.html"}
+];
+
+let category = "all";
+
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('authStatus').textContent = "👤 " + (user.email ? user.email.split('@')[0] : "User");
+    document.getElementById('loginOpen').style.display = "none";
+    document.getElementById('registerOpen').style.display = "none";
+    document.getElementById('logoutBtn').style.display = "inline-block";
+    listenToUserCredits(user.uid);
+  } else {
+    try { await auth.signInAnonymously(); } catch(e) { console.log(e); }
+  }
+});
+
+function listenToUserCredits(uid) {
+  db.collection('users').doc(uid).onSnapshot((doc) => {
+    if (doc.exists) {
+      document.getElementById('userWallet').textContent = "💎 Credit: " + (doc.data().credits || 0);
+    } else {
+      db.collection('users').doc(uid).set({ credits: 5, createdAt: new Date() });
+    }
+  });
+}
+
+function startAdRewardProcess() {
+  const adBtn = document.getElementById('watchAdBtn');
+  const timerDisplay = document.getElementById('timer-display');
+  
+  window.open(ADSTERRA_DIRECT_LINK, '_blank');
+  adBtn.disabled = true;
+  let timeLeft = 15;
+
+  const countdown = setInterval(() => {
+    timerDisplay.innerText = `⏳ অ্যাড দেখার সময় বাকি: ${timeLeft} সেকেন্ড...`;
+    timeLeft--;
+
+    if (timeLeft < 0) {
+      clearInterval(countdown);
+      timerDisplay.innerText = "🎉 অভিনন্দন! ৫ ক্রেডিট সফলভাবে যোগ হয়েছে।";
+      adBtn.disabled = false;
+      addCreditsToFirebase(5);
+    }
+  }, 1000);
+}
+
+async function addCreditsToFirebase(amount) {
+  if (!currentUser) return;
+  const userRef = db.collection('users').doc(currentUser.uid);
+  await db.runTransaction(async (transaction) => {
+    const sfDoc = await transaction.get(userRef);
+    const newCredits = (sfDoc.data().credits || 0) + amount;
+    transaction.update(userRef, { credits: newCredits });
+  });
+}
+
+function renderTools() {
+  const q = document.getElementById('toolSearch').value.toLowerCase();
+  const list = TOOLS.filter(t => (category === "all" || t.cat === category) && (t.name + " " + t.desc).toLowerCase().includes(q));
+  const dict = I18N[currentLang] || I18N.en;
+  
+  document.getElementById('toolGrid').innerHTML = list.map(t => `
+    <article class="tool-card">
+      <div class="tool-icon">${t.icon}</div>
+      <h3>${t.name}</h3>
+      <p>${t.desc}</p>
+      <a class="open-tool" href="${t.href}">${dict.openTool} <span>↗</span></a>
+    </article>
+  `).join("");
+  document.getElementById('emptyState').style.display = list.length ? "none" : "block";
+}
+
+document.getElementById('toolSearch').addEventListener('input', renderTools);
+document.querySelectorAll('.cat-tab').forEach(tab => {
+  tab.addEventListener('click', (e) => {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    category = e.target.dataset.cat;
+    renderTools();
+  });
+});
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = next === 'light' ? '☾' : '☀';
+}
+
+function openAuthModal(mode) {
+  currentAuthMode = mode;
+  document.getElementById('modalTitle').textContent = mode === 'register' ? 'রেজিস্টার' : 'লগইন';
+  document.getElementById('submitAuth').textContent = mode === 'register' ? 'অ্যাকাউন্ট তৈরি করুন' : 'লগইন করুন';
+  document.getElementById('nameField').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('authModal').classList.add('show');
+}
+function closeAuthModal() { document.getElementById('authModal').classList.remove('show'); }
+
+async function handleAuthSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const modalStatus = document.getElementById('modalStatus');
+  modalStatus.className = "status show ok";
+  modalStatus.textContent = "প্রসেস করা হচ্ছে...";
+  try {
+    if (currentAuthMode === 'register') {
+      await auth.createUserWithEmailAndPassword(email, password);
+    } else {
+      await auth.signInWithEmailAndPassword(email, password);
+    }
+    closeAuthModal();
+  } catch (err) {
+    modalStatus.className = "status show error";
+    modalStatus.textContent = err.message;
+  }
+}
+
+function handleLogout() { auth.signOut().then(() => location.reload()); }
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// ইনিশিয়ালাইজেশন
+document.getElementById('languageSelect').value = currentLang;
+document.getElementById('currencySelect').value = currentCurrency;
+changeLanguage(currentLang);
+changeCurrency(currentCurrency);
+</script>
 </body>
 </html>
