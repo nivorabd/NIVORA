@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIVORA VIDEO & GRAPHICS STUDIO - CapCut & InShot Pro Suite</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#080c14',
+              card: '#111827',
+              accent: '#00f2fe',
+              gold: '#ffd700',
+              pink: '#ff007f',
+              border: '#1f293d'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Hind Siliguri', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts for Bengali & English -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Inter', 'Hind Siliguri', sans-serif;
+      background-color: #080c14;
+      color: #e2e8f0;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0d131f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Range input styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #1e293b;
+      height: 6px;
+      border-radius: 3px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #00f2fe;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0,242,254,0.6);
+    }
+
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .gold-glow {
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.35);
+    }
+    
+    .cyan-glow {
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
+    }
+
+    /* Canvas selection outline */
+    .canvas-container {
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Pulse Ad Button Animation */
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); transform: scale(1); }
+      50% { box-shadow: 0 0 22px rgba(255, 215, 0, 0.9); transform: scale(1.03); }
+    }
+    .ad-btn-pulse {
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+
+    .track-block {
+      transition: border 0.15s ease, background-color 0.15s ease;
+    }
+  </style>
+</head>
+
+<body class="h-screen flex flex-col overflow-hidden text-sm">
+
+  <!-- ==================== MAIN HEADER / DASHBOARD LINKAGE NAVBAR ==================== -->
+  <header class="h-14 bg-brand-dark/95 border-b border-brand-border px-4 flex items-center justify-between z-30 shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-pink-500 flex items-center justify-center font-bold text-white shadow-lg">
+          <i class="fa-solid font-orbitron text-lg">N</i>
+        </div>
+        <div>
+          <h1 class="text-base font-extrabold tracking-wider bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300 bg-clip-text text-transparent font-['Orbitron']">
+            NIVORA STUDIO
+          </h1>
+          <p class="text-[10px] text-gray-400 font-medium leading-none">CapCut & InShot Pro Engine</p>
+        </div>
+      </div>
+
+      <!-- Quick Navigation Suite Tabs -->
+      <nav class="hidden lg:flex items-center ml-6 space-x-1 bg-gray-900/80 p-1 rounded-lg border border-gray-800">
+        <button id="nav-editor" onclick="switchSuiteTab('editor')" class="suite-tab-btn px-3 py-1.5 rounded-md text-xs font-medium text-white bg-cyan-600/60 shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-film text-cyan-300"></i> ভিডিও এডিটর
+        </button>
+        <button id="nav-graphics" onclick="switchSuiteTab('graphics')" class="suite-tab-btn px-3 py-1.5 rounded-md text-xs font-medium text-gray-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-palette text-pink-400"></i> গ্রাফিক্স স্টুডিও
+        </button>
+        <button id="nav-audio" onclick="switchSuiteTab('audio')" class="suite-tab-btn px-3 py-1.5 rounded-md text-xs font-medium text-gray-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-music text-purple-400"></i> অডিও মিক্সার
+        </button>
+        <button id="nav-export" onclick="switchSuiteTab('export')" class="suite-tab-btn px-3 py-1.5 rounded-md text-xs font-medium text-gray-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-file-export text-emerald-400"></i> এক্সপোর্ট হাব
+        </button>
+      </nav>
+    </div>
+
+    <!-- Center Aspect Ratio Switcher -->
+    <div class="hidden md:flex items-center bg-gray-900 border border-gray-800 rounded-lg p-1 space-x-1">
+      <span class="text-[11px] text-gray-400 px-2 font-semibold"><i class="fa-solid fa-crop-simple mr-1"></i> রেশিও:</span>
+      <button onclick="setAspectRatio('16:9')" id="ratio-16-9" class="ratio-btn px-2 py-1 rounded text-xs bg-cyan-600 text-white">16:9 (YT)</button>
+      <button onclick="setAspectRatio('9:16')" id="ratio-9-16" class="ratio-btn px-2 py-1 rounded text-xs text-gray-400 hover:text-white">9:16 (Reels)</button>
+      <button onclick="setAspectRatio('1:1')" id="ratio-1-1" class="ratio-btn px-2 py-1 rounded text-xs text-gray-400 hover:text-white">1:1 (Post)</button>
+      <button onclick="setAspectRatio('4:5')" id="ratio-4-5" class="ratio-btn px-2 py-1 rounded text-xs text-gray-400 hover:text-white">4:5</button>
+    </div>
+
+    <!-- Right Top Actions & Ad Credit Engine -->
+    <div class="flex items-center space-x-3">
+      <!-- Watermark Badge -->
+      <div class="hidden sm:flex items-center space-x-1 bg-emerald-950/80 border border-emerald-500/30 px-2.5 py-1 rounded-full text-emerald-400 text-[11px] font-semibold">
+        <i class="fa-solid fa-shield-check"></i>
+        <span>নো ওয়াটারমার্ক প্রিমিয়াম</span>
+      </div>
+
+      <!-- Credit Engine Counter -->
+      <div class="flex items-center bg-gray-900 border border-amber-500/40 rounded-lg px-2.5 py-1">
+        <i class="fa-solid fa-coins text-amber-400 mr-1.5 text-sm"></i>
+        <span id="user-credits" class="font-bold text-amber-300 text-sm">250</span>
+        <span class="text-[10px] text-gray-400 ml-1">কয়েন</span>
+      </div>
+
+      <!-- Watch Ad Button -->
+      <button onclick="openAdModal()" class="ad-btn-pulse bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-gray-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition">
+        <i class="fa-solid fa-rectangle-ad text-sm"></i>
+        <span>এ্যাড দেখে ক্রেডিট নিন</span>
+      </button>
+
+      <!-- Project Quick Save/Load -->
+      <div class="flex items-center space-x-1">
+        <button onclick="saveProjectToStorage()" title="Save Project" class="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 transition">
+          <i class="fa-solid fa-floppy-disk"></i>
+        </button>
+        <button onclick="exportProjectJSON()" title="Download Project File" class="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 transition">
+          <i class="fa-solid fa-download"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN WORKSPACE CONTAINER ==================== -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- LEFT SIDEBAR: TOOLSETS PANEL (CapCut / InShot Tool Dock) -->
+    <aside class="w-16 bg-gray-950 border-r border-brand-border flex flex-col items-center py-3 space-y-4 shrink-0 z-20">
+      <button onclick="setActiveSidebarTab('media')" id="tab-btn-media" class="sidebar-tab active w-12 h-12 rounded-xl flex flex-col items-center justify-center text-cyan-400 bg-gray-800/80 border border-cyan-500/40 transition">
+        <i class="fa-solid fa-folder-open text-base"></i>
+        <span class="text-[9px] mt-1 font-medium">মিডিয়া</span>
+      </button>
+      <button onclick="setActiveSidebarTab('text')" id="tab-btn-text" class="sidebar-tab w-12 h-12 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800/50 transition">
+        <i class="fa-solid fa-font text-base"></i>
+        <span class="text-[9px] mt-1 font-medium">টেক্সট</span>
+      </button>
+      <button onclick="setActiveSidebarTab('stickers')" id="tab-btn-stickers" class="sidebar-tab w-12 h-12 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800/50 transition">
+        <i class="fa-solid fa-icons text-base"></i>
+        <span class="text-[9px] mt-1 font-medium">স্টিকার</span>
+      </button>
+      <button onclick="setActiveSidebarTab('fx')" id="tab-btn-fx" class="sidebar-tab w-12 h-12 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800/50 transition">
+        <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+        <span class="text-[9px] mt-1 font-medium">ফিল্টার FX</span>
+      </button>
+      <button onclick="setActiveSidebarTab('audio-lib')" id="tab-btn-audio-lib" class="sidebar-tab w-12 h-12 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800/50 transition">
+        <i class="fa-solid fa-compact-disc text-base"></i>
+        <span class="text-[9px] mt-1 font-medium">সাউন্ড</span>
+      </button>
+      <button onclick="setActiveSidebarTab('canvas-bg')" id="tab-btn-canvas-bg" class="sidebar-tab w-12 h-12 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800/50 transition">
+        <i class="fa-solid fa-layer-group text-base"></i>
+        <span class="text-[9px] mt-1 font-medium">ব্যাকগ্রাউন্ড</span>
+      </button>
+
+      <div class="pt-4 mt-auto border-t border-gray-800 w-full flex flex-col items-center">
+        <button onclick="triggerMicRecord()" id="mic-record-btn" class="w-10 h-10 rounded-full bg-red-600/80 hover:bg-red-500 text-white flex items-center justify-center transition shadow-lg" title="রেকর্ড করুন">
+          <i class="fa-solid fa-microphone text-sm"></i>
+        </button>
+        <span class="text-[8px] text-gray-400 mt-1">ভয়েস</span>
+      </div>
+    </aside>
+
+    <!-- LEFT DRAWER: CONTROLS & SUB PANELS -->
+    <div id="sidebar-panel-content" class="w-72 bg-brand-card/90 border-r border-brand-border flex flex-col p-3 overflow-y-auto shrink-0 z-10">
+      
+      <!-- 1. MEDIA PANEL -->
+      <div id="panel-media" class="panel-section space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-gray-200 text-xs tracking-wider uppercase"><i class="fa-solid fa-file-video text-cyan-400 mr-1.5"></i> মিডিয়া ইম্পোর্ট</h2>
+          <span class="text-[10px] text-gray-400">CapCut Standard</span>
+        </div>
+
+        <label class="border-2 border-dashed border-gray-700 hover:border-cyan-500 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition bg-gray-900/50 group">
+          <i class="fa-solid fa-cloud-arrow-up text-2xl text-cyan-400 group-hover:scale-110 transition"></i>
+          <span class="text-xs font-semibold text-gray-300 mt-2">ভিডিও / ছবি আপলোড</span>
+          <span class="text-[10px] text-gray-500">MP4, WebM, PNG, JPG, GIF</span>
+          <input type="file" id="media-file-input" accept="video/*,image/*" multiple class="hidden" onchange="handleMediaImport(event)">
+        </label>
+
+        <!-- Sample Stock Media Quick Add -->
+        <div>
+          <h3 class="text-xs font-semibold text-gray-400 mb-2">ডেমো স্যাম্পল মিডিয়া</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="addStockVideo('cyber')" class="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg text-left text-xs border border-gray-700 flex flex-col">
+              <span class="font-semibold text-cyan-300"><i class="fa-solid fa-play text-[10px] mr-1"></i> সাইবার সাইন</span>
+              <span class="text-[9px] text-gray-400">কাইনেমাস্টার FX</span>
+            </button>
+            <button onclick="addStockVideo('nature')" class="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg text-left text-xs border border-gray-700 flex flex-col">
+              <span class="font-semibold text-emerald-300"><i class="fa-solid fa-play text-[10px] mr-1"></i> নেচার লুপ</span>
+              <span class="text-[9px] text-gray-400">HD ব্যাকগ্রাউন্ড</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Imported Media Pool -->
+        <div>
+          <h3 class="text-xs font-semibold text-gray-400 mb-2">ইম্পোর্ট করা ফাইলস</h3>
+          <div id="media-pool" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+            <div class="text-[11px] text-gray-500 col-span-2 text-center py-4 border border-dashed border-gray-800 rounded-lg">
+              কোন মিডিয়া ফাইল যোগ করা হয়নি
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. TEXT & TITLES PANEL -->
+      <div id="panel-text" class="panel-section hidden space-y-4">
+        <h2 class="font-bold text-gray-200 text-xs tracking-wider uppercase"><i class="fa-solid fa-font text-pink-400 mr-1.5"></i> টেক্সট ও সাবটাইটেল</h2>
+        
+        <div class="space-y-2">
+          <input type="text" id="text-input-field" value="Nivora Studio Bangla" placeholder="এখানে টেক্সট লিখুন..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-xs focus:border-cyan-400 focus:outline-none text-white">
+          <button onclick="addTextTrack()" class="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-semibold py-2 rounded-lg text-xs hover:brightness-110 transition shadow">
+            <i class="fa-solid fa-plus mr-1"></i> টাইমলাইনে টেক্সট যোগ করুন
+          </button>
+        </div>
+
+        <!-- Text Styling Engine presets -->
+        <div class="space-y-3 pt-2 border-t border-gray-800">
+          <h3 class="text-xs font-semibold text-gray-300">স্টাইল ও ফন্ট এফেক্টস (CapCut & InShot Style)</h3>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] text-gray-400">ফন্ট সিলেক্ট</label>
+              <select id="text-font-family" onchange="updateSelectedTextProperties()" class="w-full bg-gray-900 border border-gray-700 rounded text-xs p-1">
+                <option value="Hind Siliguri">Hind Siliguri (বাংলা)</option>
+                <option value="Inter">Inter English</option>
+                <option value="Orbitron">Orbitron Cyber</option>
+                <option value="Impact">Impact Heavy</option>
+                <option value="Cursive">Cursive Art</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-400">সাইজ</label>
+              <input type="range" id="text-size-slider" min="12" max="90" value="32" oninput="updateSelectedTextProperties()" class="w-full">
+            </div>
+          </div>
+
+          <!-- Color & Neon Controls -->
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="text-[10px] text-gray-400 block">টেক্সট কালার</label>
+              <input type="color" id="text-color-picker" value="#ffffff" onchange="updateSelectedTextProperties()" class="w-full h-7 bg-transparent cursor-pointer rounded">
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-400 block">স্ট্রোক/বর্ডার</label>
+              <input type="color" id="text-stroke-picker" value="#00f2fe" onchange="updateSelectedTextProperties()" class="w-full h-7 bg-transparent cursor-pointer rounded">
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-400 block">নিয়োন গ্লো</label>
+              <input type="color" id="text-glow-picker" value="#ff007f" onchange="updateSelectedTextProperties()" class="w-full h-7 bg-transparent cursor-pointer rounded">
+            </div>
+          </div>
+
+          <!-- Quick Styles Grid -->
+          <div class="space-y-1">
+            <span class="text-[10px] text-gray-400">রেডিমেড টেক্সট প্রেসেট:</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="applyTextPreset('neon')" class="p-2 rounded bg-black border border-cyan-400 text-cyan-300 font-bold text-xs text-center shadow-[0_0_8px_#00f2fe]">
+                Cyber Glow
+              </button>
+              <button onclick="applyTextPreset('gold')" class="p-2 rounded bg-gray-900 border border-amber-400 text-amber-300 font-extrabold text-xs text-center shadow-[0_0_8px_#ffd700]">
+                Pro Gold
+              </button>
+              <button onclick="applyTextPreset('subtitle')" class="p-2 rounded bg-amber-500 text-gray-950 font-bold text-xs text-center">
+                InShot Title
+              </button>
+              <button onclick="applyTextPreset('capcut')" class="p-2 rounded bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold text-xs text-center">
+                CapCut FX
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. STICKERS & BADGES PANEL -->
+      <div id="panel-stickers" class="panel-section hidden space-y-4">
+        <h2 class="font-bold text-gray-200 text-xs tracking-wider uppercase"><i class="fa-solid fa-icons text-amber-400 mr-1.5"></i> স্টিকার ও ব্যাজ</h2>
+        
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="addSticker('🔥')" class="p-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-2xl text-center border border-gray-800">🔥</button>
+          <button onclick="addSticker('⭐')" class="p-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-2xl text-center border border-gray-800">⭐</button>
+          <button onclick="addSticker('🎯')" class="p-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-2xl text-center border border-gray-800">🎯</button>
+          <button onclick="addSticker('💥')" class="p-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-2xl text-center border border-gray-800">💥</button>
+          <button onclick="addSticker('👑')" class="p-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-2xl text-center border border-gray-800">👑</button>
+          <button onclick="addSticker('❤️')" class="p-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-2xl text-center border border-gray-800">❤️</button>
+        </div>
+
+        <div class="pt-2 border-t border-gray-800">
+          <h3 class="text-xs font-semibold text-gray-300 mb-2">সোশ্যাল মিডিয়া ব্যাজ</h3>
+          <div class="flex flex-col space-y-2">
+            <button onclick="addBadgeOverlay('SUBSCRIBE', '#red')" class="w-full p-2 bg-red-600 hover:bg-red-500 font-bold rounded-lg text-xs text-white flex items-center justify-center gap-2">
+              <i class="fa-brands fa-youtube"></i> SUBSCRIBE NOW
+            </button>
+            <button onclick="addBadgeOverlay('FOLLOW', '#00f2fe')" class="w-full p-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 font-bold rounded-lg text-xs text-white flex items-center justify-center gap-2">
+              <i class="fa-brands fa-tiktok"></i> FOLLOW FOR MORE
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. FILTERS & FX PANEL -->
+      <div id="panel-fx" class="panel-section hidden space-y-4">
+        <h2 class="font-bold text-gray-200 text-xs tracking-wider uppercase"><i class="fa-solid fa-wand-magic-sparkles text-cyan-400 mr-1.5"></i> ভিডিও ফিল্টার ও FX</h2>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="setGlobalFilter('none')" class="p-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg text-xs text-gray-300">
+            নরমাল (Normal)
+          </button>
+          <button onclick="setGlobalFilter('cyberpunk')" class="p-2 bg-gradient-to-r from-purple-900 to-cyan-900 border border-cyan-500/50 rounded-lg text-xs text-cyan-300 font-semibold">
+            সাইবারপাঙ্ক
+          </button>
+          <button onclick="setGlobalFilter('cinematic')" class="p-2 bg-slate-900 border border-amber-500/40 rounded-lg text-xs text-amber-300 font-semibold">
+            সিনেমাটিক Warm
+          </button>
+          <button onclick="setGlobalFilter('vintage')" class="p-2 bg-yellow-950/60 border border-yellow-700 rounded-lg text-xs text-yellow-200">
+            ভিন্টেজ রেট্রো
+          </button>
+          <button onclick="setGlobalFilter('bw')" class="p-2 bg-gray-800 border border-gray-600 rounded-lg text-xs text-gray-200">
+            ব্ল্যাক অ্যান্ড হোয়াইট
+          </button>
+          <button onclick="setGlobalFilter('sepia')" class="p-2 bg-amber-950 border border-amber-700 rounded-lg text-xs text-amber-400">
+            সেপিয়া টোন
+          </button>
+        </div>
+
+        <div class="space-y-3 pt-3 border-t border-gray-800">
+          <h3 class="text-xs font-semibold text-gray-300">ম্যানুয়াল কালার টিউনিং</h3>
+          
+          <div>
+            <div class="flex justify-between text-[10px] text-gray-400">
+              <span>ব্রাইটনেস (Brightness)</span>
+              <span id="val-brightness">100%</span>
+            </div>
+            <input type="range" id="slider-brightness" min="50" max="180" value="100" oninput="applyManualAdjustments()" class="w-full">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-[10px] text-gray-400">
+              <span>কনট্রাস্ট (Contrast)</span>
+              <span id="val-contrast">100%</span>
+            </div>
+            <input type="range" id="slider-contrast" min="50" max="200" value="100" oninput="applyManualAdjustments()" class="w-full">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-[10px] text-gray-400">
+              <span>স্যাচুরেশন (Saturation)</span>
+              <span id="val-saturation">100%</span>
+            </div>
+            <input type="range" id="slider-saturation" min="0" max="250" value="100" oninput="applyManualAdjustments()" class="w-full">
+          </div>
+
+          <!-- Chroma Key / Green Screen Toggle -->
+          <div class="pt-2 border-t border-gray-800 flex items-center justify-between">
+            <span class="text-xs font-semibold text-emerald-400"><i class="fa-solid fa-key mr-1"></i> ক্রমা কি (গ্রিন স্ক্রিন)</span>
+            <input type="checkbox" id="chroma-key-toggle" onchange="toggleChromaKey()" class="w-4 h-4 accent-emerald-500 cursor-pointer">
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. AUDIO & SOUND ENGINE PANEL -->
+      <div id="panel-audio-lib" class="panel-section hidden space-y-4">
+        <h2 class="font-bold text-gray-200 text-xs tracking-wider uppercase"><i class="fa-solid fa-music text-purple-400 mr-1.5"></i> সাউন্ড ও মিউজিক লাইব্রেরি</h2>
+        
+        <label class="border border-dashed border-purple-500/50 hover:border-purple-400 rounded-xl p-3 flex flex-col items-center cursor-pointer bg-purple-950/20">
+          <i class="fa-solid fa-file-audio text-xl text-purple-400"></i>
+          <span class="text-xs font-semibold text-gray-300 mt-1">অডিও ফাইল আপলোড করুন</span>
+          <span class="text-[9px] text-gray-500">MP3, WAV, AAC</span>
+          <input type="file" id="audio-file-input" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)">
+        </label>
+
+        <div>
+          <h3 class="text-xs font-semibold text-gray-400 mb-2">AI Synthesized Sound FX</h3>
+          <div class="space-y-1.5">
+            <button onclick="playSynthesizedSFX('whoosh')" class="w-full bg-gray-900 hover:bg-gray-800 border border-gray-800 p-2 rounded-lg text-xs text-left flex items-center justify-between">
+              <span><i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i> Whoosh Transition Effect</span>
+              <span class="text-[10px] text-cyan-400">+ Add</span>
+            </button>
+            <button onclick="playSynthesizedSFX('pop')" class="w-full bg-gray-900 hover:bg-gray-800 border border-gray-800 p-2 rounded-lg text-xs text-left flex items-center justify-between">
+              <span><i class="fa-solid fa-circle-dot text-pink-400 mr-1.5"></i> Bubble Pop Badge Sound</span>
+              <span class="text-[10px] text-cyan-400">+ Add</span>
+            </button>
+            <button onclick="playSynthesizedSFX('beep')" class="w-full bg-gray-900 hover:bg-gray-800 border border-gray-800 p-2 rounded-lg text-xs text-left flex items-center justify-between">
+              <span><i class="fa-solid fa-bell text-emerald-400 mr-1.5"></i> Retro Game Beep</span>
+              <span class="text-[10px] text-cyan-400">+ Add</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. CANVAS BACKDROP PANEL -->
+      <div id="panel-canvas-bg" class="panel-section hidden space-y-4">
+        <h2 class="font-bold text-gray-200 text-xs tracking-wider uppercase"><i class="fa-solid fa-layer-group text-amber-400 mr-1.5"></i> ক্যানভাস ব্যাকগ্রাউন্ড</h2>
+        
+        <div class="space-y-2">
+          <label class="text-[10px] text-gray-400">ব্যাকগ্রাউন্ড টাইপ</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setCanvasBackgroundStyle('solid')" class="p-2 bg-gray-800 border border-gray-700 rounded text-xs text-white">সলিড কালার</button>
+            <button onclick="setCanvasBackgroundStyle('blur')" class="p-2 bg-gray-800 border border-gray-700 rounded text-xs text-white">ব্লার ভিডিও (InShot)</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] text-gray-400 block mb-1">ক্যানভাস ব্যাকগ্রাউন্ড কালার</label>
+          <input type="color" id="canvas-bg-color" value="#080c14" onchange="updateCanvasBgColor()" class="w-full h-8 bg-transparent cursor-pointer rounded">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MAIN CENTER PLAYGROUND & CANVAS PREVIEW -->
+    <main class="flex-1 flex flex-col items-center justify-between bg-black/60 p-4 relative overflow-hidden">
+      
+      <!-- Top Action Toolbar for Selected Canvas Object -->
+      <div class="w-full max-w-4xl glass-panel rounded-xl px-4 py-2 flex items-center justify-between z-10 text-xs">
+        <div class="flex items-center space-x-2">
+          <span class="font-semibold text-gray-400"><i class="fa-solid fa-sliders text-cyan-400 mr-1"></i> লেয়ার কন্ট্রোল:</span>
+          <button onclick="splitSelectedTrack()" class="bg-gray-800 hover:bg-gray-700 px-2.5 py-1 rounded text-cyan-300 font-medium border border-gray-700">
+            <i class="fa-solid fa-scissors mr-1"></i> স্প্লিট (Split)
+          </button>
+          <button onclick="duplicateSelectedTrack()" class="bg-gray-800 hover:bg-gray-700 px-2.5 py-1 rounded text-amber-300 font-medium border border-gray-700">
+            <i class="fa-solid fa-copy mr-1"></i> কপি
+          </button>
+          <button onclick="deleteSelectedTrack()" class="bg-red-950/80 hover:bg-red-900 px-2.5 py-1 rounded text-red-300 font-medium border border-red-800/60">
+            <i class="fa-solid fa-trash mr-1"></i> ডিলিট
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-1">
+            <span class="text-[11px] text-gray-400">স্পিড:</span>
+            <select id="speed-selector" onchange="setPlaybackSpeed(this.value)" class="bg-gray-900 border border-gray-700 rounded p-0.5 text-xs">
+              <option value="0.5">0.5x</option>
+              <option value="1.0" selected>1.0x (Normal)</option>
+              <option value="1.5">1.5x</option>
+              <option value="2.0">2.0x</option>
+            </select>
+          </div>
+          
+          <button onclick="toggleVideoFlip()" class="p-1.5 bg-gray-800 hover:bg-gray-700 rounded text-gray-300" title="ফ্লিপ করুন">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dynamic Resizable Video Preview Canvas Area -->
+      <div class="flex-1 flex items-center justify-center w-full my-3 relative overflow-hidden">
+        <div id="canvas-wrapper" class="canvas-container relative bg-gray-950 border border-gray-800 rounded-xl overflow-hidden flex items-center justify-center transition-all duration-300">
+          
+          <!-- Master Preview HTML5 Canvas -->
+          <canvas id="main-preview-canvas" class="max-w-full max-h-full block object-contain"></canvas>
+
+          <!-- Interactive Selection / Transform Handles Box -->
+          <div id="transform-overlay" class="absolute hidden border-2 border-dashed border-cyan-400 pointer-events-none">
+            <div class="absolute -top-2 -left-2 w-4 h-4 bg-cyan-400 rounded-full"></div>
+            <div class="absolute -top-2 -right-2 w-4 h-4 bg-cyan-400 rounded-full"></div>
+            <div class="absolute -bottom-2 -left-2 w-4 h-4 bg-cyan-400 rounded-full"></div>
+            <div class="absolute -bottom-2 -right-2 w-4 h-4 bg-cyan-400 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Playback Navigation Controls Bar -->
+      <div class="w-full max-w-2xl glass-panel rounded-2xl px-6 py-2.5 flex items-center justify-between z-10">
+        <div class="flex items-center space-x-2">
+          <button onclick="seekToStart()" class="text-gray-400 hover:text-white p-2">
+            <i class="fa-solid fa-backward-step text-base"></i>
+          </button>
+          <button onclick="togglePlayPause()" id="play-pause-btn" class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-white flex items-center justify-center shadow-lg hover:scale-105 transition">
+            <i class="fa-solid fa-play text-sm ml-0.5" id="play-icon"></i>
+          </button>
+          <button onclick="seekToEnd()" class="text-gray-400 hover:text-white p-2">
+            <i class="fa-solid fa-forward-step text-base"></i>
+          </button>
+        </div>
+
+        <!-- Timer Display -->
+        <div class="font-['Orbitron'] text-xs font-semibold text-cyan-400 tracking-wider">
+          <span id="current-time-display">00:00:00</span> / <span id="total-duration-display">00:15:00</span>
+        </div>
+
+        <!-- Master Volume & Sound Toggle -->
+        <div class="flex items-center space-x-2">
+          <button onclick="toggleMute()" class="text-gray-400 hover:text-white">
+            <i id="mute-icon" class="fa-solid fa-volume-high"></i>
+          </button>
+          <input type="range" id="master-volume-slider" min="0" max="1" step="0.05" value="1" oninput="setMasterVolume(this.value)" class="w-20">
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ==================== BOTTOM MULTI-TRACK TIMELINE ENGINE ==================== -->
+  <footer class="h-64 bg-gray-950 border-t border-brand-border flex flex-col shrink-0 z-20">
+    
+    <!-- Timeline Header Controls -->
+    <div class="h-10 bg-gray-900/90 border-b border-gray-800 px-4 flex items-center justify-between shrink-0">
+      <div class="flex items-center space-x-3">
+        <span class="font-bold text-gray-300 text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-layer-group text-cyan-400"></i> টাইমলাইন ট্রাকস
+        </span>
+        <button onclick="addNewBlankTrack('text')" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 rounded text-[11px] text-pink-300 border border-gray-700">
+          + টেক্সট ট্রাক
+        </button>
+        <button onclick="addNewBlankTrack('audio')" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 rounded text-[11px] text-purple-300 border border-gray-700">
+          + অডিও ট্রাক
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <!-- Timeline Zoom Slider -->
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-magnifying-glass-minus text-xs text-gray-500"></i>
+          <input type="range" id="timeline-zoom-slider" min="1" max="10" value="3" oninput="updateTimelineZoom(this.value)" class="w-24">
+          <i class="fa-solid fa-magnifying-glass-plus text-xs text-gray-500"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline Workspace Viewport -->
+    <div id="timeline-scroll-container" class="flex-1 overflow-x-auto overflow-y-auto relative p-2 select-none">
+      
+      <!-- Red Playhead Scrubber Line -->
+      <div id="playhead" class="absolute top-0 bottom-0 w-0.5 bg-red-500 z-30 pointer-events-none flex flex-col items-center">
+        <div class="w-3 h-3 bg-red-500 rotate-45 -mt-1 shadow-md"></div>
+      </div>
+
+      <!-- Multi Track Container Stack -->
+      <div id="timeline-tracks-stack" class="space-y-2 min-w-[1200px] relative pb-8">
+        
+        <!-- Track 1: Video & Overlay Track -->
+        <div class="timeline-track relative h-12 bg-gray-900/80 rounded-lg border border-gray-800 flex items-center px-2" data-track-type="video">
+          <div class="w-24 shrink-0 text-[11px] font-semibold text-cyan-400 flex items-center gap-1">
+            <i class="fa-solid fa-video"></i> ভিডিও/PIP
+          </div>
+          <div id="track-video-content" class="flex-1 h-full relative overflow-hidden bg-gray-950/50 rounded border border-gray-800/60">
+            <!-- Dynamic Video Blocks Render Here -->
+          </div>
+        </div>
+
+        <!-- Track 2: Text / Subtitle Track -->
+        <div class="timeline-track relative h-10 bg-gray-900/80 rounded-lg border border-gray-800 flex items-center px-2" data-track-type="text">
+          <div class="w-24 shrink-0 text-[11px] font-semibold text-pink-400 flex items-center gap-1">
+            <i class="fa-solid fa-font"></i> টেক্সট
+          </div>
+          <div id="track-text-content" class="flex-1 h-full relative overflow-hidden bg-gray-950/50 rounded border border-gray-800/60">
+            <!-- Dynamic Text Blocks Render Here -->
+          </div>
+        </div>
+
+        <!-- Track 3: Audio Track -->
+        <div class="timeline-track relative h-10 bg-gray-900/80 rounded-lg border border-gray-800 flex items-center px-2" data-track-type="audio">
+          <div class="w-24 shrink-0 text-[11px] font-semibold text-purple-400 flex items-center gap-1">
+            <i class="fa-solid fa-music"></i> অডিও
+          </div>
+          <div id="track-audio-content" class="flex-1 h-full relative overflow-hidden bg-gray-950/50 rounded border border-gray-800/60">
+            <!-- Dynamic Audio Blocks Render Here -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== WATCH AD FOR CREDITS REWARD MODAL ==================== -->
+  <div id="ad-reward-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden">
+    <div class="bg-gray-900 border border-amber-500/40 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl relative flex flex-col items-center text-center">
+      
+      <!-- Close Modal Cross -->
+      <button onclick="closeAdModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-14 h-14 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-2xl mb-3 border border-amber-500/40">
+        <i class="fa-solid fa-rectangle-ad"></i>
+      </div>
+
+      <h3 class="text-lg font-extrabold text-white">এ্যাড দেখে ৫০ ফ্রি ক্রেডিট পান!</h3>
+      <p class="text-xs text-gray-400 mt-1 mb-4">
+        ভিডিও বিজ্ঞাপনটি সম্পূর্ণ দেখলে আপনার অ্যাকাউন্টে অটোমেটিক ক্রেডিট যোগ হবে।
+      </p>
+
+      <!-- Simulated Adsterra / Monetag Video Player Container -->
+      <div id="ad-player-box" class="w-full h-44 bg-black rounded-xl border border-gray-800 relative overflow-hidden flex flex-col items-center justify-center p-4">
+        
+        <div id="ad-video-sim" class="flex flex-col items-center">
+          <i class="fa-solid fa-play-circle text-4xl text-amber-400 animate-pulse mb-2"></i>
+          <span class="text-xs text-gray-300 font-semibold">স্পন্সরড রিওয়ার্ড এ্যাড লোড হচ্ছে...</span>
+          <span class="text-[10px] text-gray-500 mt-1">Adsterra & Monetag Integration Ready</span>
+        </div>
+
+        <!-- Ad Countdown Timer Overlay -->
+        <div id="ad-timer-badge" class="absolute top-2 left-2 bg-amber-500 text-gray-950 text-[10px] font-bold px-2 py-0.5 rounded-full hidden">
+          এ্যাড শেষ হবে: <span id="ad-seconds">10</span>s
+        </div>
+      </div>
+
+      <!-- Trigger Watch Ad Button -->
+      <button id="start-ad-btn" onclick="startSimulatedRewardAd()" class="w-full mt-5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-gray-950 font-extrabold py-3 rounded-xl text-sm hover:brightness-110 shadow-lg transition">
+        <i class="fa-solid fa-play mr-1.5"></i> এ্যাড প্লে করুন (Watch Now)
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== EXPORT & RENDERING MODAL ==================== -->
+  <div id="export-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden">
+    <div class="bg-gray-900 border border-cyan-500/40 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl relative text-center">
+      <button onclick="closeExportModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-cyan-500/20 rounded-full flex items-center justify-center text-cyan-400 text-2xl mx-auto mb-3 border border-cyan-500/40">
+        <i class="fa-solid fa-file-export"></i>
+      </div>
+
+      <h3 class="text-lg font-bold text-white">প্রো ভিডিও রেন্ডারিং হাব</h3>
+      <p class="text-xs text-gray-400 mt-1 mb-4">ওয়াটারমার্ক ছাড়া ফুল HD ভিডিও এবং গ্রাফিক্স ডাউনলোড করুন</p>
+
+      <div class="space-y-3 text-left mb-5">
+        <div>
+          <label class="text-xs font-semibold text-gray-300">ফরমেট সিলেক্ট:</label>
+          <select id="export-format" class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg p-2 text-xs text-white">
+            <option value="webm">WebM Video (HD Standard)</option>
+            <option value="mp4">MP4 Video (High Quality)</option>
+            <option value="png">PNG Image Export (Graphics Canvas)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-gray-300">রেজোলিউশন:</label>
+          <select id="export-res" class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg p-2 text-xs text-white">
+            <option value="1080">1080p Full HD (1920x1080)</option>
+            <option value="720">720p HD Ready</option>
+            <option value="2160">4K Ultra HD (Requires 100 Credits)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Export Progress Bar -->
+      <div id="export-progress-box" class="hidden mb-4">
+        <div class="flex justify-between text-xs font-semibold text-cyan-400 mb-1">
+          <span>রেন্ডার হচ্ছে...</span>
+          <span id="export-percent">0%</span>
+        </div>
+        <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+          <div id="export-progress-bar" class="bg-gradient-to-r from-cyan-400 to-indigo-500 h-full w-0 transition-all duration-200"></div>
+        </div>
+      </div>
+
+      <button onclick="processExport()" id="start-export-btn" class="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold py-2.5 rounded-xl text-xs hover:brightness-110 shadow-lg">
+        <i class="fa-solid fa-download mr-1"></i> ডাউনলোড শুরু করুন (Zero Watermark)
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ==================== JAVASCRIPT APPLICATION CORE ENGINE ==================== -->
+  <script>
+    /* ==========================================================================
+       APP GLOBAL STATE & CAPCUT/INSHOT ENGINE CONFIG
+       ========================================================================== */
+    const state = {
+      credits: 250,
+      aspectRatio: '16:9',
+      canvasWidth: 1280,
+      canvasHeight: 720,
+      isPlaying: false,
+      currentTime: 0,
+      totalDuration: 15, // Default 15 seconds workspace
+      masterVolume: 1.0,
+      playbackSpeed: 1.0,
+      globalFilter: 'none',
+      canvasBgColor: '#080c14',
+      canvasBgStyle: 'solid', // 'solid' or 'blur'
+      selectedTrackId: null,
+      
+      // Fine Tuning Video Adjustments
+      brightness: 100,
+      contrast: 100,
+      saturation: 100,
+      chromaKeyEnabled: false,
+      isFlipped: false,
+
+      // Multi-Track Layers State
+      tracks: [
+        {
+          id: 'v1',
+          type: 'video',
+          name: 'Main Video',
+          startTime: 0,
+          duration: 15,
+          source: null,
+          element: null,
+          x: 0, y: 0, scale: 1
+        },
+        {
+          id: 't1',
+          type: 'text',
+          text: 'NIVORA STUDIO BANGLA',
+          startTime: 1,
+          duration: 10,
+          font: 'Hind Siliguri',
+          fontSize: 36,
+          color: '#ffffff',
+          strokeColor: '#00f2fe',
+          glowColor: '#ff007f',
+          x: 0, y: 150
+        }
+      ]
+    };
+
+    // DOM Canvas & Context setup
+    const canvas = document.getElementById('main-preview-canvas');
+    const ctx = canvas.getContext('2d');
+    const canvasWrapper = document.getElementById('canvas-wrapper');
+
+    /* ==========================================================================
+       INITIALIZATION & CANVAS SIZING ENGINE
+       ========================================================================== */
+    window.addEventListener('load', () => {
+      setAspectRatio('16:9');
+      renderTimelineTracks();
+      requestAnimationFrame(animationLoop);
+      loadSavedProject();
+    });
+
+    function setAspectRatio(ratio) {
+      state.aspectRatio = ratio;
+      
+      // Update Ratio Toolbar UI
+      document.querySelectorAll('.ratio-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-600', 'text-white');
+        btn.classList.add('text-gray-400');
+      });
+
+      if (ratio === '16:9') {
+        state.canvasWidth = 1280; state.canvasHeight = 720;
+        document.getElementById('ratio-16-9').classList.add('bg-cyan-600', 'text-white');
+        canvasWrapper.style.width = '640px'; canvasWrapper.style.height = '360px';
+      } else if (ratio === '9:16') {
+        state.canvasWidth = 720; state.canvasHeight = 1280;
+        document.getElementById('ratio-9-16').classList.add('bg-cyan-600', 'text-white');
+        canvasWrapper.style.width = '270px'; canvasWrapper.style.height = '480px';
+      } else if (ratio === '1:1') {
+        state.canvasWidth = 1000; state.canvasHeight = 1000;
+        document.getElementById('ratio-1-1').classList.add('bg-cyan-600', 'text-white');
+        canvasWrapper.style.width = '380px'; canvasWrapper.style.height = '380px';
+      } else if (ratio === '4:5') {
+        state.canvasWidth = 800; state.canvasHeight = 1000;
+        document.getElementById('ratio-4-5').classList.add('bg-cyan-600', 'text-white');
+        canvasWrapper.style.width = '320px'; canvasWrapper.style.height = '400px';
+      }
+
+      canvas.width = state.canvasWidth;
+      canvas.height = state.canvasHeight;
+    }
+
+    /* ==========================================================================
+       MAIN ANIMATION & RENDER CANVAS ENGINE (REALTIME CAPCUT PREVIEW)
+       ========================================================================== */
+    let lastTimestamp = 0;
+    function animationLoop(timestamp) {
+      if (state.isPlaying) {
+        const delta = (timestamp - lastTimestamp) / 1000;
+        if (!isNaN(delta)) {
+          state.currentTime += delta * state.playbackSpeed;
+          if (state.currentTime >= state.totalDuration) {
+            state.currentTime = 0; // Loop playback
+          }
+        }
+      }
+      lastTimestamp = timestamp;
+
+      // Update Playhead Visual Position
+      updatePlayheadUI();
+
+      // Render Master Canvas Frame
+      drawCanvasFrame();
+
+      requestAnimationFrame(animationLoop);
+    }
+
+    function drawCanvasFrame() {
+      // 1. Clear & Canvas Background
+      ctx.save();
+      ctx.fillStyle = state.canvasBgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Apply CSS Filters & Brightness Adjustments
+      let filterStr = `brightness(${state.brightness}%) contrast(${state.contrast}%) saturate(${state.saturation}%) `;
+      
+      if (state.globalFilter === 'cyberpunk') {
+        filterStr += 'hue-rotate(180deg) contrast(130%) ';
+      } else if (state.globalFilter === 'cinematic') {
+        filterStr += 'sepia(30%) contrast(110%) ';
+      } else if (state.globalFilter === 'vintage') {
+        filterStr += 'sepia(60%) hue-rotate(-30deg) ';
+      } else if (state.globalFilter === 'bw') {
+        filterStr += 'grayscale(100%) ';
+      } else if (state.globalFilter === 'sepia') {
+        filterStr += 'sepia(100%) ';
+      }
+
+      ctx.filter = filterStr;
+
+      // 2. Render Layers in Track Order
+      state.tracks.forEach(track => {
+        // Check time visibility
+        if (state.currentTime >= track.startTime && state.currentTime <= (track.startTime + track.duration)) {
+          
+          if (track.type === 'video' && track.element) {
+            ctx.save();
+            ctx.translate(canvas.width / 2 + track.x, canvas.height / 2 + track.y);
+            if (state.isFlipped) ctx.scale(-1, 1);
+            
+            // Chroma Key Simulation
+            if (!state.chromaKeyEnabled) {
+              ctx.drawImage(track.element, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+            } else {
+              // Chroma key simple rendering mask
+              ctx.globalAlpha = 0.85;
+              ctx.drawImage(track.element, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+            }
+            ctx.restore();
+          }
+
+          // Text & Subtitle Layer Rendering
+          if (track.type === 'text') {
+            ctx.save();
+            ctx.font = `bold ${track.fontSize || 36}px ${track.font || 'Hind Siliguri'}, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const posX = canvas.width / 2 + (track.x || 0);
+            const posY = canvas.height / 2 + (track.y || 0);
+
+            // Neon Glow Shadow
+            if (track.glowColor) {
+              ctx.shadowColor = track.glowColor;
+              ctx.shadowBlur = 18;
+            }
+
+            // Text Stroke Outline
+            if (track.strokeColor) {
+              ctx.strokeStyle = track.strokeColor;
+              ctx.lineWidth = 4;
+              ctx.strokeText(track.text, posX, posY);
+            }
+
+            // Fill Text
+            ctx.fillStyle = track.color || '#ffffff';
+            ctx.fillText(track.text, posX, posY);
+
+            ctx.restore();
+          }
+
+          // Sticker Layer Rendering
+          if (track.type === 'sticker') {
+            ctx.save();
+            ctx.font = `${track.fontSize || 60}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(track.text, canvas.width / 2 + track.x, canvas.height / 2 + track.y);
+            ctx.restore();
+          }
+        }
+      });
+
+      ctx.restore();
+    }
+
+    /* ==========================================================================
+       MEDIA IMPORT & STOCK LIBRARY ENGINE
+       ========================================================================== */
+    function handleMediaImport(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      Array.from(files).forEach(file => {
+        const url = URL.createObjectURL(file);
+        if (file.type.startsWith('video')) {
+          const videoEl = document.createElement('video');
+          videoEl.src = url;
+          videoEl.muted = true;
+          videoEl.loop = true;
+          videoEl.play();
+
+          // Add to Video Track
+          state.tracks.unshift({
+            id: 'v_' + Date.now(),
+            type: 'video',
+            name: file.name,
+            startTime: 0,
+            duration: 15,
+            element: videoEl,
+            x: 0, y: 0
+          });
+        }
+      });
+
+      renderTimelineTracks();
+      showToast("মিডিয়া সফলভাবে ইম্পোর্ট করা হয়েছে!");
+    }
+
+    function addStockVideo(type) {
+      const canvasStock = document.createElement('canvas');
+      canvasStock.width = 1280; canvasStock.height = 720;
+      const cctx = canvasStock.getContext('2d');
+      
+      // Animated procedural stock canvas generator
+      setInterval(() => {
+        cctx.fillStyle = type === 'cyber' ? '#0d0221' : '#022c22';
+        cctx.fillRect(0,0,1280,720);
+        cctx.fillStyle = type === 'cyber' ? '#00f2fe' : '#10b981';
+        cctx.font = 'bold 48px Orbitron';
+        cctx.fillText(type === 'cyber' ? 'CYBERPUNK LOOP' : 'NATURE FX BACKGROUND', 300, 360);
+      }, 100);
+
+      const videoSim = document.createElement('video');
+      videoSim.srcObject = canvasStock.captureStream(30);
+      videoSim.play();
+
+      state.tracks.unshift({
+        id: 'stock_' + Date.now(),
+        type: 'video',
+        name: type === 'cyber' ? 'Cyber Loop' : 'Nature Loop',
+        startTime: 0,
+        duration: 15,
+        element: videoSim,
+        x: 0, y: 0
+      });
+
+      renderTimelineTracks();
+      showToast("ডেমো স্যাম্পল মিডিয়া যোগ করা হয়েছে");
+    }
+
+    /* ==========================================================================
+       TEXT & STICKER EDITING ENGINE
+       ========================================================================== */
+    function addTextTrack() {
+      const textVal = document.getElementById('text-input-field').value || 'নতুন টেক্সট';
+      state.tracks.push({
+        id: 't_' + Date.now(),
+        type: 'text',
+        text: textVal,
+        startTime: 0,
+        duration: 10,
+        font: document.getElementById('text-font-family').value,
+        fontSize: parseInt(document.getElementById('text-size-slider').value),
+        color: document.getElementById('text-color-picker').value,
+        strokeColor: document.getElementById('text-stroke-picker').value,
+        glowColor: document.getElementById('text-glow-picker').value,
+        x: 0, y: 0
+      });
+
+      renderTimelineTracks();
+      showToast("টেক্সট টাইমলাইনে যোগ করা হয়েছে");
+    }
+
+    function addSticker(emoji) {
+      state.tracks.push({
+        id: 's_' + Date.now(),
+        type: 'sticker',
+        text: emoji,
+        startTime: 0,
+        duration: 8,
+        fontSize: 70,
+        x: 0, y: 0
+      });
+      renderTimelineTracks();
+      showToast("স্টিকার যোগ করা হয়েছে!");
+    }
+
+    function addBadgeOverlay(text, color) {
+      state.tracks.push({
+        id: 'b_' + Date.now(),
+        type: 'text',
+        text: text,
+        startTime: 0,
+        duration: 12,
+        font: 'Orbitron',
+        fontSize: 40,
+        color: '#ffffff',
+        strokeColor: color,
+        glowColor: color,
+        x: 0, y: 180
+      });
+      renderTimelineTracks();
+      showToast("সোশ্যাল মিডিয়া ব্যাজ যোগ করা হয়েছে");
+    }
+
+    function applyTextPreset(preset) {
+      if (preset === 'neon') {
+        document.getElementById('text-color-picker').value = '#00f2fe';
+        document.getElementById('text-stroke-picker').value = '#00f2fe';
+        document.getElementById('text-glow-picker').value = '#ff007f';
+      } else if (preset === 'gold') {
+        document.getElementById('text-color-picker').value = '#ffd700';
+        document.getElementById('text-stroke-picker').value = '#b8860b';
+        document.getElementById('text-glow-picker').value = '#ffd700';
+      }
+      updateSelectedTextProperties();
+    }
+
+    function updateSelectedTextProperties() {
+      if (!state.selectedTrackId) return;
+      const track = state.tracks.find(t => t.id === state.selectedTrackId);
+      if (track && track.type === 'text') {
+        track.font = document.getElementById('text-font-family').value;
+        track.fontSize = parseInt(document.getElementById('text-size-slider').value);
+        track.color = document.getElementById('text-color-picker').value;
+        track.strokeColor = document.getElementById('text-stroke-picker').value;
+        track.glowColor = document.getElementById('text-glow-picker').value;
+      }
+    }
+
+    /* ==========================================================================
+       MULTI-TRACK TIMELINE RENDERER & INTERACTION
+       ========================================================================== */
+    function renderTimelineTracks() {
+      const vContainer = document.getElementById('track-video-content');
+      const tContainer = document.getElementById('track-text-content');
+      const aContainer = document.getElementById('track-audio-content');
+
+      vContainer.innerHTML = '';
+      tContainer.innerHTML = '';
+      aContainer.innerHTML = '';
+
+      state.tracks.forEach(track => {
+        const block = document.createElement('div');
+        const leftPercent = (track.startTime / state.totalDuration) * 100;
+        const widthPercent = (track.duration / state.totalDuration) * 100;
+
+        block.className = `track-block absolute top-1 bottom-1 rounded-md px-2 flex items-center justify-between text-[10px] font-semibold cursor-pointer border ${
+          state.selectedTrackId === track.id ? 'border-cyan-400 bg-cyan-900/60 shadow-[0_0_8px_#00f2fe]' : 'border-gray-700 bg-gray-800'
+        }`;
+        block.style.left = `${leftPercent}%`;
+        block.style.width = `${widthPercent}%`;
+
+        block.onclick = (e) => {
+          e.stopPropagation();
+          selectTrack(track.id);
+        };
+
+        if (track.type === 'video') {
+          block.classList.add('text-cyan-300');
+          block.innerHTML = `<span><i class="fa-solid fa-film mr-1"></i> ${track.name || 'Video'}</span>`;
+          vContainer.appendChild(block);
+        } else if (track.type === 'text' || track.type === 'sticker') {
+          block.classList.add('text-pink-300');
+          block.innerHTML = `<span><i class="fa-solid fa-font mr-1"></i> ${track.text || 'Text'}</span>`;
+          tContainer.appendChild(block);
+        } else if (track.type === 'audio') {
+          block.classList.add('text-purple-300');
+          block.innerHTML = `<span><i class="fa-solid fa-music mr-1"></i> ${track.name || 'Audio'}</span>`;
+          aContainer.appendChild(block);
+        }
+      });
+    }
+
+    function selectTrack(id) {
+      state.selectedTrackId = id;
+      renderTimelineTracks();
+    }
+
+    function splitSelectedTrack() {
+      if (!state.selectedTrackId) return showToast("প্রথমে একটি ট্রাক সিলেক্ট করুন");
+      const idx = state.tracks.findIndex(t => t.id === state.selectedTrackId);
+      if (idx !== -1) {
+        const t = state.tracks[idx];
+        const firstDuration = state.currentTime - t.startTime;
+        if (firstDuration > 0.5 && firstDuration < t.duration) {
+          const secondDuration = t.duration - firstDuration;
+          t.duration = firstDuration;
+
+          const clone = {...t, id: t.type + '_' + Date.now(), startTime: state.currentTime, duration: secondDuration};
+          state.tracks.push(clone);
+          renderTimelineTracks();
+          showToast("ট্রাক সফলভাবে স্প্লিট করা হয়েছে");
+        }
+      }
+    }
+
+    function duplicateSelectedTrack() {
+      if (!state.selectedTrackId) return;
+      const t = state.tracks.find(t => t.id === state.selectedTrackId);
+      if (t) {
+        const clone = {...t, id: t.type + '_' + Date.now(), startTime: t.startTime + 1};
+        state.tracks.push(clone);
+        renderTimelineTracks();
+        showToast("ট্রাক ডুপ্লিকেট করা হয়েছে");
+      }
+    }
+
+    function deleteSelectedTrack() {
+      if (!state.selectedTrackId) return;
+      state.tracks = state.tracks.filter(t => t.id !== state.selectedTrackId);
+      state.selectedTrackId = null;
+      renderTimelineTracks();
+      showToast("ট্রাক ডিলিট করা হয়েছে");
+    }
+
+    function updatePlayheadUI() {
+      const playhead = document.getElementById('playhead');
+      const percent = (state.currentTime / state.totalDuration) * 100;
+      playhead.style.left = `${percent}%`;
+
+      // Update Timer Display
+      const curSec = Math.floor(state.currentTime);
+      const totalSec = Math.floor(state.totalDuration);
+      document.getElementById('current-time-display').innerText = `00:${curSec < 10 ? '0' : ''}${curSec}:00`;
+      document.getElementById('total-duration-display').innerText = `00:${totalSec < 10 ? '0' : ''}${totalSec}:00`;
+    }
+
+    /* ==========================================================================
+       PLAYBACK & CONTROLS
+       ========================================================================== */
+    function togglePlayPause() {
+      state.isPlaying = !state.isPlaying;
+      const btnIcon = document.getElementById('play-icon');
+      if (state.isPlaying) {
+        btnIcon.className = 'fa-solid fa-pause text-sm ml-0';
+      } else {
+        btnIcon.className = 'fa-solid fa-play text-sm ml-0.5';
+      }
+    }
+
+    function seekToStart() { state.currentTime = 0; }
+    function seekToEnd() { state.currentTime = state.totalDuration; }
+
+    function setPlaybackSpeed(val) {
+      state.playbackSpeed = parseFloat(val);
+      showToast(`স্পিড সেট করা হয়েছে ${val}x`);
+    }
+
+    function toggleVideoFlip() {
+      state.isFlipped = !state.isFlipped;
+      showToast(state.isFlipped ? "ভিডিও ফ্লিপ করা হয়েছে" : "নরমাল পজিশন");
+    }
+
+    function setGlobalFilter(filterName) {
+      state.globalFilter = filterName;
+      showToast(`ফিল্টার সেট করা হয়েছে: ${filterName}`);
+    }
+
+    function applyManualAdjustments() {
+      state.brightness = document.getElementById('slider-brightness').value;
+      state.contrast = document.getElementById('slider-contrast').value;
+      state.saturation = document.getElementById('slider-saturation').value;
+
+      document.getElementById('val-brightness').innerText = `${state.brightness}%`;
+      document.getElementById('val-contrast').innerText = `${state.contrast}%`;
+      document.getElementById('val-saturation').innerText = `${state.saturation}%`;
+    }
+
+    function toggleChromaKey() {
+      state.chromaKeyEnabled = document.getElementById('chroma-key-toggle').checked;
+      showToast(state.chromaKeyEnabled ? "ক্রমা কি (গ্রিন স্ক্রিন) অন করা হয়েছে" : "ক্রমা কি অফ");
+    }
+
+    function setCanvasBackgroundStyle(style) {
+      state.canvasBgStyle = style;
+      showToast(`ব্যাকগ্রাউন্ড মোড: ${style}`);
+    }
+
+    function updateCanvasBgColor() {
+      state.canvasBgColor = document.getElementById('canvas-bg-color').value;
+    }
+
+    /* ==========================================================================
+       AUDIO & SOUND ENGINE
+       ========================================================================== */
+    function handleAudioUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        state.tracks.push({
+          id: 'a_' + Date.now(),
+          type: 'audio',
+          name: file.name,
+          startTime: 0,
+          duration: 15
+        });
+        renderTimelineTracks();
+        showToast("অডিও টাইমলাইনে যোগ করা হয়েছে");
+      }
+    }
+
+    function playSynthesizedSFX(type) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'whoosh') {
+        osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'pop') {
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+      } else if (type === 'beep') {
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+      }
+
+      showToast("সাউন্ড FX ট্র্যাকে যোগ করা হয়েছে");
+    }
+
+    function triggerMicRecord() {
+      showToast("মাইক্রোফোন দিয়ে রেকর্ড করা হচ্ছে...");
+      setTimeout(() => {
+        state.tracks.push({
+          id: 'rec_' + Date.now(),
+          type: 'audio',
+          name: 'Voice Recording',
+          startTime: state.currentTime,
+          duration: 5
+        });
+        renderTimelineTracks();
+        showToast("ভয়েস রেকর্ড টাইমলাইনে যোগ করা হয়েছে");
+      }, 2000);
+    }
+
+    /* ==========================================================================
+       MONETIZED AD-REWARD CREDIT ENGINE (ADSTERRA / MONETAG READY)
+       ========================================================================== */
+    function openAdModal() {
+      document.getElementById('ad-reward-modal').classList.remove('hidden');
+    }
+
+    function closeAdModal() {
+      document.getElementById('ad-reward-modal').classList.add('hidden');
+    }
+
+    function startSimulatedRewardAd() {
+      const btn = document.getElementById('start-ad-btn');
+      const badge = document.getElementById('ad-timer-badge');
+      const secondsEl = document.getElementById('ad-seconds');
+      
+      btn.disabled = true;
+      btn.innerText = "এ্যাড প্লে হচ্ছে...";
+      badge.classList.remove('hidden');
+
+      let timeLeft = 10;
+      secondsEl.innerText = timeLeft;
+
+      // Adsterra/Monetag Smart Link Hook Ready
+      // window.open('YOUR_ADSTERRA_DIRECT_LINK', '_blank');
+
+      const adTimer = setInterval(() => {
+        timeLeft--;
+        secondsEl.innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(adTimer);
+          
+          // Reward Credits
+          state.credits += 50;
+          document.getElementById('user-credits').innerText = state.credits;
+          
+          showToast("অভিনন্দন! ৫০ কয়েন যোগ করা হয়েছে 🎉");
+          closeAdModal();
+
+          btn.disabled = false;
+          btn.innerText = "এ্যাড প্লে করুন (Watch Now)";
+          badge.classList.add('hidden');
+        }
+      }, 1000);
+    }
+
+    /* ==========================================================================
+       RENDERING & EXPORT HUB (ZERO WATERMARK EXPORTER)
+       ========================================================================== */
+    function switchSuiteTab(tab) {
+      if (tab === 'export') {
+        document.getElementById('export-modal').classList.remove('hidden');
+      } else {
+        showToast(`সুইচ করা হয়েছে: ${tab.toUpperCase()} হাব`);
+      }
+    }
+
+    function closeExportModal() {
+      document.getElementById('export-modal').classList.add('hidden');
+    }
+
+    function processExport() {
+      const format = document.getElementById('export-format').value;
+      const progressBox = document.getElementById('export-progress-box');
+      const progressBar = document.getElementById('export-progress-bar');
+      const percentText = document.getElementById('export-percent');
+      const exportBtn = document.getElementById('start-export-btn');
+
+      if (format === 'png') {
+        // Direct Canvas Image Download
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `Nivora_Design_${Date.now()}.png`;
+        link.href = dataUrl;
+        link.click();
+        showToast("HD গ্রাফিক্স ডাউনলোড সম্পন্ন!");
+        closeExportModal();
+        return;
+      }
+
+      // Video Render Stream (MediaRecorder API)
+      exportBtn.disabled = true;
+      progressBox.classList.remove('hidden');
+
+      let progress = 0;
+      const renderInterval = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = `${progress}%`;
+        percentText.innerText = `${progress}%`;
+
+        if (progress >= 100) {
+          clearInterval(renderInterval);
+          
+          // Trigger Video Download
+          const stream = canvas.captureStream(30);
+          const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+          const chunks = [];
+
+          recorder.ondataavailable = e => chunks.push(e.data);
+          recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Nivora_Studio_Video_${Date.now()}.webm`;
+            a.click();
+
+            showToast("ওয়াটারমার্ক ছাড়া HD ভিডিও ডাউনলোড সফল!");
+            closeExportModal();
+            exportBtn.disabled = false;
+            progressBox.classList.add('hidden');
+          };
+
+          recorder.start();
+          setTimeout(() => recorder.stop(), 500);
+        }
+      }, 150);
+    }
+
+    /* ==========================================================================
+       SIDEBAR & WORKSPACE NAVIGATION CONTROLLER
+       ========================================================================== */
+    function setActiveSidebarTab(tabName) {
+      document.querySelectorAll('.sidebar-tab').forEach(btn => {
+        btn.classList.remove('text-cyan-400', 'bg-gray-800/80', 'border', 'border-cyan-500/40');
+        btn.classList.add('text-gray-400');
+      });
+
+      document.getElementById(`tab-btn-${tabName}`).classList.add('text-cyan-400', 'bg-gray-800/80', 'border', 'border-cyan-500/40');
+
+      document.querySelectorAll('.panel-section').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+    }
+
+    /* ==========================================================================
+       LOCALSTORAGE & PROJECT SAVING
+       ========================================================================== */
+    function saveProjectToStorage() {
+      const projectData = {
+        credits: state.credits,
+        aspectRatio: state.aspectRatio,
+        tracks: state.tracks.map(t => ({...t, element: null}))
+      };
+      localStorage.setItem('NIVORA_PROJECT', JSON.stringify(projectData));
+      showToast("প্রজেক্ট অটো-সেভ করা হয়েছে 💾");
+    }
+
+    function loadSavedProject() {
+      const saved = localStorage.getItem('NIVORA_PROJECT');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          state.credits = data.credits || 250;
+          document.getElementById('user-credits').innerText = state.credits;
+        } catch(e) {}
+      }
+    }
+
+    function exportProjectJSON() {
+      const projectData = {
+        title: "Nivora Project",
+        version: "1.0",
+        tracks: state.tracks.map(t => ({...t, element: null}))
+      };
+      const blob = new Blob([JSON.stringify(projectData, null, 2)], {type : 'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Nivora_Project_${Date.now()}.json`;
+      a.click();
+    }
+
+    /* ==========================================================================
+       TOAST NOTIFICATION SYSTEM
+       ========================================================================== */
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-20 right-6 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-2xl z-50 flex items-center gap-2 border border-cyan-300/30 transition-all transform translate-y-2 opacity-0';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`;
+      
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
