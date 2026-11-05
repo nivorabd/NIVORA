@@ -1,1 +1,1116 @@
 
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice & Recitation Studio Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            light: '#FFF099',
+                            DEFAULT: '#D4AF37',
+                            bright: '#FFD700',
+                            dark: '#AA7C11',
+                            deep: '#8B6508'
+                        },
+                        darkbg: {
+                            900: '#0F0F12',
+                            800: '#18181F',
+                            700: '#23232E',
+                            600: '#2D2D3C'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Bengali', 'sans-serif'],
+                        arabic: ['Amiri', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF099 0%, #D4AF37 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border-glow {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.08);
+            transition: all 0.3s ease;
+        }
+        .gold-border-glow:hover {
+            border-color: rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.18);
+        }
+
+        .gold-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%);
+            color: #0F0F12;
+            font-weight: 700;
+            transition: all 0.25s ease;
+        }
+        .gold-btn:hover {
+            background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            transform: translateY(-1px);
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+        .recording-indicator {
+            animation: pulse-red 1.5s infinite;
+        }
+
+        .mirror-mode {
+            transform: scaleX(-1);
+        }
+    </style>
+</head>
+<body class="bg-darkbg-900 text-gray-200 font-sans min-h-screen flex flex-col justify-between selection:bg-gold selection:text-darkbg-900">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MAIN HEADER -->
+    <header class="sticky top-0 z-40 bg-darkbg-800/90 backdrop-blur-md border-b border-gold/20 px-4 lg:px-8 py-3 transition-all">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-dark via-gold to-gold-bright flex items-center justify-center text-darkbg-900 shadow-md">
+                    <i class="fa-solid font-bold fa-microphone-lines text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl lg:text-2xl font-bold gold-gradient-text tracking-wide">Voice & Recitation Studio Pro</h1>
+                    <p class="text-xs text-gray-400">Professional Audio Recitation & Signal Processing Suite</p>
+                </div>
+            </div>
+
+            <!-- Credits & Ad Button -->
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <!-- User Credit Badge -->
+                <div class="bg-darkbg-700/80 border border-gold/40 px-3 py-1.5 rounded-full flex items-center space-x-2 shadow-inner">
+                    <i class="fa-solid fa-coins text-gold-bright text-lg"></i>
+                    <span class="text-sm font-semibold text-gray-300">ক্রেডিট:</span>
+                    <span id="creditBalance" class="text-base font-bold text-gold-bright">10</span>
+                </div>
+
+                <!-- Watch Ad Button -->
+                <button id="openAdModalBtn" onclick="openAdModal()" class="gold-btn px-4 py-2 rounded-full text-xs sm:text-sm flex items-center space-x-2 shadow-lg">
+                    <i class="fa-solid fa-rectangle-ad text-base"></i>
+                    <span>এ্যাড দেখে ক্রেডিট নিন</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 w-full flex-grow space-y-8">
+        
+        <!-- SECTION 1: Voice Recorder & Real-time Oscilloscope + Teleprompter -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Voice & Recitation Recorder (8 cols) -->
+            <div class="lg:col-span-8 bg-darkbg-800 rounded-2xl p-5 sm:p-6 gold-border-glow flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4 border-b border-darkbg-600 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-dot text-gold text-lg"></i>
+                            <h2 class="text-lg font-bold text-gray-100">ভয়েস এবং আবৃত্তি রেকর্ডার (Live Studio Recorder)</h2>
+                        </div>
+                        <span class="text-xs bg-gold/10 border border-gold/30 text-gold-light px-2.5 py-1 rounded-md">
+                            <i class="fa-solid fa-shield-halved mr-1"></i>১ ডাউনলোড = ১ ক্রেডিট
+                        </span>
+                    </div>
+
+                    <!-- Audio Waveform Visualizer Canvas -->
+                    <div class="relative bg-darkbg-900 border border-gold/20 rounded-xl h-48 overflow-hidden flex items-center justify-center shadow-inner">
+                        <canvas id="waveformCanvas" class="w-full h-full"></canvas>
+                        
+                        <!-- Live Status Overlay -->
+                        <div class="absolute top-3 left-3 bg-darkbg-800/90 backdrop-blur border border-darkbg-600 px-3 py-1 rounded-md flex items-center space-x-2">
+                            <span id="recordingStatusDot" class="w-2.5 h-2.5 rounded-full bg-gray-500"></span>
+                            <span id="recordingStatusText" class="text-xs text-gray-300 font-medium">প্রস্তুত</span>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-darkbg-800/90 backdrop-blur border border-darkbg-600 px-3 py-1 rounded-md">
+                            <span id="recordingTimer" class="font-mono text-sm font-bold text-gold-bright">00:00:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recorder Controls -->
+                <div class="mt-6 space-y-4">
+                    <div class="flex flex-wrap items-center justify-center gap-3">
+                        <button id="startRecBtn" onclick="startRecording()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm flex items-center space-x-2 transition shadow-md">
+                            <i class="fa-solid fa-microphone"></i>
+                            <span>রেকর্ড শুরু</span>
+                        </button>
+
+                        <button id="pauseRecBtn" onclick="pauseRecording()" disabled class="bg-amber-600/50 text-gray-400 cursor-not-allowed font-semibold px-4 py-2.5 rounded-xl text-sm flex items-center space-x-2 transition">
+                            <i class="fa-solid fa-pause"></i>
+                            <span id="pauseRecText">বিরতি</span>
+                        </button>
+
+                        <button id="stopRecBtn" onclick="stopRecording()" disabled class="bg-rose-700/50 text-gray-400 cursor-not-allowed font-semibold px-5 py-2.5 rounded-xl text-sm flex items-center space-x-2 transition">
+                            <i class="fa-solid fa-square"></i>
+                            <span>সম্পন্ন করুন</span>
+                        </button>
+                    </div>
+
+                    <!-- Recording Preview & Real WebAudio FX Player -->
+                    <div id="recordingPreviewArea" class="hidden border-t border-darkbg-700 pt-4 space-y-3">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <audio id="recordedAudioPlayer" controls class="w-full sm:w-2/3 h-10 rounded-lg"></audio>
+                            <button onclick="downloadRecordedAudio()" class="gold-btn w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-md">
+                                <i class="fa-solid fa-download"></i>
+                                <span>ডাউনলোড MP3/WAV (-১ ক্রেডিট)</span>
+                            </button>
+                        </div>
+
+                        <!-- Real-time WebAudio FX toggle for live playback -->
+                        <div class="bg-darkbg-900 border border-gold/15 p-3 rounded-xl flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <span class="text-gold font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-wand-magic"></i> প্লেব্যাক সাউন্ড ইফেক্টস:
+                            </span>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center space-x-1 cursor-pointer">
+                                    <input type="checkbox" id="recEchoToggle" onchange="toggleRecordedAudioFX()" class="accent-gold">
+                                    <span>ইকো / Echo</span>
+                                </label>
+                                <label class="flex items-center space-x-1 cursor-pointer">
+                                    <input type="checkbox" id="recReverbToggle" onchange="toggleRecordedAudioFX()" class="accent-gold">
+                                    <span>রিভার্ব / Reverb</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Teleprompter (4 cols) -->
+            <div class="lg:col-span-4 bg-darkbg-800 rounded-2xl p-5 sm:p-6 gold-border-glow flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3 border-b border-darkbg-600 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-scroll text-gold text-lg"></i>
+                            <h2 class="text-lg font-bold text-gray-100">টেলিপ্রম্পটার (Teleprompter)</h2>
+                        </div>
+                        <button onclick="togglePrompterMirror()" class="text-xs bg-darkbg-700 hover:bg-darkbg-600 text-gray-300 border border-darkbg-500 px-2.5 py-1 rounded-md flex items-center gap-1">
+                            <i class="fa-solid fa-left-right"></i> মিরর (Mirror)
+                        </button>
+                    </div>
+
+                    <!-- Teleprompter Screen -->
+                    <div id="prompterScreen" class="bg-darkbg-900 border border-gold/20 rounded-xl p-4 h-52 overflow-y-auto relative scroll-smooth">
+                        <div id="prompterContent" contenteditable="true" class="text-center font-serif text-lg leading-relaxed text-gold-light space-y-4 focus:outline-none">
+                            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ<br>
+                            الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ<br>
+                            الرَّحْمَٰنِ الرَّحِيمِ<br>
+                            مَالِكِ يَوْمِ الدِّينِ<br>
+                            إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-gray-400 mt-1 text-center">* উপরের প্রম্পটার বক্সটি এডিটেবল, আপনার নিজস্ব টেক্সট লিখুন</p>
+                </div>
+
+                <!-- Controls -->
+                <div class="mt-4 space-y-3">
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <label class="block text-gray-400 mb-1">স্ক্রোল গতি (Speed)</label>
+                            <input type="range" id="prompterSpeed" min="1" max="10" value="3" class="w-full accent-gold">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">ফন্ট সাইজ (Size)</label>
+                            <input type="range" id="prompterFontSize" min="14" max="36" value="20" oninput="changePrompterFontSize(this.value)" class="w-full accent-gold">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button id="prompterToggleBtn" onclick="togglePrompterScroll()" class="flex-1 bg-darkbg-700 hover:bg-darkbg-600 border border-gold/30 text-gold-bright py-2 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1">
+                            <i class="fa-solid fa-play" id="prompterPlayIcon"></i>
+                            <span id="prompterPlayText">স্ক্রোল শুরু</span>
+                        </button>
+                        <button onclick="resetPrompterScroll()" class="bg-darkbg-700 hover:bg-darkbg-600 border border-gray-600 text-gray-300 px-3 py-2 rounded-xl text-xs">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Text-to-Speech & Recitation Generator (Web Speech API) -->
+        <section class="bg-darkbg-800 rounded-2xl p-5 sm:p-6 gold-border-glow">
+            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-darkbg-600 pb-3 mb-6 gap-2">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-gold text-lg"></i>
+                    <h2 class="text-lg font-bold text-gray-100">টেক্সট-টু-স্পিচ এবং আবৃত্তি জেনারেটর (TTS Engine)</h2>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-gray-400">প্রিসেট চয়ন করুন:</span>
+                    <select id="presetSelector" onchange="loadPresetText(this.value)" class="bg-darkbg-900 border border-gold/30 text-gold-light text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-gold">
+                        <option value="">-- প্রিসেট সিলেক্ট করুন --</option>
+                        <option value="quran">সূরা আল-ফাতিহা (আরবি)</option>
+                        <option value="poem1">বিদ্রোহী - কাজী নজরুল ইসলাম</option>
+                        <option value="poem2">সোনার তরী - রবীন্দ্রনাথ ঠাকুর</option>
+                        <option value="nasheed">ইসলামিক গজল / হামদ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Input Box (7 cols) -->
+                <div class="lg:col-span-7 space-y-3">
+                    <label class="block text-xs font-medium text-gray-400">আবৃত্তির টেক্সট বা লিরিক্স লিখুন:</label>
+                    <textarea id="ttsTextInput" rows="7" placeholder="এখানে আপনার কাঙ্ক্ষিত সূরা, কবিতা বা স্ক্রিপ্ট লিখুন..." class="w-full bg-darkbg-900 border border-gold/20 rounded-xl p-4 text-gray-200 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold font-sans text-sm sm:text-base leading-relaxed"></textarea>
+                </div>
+
+                <!-- Speech Voice Settings (5 cols) -->
+                <div class="lg:col-span-5 bg-darkbg-900 border border-gold/15 rounded-xl p-4 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">ভয়েস সিলেক্ট করুন (System Voices)</label>
+                            <select id="ttsVoiceSelect" class="w-full bg-darkbg-800 border border-darkbg-600 text-gray-200 text-xs rounded-lg p-2 focus:outline-none focus:border-gold"></select>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                <span>স্পিড/গতি (Speed Rate)</span>
+                                <span id="ttsRateVal" class="text-gold">1.0x</span>
+                            </div>
+                            <input type="range" id="ttsRate" min="0.5" max="1.5" step="0.1" value="1.0" oninput="document.getElementById('ttsRateVal').innerText = this.value + 'x'" class="w-full accent-gold">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                <span>পিচ (Pitch Tone)</span>
+                                <span id="ttsPitchVal" class="text-gold">1.0</span>
+                            </div>
+                            <input type="range" id="ttsPitch" min="0.5" max="1.5" step="0.1" value="1.0" oninput="document.getElementById('ttsPitchVal').innerText = this.value" class="w-full accent-gold">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                <span>ভলিউম (Volume)</span>
+                                <span id="ttsVolVal" class="text-gold">100%</span>
+                            </div>
+                            <input type="range" id="ttsVolume" min="0" max="1" step="0.1" value="1" oninput="document.getElementById('ttsVolVal').innerText = Math.round(this.value*100) + '%'" class="w-full accent-gold">
+                        </div>
+                    </div>
+
+                    <!-- TTS Controls -->
+                    <div class="flex items-center space-x-2 pt-2">
+                        <button onclick="generateSpeech()" class="gold-btn flex-1 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-md">
+                            <i class="fa-solid fa-play"></i>
+                            <span>আবৃত্তি শুরু (-১ ক্রেডিট)</span>
+                        </button>
+                        <button onclick="pauseSpeech()" class="bg-darkbg-700 hover:bg-darkbg-600 border border-gray-600 text-gray-300 px-3 py-2.5 rounded-xl text-xs font-semibold">
+                            <i class="fa-solid fa-pause"></i>
+                        </button>
+                        <button onclick="stopSpeech()" class="bg-darkbg-700 hover:bg-darkbg-600 border border-gray-600 text-gray-300 px-3 py-2.5 rounded-xl text-xs font-semibold">
+                            <i class="fa-solid fa-stop"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Audio File Signal Processing & DSP Equalizer Engine -->
+        <section class="bg-darkbg-800 rounded-2xl p-5 sm:p-6 gold-border-glow">
+            <div class="flex items-center justify-between border-b border-darkbg-600 pb-3 mb-6">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-gold text-lg"></i>
+                    <h2 class="text-lg font-bold text-gray-100">অডিও ফাইল ডিএসপি ও ইফেক্ট ইঞ্জিন (AudioFX Engine)</h2>
+                </div>
+                <span class="text-xs text-gray-400">Web Audio API Node Pipeline</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <!-- File Input & Canvas Waveform -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">অডিও ফাইল লোড করুন (MP3, WAV, OGG, M4A):</label>
+                        <input type="file" id="fxAudioFileInput" accept="audio/*" onchange="loadAudioFileForFX(event)" class="block w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-gold/20 file:text-gold-bright hover:file:bg-gold/30 cursor-pointer">
+                    </div>
+
+                    <!-- Visualizer canvas for loaded audio file -->
+                    <div class="bg-darkbg-900 border border-gold/20 rounded-xl h-24 overflow-hidden relative">
+                        <canvas id="fxCanvas" class="w-full h-full"></canvas>
+                    </div>
+
+                    <audio id="fxAudioPlayer" controls class="w-full h-10 rounded-lg"></audio>
+                </div>
+
+                <!-- Real Web Audio Equalizer Pipeline Controls -->
+                <div class="lg:col-span-6 bg-darkbg-900 border border-gold/15 rounded-xl p-4 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1"><i class="fa-solid fa-gauge-high mr-1"></i> প্লেব্যাক স্পিড</label>
+                            <select id="fxSpeedSelect" onchange="applyAudioSpeed()" class="w-full bg-darkbg-800 border border-darkbg-600 text-xs text-gray-200 rounded-lg p-2.5 focus:outline-none focus:border-gold">
+                                <option value="0.5">0.5x (Slow Motion)</option>
+                                <option value="0.75">0.75x</option>
+                                <option value="1.0" selected>1.0x (Normal)</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2.0">2.0x (Fast)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1"><i class="fa-solid fa-microchip mr-1"></i> ফিল্টার / ফিল্টার প্রিসেট</label>
+                            <select id="fxPresetSelect" onchange="applyAudioFilterPreset()" class="w-full bg-darkbg-800 border border-darkbg-600 text-xs text-gray-200 rounded-lg p-2.5 focus:outline-none focus:border-gold">
+                                <option value="none">Normal (কোন ফিল্টার নেই)</option>
+                                <option value="crisp">Crisp Vocal (উচ্চ স্পষ্টতা)</option>
+                                <option value="bass">Bass Boost (গভীর ব্যাকগ্রাউন্ড)</option>
+                                <option value="telephone">Telephone FX (টেলিফোন ইফেক্ট)</option>
+                                <option value="echo">Echo Hall (ইকো রেজোন্যান্স)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Fine-tune Sliders -->
+                    <div class="space-y-2 pt-2 border-t border-darkbg-700">
+                        <div class="flex justify-between text-xs text-gray-400">
+                            <span>লো-ফ্রিকোয়েন্সি বাস (Bass Gain)</span>
+                            <span id="bassGainVal" class="text-gold">0 dB</span>
+                        </div>
+                        <input type="range" id="bassGainSlider" min="-12" max="12" step="1" value="0" oninput="updateCustomEQ()" class="w-full accent-gold">
+
+                        <div class="flex justify-between text-xs text-gray-400">
+                            <span>হাই-ফ্রিকোয়েন্সি ট্রাবল (Treble Gain)</span>
+                            <span id="trebleGainVal" class="text-gold">0 dB</span>
+                        </div>
+                        <input type="range" id="trebleGainSlider" min="-12" max="12" step="1" value="0" oninput="updateCustomEQ()" class="w-full accent-gold">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-darkbg-800 border-t border-gold/20 py-6 px-4 mt-8 text-center text-xs text-gray-500 space-y-2">
+        <p class="gold-gradient-text font-semibold text-sm">Voice & Recitation Studio Pro</p>
+        <p>© 2026 Voice Studio Pro. সর্বস্বত্ব সংরক্ষিত। Natively Powered by Web Audio API & Web Speech API.</p>
+    </footer>
+
+    <!-- AD MODAL (এ্যাড দেখে ক্রেডিট নিন) -->
+    <div id="adModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-darkbg-800 border border-gold/40 rounded-2xl max-w-lg w-full p-6 text-center shadow-2xl relative">
+            
+            <div class="mb-4">
+                <span class="inline-block p-3 rounded-full bg-gold/10 text-gold-bright mb-2">
+                    <i class="fa-solid fa-rectangle-ad text-3xl"></i>
+                </span>
+                <h3 class="text-xl font-bold text-gray-100">বিজ্ঞাপন দেখে ৫ ক্রেডিট অর্জন করুন</h3>
+                <p class="text-xs text-gray-400 mt-1">টাইমার শেষ হওয়া পর্যন্ত অপেক্ষা করুন</p>
+            </div>
+
+            <!-- Ad Integration & Script Placement Slot -->
+            <div class="bg-darkbg-900 border border-gold/20 rounded-xl p-4 my-4 flex flex-col items-center justify-center min-h-[160px] relative overflow-hidden">
+                <div id="adContainerSlot" class="w-full flex flex-col items-center justify-center">
+                    <!-- Default realistic mock ad display -->
+                    <div class="text-xs text-gray-400 space-y-2">
+                        <i class="fa-solid fa-sparkles text-2xl text-gold-bright animate-bounce"></i>
+                        <p class="font-semibold text-gray-200">Adsterra / Google AdSense Live Ad Slot</p>
+                        <p class="text-[11px] text-gray-500">স্পন্সরকৃত বিজ্ঞাপন লোড হচ্ছে...</p>
+                    </div>
+                    <a href="https://google.com" target="_blank" rel="noopener" class="mt-3 text-[11px] bg-gold/10 border border-gold/30 text-gold-bright px-3 py-1 rounded-full hover:bg-gold/20 flex items-center gap-1">
+                        <span>বিজ্ঞাপনদাতা ভিজিট করুন</span>
+                        <i class="fa-solid fa-up-right-from-square"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Script Paste Drawer (For Site Owners) -->
+            <details class="text-left mb-4 bg-darkbg-900/50 p-2 rounded-lg border border-darkbg-700 text-xs">
+                <summary class="cursor-pointer text-gold hover:underline font-medium">বিজ্ঞাপন স্ক্রিপ্ট কোড বসান (Ad Code Embed)</summary>
+                <div class="mt-2 space-y-2">
+                    <textarea id="customAdScriptInput" rows="2" placeholder="এখানে Adsterra বা Google AdSense-এর HTML/JS কোড দিন..." class="w-full bg-darkbg-800 border border-darkbg-600 p-2 text-[11px] text-gray-300 rounded focus:outline-none focus:border-gold"></textarea>
+                    <button onclick="injectCustomAdScript()" class="bg-darkbg-700 hover:bg-darkbg-600 text-xs text-gold px-3 py-1 rounded border border-gold/30">কোড রেন্ডার করুন</button>
+                </div>
+            </details>
+
+            <!-- Timer Display & Progress -->
+            <div class="my-4">
+                <div class="text-2xl font-bold font-mono text-gold-bright mb-1" id="adTimerDisplay">00:07</div>
+                <div class="w-full bg-darkbg-900 rounded-full h-2 overflow-hidden border border-gold/20">
+                    <div id="adProgressBar" class="bg-gold h-full w-0 transition-all duration-1000 ease-linear"></div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3 mt-6">
+                <button id="claimRewardBtn" disabled onclick="claimAdReward()" class="flex-1 bg-gray-700 text-gray-400 font-bold py-2.5 rounded-xl text-sm transition cursor-not-allowed">
+                    অপেক্ষা করুন...
+                </button>
+                <button onclick="closeAdModal()" class="px-4 py-2.5 bg-darkbg-700 hover:bg-darkbg-600 border border-gray-600 text-gray-300 rounded-xl text-sm">
+                    বন্ধ করুন
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==========================================================================
+           1. GLOBAL STATE & CREDIT SYSTEM
+           ========================================================================== */
+        let userCredits = parseInt(localStorage.getItem('studio_credits'));
+        if (isNaN(userCredits)) {
+            userCredits = 10;
+        }
+
+        function updateCreditDisplay() {
+            document.getElementById('creditBalance').innerText = userCredits;
+            localStorage.setItem('studio_credits', userCredits);
+        }
+
+        function deductCredit(amount = 1) {
+            if (userCredits >= amount) {
+                userCredits -= amount;
+                updateCreditDisplay();
+                return true;
+            } else {
+                showToast("পর্যাপ্ত ক্রেডিট নেই! বিনামূল্যে ক্রেডিট পেতে 'এ্যাড দেখে ক্রেডিট নিন' বাটনে ক্লিক করুন।", "error");
+                openAdModal();
+                return false;
+            }
+        }
+
+        function addCredits(amount = 5) {
+            userCredits += amount;
+            updateCreditDisplay();
+            playSynthesizedRewardSound();
+            showToast(`অভিনন্দন! আপনি +${amount} ক্রেডিট অর্জন করেছেন।`, "success");
+        }
+
+        // Synthesize audio chime using AudioContext
+        function playSynthesizedRewardSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3); // A5
+
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            } catch(e) {
+                console.log(e);
+            }
+        }
+
+        /* ==========================================================================
+           2. WATCH AD MODAL & REWARD ENGINE
+           ========================================================================== */
+        let adCountdownInterval = null;
+        let adSecondsLeft = 7;
+        const totalAdTime = 7;
+
+        function openAdModal() {
+            const modal = document.getElementById('adModal');
+            modal.classList.remove('hidden');
+            
+            adSecondsLeft = totalAdTime;
+            const timerDisplay = document.getElementById('adTimerDisplay');
+            const progressBar = document.getElementById('adProgressBar');
+            const claimBtn = document.getElementById('claimRewardBtn');
+            
+            timerDisplay.innerText = `00:0${adSecondsLeft}`;
+            progressBar.style.width = '0%';
+            claimBtn.disabled = true;
+            claimBtn.className = "flex-1 bg-gray-700 text-gray-400 font-bold py-2.5 rounded-xl text-sm transition cursor-not-allowed";
+            claimBtn.innerText = "অপেক্ষা করুন...";
+
+            if (adCountdownInterval) clearInterval(adCountdownInterval);
+            
+            adCountdownInterval = setInterval(() => {
+                adSecondsLeft--;
+                const elapsedPercent = ((totalAdTime - adSecondsLeft) / totalAdTime) * 100;
+                progressBar.style.width = `${elapsedPercent}%`;
+                timerDisplay.innerText = `00:0${adSecondsLeft}`;
+
+                if (adSecondsLeft <= 0) {
+                    clearInterval(adCountdownInterval);
+                    timerDisplay.innerText = "সম্পন্ন!";
+                    claimBtn.disabled = false;
+                    claimBtn.className = "flex-1 gold-btn py-2.5 rounded-xl text-sm transition shadow-md animate-pulse";
+                    claimBtn.innerText = "+৫ ক্রেডিট গ্রহণ করুন";
+                }
+            }, 1000);
+        }
+
+        function closeAdModal() {
+            if (adCountdownInterval) clearInterval(adCountdownInterval);
+            document.getElementById('adModal').classList.add('hidden');
+        }
+
+        function claimAdReward() {
+            addCredits(5);
+            closeAdModal();
+        }
+
+        function injectCustomAdScript() {
+            const code = document.getElementById('customAdScriptInput').value;
+            if(code.trim()) {
+                const slot = document.getElementById('adContainerSlot');
+                slot.innerHTML = code;
+                showToast("বিজ্ঞাপন কোড সফলভাবে যুক্ত হয়েছে!", "success");
+            }
+        }
+
+        /* ==========================================================================
+           3. VOICE RECORDER & REAL-TIME WEBAUDIO OSCILLOSCOPE
+           ========================================================================== */
+        let mediaRecorder;
+        let audioChunks = [];
+        let recAudioBlob = null;
+        let recStartTime;
+        let recTimerInterval;
+        let recAudioCtx;
+        let recAnalyser;
+        let recDataArray;
+        let waveformCanvasCtx;
+        let visualizerAnimFrame;
+
+        const waveformCanvas = document.getElementById('waveformCanvas');
+
+        function initRecorderCanvas() {
+            waveformCanvasCtx = waveformCanvas.getContext('2d');
+            waveformCanvas.width = waveformCanvas.parentElement.clientWidth;
+            waveformCanvas.height = waveformCanvas.parentElement.clientHeight;
+            drawBlankWaveform();
+        }
+
+        function drawBlankWaveform() {
+            if (!waveformCanvasCtx) return;
+            waveformCanvasCtx.fillStyle = '#0F0F12';
+            waveformCanvasCtx.fillRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+            waveformCanvasCtx.strokeStyle = 'rgba(212, 175, 55, 0.25)';
+            waveformCanvasCtx.lineWidth = 1.5;
+            waveformCanvasCtx.beginPath();
+            waveformCanvasCtx.moveTo(0, waveformCanvas.height / 2);
+            waveformCanvasCtx.lineTo(waveformCanvas.width, waveformCanvas.height / 2);
+            waveformCanvasCtx.stroke();
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                recAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                recAnalyser = recAudioCtx.createAnalyser();
+                const source = recAudioCtx.createMediaStreamSource(stream);
+                source.connect(recAnalyser);
+                recAnalyser.fftSize = 2048;
+                const bufferLength = recAnalyser.frequencyBinCount;
+                recDataArray = new Uint8Array(bufferLength);
+
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    recAudioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    const audioUrl = URL.createObjectURL(recAudioBlob);
+                    const player = document.getElementById('recordedAudioPlayer');
+                    player.src = audioUrl;
+                    document.getElementById('recordingPreviewArea').classList.remove('hidden');
+                    
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                recStartTime = Date.now();
+                updateTimer();
+                recTimerInterval = setInterval(updateTimer, 1000);
+
+                // UI update
+                document.getElementById('startRecBtn').disabled = true;
+                document.getElementById('startRecBtn').classList.add('opacity-50');
+                document.getElementById('pauseRecBtn').disabled = false;
+                document.getElementById('pauseRecBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                document.getElementById('stopRecBtn').disabled = false;
+                document.getElementById('stopRecBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+
+                document.getElementById('recordingStatusDot').className = "w-2.5 h-2.5 rounded-full bg-rose-500 recording-indicator";
+                document.getElementById('recordingStatusText').innerText = "রেকর্ডিং চলছে...";
+
+                drawLiveWaveform();
+                showToast("রেকর্ডিং শুরু হয়েছে...", "info");
+
+            } catch (err) {
+                showToast("মাইক্রোফোন অ্যাক্সেস পাওয়া যায়নি! অনুমতি প্রদান করুন।", "error");
+                console.error(err);
+            }
+        }
+
+        function drawLiveWaveform() {
+            visualizerAnimFrame = requestAnimationFrame(drawLiveWaveform);
+            recAnalyser.getByteTimeDomainData(recDataArray);
+
+            waveformCanvasCtx.fillStyle = '#0F0F12';
+            waveformCanvasCtx.fillRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+            waveformCanvasCtx.lineWidth = 2;
+            waveformCanvasCtx.strokeStyle = '#FFD700';
+            waveformCanvasCtx.beginPath();
+
+            const sliceWidth = waveformCanvas.width * 1.0 / recDataArray.length;
+            let x = 0;
+
+            for (let i = 0; i < recDataArray.length; i++) {
+                const v = recDataArray[i] / 128.0;
+                const y = v * (waveformCanvas.height / 2);
+
+                if (i === 0) {
+                    waveformCanvasCtx.moveTo(x, y);
+                } else {
+                    waveformCanvasCtx.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            waveformCanvasCtx.lineTo(waveformCanvas.width, waveformCanvas.height / 2);
+            waveformCanvasCtx.stroke();
+        }
+
+        function pauseRecording() {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.pause();
+                clearInterval(recTimerInterval);
+                document.getElementById('recordingStatusText').innerText = "বিরতি";
+                document.getElementById('pauseRecText').innerText = "পুনরায় শুরু";
+            } else if (mediaRecorder && mediaRecorder.state === "paused") {
+                mediaRecorder.resume();
+                recTimerInterval = setInterval(updateTimer, 1000);
+                document.getElementById('recordingStatusText').innerText = "রেকর্ডিং চলছে...";
+                document.getElementById('pauseRecText').innerText = "বিরতি";
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                clearInterval(recTimerInterval);
+                cancelAnimationFrame(visualizerAnimFrame);
+                drawBlankWaveform();
+
+                document.getElementById('startRecBtn').disabled = false;
+                document.getElementById('startRecBtn').classList.remove('opacity-50');
+                document.getElementById('pauseRecBtn').disabled = true;
+                document.getElementById('pauseRecBtn').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('stopRecBtn').disabled = true;
+                document.getElementById('stopRecBtn').classList.add('opacity-50', 'cursor-not-allowed');
+
+                document.getElementById('recordingStatusDot').className = "w-2.5 h-2.5 rounded-full bg-gray-500";
+                document.getElementById('recordingStatusText').innerText = "রেকর্ডিং সম্পন্ন";
+                showToast("রেকর্ডিং সফলভাবে সম্পন্ন হয়েছে।", "success");
+            }
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - recStartTime) / 1000);
+            const hrs = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+            const secs = String(elapsed % 60).padStart(2, '0');
+            document.getElementById('recordingTimer').innerText = `${hrs}:${mins}:${secs}`;
+        }
+
+        function downloadRecordedAudio() {
+            if (!recAudioBlob) return;
+            if (deductCredit(1)) {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(recAudioBlob);
+                a.download = `Recitation_Studio_${Date.now()}.mp3`;
+                a.click();
+                showToast("ডাউনলোড শুরু হয়েছে! (-১ ক্রেডিট)", "success");
+            }
+        }
+
+        // Live Playback Echo & Reverb Nodes
+        let playAudioCtx, playSourceNode, echoDelayNode, reverbGainNode;
+        function toggleRecordedAudioFX() {
+            const player = document.getElementById('recordedAudioPlayer');
+            const echoOn = document.getElementById('recEchoToggle').checked;
+            const reverbOn = document.getElementById('recReverbToggle').checked;
+
+            if (!playAudioCtx) {
+                playAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                playSourceNode = playAudioCtx.createMediaElementSource(player);
+                
+                echoDelayNode = playAudioCtx.createDelay();
+                echoDelayNode.delayTime.value = 0.25;
+                
+                reverbGainNode = playAudioCtx.createGain();
+                reverbGainNode.gain.value = 0.4;
+            }
+
+            playSourceNode.disconnect();
+            let current = playSourceNode;
+
+            if (echoOn) {
+                current.connect(echoDelayNode);
+                echoDelayNode.connect(playAudioCtx.destination);
+            }
+            if (reverbOn) {
+                current.connect(reverbGainNode);
+                reverbGainNode.connect(playAudioCtx.destination);
+            }
+
+            current.connect(playAudioCtx.destination);
+        }
+
+        /* ==========================================================================
+           4. TELEPROMPTER ENGINE
+           ========================================================================== */
+        let prompterScrolling = false;
+        let prompterInterval = null;
+
+        function togglePrompterScroll() {
+            const screen = document.getElementById('prompterScreen');
+            const icon = document.getElementById('prompterPlayIcon');
+            const text = document.getElementById('prompterPlayText');
+
+            if (!prompterScrolling) {
+                prompterScrolling = true;
+                icon.className = "fa-solid fa-pause";
+                text.innerText = "থামান";
+
+                prompterInterval = setInterval(() => {
+                    const speed = parseInt(document.getElementById('prompterSpeed').value);
+                    screen.scrollTop += speed * 0.6;
+                    
+                    if (screen.scrollTop + screen.clientHeight >= screen.scrollHeight - 2) {
+                        resetPrompterScroll();
+                    }
+                }, 30);
+            } else {
+                prompterScrolling = false;
+                icon.className = "fa-solid fa-play";
+                text.innerText = "স্ক্রোল শুরু";
+                clearInterval(prompterInterval);
+            }
+        }
+
+        function resetPrompterScroll() {
+            prompterScrolling = false;
+            clearInterval(prompterInterval);
+            document.getElementById('prompterScreen').scrollTop = 0;
+            document.getElementById('prompterPlayIcon').className = "fa-solid fa-play";
+            document.getElementById('prompterPlayText').innerText = "স্ক্রোল শুরু";
+        }
+
+        function changePrompterFontSize(val) {
+            document.getElementById('prompterContent').style.fontSize = `${val}px`;
+        }
+
+        function togglePrompterMirror() {
+            const content = document.getElementById('prompterContent');
+            content.classList.toggle('mirror-mode');
+            showToast("মিরর মোড টগল করা হয়েছে", "info");
+        }
+
+        /* ==========================================================================
+           5. TEXT-TO-SPEECH (TTS) SYNTHESIZER (WEB SPEECH API)
+           ========================================================================== */
+        const synth = window.speechSynthesis;
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices();
+            const voiceSelect = document.getElementById('ttsVoiceSelect');
+            voiceSelect.innerHTML = '';
+
+            voices.forEach((voice) => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.setAttribute('data-lang', voice.lang);
+                option.setAttribute('data-name', voice.name);
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+
+        function generateSpeech() {
+            const text = document.getElementById('ttsTextInput').value.trim();
+            if (!text) {
+                showToast("অনুগ্রহ করে টেক্সট ইনপুট দিন!", "error");
+                return;
+            }
+
+            if (deductCredit(1)) {
+                if (synth.speaking) synth.cancel();
+
+                const utterThis = new SpeechSynthesisUtterance(text);
+                const voiceSelect = document.getElementById('ttsVoiceSelect');
+                const selectedOption = voiceSelect.selectedOptions[0]?.getAttribute('data-name');
+                
+                utterThis.voice = voices.find(v => v.name === selectedOption);
+                utterThis.rate = parseFloat(document.getElementById('ttsRate').value);
+                utterThis.pitch = parseFloat(document.getElementById('ttsPitch').value);
+                utterThis.volume = parseFloat(document.getElementById('ttsVolume').value);
+
+                synth.speak(utterThis);
+                showToast("আবৃত্তি প্লে হচ্ছে... (-১ ক্রেডিট)", "info");
+            }
+        }
+
+        function pauseSpeech() {
+            if (synth.speaking) {
+                if (synth.paused) {
+                    synth.resume();
+                    showToast("আবৃত্তি পুনরায় চালু হয়েছে", "info");
+                } else {
+                    synth.pause();
+                    showToast("আবৃত্তি বিরতি দেওয়া হয়েছে", "info");
+                }
+            }
+        }
+
+        function stopSpeech() {
+            if (synth.speaking) {
+                synth.cancel();
+                showToast("আবৃত্তি বন্ধ করা হয়েছে।", "info");
+            }
+        }
+
+        function loadPresetText(type) {
+            const textarea = document.getElementById('ttsTextInput');
+            const prompter = document.getElementById('prompterContent');
+            let text = "";
+
+            switch (type) {
+                case 'quran':
+                    text = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ \nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ \nالرَّحْمَٰنِ الرَّحِيمِ \nمَالِكِ يَوْمِ الدِّينِ \nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ \nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ";
+                    break;
+                case 'poem1':
+                    text = "বল বীর –\nবল উন্নত মম শির!\nশির নেহারি’ আমারি নতশির ঐ শিখর হিমাদ্রির!\nবল বীর –\nবল মহাবিশ্বের মহাকাশ ফাড়ি’\nচন্দ্র সূর্য গ্রহ তারা চারি’\nভূলোক দ্যুলোক গোলک ভেদিয়া\nখোদার আসন ‘আরশ’ ছেদিয়া,\nউঠিয়াছি মহাবিশ্ব-বিধাত্রীর বর-রাজ-রাজেশ্বর!";
+                    break;
+                case 'poem2':
+                    text = "গগন गरजे মেঘ, ঘন ভরসা।\nকূলে একা বসে আছি, নাহি ভরসা।\nরাশি রাশি ভারা ভারা\nধান কাটা হলো সারা,\nভরা নদী ক্ষুরধারা\nখরপরশা।\nকাটিতে কাটিতে ধান এলো বরিষা।";
+                    break;
+                case 'nasheed':
+                    text = "ত্রিভুবনের প্রিয় মুহাম্মদ এলো রে দুনিয়ায়।\nআয় রে দেখে যা আমিনা মার কোলে।\nজগত জুড়ি বাজলো রে আজ শাদী মোবারক,\nপাপ দুনিয়া ছাড়িয়া গেল রে আলোক!";
+                    break;
+                default:
+                    text = "";
+            }
+
+            if (text) {
+                textarea.value = text;
+                prompter.innerHTML = text.replace(/\n/g, '<br>');
+                showToast("প্রিসেট টেক্সট লোড করা হয়েছে।", "success");
+            }
+        }
+
+        /* ==========================================================================
+           6. AUDIO FILE DSP EQUALIZER & SPEED ENGINE (WEB AUDIO API)
+           ========================================================================== */
+        let fxAudioCtx, fxSourceNode, bassFilterNode, trebleFilterNode, fxAnalyserNode;
+        let fxCanvasCtx;
+
+        function initFXCanvas() {
+            const canvas = document.getElementById('fxCanvas');
+            fxCanvasCtx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        function loadAudioFileForFX(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const player = document.getElementById('fxAudioPlayer');
+                player.src = url;
+                
+                setupAudioNodes(player);
+                showToast("অডিও ফাইল সফলভাবে লোড হয়েছে।", "success");
+            }
+        }
+
+        function setupAudioNodes(playerElement) {
+            if (!fxAudioCtx) {
+                fxAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                fxSourceNode = fxAudioCtx.createMediaElementSource(playerElement);
+                
+                bassFilterNode = fxAudioCtx.createBiquadFilter();
+                bassFilterNode.type = 'lowshelf';
+                bassFilterNode.frequency.value = 200;
+
+                trebleFilterNode = fxAudioCtx.createBiquadFilter();
+                trebleFilterNode.type = 'highshelf';
+                trebleFilterNode.frequency.value = 3000;
+
+                fxAnalyserNode = fxAudioCtx.createAnalyser();
+                fxAnalyserNode.fftSize = 512;
+
+                fxSourceNode.connect(bassFilterNode);
+                bassFilterNode.connect(trebleFilterNode);
+                trebleFilterNode.connect(fxAnalyserNode);
+                fxAnalyserNode.connect(fxAudioCtx.destination);
+
+                drawFXWaveform();
+            }
+        }
+
+        function drawFXWaveform() {
+            requestAnimationFrame(drawFXWaveform);
+            if (!fxAnalyserNode || !fxCanvasCtx) return;
+
+            const canvas = document.getElementById('fxCanvas');
+            const data = new Uint8Array(fxAnalyserNode.frequencyBinCount);
+            fxAnalyserNode.getByteFrequencyData(data);
+
+            fxCanvasCtx.fillStyle = '#0F0F12';
+            fxCanvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const barWidth = (canvas.width / data.length) * 2.5;
+            let x = 0;
+
+            for (let i = 0; i < data.length; i++) {
+                const barHeight = (data[i] / 255) * canvas.height;
+                fxCanvasCtx.fillStyle = '#D4AF37';
+                fxCanvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1;
+            }
+        }
+
+        function applyAudioSpeed() {
+            const player = document.getElementById('fxAudioPlayer');
+            const speed = parseFloat(document.getElementById('fxSpeedSelect').value);
+            player.playbackRate = speed;
+            showToast(`গতি ${speed}x করা হয়েছে।`, "info");
+        }
+
+        function applyAudioFilterPreset() {
+            const preset = document.getElementById('fxPresetSelect').value;
+            const bassSlider = document.getElementById('bassGainSlider');
+            const trebleSlider = document.getElementById('trebleGainSlider');
+
+            switch (preset) {
+                case 'crisp':
+                    bassSlider.value = -4;
+                    trebleSlider.value = 8;
+                    break;
+                case 'bass':
+                    bassSlider.value = 10;
+                    trebleSlider.value = -2;
+                    break;
+                case 'telephone':
+                    bassSlider.value = -10;
+                    trebleSlider.value = -6;
+                    break;
+                default:
+                    bassSlider.value = 0;
+                    trebleSlider.value = 0;
+            }
+            updateCustomEQ();
+            showToast(`ফিল্টার প্রিসেট: ${preset.toUpperCase()} প্রয়োগ করা হয়েছে`, "info");
+        }
+
+        function updateCustomEQ() {
+            const bassVal = parseFloat(document.getElementById('bassGainSlider').value);
+            const trebleVal = parseFloat(document.getElementById('trebleGainSlider').value);
+
+            document.getElementById('bassGainVal').innerText = `${bassVal} dB`;
+            document.getElementById('trebleGainVal').innerText = `${trebleVal} dB`;
+
+            if (bassFilterNode) bassFilterNode.gain.value = bassVal;
+            if (trebleFilterNode) trebleFilterNode.gain.value = trebleVal;
+        }
+
+        /* ==========================================================================
+           7. TOAST NOTIFICATION UTILITY
+           ========================================================================== */
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+
+            let icon = "fa-info-circle text-blue-400";
+            let border = "border-blue-500/40";
+            
+            if (type === "success") {
+                icon = "fa-circle-check text-emerald-400";
+                border = "border-emerald-500/40";
+            } else if (type === "error") {
+                icon = "fa-circle-exclamation text-rose-400";
+                border = "border-rose-500/40";
+            }
+
+            toast.className = `bg-darkbg-800 border ${border} text-gray-200 px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 text-xs sm:text-sm pointer-events-auto transition transform translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Window Lifecycle Init
+        window.onload = () => {
+            updateCreditDisplay();
+            initRecorderCanvas();
+            initFXCanvas();
+        };
+
+        window.onresize = () => {
+            initRecorderCanvas();
+            initFXCanvas();
+        };
+    </script>
+</body>
+</html>
