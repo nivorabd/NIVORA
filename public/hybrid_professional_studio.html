@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10172b">
+<title>Hybrid Professional Studio | NIVORA WORLD</title>
+<style>
+:root{--bg:#0b1020;--panel:#141d33;--panel2:#1a2742;--line:#2a3958;--txt:#edf3ff;--muted:#9eacc8;--blue:#5687ff;--cyan:#36d6d0;--red:#ff6b78}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,#17284b 0,#0b1020 42%);color:var(--txt);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#0c1426ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.brand{font-weight:800;letter-spacing:.3px}.brand small{display:block;color:var(--muted);font-weight:500;font-size:11px}
+button,a.btn{border:1px solid var(--line);background:var(--panel2);color:var(--txt);padding:10px 13px;border-radius:11px;font-weight:650;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+button.primary{background:linear-gradient(135deg,#4778f5,#6959dc);border:0}button.good{background:#12695e;border-color:#168b79}button.danger{background:#542b3b;border-color:#854054}button:disabled{opacity:.45;cursor:not-allowed}
+main{max-width:1200px;margin:auto;padding:18px}.hero{padding:20px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(120deg,#17294a,#171b38);margin-bottom:16px}.hero h1{margin:0 0 7px;font-size:clamp(22px,4vw,32px)}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.panel{background:linear-gradient(160deg,var(--panel),#10182b);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}.panel h2{font-size:18px;margin:0 0 13px}.wide{grid-column:1/-1}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:0 0 auto}label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}input[type=file]{width:100%;padding:11px;border:1px dashed #526586;border-radius:10px;background:#0c1528;color:var(--muted)}input[type=number],input[type=text],select{background:#0b1427;border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:9px;max-width:100%}input[type=range]{width:100%;accent-color:var(--blue)}video,audio{width:100%;margin-top:10px;border-radius:12px;background:#05080f;max-height:420px}.stat{padding:10px 12px;background:#0c1528;border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:13px;overflow-wrap:anywhere}.stat b{color:var(--txt)}.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:9px}.status{margin-top:10px;padding:10px;border-radius:9px;background:#0c1528;color:var(--muted);font-size:13px;white-space:pre-wrap}.status.error{color:#ff9aa4;border:1px solid #773d4c}.status.ok{color:#8ce8cf;border:1px solid #216d60}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rangebox{padding:10px;background:#0c1528;border-radius:10px;margin-top:9px}.rangebox input{width:100%}.wallet{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.credit{font-size:22px;font-weight:800;color:#8ee9d6}.footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}header{align-items:flex-start}.two{grid-template-columns:1fr}main{padding:12px}.panel{padding:13px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">NIVORA WORLD <small>HYBRID PROFESSIONAL STUDIO</small></div>
+ <div class="row"><a class="btn" id="backLink" href="index.html">← Dashboard</a><button id="themeBtn" type="button">☾ Theme</button></div>
+</header>
+<main>
+ <section class="hero">
+  <h1>Hybrid Professional Studio</h1>
+  <div class="muted">Professional audio and video workspace · Local browser processing</div>
+  <p class="hint">আপনার ফাইল এই পেজে ব্রাউজারেই প্রসেস হয়। AI voice cloning, cloud rendering বা server-side codec এখানে দাবি করা হচ্ছে না। Export করার আগে Preview করে নিন।</p>
+ </section>
+ <section class="panel wide wallet">
+  <div><div class="muted">NIVORA Rewards Wallet</div><div class="credit"><span id="creditBalance">—</span> Credits</div><div class="hint" id="walletNote">ক্রেডিট ব্যালেন্স সার্ভার থেকে যাচাই করা হবে।</div></div>
+  <button class="primary" id="rewardBtn" type="button">▶ বিজ্ঞাপন দেখে ক্রেডিট নিন</button>
+ </section>
+ <div class="grid" style="margin-top:15px">
+  <section class="panel">
+   <h2>🎧 Audio Workspace</h2>
+   <label for="audioFile">অডিও ফাইল নির্বাচন করুন</label><input id="audioFile" type="file" accept="audio/*">
+   <audio id="audioPlayer" controls></audio>
+   <div class="stat" id="audioInfo">কোনো অডিও ফাইল নির্বাচন করা হয়নি।</div>
+   <div class="rangebox">
+    <div class="two"><div><label for="aStart">Start (seconds)</label><input id="aStart" type="number" min="0" step=".01" value="0"></div><div><label for="aEnd">End (seconds)</label><input id="aEnd" type="number" min="0" step=".01" value="0"></div></div>
+    <div class="hint">Trim অংশ WAV ফাইল হিসেবে Export হবে।</div>
+    <div class="row" style="margin-top:10px"><button class="primary" id="audioTrim">✂ Trim & Export WAV</button><button id="audioReset">Reset Range</button></div>
+   </div>
+   <label for="aVolume">Playback volume: <span id="aVolumeVal">100%</span></label><input id="aVolume" type="range" min="0" max="1" step=".01" value="1">
+   <label for="aSpeed">Playback speed</label><select id="aSpeed"><option value=".5">0.5×</option><option value=".75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+   <div class="row" style="margin-top:12px"><button id="audioDownload" disabled>⬇ Download Original</button><button id="audioClear" class="danger">Clear Audio</button></div>
+   <div id="audioStatus" class="status">অডিও ফাইল নির্বাচন করুন।</div>
+  </section>
+  <section class="panel">
+   <h2>🎬 Video Workspace</h2>
+   <label for="videoFile">ভিডিও ফাইল নির্বাচন করুন</label><input id="videoFile" type="file" accept="video/*">
+   <video id="videoPlayer" controls playsinline></video>
+   <div class="stat" id="videoInfo">কোনো ভিডিও ফাইল নির্বাচন করা হয়নি।</div>
+   <div class="rangebox">
+    <div class="two"><div><label for="vStart">Start (seconds)</label><input id="vStart" type="number" min="0" step=".1" value="0"></div><div><label for="vEnd">End (seconds)</label><input id="vEnd" type="number" min="0" step=".1" value="0"></div></div>
+    <div class="hint">Trim export ভিডিওটি নির্ধারিত অংশ প্লে করে WebM রেকর্ড করবে। ব্রাউজার/ডিভাইস সমর্থন প্রয়োজন; রিয়েল-টাইমের চেয়ে দ্রুত হবে না।</div>
+    <div class="row" style="margin-top:10px"><button class="primary" id="videoExport">✂ Trim & Export WebM</button><button id="videoReset">Reset Range</button></div>
+   </div>
+   <label for="vSpeed">Playback speed</label><select id="vSpeed"><option value=".5">0.5×</option><option value=".75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+   <label for="vFilter">Preview filter</label><select id="vFilter"><option value="none">Original</option><option value="grayscale(1)">Black & White</option><option value="sepia(1)">Sepia</option><option value="contrast(1.3) saturate(1.2)">Contrast + Color</option><option value="brightness(1.15) saturate(1.2)">Bright</option></select>
+   <div class="row" style="margin-top:12px"><button id="videoDownload" disabled>⬇ Download Original</button><button id="videoClear" class="danger">Clear Video</button></div>
+   <div id="videoStatus" class="status">ভিডিও ফাইল নির্বাচন করুন।</div>
+  </section>
+  <section class="panel wide">
+   <h2>🧰 Project & Export Center</h2>
+   <div class="row"><button id="downloadLast" disabled class="good">⬇ Download Latest Export</button><button id="clearProject" class="danger">Reset Entire Studio</button></div>
+   <div class="hint">সতর্কতা: এই সংস্করণে অডিও Trim থেকে WAV এবং ভিডিও Trim থেকে WebM export সমর্থিত। MP3/MP4/H.264, multi-track timeline, professional transitions, AI generation এবং cloud project sync-এর জন্য অতিরিক্ত codec/API/server integration প্রয়োজন।</div>
+   <div id="projectStatus" class="status">Export তৈরি হলে এখানে ফলাফল দেখানো হবে।</div>
+  </section>
+ </div>
+</main>
+<div class="footer">NIVORA WORLD · Hybrid Professional Studio · Browser-based media tools</div>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+let audioBlob=null,audioUrl=null,videoBlob=null,videoUrl=null,lastExportUrl=null,lastExportName='',audioCtx=null;
+const setStatus=(id,msg,type='')=>{const el=$(id);el.textContent=msg;el.className='status '+type};
+const fmt=n=>Number.isFinite(n)?n.toFixed(2)+'s':'—';
+const download=(blob,name)=>{const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)};
+const setLatest=(blob,name)=>{if(lastExportUrl)URL.revokeObjectURL(lastExportUrl);lastExportUrl=URL.createObjectURL(blob);lastExportName=name;$('downloadLast').disabled=false;$('projectStatus').textContent='Export প্রস্তুত: '+name+' ('+(blob.size/1048576).toFixed(2)+' MB)';};
+$('themeBtn').onclick=()=>{document.body.classList.toggle('light');const light=document.body.classList.contains('light');document.body.style.background=light?'#edf2fb':'radial-gradient(circle at top right,#17284b 0,#0b1020 42%)';document.body.style.color=light?'#17223b':'#edf3ff';document.querySelectorAll('.panel').forEach(p=>p.style.background=light?'#fff':'');};
+$('audioFile').addEventListener('change',e=>{
+ const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('audio/')){setStatus('audioStatus','এটি অডিও ফাইল নয়।','error');return}
+ if(audioUrl)URL.revokeObjectURL(audioUrl);audioBlob=f;audioUrl=URL.createObjectURL(f);$('audioPlayer').src=audioUrl;$('audioDownload').disabled=false;
+ $('audioInfo').textContent=f.name+' · '+(f.size/1048576).toFixed(2)+' MB';$('audioPlayer').onloadedmetadata=()=>{$('aStart').value=0;$('aEnd').value=$('audioPlayer').duration.toFixed(2);$('aEnd').max=$('audioPlayer').duration};
+ setStatus('audioStatus','অডিও লোড হয়েছে।','ok');
+});
+$('audioDownload').onclick=()=>{if(audioBlob)download(audioBlob,audioBlob.name)};
+$('audioVolume').oninput=()=>{$('audioPlayer').volume=Number($('aVolume').value);$('aVolumeVal').textContent=Math.round($('audioPlayer').volume*100)+'%'};
+$('aSpeed').onchange=()=>{$('audioPlayer').playbackRate=Number($('aSpeed').value)};
+$('audioReset').onclick=()=>{if($('audioPlayer').duration){$('aStart').value=0;$('aEnd').value=$('audioPlayer').duration.toFixed(2)}};
+$('audioTrim').onclick=async()=>{
+ if(!audioBlob){setStatus('audioStatus','আগে অডিও ফাইল নির্বাচন করুন।','error');return}
+ const start=Number($('aStart').value),end=Number($('aEnd').value);
+ if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<=start){setStatus('audioStatus','Start ও End সময় সঠিকভাবে দিন।','error');return}
+ $('audioTrim').disabled=true;setStatus('audioStatus','অডিও ডিকোড ও WAV তৈরি হচ্ছে…');
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw Error('এই ব্রাউজারে Web Audio API নেই।');
+  audioCtx=audioCtx||new AC();const arr=await audioBlob.arrayBuffer();const decoded=await audioCtx.decodeAudioData(arr.slice(0));
+  if(end>decoded.duration+.01)throw Error('End সময় অডিওর দৈর্ঘ্যের বেশি।');
+  const sr=decoded.sampleRate,from=Math.floor(start*sr),to=Math.min(decoded.length,Math.floor(end*sr)),frames=to-from;if(frames<1)throw Error('Trim অংশটি খুব ছোট।');
+  const channels=decoded.numberOfChannels,buffer=new ArrayBuffer(44+frames*channels*2),view=new DataView(buffer);
+  const write=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i))};
+  write(0,'RIFF');view.setUint32(4,36+frames*channels*2,true);write(8,'WAVE');write(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,sr,true);view.setUint32(28,sr*channels*2,true);view.setUint16(32,channels*2,true);view.setUint16(34,16,true);write(36,'data');view.setUint32(40,frames*channels*2,true);
+  let offset=44;for(let i=0;i<frames;i++)for(let c=0;c<channels;c++){let s=decoded.getChannelData(c)[from+i];s=Math.max(-1,Math.min(1,s));view.setInt16(offset,s<0?s*32768:s*32767,true);offset+=2}
+  const out=new Blob([buffer],{type:'audio/wav'});setLatest(out,'nivora-audio-trim.wav');download(out,'nivora-audio-trim.wav');setStatus('audioStatus','সফলভাবে WAV export হয়েছে।','ok');
+ }catch(err){setStatus('audioStatus','Export হয়নি: '+err.message,'error')}finally{$('audioTrim').disabled=false}
+};
+function clearAudio(){if(audioUrl)URL.revokeObjectURL(audioUrl);audioUrl=null;audioBlob=null;$('audioPlayer').removeAttribute('src');$('audioPlayer').load();$('audioFile').value='';$('audioInfo').textContent='কোনো অডিও ফাইল নির্বাচন করা হয়নি।';$('audioDownload').disabled=true;setStatus('audioStatus','অডিও মুছে ফেলা হয়েছে।')}
+$('audioClear').onclick=clearAudio;
+$('videoFile').addEventListener('change',e=>{
+ const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('video/')){setStatus('videoStatus','এটি ভিডিও ফাইল নয়।','error');return}
+ if(videoUrl)URL.revokeObjectURL(videoUrl);videoBlob=f;videoUrl=URL.createObjectURL(f);$('videoPlayer').src=videoUrl;$('videoDownload').disabled=false;
+ $('videoInfo').textContent=f.name+' · '+(f.size/1048576).toFixed(2)+' MB';$('videoPlayer').onloadedmetadata=()=>{$('vStart').value=0;$('vEnd').value=$('videoPlayer').duration.toFixed(2)};
+ setStatus('videoStatus','ভিডিও লোড হয়েছে।','ok');
+});
+$('videoDownload').onclick=()=>{if(videoBlob)download(videoBlob,videoBlob.name)};
+$('vSpeed').onchange=()=>{$('videoPlayer').playbackRate=Number($('vSpeed').value)};
+$('vFilter').onchange=()=>{$('videoPlayer').style.filter=$('vFilter').value};
+$('videoReset').onclick=()=>{if($('videoPlayer').duration){$('vStart').value=0;$('vEnd').value=$('videoPlayer').duration.toFixed(2)}};
+$('videoExport').onclick=async()=>{
+ const v=$('videoPlayer'),start=Number($('vStart').value),end=Number($('vEnd').value);
+ if(!videoBlob||!v.duration){setStatus('videoStatus','আগে ভিডিও ফাইল নির্বাচন করুন।','error');return}
+ if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<=start||end>v.duration+.01){setStatus('videoStatus','ভিডিওর দৈর্ঘ্যের মধ্যে সঠিক Start ও End সময় দিন।','error');return}
+ if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){setStatus('videoStatus','এই ব্রাউজার MediaRecorder/Canvas capture সমর্থন করে না।','error');return}
+ $('videoExport').disabled=true;let recorder,stream,raf,timeout;
+ try{
+  await new Promise((resolve,reject)=>{if(v.readyState>=2)resolve();else{v.addEventListener('loadeddata',resolve,{once:true});v.addEventListener('error',()=>reject(Error('ভিডিও লোড করা যায়নি।')),{once:true})}});
+  const w=Math.max(2,v.videoWidth),h=Math.max(2,v.videoHeight),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');stream=canvas.captureStream(30);
+  let audioTracks=[];if(v.captureStream){const media=v.captureStream();audioTracks=media.getAudioTracks();audioTracks.forEach(t=>stream.addTrack(t))}
+  const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+  if(!mime)throw Error('এই ব্রাউজারে সমর্থিত WebM encoder পাওয়া যায়নি।');
+  const chunks=[];recorder=new MediaRecorder(stream,{mimeType:mime});recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  const done=new Promise((resolve,reject)=>{recorder.onstop=()=>resolve();recorder.onerror=()=>reject(Error('ভিডিও রেকর্ডিং ব্যর্থ হয়েছে।'))});
+  const draw=()=>{if(v.paused&&v.ended)return;ctx.filter=$('vFilter').value;ctx.drawImage(v,0,0,w,h);ctx.filter='none';raf=requestAnimationFrame(draw)};
+  v.pause();v.currentTime=start;await new Promise(resolve=>v.addEventListener('seeked',resolve,{once:true}));
+  recorder.start(250);draw();await v.play();
+  await new Promise((resolve,reject)=>{const check=()=>{if(v.currentTime>=end||v.ended){v.pause();resolve()}else timeout=setTimeout(check,80)};check();v.onerror=()=>reject(Error('ভিডিও playback error'))});
+  cancelAnimationFrame(raf);recorder.stop();await done;stream.getTracks().forEach(t=>t.stop());
+  const out=new Blob(chunks,{type:mime});if(!out.size)throw Error('খালি export তৈরি হয়েছে।');
+  setLatest(out,'nivora-video-trim.webm');download(out,'nivora-video-trim.webm');setStatus('videoStatus','WebM export সম্পন্ন।','ok');
+ }catch(err){if(recorder&&recorder.state!=='inactive')recorder.stop();if(stream)stream.getTracks().forEach(t=>t.stop());if(raf)cancelAnimationFrame(raf);setStatus('videoStatus','Export হয়নি: '+err.message,'error')}
+ finally{$('videoExport').disabled=false;v.pause()}
+};
+function clearVideo(){if(videoUrl)URL.revokeObjectURL(videoUrl);videoUrl=null;videoBlob=null;$('videoPlayer').removeAttribute('src');$('videoPlayer').load();$('videoFile').value='';$('videoInfo').textContent='কোনো ভিডিও ফাইল নির্বাচন করা হয়নি।';$('videoDownload').disabled=true;setStatus('videoStatus','ভিডিও মুছে ফেলা হয়েছে।')}
+$('videoClear').onclick=clearVideo;
+$('downloadLast').onclick=()=>{if(lastExportUrl){const a=document.createElement('a');a.href=lastExportUrl;a.download=lastExportName;a.click()}};
+$('clearProject').onclick=()=>{if(!confirm('সব ফাইল ও বর্তমান export reset করবেন?'))return;clearAudio();clearVideo();if(lastExportUrl)URL.revokeObjectURL(lastExportUrl);lastExportUrl=null;lastExportName='';$('downloadLast').disabled=true;$('projectStatus').textContent='Studio reset করা হয়েছে।'};
+/* Reward credit is intentionally server-verified. Never award credits from a client-side ad click. */
+const REWARD_START_ENDPOINT='/api/rewards/start',WALLET_ENDPOINT='/api/rewards/balance';
+async function loadWallet(){try{const r=await fetch(WALLET_ENDPOINT,{credentials:'include'});if(!r.ok)throw Error('Wallet API unavailable');const d=await r.json();if(typeof d.credits!=='number')throw Error('Invalid wallet response');$('creditBalance').textContent=d.credits;$('walletNote').textContent='সার্ভার-যাচাইকৃত ক্রেডিট ব্যালেন্স';}catch(e){$('creditBalance').textContent='—';$('walletNote').textContent='Reward wallet backend সংযুক্ত নয়। শুধু UI থেকে ক্রেডিট যোগ করা হয় না।'}}
+$('rewardBtn').onclick=async()=>{const b=$('rewardBtn');b.disabled=true;$('walletNote').textContent='Reward session তৈরি হচ্ছে…';try{const r=await fetch(REWARD_START_ENDPOINT,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({placement:'hybrid-studio-reward'})});if(!r.ok)throw Error('Reward server/API configured নয় ('+r.status+')');const d=await r.json();if(d.adUrl){window.open(d.adUrl,'_blank','noopener');$('walletNote').textContent='বিজ্ঞাপন সম্পন্ন হলে সার্ভার callback যাচাই করে ক্রেডিট যোগ করবে।'}else if(d.message){$('walletNote').textContent=d.message}else{$('walletNote').textContent='Reward session শুরু হয়েছে; সার্ভার যাচাই বাকি।'}}catch(e){$('walletNote').textContent='এখন ক্রেডিট দেওয়া যাচ্ছে না: '+e.message+'. Adsterra placement ও secure reward-verification backend যুক্ত করতে হবে।'}finally{b.disabled=false}};
+loadWallet();
+window.addEventListener('beforeunload',()=>{[audioUrl,videoUrl,lastExportUrl].forEach(u=>{if(u)URL.revokeObjectURL(u)})});
+})();
+</script>
+</body>
+</html>
