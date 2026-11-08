@@ -1,890 +1,175 @@
 <!DOCTYPE html>
-<html lang="bn" class="dark">
+<html lang="bn" dir="ltr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#050811">
-<title>NIVORA Digital Mike & Echo Studio</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config={
- darkMode:'class',
- theme:{extend:{colors:{
- midnight:'#0B0F19',panel:'#111827',
- accent:'#06B6D4',neon:'#22D3EE',
- pinkNeon:'#EC4899'
- }}}
-}
-</script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<meta name="theme-color" content="#101a35">
+<title>NIVORA WORLD — One World. Unlimited Tools.</title>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;background:#050811;color:#f1f5f9;
- font-family:Inter,'Noto Sans Bengali',sans-serif;
-}
-input[type=range]{
- width:100%;height:8px;appearance:none;
- background:#1e293b;border-radius:20px;cursor:pointer;
-}
-input[type=range]::-webkit-slider-thumb{
- appearance:none;width:19px;height:19px;
- border-radius:50%;background:#06b6d4;
- box-shadow:0 0 12px #06b6d4;
-}
-input[type=range]::-moz-range-thumb{
- width:19px;height:19px;border:0;
- border-radius:50%;background:#06b6d4;
-}
-.glow-box{box-shadow:0 0 25px #06b6d422}
-.panel{
- background:#111827ed;border:1px solid #253247;
- border-radius:17px;padding:18px;
-}
-.control{
- background:#0b1220;border:1px solid #263449;
- border-radius:12px;padding:13px;
-}
-button,a{touch-action:manipulation}
-button:disabled{opacity:.4;cursor:not-allowed}
-button{transition:.2s}
-canvas{display:block;width:100%;height:100%}
-audio{width:100%;height:42px}
-.toast{
- position:fixed;bottom:20px;left:50%;
- transform:translate(-50%,100px);
- opacity:0;transition:.3s;z-index:100;
- background:#111827;border:1px solid #06b6d4;
- border-radius:12px;padding:13px 18px;
- width:max-content;max-width:90%;
- box-shadow:0 5px 30px #0008;
-}
-.toast.show{transform:translate(-50%,0);opacity:1}
-.status-dot{
- width:9px;height:9px;border-radius:50%;
- display:inline-block;background:#ef4444;
-}
-.value{color:#22d3ee;font-weight:700}
-.action{
- border-radius:11px;padding:12px 14px;
- font-weight:700;display:flex;
- justify-content:center;align-items:center;gap:8px;
-}
-@media(max-width:640px){
- .panel{padding:14px}
- h1{font-size:15px!important}
-}
+:root{color-scheme:dark;--bg:#081225;--panel:#111f38;--panel2:#192b49;--text:#f1f5ff;--muted:#a9b8d0;--line:#2a3d5d;--primary:#3975ff;--purple:#9657ed;--cyan:#0ea5e9;--pink:#ec4899;--green:#16a36a;--gold:#e9a817;--shadow:0 16px 40px #0005}
+[data-theme="light"]{color-scheme:light;--bg:#f3f6fc;--panel:#fff;--panel2:#edf2fb;--text:#17233d;--muted:#61718b;--line:#dce4f0;--primary:#315ee8;--purple:#7848d8;--cyan:#0284c7;--pink:#db2777;--green:#15803d;--gold:#b77908;--shadow:0 12px 30px #18305a12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Bengali",Arial,sans-serif;min-height:100vh}button,input,select{font:inherit}button,a{ -webkit-tap-highlight-color:transparent}a{color:inherit;text-decoration:none}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.top-inner{max-width:1280px;margin:auto;padding:11px 16px;display:flex;align-items:center;gap:12px}.back{width:39px;height:39px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);cursor:pointer;font-size:19px}.brand{display:flex;align-items:center;gap:10px;min-width:180px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#2775ff,#a44be6);display:grid;place-items:center;color:#fff;font-weight:950;font-size:21px;box-shadow:0 6px 18px #3975ff55}.brand-name{font-weight:950;letter-spacing:1px;font-size:15px}.brand-tag{font-size:10px;color:var(--muted)}.top-actions{margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap}.top-actions select,.top-btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 10px;cursor:pointer;font-size:12px;font-weight:750}.container{max-width:1280px;margin:auto;padding:22px 16px 45px}.hero{position:relative;overflow:hidden;border-radius:24px;padding:clamp(23px,4vw,38px);background:linear-gradient(118deg,#10234b,#285fe2 55%,#7943cf);color:#fff;box-shadow:var(--shadow)}.hero:after{content:"✦";position:absolute;right:5%;top:-45px;font-size:190px;color:#ffffff13;pointer-events:none}.hero h1{position:relative;font-size:clamp(25px,4vw,39px);margin:0 0 9px}.hero p{position:relative;color:#e5edff;max-width:700px;line-height:1.7;margin:0;font-size:14px}.hero-pills{position:relative;display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.pill{border:1px solid #ffffff55;background:#ffffff18;border-radius:99px;padding:8px 12px;font-size:11px;font-weight:800}
+.info-strip{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0;align-items:center}.chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--muted);font-size:12px}.wallet{background:linear-gradient(120deg,#087b50,#16a36a);color:white;border:0;font-weight:850}.reward{background:linear-gradient(110deg,#f5c542,#f59e0b);color:#241700;border:0;border-radius:12px;padding:11px 15px;font-weight:900;cursor:pointer}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:28px 0 13px}.section-head h2{font-size:20px;margin:0}.section-head p{margin:5px 0 0;color:var(--muted);font-size:12px}.search{max-width:420px;width:100%;padding:12px 14px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;outline:none}.search:focus{border-color:var(--primary);box-shadow:0 0 0 3px #3975ff22}.tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 13px}.tab{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 13px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:800}.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;min-height:190px;transition:.2s;overflow:hidden}.card:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:var(--shadow)}.card:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--accent,var(--primary))}.ico{width:45px;height:45px;border-radius:14px;background:color-mix(in srgb,var(--accent,var(--primary)) 15%,var(--panel2));display:grid;place-items:center;font-size:23px;margin-bottom:12px}.card h3{font-size:14px;margin:0 0 6px}.card p{font-size:11px;color:var(--muted);line-height:1.55;margin:0 0 14px;flex:1}.open{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:11px;padding:10px 12px;background:linear-gradient(110deg,var(--accent,var(--primary)),var(--accent2,var(--purple)));color:#fff;font-size:12px;font-weight:900}.empty{display:none;text-align:center;padding:25px;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:15px}.ad-slot{background:var(--panel2);border:1px dashed var(--line);border-radius:15px;padding:22px;text-align:center;margin-top:25px;color:var(--muted);font-size:12px}.ad-slot strong{display:block;color:var(--text);margin-bottom:7px}.footer{text-align:center;color:var(--muted);font-size:11px;padding:25px 8px 5px}.notice{margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:11px;line-height:1.6;background:var(--panel)}
+@media(max-width:950px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:680px){.top-inner{flex-wrap:wrap}.brand{min-width:0}.top-actions{width:100%;margin-left:0}.top-actions select{flex:1;min-width:0}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{padding:13px;min-height:190px}.section-head{align-items:stretch;flex-direction:column}.search{max-width:none}.container{padding:15px 11px 35px}}@media(max-width:370px){.grid{grid-template-columns:1fr}.top-actions .top-btn{flex:1}}
 </style>
 </head>
-
-<body class="min-h-screen">
-
-<header class="sticky top-0 z-40 bg-[#0b0f19ee] backdrop-blur-xl border-b border-slate-800 p-3">
- <div class="max-w-7xl mx-auto flex justify-between items-center gap-2">
-  <div class="flex items-center gap-3">
-   <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-700 flex items-center justify-center">
-    <i class="fa-solid fa-microphone-lines text-xl"></i>
-   </div>
-   <div>
-    <h1 class="font-extrabold text-cyan-300">DIGITAL MIKE & STUDIO ECHO</h1>
-    <p class="text-[10px] text-slate-400">NIVORA Professional Voice Studio</p>
-   </div>
-  </div>
-  <div class="text-xs px-3 py-2 rounded-full border border-red-900 bg-red-950 text-red-400" id="micStatus">
-   <span class="status-dot"></span> মাইক বন্ধ
-  </div>
- </div>
-</header>
-
-<main class="max-w-7xl mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
-
-<!-- LEFT SIDE -->
-<section class="lg:col-span-7 flex flex-col gap-5">
-
-<!-- MASTER CONTROL -->
-<div class="panel glow-box">
- <div class="flex justify-between items-center gap-3 flex-wrap border-b border-slate-700 pb-4 mb-4">
-  <h2 class="font-bold text-cyan-400">
-   <i class="fa-solid fa-sliders mr-2"></i>মাস্টার কন্ট্রোল
-  </h2>
-  <button id="btnToggleMic" class="action bg-gradient-to-r from-cyan-600 to-blue-700">
-   <i class="fa-solid fa-power-off"></i> মাইক চালু করুন
-  </button>
- </div>
-
- <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-  <label class="control flex justify-between items-center gap-2 cursor-pointer">
-   <span class="text-sm"> <i class="fa-solid fa-wand-magic-sparkles text-cyan-400 mr-1"></i> Noise Reduction</span>
-   <input type="checkbox" id="chkNoise" checked class="w-5 h-5 accent-cyan-500">
-  </label>
-  <label class="control flex justify-between items-center gap-2 cursor-pointer">
-   <span class="text-sm"><i class="fa-solid fa-headphones text-cyan-400 mr-1"></i> Direct Monitor</span>
-   <input type="checkbox" id="chkMonitor" class="w-5 h-5 accent-cyan-500">
-  </label>
- </div>
-
- <div class="control mt-4">
-  <div class="flex justify-between text-sm mb-3">
-   <span>মাইক ভলিউম / Gain</span>
-   <span class="value" id="valGain">100%</span>
-  </div>
-  <input type="range" id="rngGain" min="0" max="200" value="100">
- </div>
-
- <p class="text-xs text-slate-500 mt-3">
-  Noise Reduction ব্রাউজারের সমর্থিত Hardware/Software Noise Suppression ব্যবহার করে।
- </p>
-</div>
-
-<!-- ECHO -->
-<div class="panel glow-box">
- <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-5">
-  <i class="fa-solid fa-wave-square mr-2"></i>ডিজিটাল ইকো ও রিভার্ব সিস্টেম
- </h2>
-
- <div class="space-y-5">
-  <div>
-   <div class="flex justify-between text-sm mb-3">
-    <span>Echo Feedback / Repeat</span>
-    <span class="value" id="valFeedback">40%</span>
-   </div>
-   <input type="range" id="rngFeedback" min="0" max="85" value="40">
-  </div>
-
-  <div>
-   <div class="flex justify-between text-sm mb-3">
-    <span>Echo Delay Time</span>
-    <span class="value" id="valDelay">250 ms</span>
-   </div>
-   <input type="range" id="rngDelay" min="50" max="1000" step="10" value="250">
-  </div>
-
-  <div>
-   <div class="flex justify-between text-sm mb-3">
-    <span>Echo Wet Mix</span>
-    <span class="value" id="valMix">35%</span>
-   </div>
-   <input type="range" id="rngMix" min="0" max="100" value="35">
-  </div>
-
-  <div>
-   <div class="flex justify-between text-sm mb-3">
-    <span>Reverb / Room Effect</span>
-    <span class="value" id="valReverb">15%</span>
-   </div>
-   <input type="range" id="rngReverb" min="0" max="70" value="15">
-  </div>
- </div>
-</div>
-
-<!-- EQ -->
-<div class="panel glow-box">
- <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-5">
-  <i class="fa-solid fa-sliders mr-2"></i>মাইক টোন ও Equalizer
- </h2>
-
- <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-  <div class="control">
-   <div class="flex justify-between text-sm mb-3">
-    <span>Bass / Low</span>
-    <span class="value" id="valBass">0 dB</span>
-   </div>
-   <input type="range" id="rngBass" min="-12" max="12" value="0">
-  </div>
-
-  <div class="control">
-   <div class="flex justify-between text-sm mb-3">
-    <span>Treble / High</span>
-    <span class="value" id="valTreble">+2 dB</span>
-   </div>
-   <input type="range" id="rngTreble" min="-12" max="12" value="2">
-  </div>
- </div>
-</div>
-
-</section>
-
-<!-- RIGHT SIDE -->
-<section class="lg:col-span-5 flex flex-col gap-5">
-
-<!-- VISUALIZER -->
-<div class="panel glow-box">
- <div class="flex justify-between items-center mb-4">
-  <h2 class="font-bold text-cyan-400">
-   <i class="fa-solid fa-chart-simple mr-2"></i>Live Sound Visualizer
-  </h2>
-  <span class="text-xs text-emerald-400">REALTIME</span>
- </div>
- <div class="h-44 bg-black rounded-xl overflow-hidden border border-slate-700">
-  <canvas id="visualizer"></canvas>
- </div>
- <p class="text-xs text-slate-500 mt-3">মাইক্রোফোনের শব্দের মাত্রা এখানে দেখা যাবে।</p>
-</div>
-
-<!-- RECORDER -->
-<div class="panel glow-box">
- <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-4">
-  <i class="fa-solid fa-circle-dot text-pink-500 mr-2"></i>অডিও রেকর্ডার
- </h2>
-
- <div class="grid grid-cols-2 gap-3">
-  <button id="btnStart" disabled class="action bg-pink-600">
-   <i class="fa-solid fa-microphone"></i> রেকর্ড শুরু
-  </button>
-  <button id="btnStop" disabled class="action bg-slate-700">
-   <i class="fa-solid fa-stop"></i> থামুন
-  </button>
- </div>
-
- <div class="control flex justify-between items-center mt-4">
-  <span class="text-sm text-slate-400">
-   <span id="recDot" class="status-dot"></span> রেকর্ড সময়
-  </span>
-  <span id="timer" class="value font-mono">00:00</span>
- </div>
-
- <div class="mt-5">
-  <label class="text-xs text-slate-400 block mb-2">রেকর্ড করা অডিও শুনুন</label>
-  <audio id="player" controls></audio>
- </div>
-
- <div class="grid grid-cols-2 gap-3 mt-4">
-  <a id="download" href="#" download="nivora-recording.webm"
-     class="action bg-cyan-700 opacity-40 pointer-events-none">
-   <i class="fa-solid fa-download"></i> Download
-  </a>
-  <button id="btnCloud" class="action bg-slate-700">
-   <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Cloud Save
-  </button>
- </div>
-
- <p class="text-xs text-slate-500 mt-3">
-  রেকর্ডিং বন্ধ করার পর অডিও শুনতে ও ডাউনলোড করতে পারবেন।
- </p>
-</div>
-
-<!-- API STATUS -->
-<div class="panel text-sm">
- <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-3">
-  <i class="fa-solid fa-plug mr-2"></i>সার্ভিস স্ট্যাটাস
- </h2>
- <div class="flex justify-between py-2">
-  <span>Web Audio Engine</span>
-  <span class="text-emerald-400" id="audioStatus">প্রস্তুত</span>
- </div>
- <div class="flex justify-between py-2">
-  <span>Microphone</span>
-  <span id="micInfo" class="text-slate-400">বন্ধ</span>
- </div>
- <div class="flex justify-between py-2">
-  <span>Firebase Cloud</span>
-  <span id="firebaseStatus" class="text-yellow-400">পরীক্ষাধীন</span>
- </div>
- <div class="flex justify-between py-2">
-  <span>Recording</span>
-  <span id="recordStatus" class="text-slate-400">বন্ধ</span>
- </div>
-</div>
-
-</section>
+<body>
+<header class="topbar"><div class="top-inner">
+<button class="back" type="button" onclick="goBack()" aria-label="Back">←</button>
+<a class="brand" href="./index.html"><span class="logo">N</span><span><span class="brand-name">NIVORA WORLD</span><span class="brand-tag" style="display:block">One World. Unlimited Tools.</span></span></a>
+<div class="top-actions">
+<select id="languageSelect" aria-label="Language"><option value="bn">বাংলা</option><option value="en">English</option><option value="hi">हिन्दी</option><option value="ur">اردو</option><option value="ar">العربية</option></select>
+<select id="currencySelect" aria-label="Currency"><option value="BDT">BDT ৳</option><option value="INR">INR ₹</option><option value="PKR">PKR ₨</option><option value="NPR">NPR रु</option><option value="LKR">LKR Rs</option><option value="USD">USD $</option><option value="EUR">EUR €</option><option value="GBP">GBP £</option></select>
+<button class="top-btn" id="themeBtn" type="button">☀ থিম</button>
+<button class="top-btn" id="loginBtn" type="button">লগইন</button><button class="top-btn" id="registerBtn" type="button">রেজিস্টার</button><button class="top-btn" id="logoutBtn" type="button" hidden>লগআউট</button>
+</div></div></header>
+<main class="container">
+<section class="hero"><h1 data-i18n="welcome">NIVORA WORLD-এ স্বাগতম</h1><p data-i18n="intro">এক প্ল্যাটফর্মে প্রয়োজনীয় ডিজিটাল টুল, ক্রিয়েটিভ স্টুডিও, ভিডিও ও দৈনন্দিন সেবা।</p><div class="hero-pills"><span class="pill">✦ All-in-One Platform</span><span class="pill">🎬 Video & Creator Hub</span><span class="pill">🌍 International Access</span></div></section>
+<div class="info-strip"><div class="chip" id="dateTime">📅 সময় লোড হচ্ছে...</div><div class="chip" id="authStatus">👤 Guest Mode</div><div class="chip wallet" id="userWallet">💎 Credit: লগইন প্রয়োজন</div><div class="chip" id="currencyDisplay">💱 BDT ৳</div><button class="reward" id="earnBtn" type="button">💰 আয় করার সুযোগ দেখুন</button></div>
+<div class="section-head"><div><h2 data-i18n="toolsTitle">আপনার ডিজিটাল স্টুডিও</h2><p data-i18n="toolsSub">যে সেবাটি ব্যবহার করতে চান সেটি নির্বাচন করুন।</p></div><input class="search" id="toolSearch" type="search" placeholder="টুলের নাম লিখে খুঁজুন…" aria-label="Search tools"></div>
+<nav class="tabs" id="categoryTabs" aria-label="Tool categories"><button class="tab active" data-cat="all">সব টুল</button><button class="tab" data-cat="ai">AI Studios</button><button class="tab" data-cat="audio">Audio & Voice</button><button class="tab" data-cat="video">Video & Design</button><button class="tab" data-cat="business">Business</button><button class="tab" data-cat="utility">Daily Tools</button><button class="tab" data-cat="islamic">Islamic</button><button class="tab" data-cat="earning">Earning</button></nav>
+<section class="grid" id="toolGrid" aria-live="polite"></section><div class="empty" id="emptyState">কোনো টুল পাওয়া যায়নি।</div>
+<div class="ad-slot"><strong>Sponsored Advertisement</strong><span>Ad network placement area — এখানে অনুমোদিত Adsterra/অন্যান্য বিজ্ঞাপনের আসল কোড বসান।</span></div>
+<div class="notice">নিরাপত্তা নোট: Firebase Auth চালু করতে নিচের firebaseConfig-এ নিজের প্রকৃত Project configuration বসাতে হবে। ভিডিও আপলোডের জন্য Video Studio-তে Firebase Storage এবং উপযুক্ত Security Rules প্রয়োজন। কোনো বিজ্ঞাপন দেখা বা ক্লিকের বিনিময়ে স্বয়ংক্রিয় আয়/ক্রেডিট নিশ্চিত করা হচ্ছে না। মুদ্রা নির্বাচন শুধু প্রদর্শনের পছন্দ; এটি বিনিময় হার দিয়ে অর্থ রূপান্তর করে না।</div>
+<footer class="footer">© <span id="year"></span> NIVORA WORLD • All Rights Reserved.</footer>
 </main>
-
-<footer class="text-center text-xs text-slate-500 border-t border-slate-800 p-5">
- NIVORA DIGITAL MIKE & ECHO STUDIO © 2026
- <p class="mt-1">Powered by Web Audio API</p>
-</footer>
-
-<div id="toast" class="toast">
- <i class="fa-solid fa-circle-info text-cyan-400 mr-2"></i>
- <span id="toastText"></span>
-</div>
-
-<script type="module">
-import {initializeApp}
- from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-
-import {getAuth,signInAnonymously}
- from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-
-import {getStorage,ref,uploadBytes,getDownloadURL}
- from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
-
-/* FIREBASE CONFIG */
-const firebaseConfig={
- apiKey:"AIzaSyBiu3pj9P3MpY6d0juL1-pfCarkrI2eZ54",
- authDomain:"taskearn-bd-fa040.firebaseapp.com",
- projectId:"taskearn-bd-fa040",
- storageBucket:"taskearn-bd-fa040.firebasestorage.app",
- messagingSenderId:"177026495081",
- appId:"1:177026495081:web:48bfaaf8e2e7688e3e68f8",
- measurementId:"G-RDSLSLBP0Q"
+<script>
+"use strict";
+// ১) Firebase Console > Project settings > Your apps থেকে নিজের config বসান।
+const firebaseConfig = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
-
-let firebaseApp,auth,storage;
-
-try{
- firebaseApp=initializeApp(firebaseConfig);
- auth=getAuth(firebaseApp);
- storage=getStorage(firebaseApp);
- document.getElementById('firebaseStatus').textContent='কনফিগার করা';
- document.getElementById('firebaseStatus').className='text-emerald-400';
-}catch(e){
- console.error(e);
- document.getElementById('firebaseStatus').textContent='সংযুক্ত নয়';
+let auth = null, db = null, currentUser = null, unsubscribeUser = null;
+const firebaseConfigured = Object.values(firebaseConfig).every(v => v && !String(v).includes("YOUR_"));
+function initFirebase(){
+  if(!firebaseConfigured){setAuthStatus("Firebase সেটআপ বাকি");return;}
+  if(!window.firebase){setAuthStatus("Firebase SDK লোড হয়নি");return;}
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    auth=firebase.auth(); db=firebase.firestore();
+    auth.onAuthStateChanged(user=>{
+      currentUser=user||null;
+      document.getElementById("loginBtn").hidden=!!user;
+      document.getElementById("registerBtn").hidden=!!user;
+      document.getElementById("logoutBtn").hidden=!user;
+      setAuthStatus(user ? "👤 "+(user.email||"ব্যবহারকারী") : "👤 Guest Mode");
+      if(unsubscribeUser){unsubscribeUser();unsubscribeUser=null;}
+      document.getElementById("userWallet").textContent=user?"💎 Credit: অ্যাকাউন্ট ডেটা লোড হচ্ছে":"💎 Credit: লগইন প্রয়োজন";
+      if(user) watchUserDocument(user.uid);
+    });
+  }catch(err){console.error(err);setAuthStatus("Firebase কনফিগারেশন ভুল");}
 }
-
-/* DOM */
-const $=id=>document.getElementById(id);
-
-const btnToggle=$('btnToggleMic');
-const btnStart=$('btnStart');
-const btnStop=$('btnStop');
-const btnCloud=$('btnCloud');
-const player=$('player');
-const download=$('download');
-const canvas=$('visualizer');
-const ctx=canvas.getContext('2d');
-
-/* STATE */
-let audioCtx=null;
-let micStream=null;
-let source=null;
-let nodes={};
-let recorder=null;
-let chunks=[];
-let recordingBlob=null;
-let recordingUrl=null;
-let isMicActive=false;
-let isRecording=false;
-let timerInterval=null;
-let startTime=0;
-let animationId=null;
-let recordDestination=null;
-let reverbBuffer=null;
-
-/* TOAST */
-let toastTimer;
-function toast(message){
- $('toastText').textContent=message;
- $('toast').classList.add('show');
- clearTimeout(toastTimer);
- toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500);
+function setAuthStatus(s){document.getElementById("authStatus").textContent=s;}
+function watchUserDocument(uid){
+  const ref=db.collection("users").doc(uid);
+  unsubscribeUser=ref.onSnapshot(doc=>{
+    if(doc.exists){const credits=Number(doc.data().credits||0);document.getElementById("userWallet").textContent="💎 Credit: "+credits;}
+    else document.getElementById("userWallet").textContent="💎 Credit: 0";
+  },err=>{console.error(err);document.getElementById("userWallet").textContent="💎 Credit: unavailable";});
 }
-
-/* AUDIO ENGINE */
-function createAudioEngine(){
- if(audioCtx)return;
-
- const AudioClass=window.AudioContext||window.webkitAudioContext;
- if(!AudioClass)throw new Error('এই ব্রাউজারে Web Audio API নেই');
-
- audioCtx=new AudioClass();
-
- nodes.input=audioCtx.createGain();
- nodes.bass=audioCtx.createBiquadFilter();
- nodes.treble=audioCtx.createBiquadFilter();
- nodes.highpass=audioCtx.createBiquadFilter();
- nodes.compressor=audioCtx.createDynamicsCompressor();
-
- nodes.delay=audioCtx.createDelay(1.5);
- nodes.feedback=audioCtx.createGain();
- nodes.wet=audioCtx.createGain();
- nodes.dry=audioCtx.createGain();
-
- nodes.convolver=audioCtx.createConvolver();
- nodes.reverbGain=audioCtx.createGain();
-
- nodes.output=audioCtx.createGain();
- nodes.analyser=audioCtx.createAnalyser();
- nodes.monitor=audioCtx.createGain();
-
- nodes.bass.type='lowshelf';
- nodes.bass.frequency.value=250;
-
- nodes.treble.type='highshelf';
- nodes.treble.frequency.value=4000;
-
- nodes.highpass.type='highpass';
- nodes.highpass.frequency.value=75;
- nodes.highpass.Q.value=.7;
-
- nodes.compressor.threshold.value=-24;
- nodes.compressor.knee.value=24;
- nodes.compressor.ratio.value=3;
- nodes.compressor.attack.value=.005;
- nodes.compressor.release.value=.18;
-
- nodes.analyser.fftSize=256;
- nodes.analyser.smoothingTimeConstant=.82;
-
- /* Main audio route */
- nodes.input.connect(nodes.highpass);
- nodes.highpass.connect(nodes.compressor);
- nodes.compressor.connect(nodes.bass);
- nodes.bass.connect(nodes.treble);
-
- /* Dry voice */
- nodes.treble.connect(nodes.dry);
- nodes.dry.connect(nodes.output);
-
- /* Echo route */
- nodes.treble.connect(nodes.delay);
- nodes.delay.connect(nodes.feedback);
- nodes.feedback.connect(nodes.delay);
- nodes.delay.connect(nodes.wet);
- nodes.wet.connect(nodes.output);
-
- /* Reverb route */
- nodes.treble.connect(nodes.convolver);
- nodes.convolver.connect(nodes.reverbGain);
- nodes.reverbGain.connect(nodes.output);
-
- /* Output route */
- nodes.output.connect(nodes.analyser);
- nodes.output.connect(nodes.monitor);
- nodes.monitor.connect(audioCtx.destination);
-
- /* Recording destination */
- recordDestination=audioCtx.createMediaStreamDestination();
- nodes.output.connect(recordDestination);
-
- createReverbImpulse();
- updateParams();
+async function authAction(mode){
+  if(!auth){alert("প্রথমে Firebase configuration বসিয়ে Firebase Authentication চালু করুন।");return;}
+  const email=prompt("আপনার ইমেইল লিখুন:");if(!email)return;
+  const password=prompt("পাসওয়ার্ড লিখুন (কমপক্ষে ৬ অক্ষর):");if(!password)return;
+  try{
+    if(mode==="register") await auth.createUserWithEmailAndPassword(email.trim(),password);
+    else await auth.signInWithEmailAndPassword(email.trim(),password);
+  }catch(e){alert("অ্যাকাউন্ট প্রক্রিয়া সম্পন্ন হয়নি: "+(e.message||e));}
 }
-
-function createReverbImpulse(){
- const length=Math.floor(audioCtx.sampleRate*2);
- reverbBuffer=audioCtx.createBuffer(2,length,audioCtx.sampleRate);
-
- for(let channel=0;channel<2;channel++){
-  const data=reverbBuffer.getChannelData(channel);
-  for(let i=0;i<length;i++){
-   const fade=1-i/length;
-   data[i]=(Math.random()*2-1)*fade*fade;
-  }
- }
- nodes.convolver.buffer=reverbBuffer;
+document.getElementById("loginBtn").addEventListener("click",()=>authAction("login"));
+document.getElementById("registerBtn").addEventListener("click",()=>authAction("register"));
+document.getElementById("logoutBtn").addEventListener("click",async()=>{if(auth)try{await auth.signOut();}catch(e){alert(e.message);}});
+const TOOLS=[
+{name:"Voice Clone Studio",desc:"Voice cloning workspace — compatible API and consent required.",icon:"🎙️",cat:"audio",href:"tools/voice-clone.html",color:"#db2777"},
+{name:"Voice & Recitation Studio",desc:"Voice, recitation and audio tools.",icon:"🗣️",cat:"audio",href:"tools/voice-recitation.html",color:"#c026d3"},
+{name:"NIVORA Digital Sound Studio",desc:"Text to Voice, microphone recording, echo, volume and audio export.",icon:"🎤",cat:"audio",href:"tools/nivora-digital-sound-studio.html",color:"#e11d48",featured:true},
+{name:"Hybrid Professional Studio",desc:"Professional audio and video workspace.",icon:"🎚️",cat:"video",href:"tools/hybrid-professional-studio.html",color:"#0d9488"},
+{name:"Video Editor Studio",desc:"Video editing and project workspace.",icon:"🎬",cat:"video",href:"tools/video-editor.html",color:"#2563eb"},
+{name:"NIVORA Video World",desc:"Upload, organize and play videos for the community. Storage setup required.",icon:"📺",cat:"video",href:"tools/nivora-video-world.html",color:"#e11d48",featured:true},
+{name:"Audio Editor Studio",desc:"Cut, trim, mix and export audio.",icon:"🎧",cat:"audio",href:"tools/audio-editor.html",color:"#9333ea"},
+{name:"Canva-Style Design Studio",desc:"Graphic design and canvas workspace.",icon:"🎨",cat:"video",href:"tools/design-studio.html",color:"#d97706"},
+{name:"Banner & Poster Maker",desc:"Create banners and social graphics.",icon:"🖼️",cat:"video",href:"tools/banner-poster.html",color:"#0891b2"},
+{name:"Business Card Maker",desc:"Digital and printable business cards.",icon:"💳",cat:"video",href:"tools/business-card.html",color:"#0f766e"},
+{name:"AI Chat Studio",desc:"AI conversation and split editor.",icon:"🤖",cat:"ai",href:"tools/ai-studio.html",color:"#4f46e5"},
+{name:"AI Media Generator",desc:"AI image and media generation.",icon:"✨",cat:"ai",href:"tools/ai-media.html",color:"#7c3aed"},
+{name:"Quran Hub & Tafsir",desc:"Quran, translation and tafsir.",icon:"📖",cat:"islamic",href:"tools/quran-hub.html",color:"#15803d"},
+{name:"Business Management",desc:"Sales, purchases and reports.",icon:"🏪",cat:"business",href:"tools/business-management.html",color:"#0284c7"},
+{name:"Tally Khata & Ledger",desc:"Customer balances and dues.",icon:"📒",cat:"business",href:"tools/tally-khata.html",color:"#0d9488"},
+{name:"Stock & Inventory",desc:"Products, inventory and stock alerts.",icon:"📦",cat:"business",href:"tools/stock-management.html",color:"#ca8a04"},
+{name:"Excel Grid Studio",desc:"Spreadsheet and calculations.",icon:"📊",cat:"business",href:"tools/excel-grid.html",color:"#16a34a"},
+{name:"Calculator & Converter",desc:"Daily calculator, VAT and profit.",icon:"🧮",cat:"utility",href:"tools/calculator.html",color:"#475569"},
+{name:"NIVORA Earn Money",desc:"Explore legitimate earning tasks, creator opportunities and your earnings dashboard.",icon:"💰",cat:"earning",href:"tools/nivora-earn-money.html",color:"#d97706",featured:true}
+];
+let activeCategory="all";
+function renderTools(){
+ const lang=localStorage.getItem("nivora_lang")||"bn", ui=uiTranslations[lang]||uiTranslations.en;
+ const q=document.getElementById("toolSearch").value.trim().toLocaleLowerCase();
+ const filtered=TOOLS.filter(t=>(activeCategory==="all"||t.cat===activeCategory)&&(`${t.name} ${t.desc}`).toLocaleLowerCase().includes(q));
+ document.getElementById("toolGrid").innerHTML=filtered.map(t=>`<article class="card" style="--accent:${t.color};--accent2:${t.featured?"#f59e0b":"#7547e8"}"><div class="ico">${t.icon}</div><h3>${escapeHTML(ui.toolNames[TOOLS.indexOf(t)]||t.name)}${t.featured?' <span aria-label="New" style="font-size:9px;color:#eab308">NEW</span>':""}</h3><p>${escapeHTML(t.desc)}</p><a class="open" href="${t.href}">${ui.open} <span aria-hidden="true">↗</span></a></article>`).join("");
+ document.getElementById("emptyState").style.display=filtered.length?"none":"block";
 }
-
-/* UPDATE CONTROLS */
-function updateParams(){
- if(!audioCtx)return;
- const now=audioCtx.currentTime;
- const set=(node,param,value)=>{
-  node[param].setTargetAtTime(value,now,.035);
- };
-
- set(nodes.input,'gain',+$('rngGain').value/100);
- set(nodes.bass,'gain',+$('rngBass').value);
- set(nodes.treble,'gain',+$('rngTreble').value);
-
- set(nodes.delay,'delayTime',+$('rngDelay').value/1000);
- set(nodes.feedback,'gain',+$('rngFeedback').value/100);
-
- const mix=+$('rngMix').value/100;
- set(nodes.wet,'gain',mix);
- set(nodes.dry,'gain',1-mix*.45);
-
- set(nodes.reverbGain,'gain',+$('rngReverb').value/100);
- set(nodes.monitor,'gain',$('chkMonitor').checked?1:0);
-
- $('valGain').textContent=$('rngGain').value+'%';
- $('valBass').textContent=(+$('rngBass').value>0?'+':'')+$('rngBass').value+' dB';
- $('valTreble').textContent=(+$('rngTreble').value>0?'+':'')+$('rngTreble').value+' dB';
- $('valDelay').textContent=$('rngDelay').value+' ms';
- $('valFeedback').textContent=$('rngFeedback').value+'%';
- $('valMix').textContent=$('rngMix').value+'%';
- $('valReverb').textContent=$('rngReverb').value+'%';
-}
-
-/* MIC START */
-async function startMicrophone(){
- try{
-  if(!navigator.mediaDevices?.getUserMedia){
-   throw new Error('মাইক্রোফোনের জন্য HTTPS অথবা localhost প্রয়োজন');
-  }
-
-  createAudioEngine();
-
-  if(audioCtx.state==='suspended')await audioCtx.resume();
-
-  micStream=await navigator.mediaDevices.getUserMedia({
-   audio:{
-    channelCount:1,
-    echoCancellation:$('chkNoise').checked,
-    noiseSuppression:$('chkNoise').checked,
-    autoGainControl:false
-   }
-  });
-
-  source=audioCtx.createMediaStreamSource(micStream);
-  source.connect(nodes.input);
-
-  isMicActive=true;
-  updateMicUI(true);
-  startVisualizer();
-
-  $('micInfo').textContent='চালু';
-  $('micInfo').className='text-emerald-400';
-
-  toast('মাইক্রোফোন চালু হয়েছে। এখন রেকর্ড করতে পারবেন।');
-
- }catch(error){
-  console.error('Mic error:',error);
-  let message='মাইক্রোফোন চালু করা যায়নি।';
-
-  if(error.name==='NotAllowedError'){
-   message='মাইক্রোফোন অনুমতি দিন।';
-  }else if(error.name==='NotFoundError'){
-   message='কোনো মাইক্রোফোন পাওয়া যায়নি।';
-  }else if(error.name==='NotReadableError'){
-   message='অন্য অ্যাপ মাইক্রোফোন ব্যবহার করছে।';
-  }else if(error.message){
-   message=error.message;
-  }
-
-  toast(message);
-  updateMicUI(false);
- }
-}
-
-/* MIC STOP */
-async function stopMicrophone(){
- if(isRecording)stopRecording();
-
- if(source){
-  try{source.disconnect()}catch(e){}
-  source=null;
- }
-
- if(micStream){
-  micStream.getTracks().forEach(track=>track.stop());
-  micStream=null;
- }
-
- isMicActive=false;
- updateMicUI(false);
-
- $('micInfo').textContent='বন্ধ';
- $('micInfo').className='text-slate-400';
-
- stopVisualizer();
- toast('মাইক্রোফোন বন্ধ হয়েছে।');
-}
-
-function updateMicUI(active){
- if(active){
-  btnToggle.innerHTML='<i class="fa-solid fa-power-off"></i> মাইক বন্ধ করুন';
-  btnToggle.className='action bg-gradient-to-r from-red-600 to-pink-600';
-
-  $('micStatus').innerHTML='<span class="status-dot" style="background:#22c55e"></span> মাইক চালু';
-  $('micStatus').className='text-xs px-3 py-2 rounded-full border border-emerald-900 bg-emerald-950 text-emerald-400';
-
-  btnStart.disabled=false;
- }else{
-  btnToggle.innerHTML='<i class="fa-solid fa-power-off"></i> মাইক চালু করুন';
-  btnToggle.className='action bg-gradient-to-r from-cyan-600 to-blue-700';
-
-  $('micStatus').innerHTML='<span class="status-dot"></span> মাইক বন্ধ';
-  $('micStatus').className='text-xs px-3 py-2 rounded-full border border-red-900 bg-red-950 text-red-400';
-
-  btnStart.disabled=true;
- }
-}
-
-/* RECORDING */
-function getSupportedMimeType(){
- const types=[
-  'audio/webm;codecs=opus',
-  'audio/webm',
-  'audio/ogg;codecs=opus',
-  'audio/mp4'
- ];
-
- if(!window.MediaRecorder)return null;
- return types.find(type=>MediaRecorder.isTypeSupported(type))||'';
-}
-
-function startRecording(){
- if(!isMicActive||!audioCtx)return;
-
- try{
-  if(!window.MediaRecorder){
-   toast('এই ব্রাউজারে অডিও রেকর্ডার সমর্থিত নয়।');
-   return;
-  }
-
-  const mimeType=getSupportedMimeType();
-
-  recorder=new MediaRecorder(
-   recordDestination.stream,
-   mimeType?{mimeType}:undefined
-  );
-
-  chunks=[];
-  recordingBlob=null;
-
-  recorder.ondataavailable=event=>{
-   if(event.data&&event.data.size>0)chunks.push(event.data);
-  };
-
-  recorder.onerror=event=>{
-   console.error('Recorder error:',event.error);
-   toast('রেকর্ডিংয়ে সমস্যা হয়েছে।');
-  };
-
-  recorder.onstop=()=>{
-   if(!chunks.length){
-    toast('কোনো অডিও রেকর্ড হয়নি।');
-    return;
-   }
-
-   recordingBlob=new Blob(chunks,{
-    type:recorder.mimeType||mimeType||'audio/webm'
-   });
-
-   if(recordingUrl)URL.revokeObjectURL(recordingUrl);
-   recordingUrl=URL.createObjectURL(recordingBlob);
-
-   player.src=recordingUrl;
-   player.load();
-
-   const extension=recordingBlob.type.includes('ogg')?'ogg':
-    recordingBlob.type.includes('mp4')?'m4a':'webm';
-
-   download.href=recordingUrl;
-   download.download='NIVORA_Recording_'+Date.now()+'.'+extension;
-   download.classList.remove('opacity-40','pointer-events-none');
-
-   $('recordStatus').textContent='সম্পন্ন';
-   $('recordStatus').className='text-emerald-400';
-
-   toast('রেকর্ডিং সম্পন্ন! এখন শুনুন অথবা ডাউনলোড করুন।');
-  };
-
-  recorder.start(1000);
-  isRecording=true;
-
-  btnStart.disabled=true;
-  btnStop.disabled=false;
-
-  $('recordStatus').textContent='রেকর্ড হচ্ছে';
-  $('recordStatus').className='text-pink-400';
-
-  startTime=Date.now();
-  $('recDot').style.background='#ec4899';
-
-  timerInterval=setInterval(updateTimer,500);
-  toast('রেকর্ডিং শুরু হয়েছে।');
-
- }catch(error){
-  console.error(error);
-  toast('রেকর্ডার চালু করা যায়নি।');
- }
-}
-
-function stopRecording(){
- if(!isRecording||!recorder)return;
-
- isRecording=false;
-
- if(recorder.state!=='inactive'){
-  recorder.stop();
- }
-
- clearInterval(timerInterval);
- btnStart.disabled=!isMicActive;
- btnStop.disabled=true;
-
- $('recDot').style.background='#64748b';
-}
-
-function updateTimer(){
- const seconds=Math.floor((Date.now()-startTime)/1000);
- const minutes=Math.floor(seconds/60);
- const remaining=seconds%60;
-
- $('timer').textContent=
-  String(minutes).padStart(2,'0')+':'+
-  String(remaining).padStart(2,'0');
-}
-
-/* VISUALIZER */
-function resizeCanvas(){
- const rect=canvas.getBoundingClientRect();
- const dpr=Math.min(window.devicePixelRatio||1,2);
-
- canvas.width=Math.max(1,Math.floor(rect.width*dpr));
- canvas.height=Math.max(1,Math.floor(rect.height*dpr));
-
- ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-
-function startVisualizer(){
- if(!nodes.analyser||animationId!==null)return;
-
- const analyser=nodes.analyser;
- const data=new Uint8Array(analyser.frequencyBinCount);
-
- function draw(){
-  animationId=requestAnimationFrame(draw);
-
-  const width=canvas.clientWidth;
-  const height=canvas.clientHeight;
-
-  analyser.getByteFrequencyData(data);
-
-  ctx.clearRect(0,0,width,height);
-  ctx.fillStyle='#030712';
-  ctx.fillRect(0,0,width,height);
-
-  const count=45;
-  const gap=3;
-  const barWidth=(width-gap*(count-1))/count;
-
-  for(let i=0;i<count;i++){
-   const index=Math.floor(i/count*data.length);
-   const value=data[index]/255;
-   const barHeight=Math.max(3,value*height*.9);
-
-   const gradient=ctx.createLinearGradient(0,height,0,0);
-   gradient.addColorStop(0,'#06b6d4');
-   gradient.addColorStop(.55,'#22d3ee');
-   gradient.addColorStop(1,'#ec4899');
-
-   ctx.fillStyle=gradient;
-   ctx.beginPath();
-   ctx.roundRect(
-    i*(barWidth+gap),
-    height-barHeight,
-    barWidth,
-    barHeight,
-    4
-   );
-   ctx.fill();
-  }
- }
-
- draw();
-}
-
-function stopVisualizer(){
- if(animationId!==null){
-  cancelAnimationFrame(animationId);
-  animationId=null;
- }
- ctx.clearRect(0,0,canvas.width,canvas.height);
-}
-
-/* FIREBASE CLOUD UPLOAD */
-async function uploadToCloud(){
- if(!recordingBlob){
-  toast('প্রথমে অডিও রেকর্ড করে থামান।');
-  return;
- }
-
- if(!auth||!storage){
-  toast('Firebase কনফিগারেশন ঠিক নেই।');
-  return;
- }
-
- try{
-  btnCloud.disabled=true;
-  btnCloud.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
-
-  let user=auth.currentUser;
-
-  if(!user){
-   const credential=await signInAnonymously(auth);
-   user=credential.user;
-  }
-
-  const extension=recordingBlob.type.includes('ogg')?'ogg':
-   recordingBlob.type.includes('mp4')?'m4a':'webm';
-
-  const filename=`recording_${Date.now()}.${extension}`;
-  const fileRef=ref(storage,`recordings/${user.uid}/${filename}`);
-
-  await uploadBytes(fileRef,recordingBlob,{
-   contentType:recordingBlob.type||'audio/webm'
-  });
-
-  const url=await getDownloadURL(fileRef);
-
-  $('firebaseStatus').textContent='আপলোড সম্পন্ন';
-  $('firebaseStatus').className='text-emerald-400';
-
-  toast('ক্লাউডে অডিও সেভ হয়েছে।');
-
-  /* URL available for future sharing */
-  console.log('Firebase Audio URL:',url);
-
- }catch(error){
-  console.error('Firebase upload error:',error);
-
-  let message='ক্লাউডে সেভ করা যায়নি।';
-
-  if(error.code==='auth/operation-not-allowed'){
-   message='Firebase Anonymous Login চালু করুন।';
-  }else if(error.code==='storage/unauthorized'){
-   message='Firebase Storage Rules অনুমতি দিচ্ছে না।';
-  }
-
-  toast(message);
-
- }finally{
-  btnCloud.disabled=false;
-  btnCloud.innerHTML='<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Cloud Save';
- }
-}
-
-/* EVENTS */
-btnToggle.addEventListener('click',()=>{
- if(isMicActive)stopMicrophone();
- else startMicrophone();
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+document.getElementById("toolSearch").addEventListener("input",renderTools);
+document.getElementById("categoryTabs").addEventListener("click",e=>{
+ const btn=e.target.closest("button[data-cat]");if(!btn)return;
+ activeCategory=btn.dataset.cat;
+ document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===btn));
+ renderTools();
 });
-
-btnStart.addEventListener('click',startRecording);
-btnStop.addEventListener('click',stopRecording);
-btnCloud.addEventListener('click',uploadToCloud);
-
-[
- 'rngGain','rngBass','rngTreble',
- 'rngFeedback','rngDelay','rngMix','rngReverb'
-].forEach(id=>{
- $(id).addEventListener('input',updateParams);
+document.getElementById("themeBtn").addEventListener("click",()=>{
+ const next=document.documentElement.dataset.theme==="dark"?"light":"dark";
+ document.documentElement.dataset.theme=next;localStorage.setItem("nivora_theme",next);
+ document.getElementById("themeBtn").textContent=next==="dark"?"☀ থিম":"☾ থিম";
 });
-
-$('chkMonitor').addEventListener('change',updateParams);
-
-$('chkNoise').addEventListener('change',async()=>{
- if(isMicActive){
-  await stopMicrophone();
-  await startMicrophone();
- }else{
-  toast('Noise Reduction পরবর্তী মাইক চালুতে কার্যকর হবে।');
- }
+const currencies={BDT:"৳",INR:"₹",PKR:"₨",NPR:"रु",LKR:"Rs",USD:"$",EUR:"€",GBP:"£"};
+const regionCurrency={BD:"BDT",IN:"INR",PK:"PKR",NP:"NPR",LK:"LKR",US:"USD",GB:"GBP",IE:"EUR",DE:"EUR",FR:"EUR",ES:"EUR",IT:"EUR",NL:"EUR",PT:"EUR",BE:"EUR",AT:"EUR",FI:"EUR",GR:"EUR"};
+function detectCurrency(){const region=(navigator.language||"en-BD").split("-")[1]?.toUpperCase();return regionCurrency[region]||"BDT";}
+document.getElementById("currencySelect").addEventListener("change",e=>{
+ localStorage.setItem("nivora_curr",e.target.value);
+ document.getElementById("currencyDisplay").textContent="💱 "+e.target.value+" "+currencies[e.target.value];
 });
-
-window.addEventListener('resize',resizeCanvas);
-
-window.addEventListener('beforeunload',()=>{
- if(micStream){
-  micStream.getTracks().forEach(track=>track.stop());
- }
- if(recordingUrl)URL.revokeObjectURL(recordingUrl);
-});
-
-resizeCanvas();
-
-$('audioStatus').textContent=
- window.AudioContext||window.webkitAudioContext?
- 'প্রস্তুত':'অসমর্থিত';
-
+const translations={
+bn:{welcome:"NIVORA WORLD-এ স্বাগতম",intro:"এক প্ল্যাটফর্মে প্রয়োজনীয় ডিজিটাল টুল, ক্রিয়েটিভ স্টুডিও, ভিডিও ও দৈনন্দিন সেবা।",toolsTitle:"আপনার ডিজিটাল স্টুডিও",toolsSub:"যে সেবাটি ব্যবহার করতে চান সেটি নির্বাচন করুন।",search:"টুলের নাম লিখে খুঁজুন…",open:"টুল খুলুন"},
+en:{welcome:"Welcome to NIVORA WORLD",intro:"Essential digital tools, creative studios, video and everyday services in one platform.",toolsTitle:"Your Digital Studios",toolsSub:"Choose the service you want to use.",search:"Search tools…",open:"Open tool"},
+hi:{welcome:"NIVORA WORLD में आपका स्वागत है",intro:"डिजिटल टूल, क्रिएटिव स्टूडियो, वीडियो और दैनिक सेवाएँ एक मंच पर।",toolsTitle:"आपके डिजिटल स्टूडियो",toolsSub:"उपयोग करने के लिए सेवा चुनें।",search:"टूल खोजें…",open:"टूल खोलें"},
+ur:{welcome:"NIVORA WORLD میں خوش آمدید",intro:"ڈیجیٹل ٹولز، تخلیقی اسٹوڈیوز، ویڈیو اور روزمرہ خدمات ایک پلیٹ فارم پر۔",toolsTitle:"آپ کے ڈیجیٹل اسٹوڈیوز",toolsSub:"استعمال کے لیے سروس منتخب کریں۔",search:"ٹول تلاش کریں…",open:"ٹول کھولیں"},
+ar:{welcome:"مرحباً بك في NIVORA WORLD",intro:"أدوات رقمية واستوديوهات إبداعية وفيديو وخدمات يومية في منصة واحدة.",toolsTitle:"استوديوهاتك الرقمية",toolsSub:"اختر الخدمة التي تريد استخدامها.",search:"ابحث عن أداة…",open:"افتح الأداة"}
+};
+document.getElementById("languageSelect").addEventListener("change",e=>applyLanguage(e.target.value));
+const uiTranslations={
+bn:{all:"সব টুল",ai:"AI Studios",audio:"অডিও ও ভয়েস",video:"ভিডিও ও ডিজাইন",business:"ব্যবসা",utility:"দৈনন্দিন টুল",islamic:"ইসলামিক",earning:"আয়ের সুযোগ",open:"টুল খুলুন",login:"লগইন",register:"রেজিস্টার",logout:"লগআউট",theme:"থিম",search:"টুলের নাম লিখে খুঁজুন…",empty:"কোনো টুল পাওয়া যায়নি।",earn:"💰 আয় করার সুযোগ দেখুন",currency:"মুদ্রা",guest:"👤 অতিথি মোড",creditLogin:"💎 ক্রেডিট: লগইন প্রয়োজন",dateLoading:"📅 সময় লোড হচ্ছে...",toolNames:["ভয়েস ক্লোন স্টুডিও","ভয়েস ও তিলাওয়াত স্টুডিও","NIVORA ডিজিটাল সাউন্ড স্টুডিও","হাইব্রিড প্রফেশনাল স্টুডিও","ভিডিও এডিটর স্টুডিও","NIVORA ভিডিও ওয়ার্ল্ড","অডিও এডিটর স্টুডিও","ডিজাইন স্টুডিও","ব্যানার ও পোস্টার মেকার","বিজনেস কার্ড মেকার","AI চ্যাট স্টুডিও","AI মিডিয়া জেনারেটর","কুরআন হাব ও তাফসির","ব্যবসা ব্যবস্থাপনা","টালি খাতা ও লেজার","স্টক ও ইনভেন্টরি","এক্সেল গ্রিড স্টুডিও","ক্যালকুলেটর ও কনভার্টার","NIVORA আয় কেন্দ্র"]},
+en:{all:"All tools",ai:"AI Studios",audio:"Audio & Voice",video:"Video & Design",business:"Business",utility:"Daily Tools",islamic:"Islamic",earning:"Earning",open:"Open tool",login:"Login",register:"Register",logout:"Log out",theme:"Theme",search:"Search tools…",empty:"No tools found.",earn:"💰 Explore earning options",guest:"👤 Guest mode",creditLogin:"💎 Credits: sign in required",dateLoading:"📅 Loading time...",toolNames:["Voice Clone Studio","Voice & Recitation Studio","NIVORA Digital Sound Studio","Hybrid Professional Studio","Video Editor Studio","NIVORA Video World","Audio Editor Studio","Design Studio","Banner & Poster Maker","Business Card Maker","AI Chat Studio","AI Media Generator","Quran Hub & Tafsir","Business Management","Tally Khata & Ledger","Stock & Inventory","Excel Grid Studio","Calculator & Converter","NIVORA Earn Money"]},
+hi:{all:"सभी टूल",ai:"AI स्टूडियो",audio:"ऑडियो और वॉइस",video:"वीडियो और डिज़ाइन",business:"व्यवसाय",utility:"दैनिक टूल",islamic:"इस्लामिक",earning:"कमाई",open:"टूल खोलें",login:"लॉगिन",register:"रजिस्टर",logout:"लॉगआउट",theme:"थीम",search:"टूल खोजें…",empty:"कोई टूल नहीं मिला।",earn:"💰 कमाई के विकल्प देखें",guest:"👤 अतिथि मोड",creditLogin:"💎 क्रेडिट: लॉगिन आवश्यक",dateLoading:"📅 समय लोड हो रहा है...",toolNames:["वॉइस क्लोन स्टूडियो","वॉइस और तिलावत स्टूडियो","NIVORA डिजिटल साउंड स्टूडियो","हाइब्रिड प्रोफेशनल स्टूडियो","वीडियो एडिटर स्टूडियो","NIVORA वीडियो वर्ल्ड","ऑडियो एडिटर स्टूडियो","डिज़ाइन स्टूडियो","बैनर और पोस्टर मेकर","बिज़नेस कार्ड मेकर","AI चैट स्टूडियो","AI मीडिया जनरेटर","कुरआन हब और तफ़सीर","बिज़नेस मैनेजमेंट","टैली खाता और लेजर","स्टॉक और इन्वेंटरी","एक्सेल ग्रिड स्टूडियो","कैलकुलेटर और कन्वर्टर","NIVORA कमाई केंद्र"]},
+ur:{all:"تمام ٹولز",ai:"AI اسٹوڈیوز",audio:"آڈیو اور آواز",video:"ویڈیو اور ڈیزائن",business:"کاروبار",utility:"روزمرہ ٹولز",islamic:"اسلامی",earning:"آمدنی",open:"ٹول کھولیں",login:"لاگ اِن",register:"رجسٹر",logout:"لاگ آؤٹ",theme:"تھیم",search:"ٹول تلاش کریں…",empty:"کوئی ٹول نہیں ملا۔",earn:"💰 آمدنی کے مواقع دیکھیں",guest:"👤 مہمان موڈ",creditLogin:"💎 کریڈٹ: لاگ اِن ضروری",dateLoading:"📅 وقت لوڈ ہو رہا ہے...",toolNames:["وائس کلون اسٹوڈیو","وائس اور تلاوت اسٹوڈیو","NIVORA ڈیجیٹل ساؤنڈ اسٹوڈیو","ہائبرڈ پروفیشنل اسٹوڈیو","ویڈیو ایڈیٹر اسٹوڈیو","NIVORA ویڈیو ورلڈ","آڈیو ایڈیٹر اسٹوڈیو","ڈیزائن اسٹوڈیو","بینر اور پوسٹر میکر","بزنس کارڈ میکر","AI چیٹ اسٹوڈیو","AI میڈیا جنریٹر","قرآن ہب اور تفسیر","بزنس مینجمنٹ","ٹالی کھاتہ اور لیجر","اسٹاک اور انوینٹری","ایکسل گرڈ اسٹوڈیو","کیلکولیٹر اور کنورٹر","NIVORA ارننگ سینٹر"]},
+ar:{all:"كل الأدوات",ai:"استوديوهات الذكاء الاصطناعي",audio:"الصوت والتسجيل",video:"الفيديو والتصميم",business:"الأعمال",utility:"أدوات يومية",islamic:"إسلامي",earning:"الربح",open:"افتح الأداة",login:"تسجيل الدخول",register:"إنشاء حساب",logout:"تسجيل الخروج",theme:"السمة",search:"ابحث عن أداة…",empty:"لم يتم العثور على أدوات.",earn:"💰 استكشف فرص الربح",guest:"👤 وضع الزائر",creditLogin:"💎 الرصيد: يلزم تسجيل الدخول",dateLoading:"📅 جارٍ تحميل الوقت...",toolNames:["استوديو استنساخ الصوت","استوديو الصوت والتلاوة","NIVORA استوديو الصوت الرقمي","الاستوديو الاحترافي الهجين","استوديو تحرير الفيديو","NIVORA عالم الفيديو","استوديو تحرير الصوت","استوديو التصميم","صانع اللافتات والملصقات","صانع بطاقات الأعمال","استوديو محادثة AI","مولد الوسائط AI","مركز القرآن والتفسير","إدارة الأعمال","دفتر الحسابات","المخزون","استوديو جداول البيانات","الحاسبة والمحوّل","مركز NIVORA للربح"]}
+};
+function applyLanguage(lang){
+ localStorage.setItem("nivora_lang",lang);document.documentElement.lang=lang;document.documentElement.dir=["ur","ar"].includes(lang)?"rtl":"ltr";
+ const d=translations[lang]||translations.en, u=uiTranslations[lang]||uiTranslations.en;
+ document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(d[k])el.textContent=d[k];});
+ document.getElementById("toolSearch").placeholder=u.search;
+ document.querySelectorAll("#categoryTabs button").forEach(btn=>{const key=btn.dataset.cat;btn.textContent=u[key]||key;});
+ document.getElementById("loginBtn").textContent=u.login;document.getElementById("registerBtn").textContent=u.register;document.getElementById("logoutBtn").textContent=u.logout;
+ document.getElementById("themeBtn").textContent=(document.documentElement.dataset.theme==="dark"?"☀ ":"☾ ")+u.theme;
+ document.getElementById("earnBtn").textContent=u.earn;document.getElementById("emptyState").textContent=u.empty;
+ updateClock();renderTools();
+}
+document.getElementById("earnBtn").addEventListener("click",()=>location.href="tools/nivora-earn-money.html");
+function goBack(){try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return;}}catch(e){}location.href="./index.html";}
+function updateClock(){const lang=localStorage.getItem("nivora_lang")||"bn";const now=new Date();document.getElementById("dateTime").textContent="📅 "+new Intl.DateTimeFormat(lang,{dateStyle:"medium",timeStyle:"medium"}).format(now);}
+const savedTheme=localStorage.getItem("nivora_theme")||"dark";document.documentElement.dataset.theme=savedTheme;document.getElementById("themeBtn").textContent=savedTheme==="dark"?"☀ থিম":"☾ থিম";
+document.getElementById("languageSelect").value=localStorage.getItem("nivora_lang")||"bn";applyLanguage(document.getElementById("languageSelect").value);
+document.getElementById("currencySelect").value=localStorage.getItem("nivora_curr")||detectCurrency();document.getElementById("currencySelect").dispatchEvent(new Event("change"));
+document.getElementById("year").textContent=new Date().getFullYear();updateClock();setInterval(updateClock,1000);renderTools();initFirebase();
 </script>
 </body>
 </html>
