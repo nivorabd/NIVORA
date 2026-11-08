@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050811">
+<title>NIVORA Digital Mike & Echo Studio</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={
+ darkMode:'class',
+ theme:{extend:{colors:{
+ midnight:'#0B0F19',panel:'#111827',
+ accent:'#06B6D4',neon:'#22D3EE',
+ pinkNeon:'#EC4899'
+ }}}
+}
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#050811;color:#f1f5f9;
+ font-family:Inter,'Noto Sans Bengali',sans-serif;
+}
+input[type=range]{
+ width:100%;height:8px;appearance:none;
+ background:#1e293b;border-radius:20px;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+ appearance:none;width:19px;height:19px;
+ border-radius:50%;background:#06b6d4;
+ box-shadow:0 0 12px #06b6d4;
+}
+input[type=range]::-moz-range-thumb{
+ width:19px;height:19px;border:0;
+ border-radius:50%;background:#06b6d4;
+}
+.glow-box{box-shadow:0 0 25px #06b6d422}
+.panel{
+ background:#111827ed;border:1px solid #253247;
+ border-radius:17px;padding:18px;
+}
+.control{
+ background:#0b1220;border:1px solid #263449;
+ border-radius:12px;padding:13px;
+}
+button,a{touch-action:manipulation}
+button:disabled{opacity:.4;cursor:not-allowed}
+button{transition:.2s}
+canvas{display:block;width:100%;height:100%}
+audio{width:100%;height:42px}
+.toast{
+ position:fixed;bottom:20px;left:50%;
+ transform:translate(-50%,100px);
+ opacity:0;transition:.3s;z-index:100;
+ background:#111827;border:1px solid #06b6d4;
+ border-radius:12px;padding:13px 18px;
+ width:max-content;max-width:90%;
+ box-shadow:0 5px 30px #0008;
+}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.status-dot{
+ width:9px;height:9px;border-radius:50%;
+ display:inline-block;background:#ef4444;
+}
+.value{color:#22d3ee;font-weight:700}
+.action{
+ border-radius:11px;padding:12px 14px;
+ font-weight:700;display:flex;
+ justify-content:center;align-items:center;gap:8px;
+}
+@media(max-width:640px){
+ .panel{padding:14px}
+ h1{font-size:15px!important}
+}
+</style>
+</head>
+
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-40 bg-[#0b0f19ee] backdrop-blur-xl border-b border-slate-800 p-3">
+ <div class="max-w-7xl mx-auto flex justify-between items-center gap-2">
+  <div class="flex items-center gap-3">
+   <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-700 flex items-center justify-center">
+    <i class="fa-solid fa-microphone-lines text-xl"></i>
+   </div>
+   <div>
+    <h1 class="font-extrabold text-cyan-300">DIGITAL MIKE & STUDIO ECHO</h1>
+    <p class="text-[10px] text-slate-400">NIVORA Professional Voice Studio</p>
+   </div>
+  </div>
+  <div class="text-xs px-3 py-2 rounded-full border border-red-900 bg-red-950 text-red-400" id="micStatus">
+   <span class="status-dot"></span> মাইক বন্ধ
+  </div>
+ </div>
+</header>
+
+<main class="max-w-7xl mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+<!-- LEFT SIDE -->
+<section class="lg:col-span-7 flex flex-col gap-5">
+
+<!-- MASTER CONTROL -->
+<div class="panel glow-box">
+ <div class="flex justify-between items-center gap-3 flex-wrap border-b border-slate-700 pb-4 mb-4">
+  <h2 class="font-bold text-cyan-400">
+   <i class="fa-solid fa-sliders mr-2"></i>মাস্টার কন্ট্রোল
+  </h2>
+  <button id="btnToggleMic" class="action bg-gradient-to-r from-cyan-600 to-blue-700">
+   <i class="fa-solid fa-power-off"></i> মাইক চালু করুন
+  </button>
+ </div>
+
+ <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  <label class="control flex justify-between items-center gap-2 cursor-pointer">
+   <span class="text-sm"> <i class="fa-solid fa-wand-magic-sparkles text-cyan-400 mr-1"></i> Noise Reduction</span>
+   <input type="checkbox" id="chkNoise" checked class="w-5 h-5 accent-cyan-500">
+  </label>
+  <label class="control flex justify-between items-center gap-2 cursor-pointer">
+   <span class="text-sm"><i class="fa-solid fa-headphones text-cyan-400 mr-1"></i> Direct Monitor</span>
+   <input type="checkbox" id="chkMonitor" class="w-5 h-5 accent-cyan-500">
+  </label>
+ </div>
+
+ <div class="control mt-4">
+  <div class="flex justify-between text-sm mb-3">
+   <span>মাইক ভলিউম / Gain</span>
+   <span class="value" id="valGain">100%</span>
+  </div>
+  <input type="range" id="rngGain" min="0" max="200" value="100">
+ </div>
+
+ <p class="text-xs text-slate-500 mt-3">
+  Noise Reduction ব্রাউজারের সমর্থিত Hardware/Software Noise Suppression ব্যবহার করে।
+ </p>
+</div>
+
+<!-- ECHO -->
+<div class="panel glow-box">
+ <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-5">
+  <i class="fa-solid fa-wave-square mr-2"></i>ডিজিটাল ইকো ও রিভার্ব সিস্টেম
+ </h2>
+
+ <div class="space-y-5">
+  <div>
+   <div class="flex justify-between text-sm mb-3">
+    <span>Echo Feedback / Repeat</span>
+    <span class="value" id="valFeedback">40%</span>
+   </div>
+   <input type="range" id="rngFeedback" min="0" max="85" value="40">
+  </div>
+
+  <div>
+   <div class="flex justify-between text-sm mb-3">
+    <span>Echo Delay Time</span>
+    <span class="value" id="valDelay">250 ms</span>
+   </div>
+   <input type="range" id="rngDelay" min="50" max="1000" step="10" value="250">
+  </div>
+
+  <div>
+   <div class="flex justify-between text-sm mb-3">
+    <span>Echo Wet Mix</span>
+    <span class="value" id="valMix">35%</span>
+   </div>
+   <input type="range" id="rngMix" min="0" max="100" value="35">
+  </div>
+
+  <div>
+   <div class="flex justify-between text-sm mb-3">
+    <span>Reverb / Room Effect</span>
+    <span class="value" id="valReverb">15%</span>
+   </div>
+   <input type="range" id="rngReverb" min="0" max="70" value="15">
+  </div>
+ </div>
+</div>
+
+<!-- EQ -->
+<div class="panel glow-box">
+ <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-5">
+  <i class="fa-solid fa-sliders mr-2"></i>মাইক টোন ও Equalizer
+ </h2>
+
+ <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+  <div class="control">
+   <div class="flex justify-between text-sm mb-3">
+    <span>Bass / Low</span>
+    <span class="value" id="valBass">0 dB</span>
+   </div>
+   <input type="range" id="rngBass" min="-12" max="12" value="0">
+  </div>
+
+  <div class="control">
+   <div class="flex justify-between text-sm mb-3">
+    <span>Treble / High</span>
+    <span class="value" id="valTreble">+2 dB</span>
+   </div>
+   <input type="range" id="rngTreble" min="-12" max="12" value="2">
+  </div>
+ </div>
+</div>
+
+</section>
+
+<!-- RIGHT SIDE -->
+<section class="lg:col-span-5 flex flex-col gap-5">
+
+<!-- VISUALIZER -->
+<div class="panel glow-box">
+ <div class="flex justify-between items-center mb-4">
+  <h2 class="font-bold text-cyan-400">
+   <i class="fa-solid fa-chart-simple mr-2"></i>Live Sound Visualizer
+  </h2>
+  <span class="text-xs text-emerald-400">REALTIME</span>
+ </div>
+ <div class="h-44 bg-black rounded-xl overflow-hidden border border-slate-700">
+  <canvas id="visualizer"></canvas>
+ </div>
+ <p class="text-xs text-slate-500 mt-3">মাইক্রোফোনের শব্দের মাত্রা এখানে দেখা যাবে।</p>
+</div>
+
+<!-- RECORDER -->
+<div class="panel glow-box">
+ <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-4">
+  <i class="fa-solid fa-circle-dot text-pink-500 mr-2"></i>অডিও রেকর্ডার
+ </h2>
+
+ <div class="grid grid-cols-2 gap-3">
+  <button id="btnStart" disabled class="action bg-pink-600">
+   <i class="fa-solid fa-microphone"></i> রেকর্ড শুরু
+  </button>
+  <button id="btnStop" disabled class="action bg-slate-700">
+   <i class="fa-solid fa-stop"></i> থামুন
+  </button>
+ </div>
+
+ <div class="control flex justify-between items-center mt-4">
+  <span class="text-sm text-slate-400">
+   <span id="recDot" class="status-dot"></span> রেকর্ড সময়
+  </span>
+  <span id="timer" class="value font-mono">00:00</span>
+ </div>
+
+ <div class="mt-5">
+  <label class="text-xs text-slate-400 block mb-2">রেকর্ড করা অডিও শুনুন</label>
+  <audio id="player" controls></audio>
+ </div>
+
+ <div class="grid grid-cols-2 gap-3 mt-4">
+  <a id="download" href="#" download="nivora-recording.webm"
+     class="action bg-cyan-700 opacity-40 pointer-events-none">
+   <i class="fa-solid fa-download"></i> Download
+  </a>
+  <button id="btnCloud" class="action bg-slate-700">
+   <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Cloud Save
+  </button>
+ </div>
+
+ <p class="text-xs text-slate-500 mt-3">
+  রেকর্ডিং বন্ধ করার পর অডিও শুনতে ও ডাউনলোড করতে পারবেন।
+ </p>
+</div>
+
+<!-- API STATUS -->
+<div class="panel text-sm">
+ <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-3">
+  <i class="fa-solid fa-plug mr-2"></i>সার্ভিস স্ট্যাটাস
+ </h2>
+ <div class="flex justify-between py-2">
+  <span>Web Audio Engine</span>
+  <span class="text-emerald-400" id="audioStatus">প্রস্তুত</span>
+ </div>
+ <div class="flex justify-between py-2">
+  <span>Microphone</span>
+  <span id="micInfo" class="text-slate-400">বন্ধ</span>
+ </div>
+ <div class="flex justify-between py-2">
+  <span>Firebase Cloud</span>
+  <span id="firebaseStatus" class="text-yellow-400">পরীক্ষাধীন</span>
+ </div>
+ <div class="flex justify-between py-2">
+  <span>Recording</span>
+  <span id="recordStatus" class="text-slate-400">বন্ধ</span>
+ </div>
+</div>
+
+</section>
+</main>
+
+<footer class="text-center text-xs text-slate-500 border-t border-slate-800 p-5">
+ NIVORA DIGITAL MIKE & ECHO STUDIO © 2026
+ <p class="mt-1">Powered by Web Audio API</p>
+</footer>
+
+<div id="toast" class="toast">
+ <i class="fa-solid fa-circle-info text-cyan-400 mr-2"></i>
+ <span id="toastText"></span>
+</div>
+
+<script type="module">
+import {initializeApp}
+ from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+
+import {getAuth,signInAnonymously}
+ from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+import {getStorage,ref,uploadBytes,getDownloadURL}
+ from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+
+/* FIREBASE CONFIG */
+const firebaseConfig={
+ apiKey:"AIzaSyBiu3pj9P3MpY6d0juL1-pfCarkrI2eZ54",
+ authDomain:"taskearn-bd-fa040.firebaseapp.com",
+ projectId:"taskearn-bd-fa040",
+ storageBucket:"taskearn-bd-fa040.firebasestorage.app",
+ messagingSenderId:"177026495081",
+ appId:"1:177026495081:web:48bfaaf8e2e7688e3e68f8",
+ measurementId:"G-RDSLSLBP0Q"
+};
+
+let firebaseApp,auth,storage;
+
+try{
+ firebaseApp=initializeApp(firebaseConfig);
+ auth=getAuth(firebaseApp);
+ storage=getStorage(firebaseApp);
+ document.getElementById('firebaseStatus').textContent='কনফিগার করা';
+ document.getElementById('firebaseStatus').className='text-emerald-400';
+}catch(e){
+ console.error(e);
+ document.getElementById('firebaseStatus').textContent='সংযুক্ত নয়';
+}
+
+/* DOM */
+const $=id=>document.getElementById(id);
+
+const btnToggle=$('btnToggleMic');
+const btnStart=$('btnStart');
+const btnStop=$('btnStop');
+const btnCloud=$('btnCloud');
+const player=$('player');
+const download=$('download');
+const canvas=$('visualizer');
+const ctx=canvas.getContext('2d');
+
+/* STATE */
+let audioCtx=null;
+let micStream=null;
+let source=null;
+let nodes={};
+let recorder=null;
+let chunks=[];
+let recordingBlob=null;
+let recordingUrl=null;
+let isMicActive=false;
+let isRecording=false;
+let timerInterval=null;
+let startTime=0;
+let animationId=null;
+let recordDestination=null;
+let reverbBuffer=null;
+
+/* TOAST */
+let toastTimer;
+function toast(message){
+ $('toastText').textContent=message;
+ $('toast').classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500);
+}
+
+/* AUDIO ENGINE */
+function createAudioEngine(){
+ if(audioCtx)return;
+
+ const AudioClass=window.AudioContext||window.webkitAudioContext;
+ if(!AudioClass)throw new Error('এই ব্রাউজারে Web Audio API নেই');
+
+ audioCtx=new AudioClass();
+
+ nodes.input=audioCtx.createGain();
+ nodes.bass=audioCtx.createBiquadFilter();
+ nodes.treble=audioCtx.createBiquadFilter();
+ nodes.highpass=audioCtx.createBiquadFilter();
+ nodes.compressor=audioCtx.createDynamicsCompressor();
+
+ nodes.delay=audioCtx.createDelay(1.5);
+ nodes.feedback=audioCtx.createGain();
+ nodes.wet=audioCtx.createGain();
+ nodes.dry=audioCtx.createGain();
+
+ nodes.convolver=audioCtx.createConvolver();
+ nodes.reverbGain=audioCtx.createGain();
+
+ nodes.output=audioCtx.createGain();
+ nodes.analyser=audioCtx.createAnalyser();
+ nodes.monitor=audioCtx.createGain();
+
+ nodes.bass.type='lowshelf';
+ nodes.bass.frequency.value=250;
+
+ nodes.treble.type='highshelf';
+ nodes.treble.frequency.value=4000;
+
+ nodes.highpass.type='highpass';
+ nodes.highpass.frequency.value=75;
+ nodes.highpass.Q.value=.7;
+
+ nodes.compressor.threshold.value=-24;
+ nodes.compressor.knee.value=24;
+ nodes.compressor.ratio.value=3;
+ nodes.compressor.attack.value=.005;
+ nodes.compressor.release.value=.18;
+
+ nodes.analyser.fftSize=256;
+ nodes.analyser.smoothingTimeConstant=.82;
+
+ /* Main audio route */
+ nodes.input.connect(nodes.highpass);
+ nodes.highpass.connect(nodes.compressor);
+ nodes.compressor.connect(nodes.bass);
+ nodes.bass.connect(nodes.treble);
+
+ /* Dry voice */
+ nodes.treble.connect(nodes.dry);
+ nodes.dry.connect(nodes.output);
+
+ /* Echo route */
+ nodes.treble.connect(nodes.delay);
+ nodes.delay.connect(nodes.feedback);
+ nodes.feedback.connect(nodes.delay);
+ nodes.delay.connect(nodes.wet);
+ nodes.wet.connect(nodes.output);
+
+ /* Reverb route */
+ nodes.treble.connect(nodes.convolver);
+ nodes.convolver.connect(nodes.reverbGain);
+ nodes.reverbGain.connect(nodes.output);
+
+ /* Output route */
+ nodes.output.connect(nodes.analyser);
+ nodes.output.connect(nodes.monitor);
+ nodes.monitor.connect(audioCtx.destination);
+
+ /* Recording destination */
+ recordDestination=audioCtx.createMediaStreamDestination();
+ nodes.output.connect(recordDestination);
+
+ createReverbImpulse();
+ updateParams();
+}
+
+function createReverbImpulse(){
+ const length=Math.floor(audioCtx.sampleRate*2);
+ reverbBuffer=audioCtx.createBuffer(2,length,audioCtx.sampleRate);
+
+ for(let channel=0;channel<2;channel++){
+  const data=reverbBuffer.getChannelData(channel);
+  for(let i=0;i<length;i++){
+   const fade=1-i/length;
+   data[i]=(Math.random()*2-1)*fade*fade;
+  }
+ }
+ nodes.convolver.buffer=reverbBuffer;
+}
+
+/* UPDATE CONTROLS */
+function updateParams(){
+ if(!audioCtx)return;
+ const now=audioCtx.currentTime;
+ const set=(node,param,value)=>{
+  node[param].setTargetAtTime(value,now,.035);
+ };
+
+ set(nodes.input,'gain',+$('rngGain').value/100);
+ set(nodes.bass,'gain',+$('rngBass').value);
+ set(nodes.treble,'gain',+$('rngTreble').value);
+
+ set(nodes.delay,'delayTime',+$('rngDelay').value/1000);
+ set(nodes.feedback,'gain',+$('rngFeedback').value/100);
+
+ const mix=+$('rngMix').value/100;
+ set(nodes.wet,'gain',mix);
+ set(nodes.dry,'gain',1-mix*.45);
+
+ set(nodes.reverbGain,'gain',+$('rngReverb').value/100);
+ set(nodes.monitor,'gain',$('chkMonitor').checked?1:0);
+
+ $('valGain').textContent=$('rngGain').value+'%';
+ $('valBass').textContent=(+$('rngBass').value>0?'+':'')+$('rngBass').value+' dB';
+ $('valTreble').textContent=(+$('rngTreble').value>0?'+':'')+$('rngTreble').value+' dB';
+ $('valDelay').textContent=$('rngDelay').value+' ms';
+ $('valFeedback').textContent=$('rngFeedback').value+'%';
+ $('valMix').textContent=$('rngMix').value+'%';
+ $('valReverb').textContent=$('rngReverb').value+'%';
+}
+
+/* MIC START */
+async function startMicrophone(){
+ try{
+  if(!navigator.mediaDevices?.getUserMedia){
+   throw new Error('মাইক্রোফোনের জন্য HTTPS অথবা localhost প্রয়োজন');
+  }
+
+  createAudioEngine();
+
+  if(audioCtx.state==='suspended')await audioCtx.resume();
+
+  micStream=await navigator.mediaDevices.getUserMedia({
+   audio:{
+    channelCount:1,
+    echoCancellation:$('chkNoise').checked,
+    noiseSuppression:$('chkNoise').checked,
+    autoGainControl:false
+   }
+  });
+
+  source=audioCtx.createMediaStreamSource(micStream);
+  source.connect(nodes.input);
+
+  isMicActive=true;
+  updateMicUI(true);
+  startVisualizer();
+
+  $('micInfo').textContent='চালু';
+  $('micInfo').className='text-emerald-400';
+
+  toast('মাইক্রোফোন চালু হয়েছে। এখন রেকর্ড করতে পারবেন।');
+
+ }catch(error){
+  console.error('Mic error:',error);
+  let message='মাইক্রোফোন চালু করা যায়নি।';
+
+  if(error.name==='NotAllowedError'){
+   message='মাইক্রোফোন অনুমতি দিন।';
+  }else if(error.name==='NotFoundError'){
+   message='কোনো মাইক্রোফোন পাওয়া যায়নি।';
+  }else if(error.name==='NotReadableError'){
+   message='অন্য অ্যাপ মাইক্রোফোন ব্যবহার করছে।';
+  }else if(error.message){
+   message=error.message;
+  }
+
+  toast(message);
+  updateMicUI(false);
+ }
+}
+
+/* MIC STOP */
+async function stopMicrophone(){
+ if(isRecording)stopRecording();
+
+ if(source){
+  try{source.disconnect()}catch(e){}
+  source=null;
+ }
+
+ if(micStream){
+  micStream.getTracks().forEach(track=>track.stop());
+  micStream=null;
+ }
+
+ isMicActive=false;
+ updateMicUI(false);
+
+ $('micInfo').textContent='বন্ধ';
+ $('micInfo').className='text-slate-400';
+
+ stopVisualizer();
+ toast('মাইক্রোফোন বন্ধ হয়েছে।');
+}
+
+function updateMicUI(active){
+ if(active){
+  btnToggle.innerHTML='<i class="fa-solid fa-power-off"></i> মাইক বন্ধ করুন';
+  btnToggle.className='action bg-gradient-to-r from-red-600 to-pink-600';
+
+  $('micStatus').innerHTML='<span class="status-dot" style="background:#22c55e"></span> মাইক চালু';
+  $('micStatus').className='text-xs px-3 py-2 rounded-full border border-emerald-900 bg-emerald-950 text-emerald-400';
+
+  btnStart.disabled=false;
+ }else{
+  btnToggle.innerHTML='<i class="fa-solid fa-power-off"></i> মাইক চালু করুন';
+  btnToggle.className='action bg-gradient-to-r from-cyan-600 to-blue-700';
+
+  $('micStatus').innerHTML='<span class="status-dot"></span> মাইক বন্ধ';
+  $('micStatus').className='text-xs px-3 py-2 rounded-full border border-red-900 bg-red-950 text-red-400';
+
+  btnStart.disabled=true;
+ }
+}
+
+/* RECORDING */
+function getSupportedMimeType(){
+ const types=[
+  'audio/webm;codecs=opus',
+  'audio/webm',
+  'audio/ogg;codecs=opus',
+  'audio/mp4'
+ ];
+
+ if(!window.MediaRecorder)return null;
+ return types.find(type=>MediaRecorder.isTypeSupported(type))||'';
+}
+
+function startRecording(){
+ if(!isMicActive||!audioCtx)return;
+
+ try{
+  if(!window.MediaRecorder){
+   toast('এই ব্রাউজারে অডিও রেকর্ডার সমর্থিত নয়।');
+   return;
+  }
+
+  const mimeType=getSupportedMimeType();
+
+  recorder=new MediaRecorder(
+   recordDestination.stream,
+   mimeType?{mimeType}:undefined
+  );
+
+  chunks=[];
+  recordingBlob=null;
+
+  recorder.ondataavailable=event=>{
+   if(event.data&&event.data.size>0)chunks.push(event.data);
+  };
+
+  recorder.onerror=event=>{
+   console.error('Recorder error:',event.error);
+   toast('রেকর্ডিংয়ে সমস্যা হয়েছে।');
+  };
+
+  recorder.onstop=()=>{
+   if(!chunks.length){
+    toast('কোনো অডিও রেকর্ড হয়নি।');
+    return;
+   }
+
+   recordingBlob=new Blob(chunks,{
+    type:recorder.mimeType||mimeType||'audio/webm'
+   });
+
+   if(recordingUrl)URL.revokeObjectURL(recordingUrl);
+   recordingUrl=URL.createObjectURL(recordingBlob);
+
+   player.src=recordingUrl;
+   player.load();
+
+   const extension=recordingBlob.type.includes('ogg')?'ogg':
+    recordingBlob.type.includes('mp4')?'m4a':'webm';
+
+   download.href=recordingUrl;
+   download.download='NIVORA_Recording_'+Date.now()+'.'+extension;
+   download.classList.remove('opacity-40','pointer-events-none');
+
+   $('recordStatus').textContent='সম্পন্ন';
+   $('recordStatus').className='text-emerald-400';
+
+   toast('রেকর্ডিং সম্পন্ন! এখন শুনুন অথবা ডাউনলোড করুন।');
+  };
+
+  recorder.start(1000);
+  isRecording=true;
+
+  btnStart.disabled=true;
+  btnStop.disabled=false;
+
+  $('recordStatus').textContent='রেকর্ড হচ্ছে';
+  $('recordStatus').className='text-pink-400';
+
+  startTime=Date.now();
+  $('recDot').style.background='#ec4899';
+
+  timerInterval=setInterval(updateTimer,500);
+  toast('রেকর্ডিং শুরু হয়েছে।');
+
+ }catch(error){
+  console.error(error);
+  toast('রেকর্ডার চালু করা যায়নি।');
+ }
+}
+
+function stopRecording(){
+ if(!isRecording||!recorder)return;
+
+ isRecording=false;
+
+ if(recorder.state!=='inactive'){
+  recorder.stop();
+ }
+
+ clearInterval(timerInterval);
+ btnStart.disabled=!isMicActive;
+ btnStop.disabled=true;
+
+ $('recDot').style.background='#64748b';
+}
+
+function updateTimer(){
+ const seconds=Math.floor((Date.now()-startTime)/1000);
+ const minutes=Math.floor(seconds/60);
+ const remaining=seconds%60;
+
+ $('timer').textContent=
+  String(minutes).padStart(2,'0')+':'+
+  String(remaining).padStart(2,'0');
+}
+
+/* VISUALIZER */
+function resizeCanvas(){
+ const rect=canvas.getBoundingClientRect();
+ const dpr=Math.min(window.devicePixelRatio||1,2);
+
+ canvas.width=Math.max(1,Math.floor(rect.width*dpr));
+ canvas.height=Math.max(1,Math.floor(rect.height*dpr));
+
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+function startVisualizer(){
+ if(!nodes.analyser||animationId!==null)return;
+
+ const analyser=nodes.analyser;
+ const data=new Uint8Array(analyser.frequencyBinCount);
+
+ function draw(){
+  animationId=requestAnimationFrame(draw);
+
+  const width=canvas.clientWidth;
+  const height=canvas.clientHeight;
+
+  analyser.getByteFrequencyData(data);
+
+  ctx.clearRect(0,0,width,height);
+  ctx.fillStyle='#030712';
+  ctx.fillRect(0,0,width,height);
+
+  const count=45;
+  const gap=3;
+  const barWidth=(width-gap*(count-1))/count;
+
+  for(let i=0;i<count;i++){
+   const index=Math.floor(i/count*data.length);
+   const value=data[index]/255;
+   const barHeight=Math.max(3,value*height*.9);
+
+   const gradient=ctx.createLinearGradient(0,height,0,0);
+   gradient.addColorStop(0,'#06b6d4');
+   gradient.addColorStop(.55,'#22d3ee');
+   gradient.addColorStop(1,'#ec4899');
+
+   ctx.fillStyle=gradient;
+   ctx.beginPath();
+   ctx.roundRect(
+    i*(barWidth+gap),
+    height-barHeight,
+    barWidth,
+    barHeight,
+    4
+   );
+   ctx.fill();
+  }
+ }
+
+ draw();
+}
+
+function stopVisualizer(){
+ if(animationId!==null){
+  cancelAnimationFrame(animationId);
+  animationId=null;
+ }
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* FIREBASE CLOUD UPLOAD */
+async function uploadToCloud(){
+ if(!recordingBlob){
+  toast('প্রথমে অডিও রেকর্ড করে থামান।');
+  return;
+ }
+
+ if(!auth||!storage){
+  toast('Firebase কনফিগারেশন ঠিক নেই।');
+  return;
+ }
+
+ try{
+  btnCloud.disabled=true;
+  btnCloud.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+  let user=auth.currentUser;
+
+  if(!user){
+   const credential=await signInAnonymously(auth);
+   user=credential.user;
+  }
+
+  const extension=recordingBlob.type.includes('ogg')?'ogg':
+   recordingBlob.type.includes('mp4')?'m4a':'webm';
+
+  const filename=`recording_${Date.now()}.${extension}`;
+  const fileRef=ref(storage,`recordings/${user.uid}/${filename}`);
+
+  await uploadBytes(fileRef,recordingBlob,{
+   contentType:recordingBlob.type||'audio/webm'
+  });
+
+  const url=await getDownloadURL(fileRef);
+
+  $('firebaseStatus').textContent='আপলোড সম্পন্ন';
+  $('firebaseStatus').className='text-emerald-400';
+
+  toast('ক্লাউডে অডিও সেভ হয়েছে।');
+
+  /* URL available for future sharing */
+  console.log('Firebase Audio URL:',url);
+
+ }catch(error){
+  console.error('Firebase upload error:',error);
+
+  let message='ক্লাউডে সেভ করা যায়নি।';
+
+  if(error.code==='auth/operation-not-allowed'){
+   message='Firebase Anonymous Login চালু করুন।';
+  }else if(error.code==='storage/unauthorized'){
+   message='Firebase Storage Rules অনুমতি দিচ্ছে না।';
+  }
+
+  toast(message);
+
+ }finally{
+  btnCloud.disabled=false;
+  btnCloud.innerHTML='<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Cloud Save';
+ }
+}
+
+/* EVENTS */
+btnToggle.addEventListener('click',()=>{
+ if(isMicActive)stopMicrophone();
+ else startMicrophone();
+});
+
+btnStart.addEventListener('click',startRecording);
+btnStop.addEventListener('click',stopRecording);
+btnCloud.addEventListener('click',uploadToCloud);
+
+[
+ 'rngGain','rngBass','rngTreble',
+ 'rngFeedback','rngDelay','rngMix','rngReverb'
+].forEach(id=>{
+ $(id).addEventListener('input',updateParams);
+});
+
+$('chkMonitor').addEventListener('change',updateParams);
+
+$('chkNoise').addEventListener('change',async()=>{
+ if(isMicActive){
+  await stopMicrophone();
+  await startMicrophone();
+ }else{
+  toast('Noise Reduction পরবর্তী মাইক চালুতে কার্যকর হবে।');
+ }
+});
+
+window.addEventListener('resize',resizeCanvas);
+
+window.addEventListener('beforeunload',()=>{
+ if(micStream){
+  micStream.getTracks().forEach(track=>track.stop());
+ }
+ if(recordingUrl)URL.revokeObjectURL(recordingUrl);
+});
+
+resizeCanvas();
+
+$('audioStatus').textContent=
+ window.AudioContext||window.webkitAudioContext?
+ 'প্রস্তুত':'অসমর্থিত';
+
+</script>
+</body>
+</html>
