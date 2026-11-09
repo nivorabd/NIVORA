@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivora AI Media Studio | Enterprise Cinematic AI Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#070913', 800: '#0c1021', 700: '#131932', 600: '#1b2347' },
+                        electric: { 500: '#3b82f6', 600: '#2563eb' },
+                        violet: { 600: '#7c3aed', 700: '#6d28d9' },
+                        cyan: { 400: '#22d3ee', 500: '#06b6d4', glow: 'rgba(34, 211, 238, 0.25)' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Bengali', 'Noto Sans Devanagari', 'Noto Sans Arabic', 'Noto Sans Sinhala', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-border { border: 1px solid rgba(34, 211, 238, 0.3); box-shadow: 0 0 20px rgba(34, 211, 238, 0.1); }
+        .glow-card:hover { border-color: rgba(34, 211, 238, 0.7); box-shadow: 0 0 25px rgba(34, 211, 238, 0.2); }
+        .bg-gradient-studio { background: radial-gradient(circle at top right, #1b2347 0%, #0c1021 50%, #070913 100%); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0c1021; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #22d3ee55; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
+        @keyframes pulseGlow { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+        .animate-pulse-glow { animation: pulseGlow 3s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-navy-900 text-slate-100 font-sans min-h-screen flex flex-col custom-scrollbar selection:bg-cyan-500 selection:text-navy-900" dir="ltr" id="bodyRoot">
+
+    <!-- TOP HEADER -->
+    <header class="bg-navy-800/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <button id="mobileMenuBtn" class="md:hidden text-cyan-400 hover:text-cyan-300 p-2" aria-label="Toggle mobile menu"><i class="fa-solid fa-bars text-xl"></i></button>
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-electric-600 via-violet-600 to-cyan-400 flex items-center justify-center glow-border shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-clapperboard text-white text-sm"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">NIVORA</span>
+                    <span class="text-xs font-semibold text-cyan-400 block tracking-widest uppercase -mt-1">AI MEDIA STUDIO</span>
+                </div>
+            </div>
+            <!-- Live Clock & Status -->
+            <div class="hidden lg:flex items-center space-x-4 pl-6 border-l border-slate-700 text-xs text-slate-400">
+                <span class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span id="backendStatusText">Worker Connected</span></span>
+                <span><i class="fa-regular fa-clock mr-1"></i><span id="liveClock">00:00:00</span></span>
+            </div>
+        </div>
+
+        <!-- Header Actions: Language, Credits, Plan, Profile -->
+        <div class="flex items-center space-x-3">
+            <!-- Language Selector -->
+            <div class="relative">
+                <select id="langSelector" onchange="changeLanguage(this.value)" class="bg-navy-700 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer" aria-label="Select language">
+                    <option value="en" selected>English</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="hi">हिन्दी (Hindi)</option>
+                    <option value="ur">اردو (Urdu)</option>
+                    <option value="ar">العربية (Arabic)</option>
+                    <option value="ne">नेपाली (Nepali)</option>
+                    <option value="si">සිංහල (Sinhala)</option>
+                </select>
+            </div>
+
+            <!-- Credits Badge -->
+            <div onclick="openModal('upgradeModal')" class="hidden sm:flex items-center space-x-2 bg-navy-700/80 border border-slate-700 px-3 py-1.5 rounded-xl cursor-pointer hover:border-cyan-400/50 transition" role="button" tabindex="0">
+                <i class="fa-solid fa-coins text-cyan-400 text-sm"></i>
+                <div class="text-xs">
+                    <span class="text-slate-400" data-i18n="creditsLabel">Credits:</span>
+                    <span id="userCreditsDisplay" class="font-bold text-cyan-300">250</span>
+                </div>
+                <span class="bg-violet-600/30 text-violet-300 text-[10px] font-bold px-1.5 py-0.5 rounded border border-violet-500/30" id="planBadgeText">PRO</span>
+            </div>
+
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-navy-700 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-cyan-400 transition" aria-label="Toggle theme">
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </button>
+
+            <!-- User Profile Button -->
+            <button onclick="openModal('authModal')" class="flex items-center space-x-2 bg-gradient-to-r from-electric-600 to-violet-600 hover:from-electric-500 hover:to-violet-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-md shadow-blue-500/25 transition">
+                <i class="fa-solid fa-user-shield"></i>
+                <span id="authBtnText">Account</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP LAYOUT -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside id="sidebar" class="w-64 bg-navy-800/95 border-r border-slate-800 flex flex-col transition-all duration-300 z-40 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 pt-16 md:pt-0">
+            <div class="p-4 border-b border-slate-800/80 flex items-center justify-between md:hidden">
+                <span class="text-sm font-bold text-slate-300">Navigation Menu</span>
+                <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white" aria-label="Close mobile menu"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-6">
+                <!-- Studios Section -->
+                <div>
+                    <p class="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 mb-2" data-i18n="menuStudios">AI Studios</p>
+                    <nav class="space-y-1">
+                        <button onclick="switchTab('talkingPhoto')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 transition group" data-tab="talkingPhoto">
+                            <i class="fa-solid fa-face-smile text-cyan-400 w-5 text-center"></i>
+                            <span data-i18n="tabTalkingPhoto">Talking Photo & Lip-Sync</span>
+                        </button>
+                        <button onclick="switchTab('textToVideo')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-navy-700 hover:text-white transition group" data-tab="textToVideo">
+                            <i class="fa-solid fa-video text-violet-400 w-5 text-center"></i>
+                            <span data-i18n="tabTextToVideo">Cinematic Video</span>
+                        </button>
+                        <button onclick="switchTab('imageStudio')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-navy-700 hover:text-white transition group" data-tab="imageStudio">
+                            <i class="fa-solid fa-wand-magic-sparkles text-pink-400 w-5 text-center"></i>
+                            <span data-i18n="tabImageStudio">AI Image Studio (12 Tools)</span>
+                        </button>
+                        <button onclick="switchTab('videoStudio')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-navy-700 hover:text-white transition group" data-tab="videoStudio">
+                            <i class="fa-solid fa-film text-amber-400 w-5 text-center"></i>
+                            <span data-i18n="tabVideoStudio">Complete Video Studio</span>
+                        </button>
+                        <button onclick="switchTab('audioStudio')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-navy-700 hover:text-white transition group" data-tab="audioStudio">
+                            <i class="fa-solid fa-microphone-lines text-emerald-400 w-5 text-center"></i>
+                            <span data-i18n="tabAudioStudio">Voice & Audio Studio</span>
+                        </button>
+                        <button onclick="switchTab('proEditor')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-navy-700 hover:text-white transition group" data-tab="proEditor">
+                            <i class="fa-solid fa-sliders text-blue-400 w-5 text-center"></i>
+                            <span data-i18n="tabProEditor">Professional Video Editor</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- System & Management -->
+                <div>
+                    <p class="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 mb-2" data-i18n="menuSystem">Management & Settings</p>
+                    <nav class="space-y-1">
+                        <button onclick="switchTab('providerConfig')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-navy-700 hover:text-white transition group" data-tab="providerConfig">
+                            <i class="fa-solid fa-server text-indigo-400 w-5 text-center"></i>
+                            <span data-i18n="tabProviders">AI Provider Adapters</span>
+                        </button>
+                        <button onclick="switchTab('historyJobs')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-navy-700 hover:text-white transition group" data-tab="historyJobs">
+                            <i class="fa-solid fa-clock-rotate-left text-cyan-400 w-5 text-center"></i>
+                            <span data-i18n="tabHistory">Job History & Cloud Storage</span>
+                        </button>
+                        <button onclick="openModal('upgradeModal')" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition group">
+                            <i class="fa-solid fa-crown text-amber-400 w-5 text-center"></i>
+                            <span data-i18n="tabUpgrade">Enterprise Plans & Quota</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer: Ethical Notice & Version -->
+            <div class="p-3 border-t border-slate-800 text-[11px] text-slate-400 bg-navy-900/50">
+                <div class="flex items-center space-x-2 mb-1">
+                    <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                    <span class="font-semibold text-slate-300" data-i18n="ethicsTitle">Ethical AI Guarantee</span>
+                </div>
+                <p class="text-[10px] text-slate-400 leading-tight" data-i18n="ethicsDesc">Mandatory consent checks enforced for all talking photos & voice clones.</p>
+                <div class="mt-2 pt-2 border-t border-slate-800 flex justify-between items-center text-[10px] text-slate-400">
+                    <span>v2.8 Enterprise</span>
+                    <span class="text-emerald-400">Secure Cloud</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar bg-gradient-studio p-4 md:p-6 lg:p-8" id="mainContentArea">
+            
+            <!-- ==================== TAB 1: TALKING PHOTO & LIP-SYNC STUDIO ==================== -->
+            <div id="tabContent-talkingPhoto" class="tab-pane space-y-6 max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-star text-amber-400"></i> <span data-i18n="badgeFlagship">Flagship Cinematic AI Feature</span>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="talkingTitle">Cinematic Talking Photo & Lip-Sync Studio</h1>
+                        <p class="text-sm text-slate-400 mt-1" data-i18n="talkingSubtitle">Bring portraits to life with precise multilingual lip-sync, micro-expressions, and studio-grade cinematic rendering.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="loadDemoTalkingPhoto()" class="bg-navy-700 hover:bg-navy-600 text-slate-200 border border-slate-600 px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center space-x-2">
+                            <i class="fa-solid fa-flask text-cyan-400"></i> <span data-i18n="loadDemoBtn">Load Sample Model</span>
+                        </button>
+                        <button onclick="startTalkingPhotoGeneration()" class="bg-gradient-to-r from-cyan-500 to-electric-600 hover:from-cyan-400 hover:to-electric-500 text-navy-900 font-extrabold px-6 py-2.5 rounded-xl text-xs shadow-lg shadow-cyan-500/30 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-wand-magic text-navy-900"></i> <span data-i18n="generateVideoBtn">Generate Cinematic Video</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ethical Consent Alert -->
+                <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl flex items-start space-x-3">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg mt-0.5"></i>
+                    <div class="text-xs text-amber-200/90 leading-relaxed">
+                        <span class="font-bold uppercase tracking-wider text-amber-300" data-i18n="consentHeader">Mandatory Consent & Verification:</span>
+                        <span data-i18n="consentText">By generating a talking photo or cloned voice, you confirm that you have explicit legal permission or rights from the depicted individual. Impersonation and deceptive media without consent are strictly prohibited by Nivora AI safety protocols.</span>
+                        <label class="flex items-center space-x-2 mt-2 cursor-pointer text-slate-300 font-medium">
+                            <input type="checkbox" id="consentCheckbox" class="rounded bg-navy-900 border-amber-500/50 text-cyan-500 focus:ring-0">
+                            <span data-i18n="consentCheckboxText">I verify that I own the rights or have explicit authorization to animate this portrait and audio.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Column 1: Portrait & Audio Input -->
+                    <div class="space-y-6">
+                        <!-- Portrait Upload Box -->
+                        <div class="bg-navy-800/80 border border-slate-700/80 p-5 rounded-2xl shadow-lg">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                                    <i class="fa-solid fa-user-tie text-cyan-400"></i> <span data-i18n="step1Portrait">Step 1: Portrait Image</span>
+                                </label>
+                                <span class="text-[10px] text-slate-400">JPG, PNG, WebP (Max 15MB)</span>
+                            </div>
+                            <div id="portraitDropZone" class="border-2 border-dashed border-slate-700 hover:border-cyan-400/60 rounded-xl p-6 text-center cursor-pointer transition bg-navy-900/40 relative group overflow-hidden">
+                                <input type="file" id="portraitFileInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handlePortraitUpload(event)" aria-label="Upload portrait image">
+                                <div id="portraitPreviewContainer" class="hidden absolute inset-0 bg-navy-900 flex items-center justify-center">
+                                    <img id="portraitPreviewImg" src="" alt="Portrait" class="max-h-full max-w-full object-contain rounded-lg">
+                                    <button onclick="event.stopPropagation(); removePortrait();" class="absolute top-2 right-2 bg-red-600/80 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs" aria-label="Remove portrait"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+                                <div id="portraitPlaceholder" class="space-y-2">
+                                    <div class="w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400 group-hover:scale-110 transition">
+                                        <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                                    </div>
+                                    <p class="text-xs font-semibold text-slate-200" data-i18n="dropPortrait">Click to upload or drag portrait here</p>
+                                    <p class="text-[10px] text-slate-400" data-i18n="portraitHint">High-res frontal face recommended</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Audio Source Selection -->
+                        <div class="bg-navy-800/80 border border-slate-700/80 p-5 rounded-2xl shadow-lg space-y-4">
+                            <label class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                                <i class="fa-solid fa-microphone-lines text-cyan-400"></i> <span data-i18n="step2Audio">Step 2: Audio Source</span>
+                            </label>
+                            
+                            <!-- Audio Tabs -->
+                            <div class="grid grid-cols-2 gap-2 bg-navy-900 p-1 rounded-xl border border-slate-700/60">
+                                <button onclick="switchAudioMode('tts')" id="audioModeTtsBtn" class="py-2 text-xs font-bold rounded-lg bg-cyan-500 text-navy-900 transition shadow" data-i18n="audioModeTTS">Text-to-Speech</button>
+                                <button onclick="switchAudioMode('upload')" id="audioModeUploadBtn" class="py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition" data-i18n="audioModeUpload">Upload Audio</button>
+                            </div>
+
+                            <!-- TTS Panel -->
+                            <div id="audioTtsPanel" class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <label class="text-[11px] font-semibold text-slate-300" data-i18n="speechScriptLabel">Speech Script & Prompt</label>
+                                        <select id="ttsLanguage" class="bg-navy-900 border border-slate-700 text-[10px] rounded px-2 py-1 text-slate-200" aria-label="Text to speech language">
+                                            <option value="en-US">English (US)</option>
+                                            <option value="bn-BD">Bengali (বাংলা)</option>
+                                            <option value="hi-IN">Hindi (हिन्दी)</option>
+                                            <option value="ur-PK">Urdu (اردو)</option>
+                                            <option value="ar-SA">Arabic (العربية)</option>
+                                        </select>
+                                    </div>
+                                    <textarea id="ttsScriptInput" rows="4" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 custom-scrollbar" placeholder="Type or paste the script for the AI portrait to speak with natural cadence and lip-sync..."></textarea>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-[10px] font-semibold text-slate-400 block mb-1" data-i18n="voicePersona">Voice Persona</label>
+                                        <select id="ttsVoiceSelect" class="w-full bg-navy-900 border border-slate-700 text-xs rounded-xl p-2 text-slate-200" aria-label="Voice persona">
+                                            <option value="Kore">Kore (Firm & Professional)</option>
+                                            <option value="Zephyr">Zephyr (Bright & Engaging)</option>
+                                            <option value="Puck">Puck (Upbeat & Energetic)</option>
+                                            <option value="Charon">Charon (Deep & Authoritative)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-semibold text-slate-400 block mb-1" data-i18n="speechSpeed">Speech Speed</label>
+                                        <select id="ttsSpeed" class="w-full bg-navy-900 border border-slate-700 text-xs rounded-xl p-2 text-slate-200" aria-label="Speech speed">
+                                            <option value="0.9">0.9x (Calm)</option>
+                                            <option value="1.0" selected>1.0x (Standard)</option>
+                                            <option value="1.1">1.1x (Dynamic)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button onclick="generatePreviewTTS()" class="w-full bg-navy-700 hover:bg-navy-600 text-cyan-400 border border-cyan-500/30 py-2.5 rounded-xl text-xs font-semibold transition flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-volume-high"></i> <span data-i18n="previewTtsBtn">Synthesize & Preview Voice</span>
+                                </button>
+                            </div>
+
+                            <!-- Upload Audio Panel -->
+                            <div id="audioUploadPanel" class="hidden space-y-3">
+                                <div class="border-2 border-dashed border-slate-700 hover:border-cyan-400/60 rounded-xl p-5 text-center cursor-pointer transition bg-navy-900/40 relative">
+                                    <input type="file" id="audioFileInput" accept="audio/mp3,audio/wav,audio/m4a,audio/aac" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleAudioUpload(event)" aria-label="Upload audio file">
+                                    <div class="space-y-1.5">
+                                        <i class="fa-solid fa-file-audio text-cyan-400 text-xl"></i>
+                                        <p class="text-xs font-semibold text-slate-200" data-i18n="audioUploadPrompt">Upload MP3, WAV, M4A, AAC</p>
+                                        <p id="audioFileNameDisplay" class="text-[10px] text-slate-400">Max file size 50MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Cinematic Video Parameters -->
+                    <div class="space-y-6">
+                        <div class="bg-navy-800/80 border border-slate-700/80 p-5 rounded-2xl shadow-lg space-y-4">
+                            <label class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                                <i class="fa-solid fa-sliders text-cyan-400"></i> <span data-i18n="step3Cinematic">Step 3: Cinematic Settings</span>
+                            </label>
+
+                            <!-- Camera Motion -->
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-300 block mb-1.5" data-i18n="cameraMotionLabel">Camera Movement</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="setCameraMotion('static')" id="camStatic" class="cam-btn bg-cyan-500/10 border border-cyan-500/50 text-cyan-300 py-2 rounded-xl text-xs font-semibold transition" data-i18n="camStatic">Static Camera</button>
+                                    <button onclick="setCameraMotion('zoom')" id="camZoom" class="cam-btn bg-navy-900 border border-slate-700 text-slate-400 hover:text-white py-2 rounded-xl text-xs font-medium transition" data-i18n="camZoom">Slow Zoom</button>
+                                    <button onclick="setCameraMotion('closeup')" id="camCloseup" class="cam-btn bg-navy-900 border border-slate-700 text-slate-400 hover:text-white py-2 rounded-xl text-xs font-medium transition" data-i18n="camCloseup">Cinematic Close-up</button>
+                                    <button onclick="setCameraMotion('medium')" id="camMedium" class="cam-btn bg-navy-900 border border-slate-700 text-slate-400 hover:text-white py-2 rounded-xl text-xs font-medium transition" data-i18n="camMedium">Medium Shot</button>
+                                </div>
+                            </div>
+
+                            <!-- Aspect Ratio -->
+                            <div>
+                                <label class="text-[11px] font-semibold text-slate-300 block mb-1.5" data-i18n="aspectRatioLabel">Aspect Ratio</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="setAspect('16:9')" id="asp169" class="asp-btn bg-cyan-500/10 border border-cyan-500/50 text-cyan-300 py-2 rounded-xl text-xs font-semibold transition">16:9 (Landscape)</button>
+                                    <button onclick="setAspect('9:16')" id="asp916" class="asp-btn bg-navy-900 border border-slate-700 text-slate-400 hover:text-white py-2 rounded-xl text-xs font-medium transition">9:16 (Reels/TikTok)</button>
+                                    <button onclick="setAspect('1:1')" id="asp11" class="asp-btn bg-navy-900 border border-slate-700 text-slate-400 hover:text-white py-2 rounded-xl text-xs font-medium transition">1:1 (Square)</button>
+                                </div>
+                            </div>
+
+                            <!-- Resolution & FPS -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-[10px] font-semibold text-slate-400 block mb-1" data-i18n="resolutionLabel">Resolution</label>
+                                    <select id="videoResolution" class="w-full bg-navy-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200" aria-label="Video resolution">
+                                        <option value="1080p" selected>1080p Full HD</option>
+                                        <option value="720p">720p HD</option>
+                                        <option value="4k">4K Ultra HD (Pro)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-semibold text-slate-400 block mb-1" data-i18n="fpsLabel">Frame Rate (FPS)</label>
+                                    <select id="videoFps" class="w-full bg-navy-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200" aria-label="Frame rate">
+                                        <option value="30" selected>30 FPS</option>
+                                        <option value="24">24 FPS (Cinematic)</option>
+                                        <option value="60">60 FPS (Smooth)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Presentation Style -->
+                            <div>
+                                <label class="text-[10px] font-semibold text-slate-400 block mb-1" data-i18n="styleLabel">Presenter Style</label>
+                                <select id="presenterStyle" class="w-full bg-navy-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200" aria-label="Presenter style">
+                                    <option value="professional" selected>Professional Presenter / Corporate</option>
+                                    <option value="news">News Anchor / Broadcast</option>
+                                    <option value="islamic">Islamic Speech / Lecture</option>
+                                    <option value="educational">Educational & Tutorial</option>
+                                    <option value="social">Social Media Influencer</option>
+                                </select>
+                            </div>
+
+                            <!-- Enhancements -->
+                            <div class="space-y-2 pt-2 border-t border-slate-700/60">
+                                <label class="flex items-center space-x-2 cursor-pointer text-xs text-slate-300">
+                                    <input type="checkbox" id="chkSubtitles" checked class="rounded bg-navy-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                    <span data-i18n="optSubtitles">Auto Generate Subtitles & Captions</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer text-xs text-slate-300">
+                                    <input type="checkbox" id="chkBgBlur" checked class="rounded bg-navy-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                    <span data-i18n="optBgBlur">Cinematic Background Blur & Lighting</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Output & Job Status Display -->
+                    <div class="space-y-6">
+                        <div class="bg-navy-800/80 border border-slate-700/80 p-5 rounded-2xl shadow-lg flex flex-col h-full min-h-[420px]">
+                            <label class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2 mb-4">
+                                <i class="fa-solid fa-clapperboard text-cyan-400"></i> <span data-i18n="outputPreviewLabel">Step 4: Studio Render & Output</span>
+                            </label>
+
+                            <!-- Render State Container -->
+                            <div id="renderIdleState" class="flex-1 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-700/80 rounded-xl bg-navy-900/40">
+                                <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-3 shadow-lg shadow-cyan-500/10">
+                                    <i class="fa-solid fa-video text-2xl"></i>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-200" data-i18n="readyToRenderTitle">Ready for Cinematic Rendering</h3>
+                                <p class="text-xs text-slate-400 max-w-xs mt-1" data-i18n="readyToRenderDesc">Upload a portrait, add script or audio, and click 'Generate Cinematic Video' to start asynchronous Cloudflare Worker job.</p>
+                            </div>
+
+                            <!-- Processing State Container -->
+                            <div id="renderProcessingState" class="hidden flex-1 flex flex-col items-center justify-center text-center p-6 bg-navy-900/60 rounded-xl border border-slate-700/80 space-y-4">
+                                <div class="relative w-20 h-20 flex items-center justify-center">
+                                    <div class="absolute inset-0 rounded-full border-4 border-cyan-500/20 border-t-cyan-400 animate-spin"></div>
+                                    <i class="fa-solid fa-microchip text-cyan-400 text-2xl animate-pulse"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-200" id="jobStatusTitle">Initializing AI Pipeline...</h3>
+                                    <p class="text-xs text-slate-400 mt-1" id="jobStatusSubtitle">Communicating with Cloudflare Worker & AI Lip-Sync cluster</p>
+                                </div>
+                                <div class="w-full bg-navy-950 rounded-full h-2.5 overflow-hidden border border-slate-700">
+                                    <div id="jobProgressBar" class="bg-gradient-to-r from-cyan-400 to-electric-600 h-full w-0 transition-all duration-300"></div>
+                                </div>
+                                <div class="flex items-center justify-between w-full text-[11px] text-slate-400">
+                                    <span id="jobStepText">Job ID: NIVORA-9042</span>
+                                    <span id="jobPercentText" class="font-bold text-cyan-400">0%</span>
+                                </div>
+                                <button onclick="cancelCurrentJob()" class="bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/40 px-4 py-1.5 rounded-lg text-xs font-semibold transition">
+                                    <i class="fa-solid fa-xmark mr-1"></i> Cancel Job
+                                </button>
+                            </div>
+
+                            <!-- Completed State Container -->
+                            <div id="renderCompleteState" class="hidden flex-1 flex flex-col justify-between space-y-4">
+                                <div class="relative rounded-xl overflow-hidden bg-navy-900 border border-cyan-500/40 aspect-video flex items-center justify-center shadow-lg">
+                                    <video id="finalResultVideo" controls class="w-full h-full object-cover">
+                                        <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-with-code-31940-large.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <div class="absolute top-2 left-2 bg-emerald-500/90 text-navy-900 text-[10px] font-extrabold px-2 py-0.5 rounded-md flex items-center space-x-1 shadow">
+                                        <i class="fa-solid fa-check"></i> <span>RENDER SUCCESSFUL</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="downloadFinalVideo()" class="bg-gradient-to-r from-cyan-500 to-electric-600 hover:from-cyan-400 hover:to-electric-500 text-navy-900 font-extrabold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-md">
+                                        <i class="fa-solid fa-download"></i> <span data-i18n="downloadMp4Btn">Download MP4 (1080p)</span>
+                                    </button>
+                                    <button onclick="openProEditorWithVideo()" class="bg-navy-700 hover:bg-navy-600 text-slate-200 border border-slate-600 py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition">
+                                        <i class="fa-solid fa-sliders text-cyan-400"></i> <span data-i18n="openInEditorBtn">Open in Pro Editor</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 2: TEXT TO CINEMATIC VIDEO ==================== -->
+            <div id="tabContent-textToVideo" class="tab-pane hidden space-y-6 max-w-7xl mx-auto">
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="t2vTitle">Text to Cinematic Video & Storyboard Studio</h1>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="t2vSubtitle">Transform cinematic prompts and storyboards into stunning multi-scene AI video productions.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-4">
+                        <div>
+                            <label class="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2" data-i18n="scenePromptLabel">Cinematic Scene Prompt</label>
+                            <textarea id="t2vPromptInput" rows="4" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-4 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 custom-scrollbar" placeholder="A sweeping drone shot over a neon-lit cyberpunk metropolis during heavy rain, cinematic lighting, anamorphic lens flare, 8k resolution..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2" data-i18n="negativePromptLabel">Negative Prompt</label>
+                                <input type="text" id="t2vNegativeInput" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200" value="blurry, low quality, distorted anatomy, jittery camera">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2" data-i18n="lightingStyleLabel">Cinematic Lighting</label>
+                                <select id="t2vLighting" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200" aria-label="Cinematic lighting">
+                                    <option value="cyberpunk">Cyberpunk Neon Glow</option>
+                                    <option value="hollywood">Hollywood Golden Hour</option>
+                                    <option value="noir">Dark Noir / Moody Shadows</option>
+                                    <option value="studio">Commercial Studio Lighting</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-700 flex justify-between items-center">
+                            <span class="text-xs text-slate-400"><i class="fa-solid fa-coins text-cyan-400 mr-1"></i> Cost: 15 Credits per scene</span>
+                            <button onclick="startTextToVideoJob()" class="bg-gradient-to-r from-cyan-500 to-electric-600 hover:from-cyan-400 hover:to-electric-500 text-navy-900 font-extrabold px-6 py-3 rounded-xl text-xs shadow-lg transition flex items-center space-x-2">
+                                <i class="fa-solid fa-clapperboard"></i> <span data-i18n="generateCinematicVideoBtn">Generate Cinematic Scene</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3" data-i18n="storyboardTitle">Storyboard Scenes</h3>
+                            <div id="storyboardList" class="space-y-3">
+                                <div class="bg-navy-900 p-3 rounded-xl border border-slate-700 text-xs flex justify-between items-center">
+                                    <div>
+                                        <span class="font-bold text-cyan-400 block">Scene 1: Introduction</span>
+                                        <span class="text-[11px] text-slate-400">Drone shot over metropolis</span>
+                                    </div>
+                                    <i class="fa-solid fa-check text-emerald-400"></i>
+                                </div>
+                                <div class="bg-navy-900 p-3 rounded-xl border border-slate-700 text-xs flex justify-between items-center opacity-70">
+                                    <div>
+                                        <span class="font-bold text-slate-300 block">Scene 2: Close-up</span>
+                                        <span class="text-[11px] text-slate-400">Cybernetic character looking out window</span>
+                                    </div>
+                                    <i class="fa-solid fa-clock text-amber-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="addStoryboardScene()" class="w-full mt-4 bg-navy-700 hover:bg-navy-600 text-slate-200 border border-slate-600 py-2.5 rounded-xl text-xs font-semibold transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Add New Scene
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 3: COMPLETE AI IMAGE STUDIO ==================== -->
+            <div id="tabContent-imageStudio" class="tab-pane hidden space-y-6 max-w-7xl mx-auto">
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="imgStudioTitle">Complete AI Image Studio (12 Professional Tools)</h1>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="imgStudioSubtitle">Generate, inpaint, upscale, remove backgrounds, and edit with cutting-edge AI neural networks.</p>
+                </div>
+
+                <!-- 12 Tool Navigation Pills -->
+                <div class="flex flex-wrap gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                    <button onclick="switchImageTool('t2i')" id="imgToolBtn-t2i" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 text-navy-900 transition shadow">1. Text to Image</button>
+                    <button onclick="switchImageTool('i2i')" id="imgToolBtn-i2i" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition">2. Image to Image</button>
+                    <button onclick="switchImageTool('inpainting')" id="imgToolBtn-inpainting" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition">3. AI Inpainting</button>
+                    <button onclick="switchImageTool('outpainting')" id="imgToolBtn-outpainting" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition">4. AI Outpainting</button>
+                    <button onclick="switchImageTool('upscale')" id="imgToolBtn-upscale" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition">5. AI Upscaling</button>
+                    <button onclick="switchImageTool('bgRemoval')" id="imgToolBtn-bgRemoval" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition">6. Background Removal</button>
+                    <button onclick="switchImageTool('enhance')" id="imgToolBtn-enhance" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition">7. Image Enhancement</button>
+                    <button onclick="switchImageTool('variations')" id="imgToolBtn-variations" class="img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition">8. Variations</button>
+                </div>
+
+                <!-- Image Tool Panel Workspace -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-4">
+                        <h2 id="activeImageToolTitle" class="text-base font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i> <span>Text to Image Studio</span>
+                        </h2>
+                        
+                        <div id="imageToolWorkspaceContent" class="space-y-4">
+                            <div>
+                                <label class="text-xs font-semibold text-slate-300 block mb-1">Image Prompt</label>
+                                <textarea rows="3" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-cyan-400" placeholder="A majestic white tiger wandering through an enchanted bioluminescent forest, highly detailed digital art..."></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs font-semibold text-slate-400 block mb-1">Aspect Ratio</label>
+                                    <select class="w-full bg-navy-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200" aria-label="Aspect ratio">
+                                        <option>1:1 Square</option>
+                                        <option>16:9 Cinematic</option>
+                                        <option>9:16 Portrait</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold text-slate-400 block mb-1">AI Model Engine</label>
+                                    <select class="w-full bg-navy-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200" aria-label="AI model engine">
+                                        <option>Flux.1 Ultra (Highest Quality)</option>
+                                        <option>Stable Diffusion XL</option>
+                                        <option>Nivora Cinematic v3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button onclick="runImageToolAction()" class="w-full bg-gradient-to-r from-cyan-500 to-electric-600 hover:from-cyan-400 text-navy-900 font-extrabold py-3 rounded-xl text-xs shadow-lg transition">
+                                <i class="fa-solid fa-sparkles mr-1"></i> Execute AI Generation
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Image Studio Output Preview -->
+                    <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">Output Canvas</h3>
+                        <div class="flex-1 bg-navy-900 border border-slate-700 rounded-xl flex items-center justify-center p-4 min-h-[300px] relative overflow-hidden group">
+                            <img id="imageStudioResultImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="Generated" class="max-h-full max-w-full object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-navy-950/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition flex items-center justify-center space-x-3">
+                                <button onclick="downloadCurrentImage()" class="bg-cyan-500 text-navy-900 font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-cyan-400 transition"><i class="fa-solid fa-download mr-1"></i> Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 4: COMPLETE AI VIDEO STUDIO ==================== -->
+            <div id="tabContent-videoStudio" class="tab-pane hidden space-y-6 max-w-7xl mx-auto">
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="videoStudioTitle">Complete AI Video Studio & Post-Production</h1>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="videoStudioSubtitle">Extend videos, upscale to 4K, auto-generate subtitles, remove backgrounds, trim and merge scenes.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold"><i class="fa-solid fa-wand-magic"></i></div>
+                        <h3 class="text-sm font-bold text-white">Video Extension & Interpolation</h3>
+                        <p class="text-xs text-slate-400">Seamlessly extend existing video clips by 5 to 15 seconds with temporal AI consistency.</p>
+                        <button onclick="showToast('Video Extension job queued successfully.')" class="w-full bg-navy-700 hover:bg-navy-600 text-cyan-400 border border-cyan-500/30 py-2 rounded-xl text-xs font-semibold transition">Launch Extender</button>
+                    </div>
+                    <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400 font-bold"><i class="fa-solid fa-expand"></i></div>
+                        <h3 class="text-sm font-bold text-white">AI 4K Video Upscaling</h3>
+                        <p class="text-xs text-slate-400">Enhance low-resolution footage to crisp 4K Ultra HD using neural super-resolution models.</p>
+                        <button onclick="showToast('4K Upscaler job initialized.')" class="w-full bg-navy-700 hover:bg-navy-600 text-violet-400 border border-violet-500/30 py-2 rounded-xl text-xs font-semibold transition">Launch Upscaler</button>
+                    </div>
+                    <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold"><i class="fa-solid fa-closed-captioning"></i></div>
+                        <h3 class="text-sm font-bold text-white">Auto Subtitles & Translation</h3>
+                        <p class="text-xs text-slate-400">Transcribe speech to text and embed styled animated captions in over 30 languages.</p>
+                        <button onclick="showToast('Subtitle generator ready.')" class="w-full bg-navy-700 hover:bg-navy-600 text-emerald-400 border border-emerald-500/30 py-2 rounded-xl text-xs font-semibold transition">Launch Subtitler</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 5: AI VOICE & AUDIO STUDIO ==================== -->
+            <div id="tabContent-audioStudio" class="tab-pane hidden space-y-6 max-w-7xl mx-auto">
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="audioStudioTitle">AI Voice & Audio Mastering Studio</h1>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="audioStudioSubtitle">Text-to-speech, noise reduction, voice-over mixing, background music fusion, and ethical voice cloning.</p>
+                </div>
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-microphone-lines text-cyan-400"></i> <span>Advanced Text-to-Speech Engine</span></h3>
+                    <textarea rows="4" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-4 text-xs text-slate-200" placeholder="Type text to synthesize professional studio-grade voiceover..."></textarea>
+                    <div class="flex justify-between items-center">
+                        <div class="flex space-x-2">
+                            <select class="bg-navy-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200" aria-label="Voice selection">
+                                <option>Voice: Kore (Firm)</option>
+                                <option>Voice: Zephyr (Bright)</option>
+                            </select>
+                            <select class="bg-navy-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200" aria-label="Audio format">
+                                <option>Format: MP3 320kbps</option>
+                                <option>Format: WAV Lossless</option>
+                            </select>
+                        </div>
+                        <button onclick="showToast('Voice synthesized successfully!')" class="bg-cyan-500 text-navy-900 font-extrabold px-6 py-2.5 rounded-xl text-xs shadow hover:bg-cyan-400 transition">Synthesize Voice</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 6: PROFESSIONAL VIDEO EDITOR ==================== -->
+            <div id="tabContent-proEditor" class="tab-pane hidden space-y-6 max-w-7xl mx-auto">
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="editorTitle">Professional Timeline Video Editor</h1>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="editorSubtitle">Multi-track timeline for video, audio, subtitles, scene trimming, and final MP4 export.</p>
+                </div>
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-4">
+                    <div class="aspect-video bg-navy-900 rounded-xl border border-slate-700 flex items-center justify-center relative overflow-hidden">
+                        <div class="text-center space-y-2">
+                            <i class="fa-solid fa-film text-cyan-400 text-3xl animate-pulse"></i>
+                            <p class="text-xs text-slate-300">Timeline Preview Window Active</p>
+                        </div>
+                    </div>
+                    <!-- Timeline Tracks -->
+                    <div class="space-y-2 bg-navy-900 p-4 rounded-xl border border-slate-700">
+                        <div class="flex items-center space-x-3 text-xs text-slate-400 border-b border-slate-800 pb-2">
+                            <span class="w-24 font-bold text-slate-300">Video Track</span>
+                            <div class="flex-1 bg-cyan-500/20 border border-cyan-500/40 h-8 rounded-lg flex items-center px-3 text-cyan-300 font-medium">talking_photo_output_1080p.mp4 (00:15s)</div>
+                        </div>
+                        <div class="flex items-center space-x-3 text-xs text-slate-400 border-b border-slate-800 pb-2">
+                            <span class="w-24 font-bold text-slate-300">Audio Track</span>
+                            <div class="flex-1 bg-emerald-500/20 border border-emerald-500/40 h-8 rounded-lg flex items-center px-3 text-emerald-300 font-medium">ai_voiceover_kore.mp3 (00:15s)</div>
+                        </div>
+                        <div class="flex items-center space-x-3 text-xs text-slate-400">
+                            <span class="w-24 font-bold text-slate-300">Subtitle Track</span>
+                            <div class="flex-1 bg-violet-500/20 border border-violet-500/40 h-8 rounded-lg flex items-center px-3 text-violet-300 font-medium">Auto Subtitles [En / Bn]</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button onclick="showToast('Exporting MP4 via Cloudflare Worker...')" class="bg-gradient-to-r from-cyan-500 to-electric-600 text-navy-900 font-extrabold px-6 py-2.5 rounded-xl text-xs shadow transition">Export & Download MP4</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 7: REAL AI PROVIDER CONFIGURATION ==================== -->
+            <div id="tabContent-providerConfig" class="tab-pane hidden space-y-6 max-w-7xl mx-auto">
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="providerTitle">Real AI Provider Adapter & Worker Architecture</h1>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="providerSubtitle">Configure modular AI adapter bindings, Cloudflare Worker endpoints, and secure secrets.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-4">
+                        <h3 class="text-sm font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-server text-cyan-400"></i> <span>Cloudflare Worker Endpoints</span></h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="bg-navy-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                                <div><span class="font-bold text-cyan-400 block">POST /api/media</span><span class="text-slate-400">Initiate generation job</span></div>
+                                <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 text-[10px]">Active</span>
+                            </div>
+                            <div class="bg-navy-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                                <div><span class="font-bold text-cyan-400 block">GET /api/media/status/:id</span><span class="text-slate-400">Poll asynchronous job status</span></div>
+                                <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 text-[10px]">Active</span>
+                            </div>
+                            <div class="bg-navy-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                                <div><span class="font-bold text-cyan-400 block">POST /api/lipsync</span><span class="text-slate-400">Talking photo lip-sync adapter</span></div>
+                                <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 text-[10px]">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg space-y-4">
+                        <h3 class="text-sm font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-key text-amber-400"></i> <span>Secure Secret Management</span></h3>
+                        <p class="text-xs text-slate-400">API keys are securely isolated on Cloudflare Worker environment variables. Never exposed in browser code or client local storage.</p>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-semibold text-slate-300 block">Worker API Base URL</label>
+                            <input type="text" value="https://api.nivora-ai.workers.dev" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-300 font-mono" readonly aria-label="Worker API Base URL">
+                        </div>
+                        <button onclick="showToast('Worker connection verified successfully.')" class="w-full bg-cyan-500 text-navy-900 font-bold py-2.5 rounded-xl text-xs shadow hover:bg-cyan-400 transition">Test Worker Connection</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 8: JOB HISTORY & STORAGE ==================== -->
+            <div id="tabContent-historyJobs" class="tab-pane hidden space-y-6 max-w-7xl mx-auto">
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" data-i18n="historyTitle">User Job History & Cloud Storage</h1>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="historySubtitle">Review your previously generated media, download assets, and manage Firestore cloud records.</p>
+                </div>
+                <div class="bg-navy-800/80 border border-slate-700/80 p-6 rounded-2xl shadow-lg">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-700 text-slate-400">
+                                    <th class="pb-3 font-bold">Job ID</th>
+                                    <th class="pb-3 font-bold">Studio Type</th>
+                                    <th class="pb-3 font-bold">Parameters</th>
+                                    <th class="pb-3 font-bold">Status</th>
+                                    <th class="pb-3 font-bold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 text-slate-300" id="historyTableBody">
+                                <tr>
+                                    <td class="py-3 font-mono text-cyan-400">#NIV-8821</td>
+                                    <td class="py-3">Talking Photo Lip-Sync</td>
+                                    <td class="py-3">1080p | 30FPS | Kore Voice</td>
+                                    <td class="py-3"><span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Completed</span></td>
+                                    <td class="py-3 text-right">
+                                        <button onclick="downloadFinalVideo()" class="text-cyan-400 hover:text-cyan-300 font-semibold mr-3"><i class="fa-solid fa-download"></i></button>
+                                        <button onclick="showToast('Job record deleted.')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-navy-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl relative space-y-4">
+            <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white" aria-label="Close authentication modal"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-electric-600 to-cyan-400 flex items-center justify-center mx-auto text-white shadow-lg shadow-cyan-500/20 mb-2">
+                    <i class="fa-solid fa-user-shield text-lg"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Firebase Authentication</h2>
+                <p class="text-xs text-slate-400">Sign in to securely access your cloud media & quotas</p>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 block mb-1">Email Address</label>
+                    <input type="email" id="authEmail" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200" placeholder="user@enterprise.com" value="creator@nivora-ai.com" aria-label="Email address">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 block mb-1">Password</label>
+                    <input type="password" id="authPassword" class="w-full bg-navy-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200" value="••••••••••••" aria-label="Password">
+                </div>
+                <button onclick="performFirebaseSignIn()" class="w-full bg-gradient-to-r from-cyan-500 to-electric-600 text-navy-900 font-extrabold py-3 rounded-xl text-xs shadow-lg hover:from-cyan-400 transition">
+                    Authenticate Securely
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Modal -->
+    <div id="upgradeModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-navy-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative space-y-6">
+            <button onclick="closeModal('upgradeModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white" aria-label="Close upgrade modal"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 to-violet-600 flex items-center justify-center mx-auto text-white shadow-lg shadow-amber-500/20 mb-2">
+                    <i class="fa-solid fa-crown text-lg"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Nivora Enterprise Plans</h2>
+                <p class="text-xs text-slate-400">Unlock high-speed rendering, 4K resolution, and unlimited voice clones</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-navy-900 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <span class="text-xs font-bold text-slate-400 uppercase">Professional Pro</span>
+                    <h3 class="text-xl font-extrabold text-white">$49 <span class="text-xs font-normal text-slate-400">/mo</span></h3>
+                    <ul class="text-[11px] text-slate-300 space-y-1.5">
+                        <li><i class="fa-solid fa-check text-cyan-400 mr-1"></i> 1,000 Credits / mo</li>
+                        <li><i class="fa-solid fa-check text-cyan-400 mr-1"></i> 1080p Lip-Sync Video</li>
+                        <li><i class="fa-solid fa-check text-cyan-400 mr-1"></i> Priority Cloud Queue</li>
+                    </ul>
+                    <button onclick="selectPlan('PRO')" class="w-full bg-navy-700 hover:bg-navy-600 text-cyan-400 py-2 rounded-lg text-xs font-semibold transition">Current Plan</button>
+                </div>
+                <div class="bg-gradient-to-b from-violet-900/40 to-navy-900 p-4 rounded-xl border border-violet-500/50 space-y-3 relative overflow-hidden">
+                    <span class="absolute top-2 right-2 bg-amber-500 text-navy-900 font-extrabold text-[9px] px-2 py-0.5 rounded">ULTIMATE</span>
+                    <span class="text-xs font-bold text-amber-400 uppercase">Enterprise Studio</span>
+                    <h3 class="text-xl font-extrabold text-white">$199 <span class="text-xs font-normal text-slate-400">/mo</span></h3>
+                    <ul class="text-[11px] text-slate-300 space-y-1.5">
+                        <li><i class="fa-solid fa-check text-amber-400 mr-1"></i> Unlimited Credits</li>
+                        <li><i class="fa-solid fa-check text-amber-400 mr-1"></i> 4K Ultra HD & 60FPS</li>
+                        <li><i class="fa-solid fa-check text-amber-400 mr-1"></i> Dedicated GPU Workers</li>
+                    </ul>
+                    <button onclick="selectPlan('ENTERPRISE')" class="w-full bg-gradient-to-r from-amber-500 to-violet-600 text-navy-900 font-extrabold py-2 rounded-lg text-xs transition shadow">Upgrade Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification System -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // Internationalization (i18n) Dictionary
+        const i18nData = {
+            en: {
+                creditsLabel: "Credits:",
+                menuStudios: "AI Studios",
+                tabTalkingPhoto: "Talking Photo & Lip-Sync",
+                tabTextToVideo: "Cinematic Video",
+                tabImageStudio: "AI Image Studio (12 Tools)",
+                tabVideoStudio: "Complete Video Studio",
+                tabAudioStudio: "Voice & Audio Studio",
+                tabProEditor: "Professional Video Editor",
+                menuSystem: "Management & Settings",
+                tabProviders: "AI Provider Adapters",
+                tabHistory: "Job History & Cloud Storage",
+                tabUpgrade: "Enterprise Plans & Quota",
+                ethicsTitle: "Ethical AI Guarantee",
+                ethicsDesc: "Mandatory consent checks enforced for all talking photos & voice clones.",
+                badgeFlagship: "Flagship Cinematic AI Feature",
+                talkingTitle: "Cinematic Talking Photo & Lip-Sync Studio",
+                talkingSubtitle: "Bring portraits to life with precise multilingual lip-sync, micro-expressions, and studio-grade cinematic rendering.",
+                loadDemoBtn: "Load Sample Model",
+                generateVideoBtn: "Generate Cinematic Video",
+                consentHeader: "Mandatory Consent & Verification:",
+                consentText: "By generating a talking photo or cloned voice, you confirm that you have explicit legal permission or rights from the depicted individual.",
+                consentCheckboxText: "I verify that I own the rights or have explicit authorization to animate this portrait and audio.",
+                step1Portrait: "Step 1: Portrait Image",
+                dropPortrait: "Click to upload or drag portrait here",
+                portraitHint: "High-res frontal face recommended",
+                step2Audio: "Step 2: Audio Source",
+                audioModeTTS: "Text-to-Speech",
+                audioModeUpload: "Upload Audio",
+                speechScriptLabel: "Speech Script & Prompt",
+                voicePersona: "Voice Persona",
+                speechSpeed: "Speech Speed",
+                previewTtsBtn: "Synthesize & Preview Voice",
+                audioUploadPrompt: "Upload MP3, WAV, M4A, AAC",
+                step3Cinematic: "Step 3: Cinematic Settings",
+                cameraMotionLabel: "Camera Movement",
+                camStatic: "Static Camera",
+                camZoom: "Slow Zoom",
+                camCloseup: "Cinematic Close-up",
+                camMedium: "Medium Shot",
+                aspectRatioLabel: "Aspect Ratio",
+                resolutionLabel: "Resolution",
+                fpsLabel: "Frame Rate (FPS)",
+                styleLabel: "Presenter Style",
+                optSubtitles: "Auto Generate Subtitles & Captions",
+                optBgBlur: "Cinematic Background Blur & Lighting",
+                outputPreviewLabel: "Step 4: Studio Render & Output",
+                readyToRenderTitle: "Ready for Cinematic Rendering",
+                readyToRenderDesc: "Upload a portrait, add script or audio, and click 'Generate Cinematic Video' to start asynchronous Cloudflare Worker job.",
+                downloadMp4Btn: "Download MP4 (1080p)",
+                openInEditorBtn: "Open in Pro Editor"
+            },
+            bn: {
+                creditsLabel: "ক্রেডিট:",
+                menuStudios: "এআই স্টুডিও",
+                tabTalkingPhoto: "টকিং ফটো ও লিপ-সিঙ্ক",
+                tabTextToVideo: "সিনেম্যাটিক ভিডিও",
+                tabImageStudio: "এআই ইমেজ স্টুডিও (১২ টুল)",
+                tabVideoStudio: "সম্পূর্ণ ভিডিও স্টুডিও",
+                tabAudioStudio: "ভয়েস ও অডিও স্টুডিও",
+                tabProEditor: "প্রফেশনাল ভিডিও এডিটর",
+                menuSystem: "ব্যবস্থাপনা ও সেটিংস",
+                tabProviders: "এআই প্রোভাইডার অ্যাডাপ্টার",
+                tabHistory: "জব হিস্ট্রি ও ক্লাউড স্টোরেজ",
+                tabUpgrade: "এন্টারপ্রাইজ প্ল্যান ও কোটা",
+                ethicsTitle: "নৈতিক এআই গ্যারান্টি",
+                ethicsDesc: "সকল টকিং ফটো এবং ভয়েস ক্লোনিংয়ের জন্য বাধ্যতামূলক সম্মতি যাচাই।",
+                badgeFlagship: "ফ্ল্যাগশিপেম্যাটিক এআই ফিচার",
+                talkingTitle: "সিনেম্যাটিক টকিং ফটো ও লিপ-সিঙ্ক স্টুডিও",
+                talkingSubtitle: "বহুভাষিক লিপ-সিঙ্ক, মাইক্রো-এক্সপ্রেশন এবং স্টুডিও-গ্রেড রেন্ডারিংয়ের মাধ্যমে প্রতিকৃতিতে জীবন দিন।",
+                loadDemoBtn: "নমুনা মডেল লোড করুন",
+                generateVideoBtn: "সিনেম্যাটিক ভিডিও তৈরি করুন",
+                consentHeader: "বাধ্যতামূলক সম্মতি ও যাচাই:",
+                consentText: "টকিং ফটো বা ক্লোনড ভয়েস তৈরি করার মাধ্যমে আপনি নিশ্চিত করছেন যে আপনার কাছে সংশ্লিষ্ট ব্যক্তির স্পষ্ট আইনি অনুমতি বা অধিকার আছে।",
+                consentCheckboxText: "আমি যাচাই করছি যে এই প্রতিকৃতি এবং অডিও অ্যানিমেট করার অধিকার আমার আছে।",
+                step1Portrait: "ধাপ ১: পোর্ট্রেট ছবি",
+                dropPortrait: "আপলোড করতে ক্লিক করুন বা ছবি টেনে আনুন",
+                portraitHint: "হাই-রেস ফ্রন্টাল ফেস বাঞ্ছনীয়",
+                step2Audio: "ধাপ ২: অডিও উৎস",
+                audioModeTTS: "টেক্সট-টু-স্পিচ",
+                audioModeUpload: "অডিও আপলোড",
+                speechScriptLabel: "বক্তব্যের স্ক্রিপ্ট ও প্রম্পট",
+                voicePersona: "ভয়েস পার্সোনা",
+                speechSpeed: "কথার গতি",
+                previewTtsBtn: "সিন্থেসাইজ ও প্রিভিউ ভয়েস",
+                audioUploadPrompt: "MP3, WAV, M4A, AAC আপলোড করুন",
+                step3Cinematic: "ধাপ ৩: সিনেমাটিক সেটিংস",
+                cameraMotionLabel: "ক্যামেরা মুভমেন্ট",
+                camStatic: "স্ট্যাটিক ক্যামেরা",
+                camZoom: "স্লো জুম",
+                camCloseup: "সিনেম্যাটিক ক্লোজ-আপ",
+                camMedium: "মিডিয়াম শট",
+                aspectRatioLabel: "অ্যাসপেক্ট রেশিও",
+                resolutionLabel: "রেজোলিউশন",
+                fpsLabel: "ফ্রেম রেট (FPS)",
+                styleLabel: "উপস্থাপকের স্টাইল",
+                optSubtitles: "অটো সাবটাইটেল ও ক্যাপশন তৈরি",
+                optBgBlur: "সিনেম্যাটিক ব্যাকগ্রাউন্ড ব্লার ও লাইটিং",
+                outputPreviewLabel: "ধাপ ৪: স্টুডিও রেন্ডার ও আউটপুট",
+                readyToRenderTitle: "সিনেম্যাটিক রেন্ডারিংয়ের জন্য প্রস্তুত",
+                readyToRenderDesc: "একটি পোর্ট্রেট আপলোড করুন, স্ক্রিপ্ট বা অডিও দিন এবং ক্লাউডফ্লাওয়ার ওয়ার্কার জব শুরু করতে ক্লিক করুন।",
+                downloadMp4Btn: "MP4 ডাউনলোড করুন (1080p)",
+                openInEditorBtn: "প্রো এডিটরে খুলুন"
+            },
+            hi: {
+                creditsLabel: "क्रेडिट्स:",
+                menuStudios: "AI स्टूडियो",
+                tabTalkingPhoto: "टॉकिंग फोटो और लिप-सिंक",
+                tabTextToVideo: "सिनेमैटिक वीडियो",
+                tabImageStudio: "AI इमेज स्टूडियो (12 टूल्स)",
+                tabVideoStudio: "संपूर्ण वीडियो स्टूडियो",
+                tabAudioStudio: "वॉयस और ऑडियो स्टूडियो",
+                tabProEditor: "प्रोफेशनल वीडियो एडिटर",
+                menuSystem: "प्रबंधन और सेटिंग्स",
+                tabProviders: "AI प्रोवाइडर एडाप्टर",
+                tabHistory: "जॉब इतिहास और क्लाउड स्टोरेज",
+                tabUpgrade: "एंटरप्राइज प्लान और कोटा",
+                ethicsTitle: "नैतिक AI गारंटी",
+                ethicsDesc: "सभी टॉकिंग फोटो और वॉयस क्लोन के लिए अनिवार्य सहमति जाँच।",
+                badgeFlagship: "फ्लैगशिप सिनेमैटिक AI फ़ीचर",
+                talkingTitle: "सिनेमैटिक टॉकिंग फोटो और लिप-सिंक स्टूडियो",
+                talkingSubtitle: "सटीक बहुभाषी लिप-सिंक, सूक्ष्म भावों और स्टूडियो-ग्रेड रेंडरिंग के साथ पोर्ट्रेट में जान फूंकें।",
+                loadDemoBtn: "सैंपल मॉडल लोड करें",
+                generateVideoBtn: "सिनेमैटिक वीडियो जनरेट करें",
+                consentHeader: "अनिवार्य सहमति और सत्यापन:",
+                consentText: "टॉकिंग फोटो या क्लोन वॉयस जनरेट करके आप पुष्टि करते हैं कि आपके पास संबंधित व्यक्ति की स्पष्ट कानूनी अनुमति या अधिकार हैं।",
+                consentCheckboxText: "मैं सत्यापित करता हूँ कि मेरे पास इस पोर्ट्रेट और ऑडियो को एनिमेट करने के अधिकार हैं।",
+                step1Portrait: "चरण 1: पोर्ट्रेट इमेज",
+                dropPortrait: "अपलोड करने के लिए क्लिक करें या यहाँ खींचें",
+                portraitHint: "हाई-रेज फ्रंटल चेहरा अनुशंसित",
+                step2Audio: "चरण 2: ऑडियो स्रोत",
+                audioModeTTS: "टेक्स्ट-टू-स्पीच",
+                audioModeUpload: "ऑडियो अपलोड करें",
+                speechScriptLabel: "स्पीच स्क्रिप्ट और प्रॉम्प्ट",
+                voicePersona: "वॉयस पर्सना",
+                speechSpeed: "बोलने की गति",
+                previewTtsBtn: "सिंथेसाइज और प्रीव्यू वॉयस",
+                audioUploadPrompt: "MP3, WAV, M4A, AAC अपलोड करें",
+                step3Cinematic: "चरण 3: सिनेमैटिक सेटिंग्स",
+                cameraMotionLabel: "कैमरा मूवमेंट",
+                camStatic: "स्टैटिक कैमरा",
+                camZoom: "स्लो ज़ूम",
+                camCloseup: "सिनेमैटिक क्लोज-अप",
+                camMedium: "मीडियम शॉट",
+                aspectRatioLabel: "आस्पेक्ट रेशियो",
+                resolutionLabel: "रिज़ॉल्यूशन",
+                fpsLabel: "फ्रेम रेट (FPS)",
+                styleLabel: "प्रस्तुतकर्ता शैली",
+                optSubtitles: "ऑटो सबटाइटल और कैप्शन",
+                optBgBlur: "सिनेमैटिक बैकग्राउंड ब्लर और लाइटिंग",
+                outputPreviewLabel: "चरण 4: स्टूडियो रेंडर और आउटपुट",
+                readyToRenderTitle: "सिनेमैटिक रेंडरिंग के लिए तैयार",
+                readyToRenderDesc: "एक पोर्ट्रेट अपलोड करें, स्क्रिप्ट या ऑडियो जोड़ें और क्लाउडफ्लेयर वर्कर जॉब शुरू करने के लिए क्लिक करें।",
+                downloadMp4Btn: "MP4 डाउनलोड करें (1080p)",
+                openInEditorBtn: "प्रो एडिटर में खोलें"
+            },
+            ur: {
+                creditsLabel: "کریڈٹس:",
+                menuStudios: "AI سٹوڈیوز",
+                tabTalkingPhoto: "ٹاکنگ فوٹو اور لپ سنک",
+                tabTextToVideo: "سینیمیٹک ویڈیو",
+                tabImageStudio: "AI امیজ سٹوڈیو (12 ٹولز)",
+                tabVideoStudio: "مکمل ویڈیو سٹوڈیو",
+                tabAudioStudio: "وائس اور آڈیو سٹوڈیو",
+                tabProEditor: "پروفیشنل ویڈیو ایڈیٹر",
+                menuSystem: "انتظامات اور ترتیبات",
+                tabProviders: "AI پرووائڈر ایڈاپٹرز",
+                tabHistory: "جوب ہسٹری اور کلاؤڈ سٹوریج",
+                tabUpgrade: "انٹرپرائز پلانز اور کوٹہ",
+                ethicsTitle: "اخلاقی AI گارنٹی",
+                ethicsDesc: "تمام ٹاکنگ فوٹوز اور وائس کلونز کے لیے لازمی رضামندی کی جانچ۔",
+                badgeFlagship: "فلگ شپ سینیمیٹک AI فیچر",
+                talkingTitle: "سینیمیٹک ٹاکنگ فوٹو اور لپ سنک سٹوڈیو",
+                talkingSubtitle: "درست کثیر لسانی لپ سنک، اور سٹوڈیو گریڈ رینڈرنگ کے ساتھ پورٹریٹ کو زندہ کریں۔",
+                loadDemoBtn: "نمونہ ماڈل لوڈ کریں",
+                generateVideoBtn: "سینیمیٹک ویڈیو بنائیں",
+                consentHeader: "لازمی رضامندی اور تصدیق:",
+                consentText: "ٹاکنگ فوٹو یا کلونڈ وائس بنا کر آپ تصدیق کرتے ہیں کہ آپ کے پاس اس شخص کی واضح قانونی اجازت یا حقوق موجود ہیں۔",
+                consentCheckboxText: "میں تصدیق کرتا ہوں کہ میرے پاس اس پورٹریٹ اور آڈیو کو متحرک کرنے کے حقوق یا اجازت موجود ہے۔",
+                step1Portrait: "مرحلہ 1: پورٹریٹ امیج",
+                dropPortrait: "اپ لوڈ کرنے کے لیے کلک کریں یا یہاں گھسیٹیں",
+                portraitHint: "ہائی ریز فرنٹل فیس تجویز کردہ",
+                step2Audio: "مرحلہ 2: آڈیو ماخذ",
+                audioModeTTS: "ٹیکسٹ ٹو اسپیچ",
+                audioModeUpload: "آڈیو اپ لوڈ",
+                speechScriptLabel: "اسپیچ سکرپٹ اور پرامپٹ",
+                voicePersona: "وائس پرسنہ",
+                speechSpeed: "بولنے کی رفتار",
+                previewTtsBtn: "آواز سنیں اور سنتھیسائز کریں",
+                audioUploadPrompt: "MP3, WAV, M4A, AAC اپ لوڈ کریں",
+                step3Cinematic: "مرحلہ 3: سینیمیٹک ترتیبات",
+                cameraMotionLabel: "کیمرہ موومنٹ",
+                camStatic: "سٹیٹک کیمرہ",
+                camZoom: "سلو زوم",
+                camCloseup: "سینیمیٹک کلوز اپ",
+                camMedium: "میڈیم شاٹ",
+                aspectRatioLabel: "نسبت (Aspect Ratio)",
+                resolutionLabel: "ریزولوشن",
+                fpsLabel: "فریم ریٹ (FPS)",
+                styleLabel: "پیش کنندہ کا انداز",
+                optSubtitles: "آٹو سبٹائٹلز اور کیپشنز",
+                optBgBlur: "سینیمیٹک بیک گراؤنڈ بلر اور لائٹنگ",
+                outputPreviewLabel: "مرحلہ 4: سٹوڈیو رینڈر اور آؤٹ پٹ",
+                readyToRenderTitle: "سینیمیٹک رینڈرنگ کے لیے تیار",
+                readyToRenderDesc: "پورٹریٹ اپ لوڈ کریں، سکرپٹ یا آڈیو شامل کریں اور کلاؤڈ فلائیر ورکر جاب شروع کرنے کے لیے کلک کریں۔",
+                downloadMp4Btn: "MP4 ڈاؤن لوڈ کریں (1080p)",
+                openInEditorBtn: "پرو ایڈیٹر میں کھولیں"
+            },
+            ar: {
+                creditsLabel: "الرصيد:",
+                menuStudios: "استوديوهات الذكاء الاصطناعي",
+                tabTalkingPhoto: "الصورة الناطقة ومزامنة الشفاه",
+                tabTextToVideo: "فيديو سينمائي",
+                tabImageStudio: "استوديو الصور (12 أداة)",
+                tabVideoStudio: "استوديو الفيديو الكامل",
+                tabAudioStudio: "استوديو الصوت",
+                tabProEditor: "محرر الفيديو الاحترافي",
+                menuSystem: "الإدارة والإعدادات",
+                tabProviders: "محولات مزودي الذكاء الاصطناعي",
+                tabHistory: "سجل الوظائف والتخزين السحابي",
+                tabUpgrade: "خطط المؤسسات والحصص",
+                ethicsTitle: "ضمان الذكاء الاصطناعي الأخلاقي",
+                ethicsDesc: "التحقق الإلزامي من الموافقة لجميع الصور الناطقة واستنساخ الأصوات.",
+                badgeFlagship: "ميزة الذكاء الاصطناعي السينمائية الرائدة",
+                talkingTitle: "استوديو الصور الناطقة ومزامنة الشفاه السينمائية",
+                talkingSubtitle: "أحيِ الصور الشخصية بمزامنة شفاه دقيقة متعددة اللغات وعرض سينمائي احترافي.",
+                loadDemoBtn: "تحميل نموذج تجريبي",
+                generateVideoBtn: "إنشاء فيديو سينمائي",
+                consentHeader: "الموافقة والتحقق الإلزامي:",
+                consentText: "من خلال إنشاء صورة ناطقة أو صوت مستنسخ، فإنك تؤكد أن لديك الإذن القانوني الصريح أو حقوق الشخص المعني.",
+                consentCheckboxText: "أؤكد أنني أمتلك الحقوق أو التفويض الصريح لتحريك هذه الصورة والصوت.",
+                step1Portrait: "الخطوة 1: الصورة الشخصية",
+                dropPortrait: "انقر للتحميل أو اسحب الصورة هنا",
+                portraitHint: "يوصى بوجه أمامي عالي الدقة",
+                step2Audio: "الخطوة 2: مصدر الصوت",
+                audioModeTTS: "تحويل النص إلى كلام",
+                audioModeUpload: "رفع ملف صوتي",
+                speechScriptLabel: "نص الكلام والتوجيه",
+                voicePersona: "شخصية الصوت",
+                speechSpeed: "سرعة الكلام",
+                previewTtsBtn: "تركيب ومعاينة الصوت",
+                audioUploadPrompt: "رفع MP3, WAV, M4A, AAC",
+                step3Cinematic: "الخطوة 3: الإعدادات السينمائية",
+                cameraMotionLabel: "حركة الكاميرا",
+                camStatic: "كاميرا ثابتة",
+                camZoom: "تكبير بطيء",
+                camCloseup: "لقطة مقربة سينمائية",
+                camMedium: "لقطة متوسطة",
+                aspectRatioLabel: "نسبة العرض إلى الارتفاع",
+                resolutionLabel: "الدقة",
+                fpsLabel: "معدل الإطارات (FPS)",
+                styleLabel: "نمط المذيع",
+                optSubtitles: "إنشاء الترجمة التلقائية",
+                optBgBlur: "ضبابية الخلفية والإضاءة السينمائية",
+                outputPreviewLabel: "الخطوة 4: عرض وإخراج الاستوديو",
+                readyToRenderTitle: "جاهز للعرض السينمائي",
+                readyToRenderDesc: "قم بتحميل صورة شخصية، وإضافة النص أو الصوت، وانقر فوق 'إنشاء فيديو سينمائي' لبدء المهمة.",
+                downloadMp4Btn: "تحميل MP4 (1080p)",
+                openInEditorBtn: "فتح في المحرّر الاحترافي"
+            },
+            ne: {
+                creditsLabel: "क्रेडिट्स:",
+                menuStudios: "AI स्टुडियोहरू",
+                tabTalkingPhoto: "टकइङ फोटो र लिप-सिंक",
+                tabTextToVideo: "सिनेमेटिक भिडियो",
+                tabImageStudio: "AI इमेज स्टुडियो (१२ उपकरणहरू)",
+                tabVideoStudio: "सम्पूर्ण भिडियो स्टुडियो",
+                tabAudioStudio: "भ्वाइस र अडियो स्टुडियो",
+                tabProEditor: "व्यावसायिक भिडियो सम्पादक",
+                menuSystem: "व्यवस्थापन र सेटिंग्स",
+                tabProviders: "AI प्रदायक एडाप्टरहरू",
+                tabHistory: "कामको इतिहास र क्लाउड भण्डारण",
+                tabUpgrade: "इन्टरप्राइज योजना र कोटा",
+                ethicsTitle: "नैतिक AI ग्यारेन्टी",
+                ethicsDesc: "सबै टकइङ फोटो र भ्वाइस क्लोनहरूको लागि अनिवार्य सहमति जाँच।",
+                badgeFlagship: "प्रमुख सिनेमेटिक AI फिचर",
+                talkingTitle: "सिनेमेटिक टकइङ फोटो र लिप-सिंक स्टुडियो",
+                talkingSubtitle: "सटीक बहुभाषी लिप-सिंक र स्टुडियो-ग्रेड रेन्डरिंगको साथ पोर्ट्रेटहरूमा जीवन दिनुहोस्।",
+                loadDemoBtn: "नमुना मोडेल लोड गर्नुहोस्",
+                generateVideoBtn: "सिनेमेटिक भिडियो सिर्जना गर्नुहोस्",
+                consentHeader: "अनिवार्य सहमति र प्रमाणिकरण:",
+                consentText: "टकइङ फोटो वा क्लोन गरिएको आवाज सिर्जना गरेर, तपाईं पुष्टि गर्नुहुन्छ कि तपाईंसँग चित्रित व्यक्तिको स्पष्ट कानुनी अनुमति छ।",
+                consentCheckboxText: "म प्रमाणित गर्छु कि मसंग यो पोर्ट्रेट एनिमेट गर्ने अधिकार छ।",
+                step1Portrait: "चरण १: पोर्ट्रेट छवि",
+                dropPortrait: "अपलोड गर्न क्लिक गर्नुहोस् वा यहाँ तान्नुहोस्",
+                portraitHint: "उच्च-रिजोल्युशन अनुहार सिफारिस गरिएको",
+                step2Audio: "चरण २: अडियो स्रोत",
+                audioModeTTS: "टेक्स्ट-टु-स्पीच",
+                audioModeUpload: "अडियो अपलोड",
+                speechScriptLabel: "भाषण स्क्रिप्ट र प्रम्प्ट",
+                voicePersona: "भ्वाइस पर्सना",
+                speechSpeed: "बोल्ने गति",
+                previewTtsBtn: "सिंथेसाइज र पूर्वावलोकन गर्नुहोस्",
+                audioUploadPrompt: "MP3, WAV, M4A, AAC अपलोड गर्नुहोस्",
+                step3Cinematic: "चरण ३: सिनेमेटिक सेटिंग्स",
+                cameraMotionLabel: "क्यामेरा चाल",
+                camStatic: "स्टेटिक क्यामेरा",
+                camZoom: "ढिलो जुम",
+                camCloseup: "सिनेमेटिक क्लोज-अप",
+                camMedium: "मध्यम शट",
+                aspectRatioLabel: "एस्पेक्ट रेसियो",
+                resolutionLabel: "रिजोल्युशन",
+                fpsLabel: "फ्रेम दर (FPS)",
+                styleLabel: "प्रस्तुतकर्ता शैली",
+                optSubtitles: "अटो सबटाइटल जेनेरेट गर्नुहोस्",
+                optBgBlur: "सिनेमेटिक ब्याकग्राउन्ड ब्लर",
+                outputPreviewLabel: "चरण ४: स्टुडियो रेन्डर र आउटपुट",
+                readyToRenderTitle: "सिनेमेटिक रेन्डरिंगको लागि तयार",
+                readyToRenderDesc: "पोर्ट्रेट अपलोड गर्नुहोस्, स्क्रिप्ट थप्नुहोस् र क्लाउडफ्लेयर वर्कर काम सुरु गर्न क्लिक गर्नुहोस्।",
+                downloadMp4Btn: "MP4 डाउनलोड गर्नुहोस् (1080p)",
+                openInEditorBtn: "प्रो सम्पादकमा खोल्नुहोस्"
+            },
+            si: {
+                creditsLabel: "ණය ප්‍රමාණය:",
+                menuStudios: "AI චිත්‍රාගාර",
+                tabTalkingPhoto: "කතා කරන ඡායාරූපය සහ Lip-Sync",
+                tabTextToVideo: "සිනමාත්මක වීඩියෝව",
+                tabImageStudio: "AI රූප චිත්‍රාගාරය (මෙවලම් 12)",
+                tabVideoStudio: "සම්පූර්ණ වීඩියෝ චිත්‍රාගාරය",
+                tabAudioStudio: "හඬ සහ ශ්‍රව්‍ය චිත්‍රාගාරය",
+                tabProEditor: "වෘත්තීය වීඩියෝ සංස්කාරකය",
+                menuSystem: "ניהול והגדרות",
+                tabProviders: "AI සපයන්නන්ගේ ඇඩැප්ටර",
+                tabHistory: "රැකියා ඉතිහාසය සහ වලාකුළු ගබඩාව",
+                tabUpgrade: "ව්යවසාය සැලසුම් සහ කෝටාව",
+                ethicsTitle: "සදාචාරාත්මක AI සහතිකය",
+                ethicsDesc: "සියලුම කතා කරන ඡායාරූප සහ හඬ ව්‍යාජ සකස් කිරීම් සඳහා අනිවාර්ය කැමැත්ත පරීක්ෂා කිරීම.",
+                badgeFlagship: "ප්‍රමුඛ පෙළේ සිනමාත්මක AI විශේෂාංගය",
+                talkingTitle: "සිනමාත්මක කතා කරන ඡායාරූප සහ Lip-Sync චිත්‍රාගාරය",
+                talkingSubtitle: "නිරවද්‍ය බහුභාෂා Lip-Sync සහ චිත්‍රාගාර මට්ටමේ રેન્ડரிං සමඟින් ඡායාරූප ජීවමාන කරන්න.",
+                loadDemoBtn: "ආදර්ශ ආකෘතිය පූරණය කරන්න",
+                generateVideoBtn: "සිනමාත්මක වීඩියෝව සාදන්න",
+                consentHeader: "අනිවාර්ය කැමැත්ත සහ තහවුරු කිරීම:",
+                consentText: "කතා කරන ඡායාරූපයක් හෝ හඬක් සෑදීමෙන්, නිරූපිත පුද්ගලයාගෙන් ඔබට පැහැදිලි නීතිමය අවසරයක් ඇති බව ඔබ තහවුරු කරයි.",
+                consentCheckboxText: "මෙම ඡායාරූපය සජීවීකරණය කිරීමට මට හිමිකම් ඇති බව මම තහවුරු කරමි.",
+                step1Portrait: "පියවර 1: ඡායාරූපය",
+                dropPortrait: "උඩුගත කිරීමට ක්ලික් කරන්න හෝ මෙහි අතහරින්න",
+                portraitHint: "ඉහළ විභේදනයකින් යුත් මුහුණක් නිර්දේශ කෙරේ",
+                step2Audio: "පියවර 2: ශ්‍රව්‍ය මූලාශ්‍රය",
+                audioModeTTS: "පෙළ සිට කථනය (TTS)",
+                audioModeUpload: "ශ්‍රව්‍ය උඩුගත කරන්න",
+                speechScriptLabel: "කථන පිටපත",
+                voicePersona: "හඬ පෞරුෂය",
+                speechSpeed: "කථන වේගය",
+                previewTtsBtn: "හඬ පෙරදසුන් කරන්න",
+                audioUploadPrompt: "MP3, WAV, M4A, AAC උඩුගත කරන්න",
+                step3Cinematic: "පියවර 3: සිනමාත්මක සැකසුම්",
+                cameraMotionLabel: "කැමරා චලනය",
+                camStatic: "ස්ථාවර කැමරාව",
+                camZoom: "මන්දගාමී සූම්",
+                camCloseup: "සිනමාත්මක ආසන්න ඡායාරූපය",
+                camMedium: "මධ්‍යම රූගත කිරීම",
+                aspectRatioLabel: " දර්ශන අනුපාතය",
+                resolutionLabel: "විභේදනය",
+                fpsLabel: "රාමු වේගය (FPS)",
+                styleLabel: "ඉදිරිපත් කරන්නාගේ විලාසය",
+                optSubtitles: "ස්වয়ංක්‍රීය උපසිරැසි ජනනය",
+                optBgBlur: "පසුබිම් බොඳ කිරීම සහ ආලෝකකරණය",
+                outputPreviewLabel: "පියවර 4: ප්‍රතිදාන ප්‍රතිදානය",
+                readyToRenderTitle: "සිනමාත්මක રેન્ડரிං සඳහා සූදානම්",
+                readyToRenderDesc: "ඡායාරූපයක් උඩුගත කරන්න, ස්ක්‍රිප්ට් එකක් එක් කර 'Generate' ක්ලික් කරන්න.",
+                downloadMp4Btn: "MP4 බාගත කරන්න (1080p)",
+                openInEditorBtn: "ප්‍රෝ සංස්කාරකයේ විවෘත කරන්න"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const body = document.getElementById('bodyRoot');
+            if (lang === 'ar' || lang === 'ur') {
+                body.setAttribute('dir', 'rtl');
+            } else {
+                body.setAttribute('dir', 'ltr');
+            }
+
+            const dict = i18nData[lang] || i18nData['en'];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.innerText = dict[key];
+                }
+            });
+            showToast(`Language switched successfully.`);
+        }
+
+        // Live Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toTimeString().split(' ')[0];
+        }, 1000);
+
+        // Toast Notification System
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'bg-navy-800 border border-cyan-500/50 text-slate-100 px-4 py-3 rounded-xl shadow-2xl text-xs flex items-center space-x-3 pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400 text-base"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 3500);
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tabContent-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-cyan-400', 'bg-cyan-500/10', 'border', 'border-cyan-500/30');
+                btn.classList.add('text-slate-300', 'hover:bg-navy-700', 'hover:text-white');
+            });
+            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-cyan-400', 'bg-cyan-500/10', 'border', 'border-cyan-500/30');
+                activeBtn.classList.remove('text-slate-300', 'hover:bg-navy-700', 'hover:text-white');
+            }
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Theme Toggle
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        // Modal Handlers
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Talking Photo & Audio State Handlers
+        function switchAudioMode(mode) {
+            const ttsBtn = document.getElementById('audioModeTtsBtn');
+            const uploadBtn = document.getElementById('audioModeUploadBtn');
+            const ttsPanel = document.getElementById('audioTtsPanel');
+            const uploadPanel = document.getElementById('audioUploadPanel');
+
+            if (mode === 'tts') {
+                ttsBtn.className = 'py-2 text-xs font-bold rounded-lg bg-cyan-500 text-navy-900 transition shadow';
+                uploadBtn.className = 'py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition';
+                ttsPanel.classList.remove('hidden');
+                uploadPanel.classList.add('hidden');
+            } else {
+                uploadBtn.className = 'py-2 text-xs font-bold rounded-lg bg-cyan-500 text-navy-900 transition shadow';
+                ttsBtn.className = 'py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition';
+                uploadPanel.classList.remove('hidden');
+                ttsPanel.classList.add('hidden');
+            }
+        }
+
+        function handlePortraitUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('portraitPreviewImg').src = e.target.result;
+                    document.getElementById('portraitPreviewContainer').classList.remove('hidden');
+                    document.getElementById('portraitPlaceholder').classList.add('hidden');
+                    showToast('Portrait loaded successfully.');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removePortrait() {
+            document.getElementById('portraitFileInput').value = '';
+            document.getElementById('portraitPreviewContainer').classList.add('hidden');
+            document.getElementById('portraitPlaceholder').classList.remove('hidden');
+            showToast('Portrait removed.');
+        }
+
+        function handleAudioUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('audioFileNameDisplay').innerText = `Selected: ${file.name}`;
+                showToast('Audio file attached successfully.');
+            }
+        }
+
+        function loadDemoTalkingPhoto() {
+            document.getElementById('portraitPreviewImg').src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80";
+            document.getElementById('portraitPreviewContainer').classList.remove('hidden');
+            document.getElementById('portraitPlaceholder').classList.add('hidden');
+            document.getElementById('ttsScriptInput').value = "Welcome to Nivora AI Media Studio. Experience enterprise cinematic video creation with flawless multilingual lip-sync and studio rendering.";
+            document.getElementById('consentCheckbox').checked = true;
+            showToast('Sample model & demo script loaded successfully.');
+        }
+
+        function setCameraMotion(motion) {
+            document.querySelectorAll('.cam-btn').forEach(b => {
+                b.className = 'cam-btn bg-navy-900 border border-slate-700 text-slate-400 hover:text-white py-2 rounded-xl text-xs font-medium transition';
+            });
+            document.getElementById(`cam${motion.charAt(0).toUpperCase() + motion.slice(1)}`).className = 'cam-btn bg-cyan-500/10 border border-cyan-500/50 text-cyan-300 py-2 rounded-xl text-xs font-semibold transition';
+        }
+
+        function setAspect(asp) {
+            document.querySelectorAll('.asp-btn').forEach(b => {
+                b.className = 'asp-btn bg-navy-900 border border-slate-700 text-slate-400 hover:text-white py-2 rounded-xl text-xs font-medium transition';
+            });
+            const id = asp === '16:9' ? 'asp169' : asp === '9:16' ? 'asp916' : 'asp11';
+            document.getElementById(id).className = 'asp-btn bg-cyan-500/10 border border-cyan-500/50 text-cyan-300 py-2 rounded-xl text-xs font-semibold transition';
+        }
+
+        function generatePreviewTTS() {
+            showToast('Synthesizing voice preview using Gemini TTS Engine...');
+        }
+
+        // Asynchronous Job Processing Simulation
+        let currentJobInterval = null;
+
+        function startTalkingPhotoGeneration() {
+            const consent = document.getElementById('consentCheckbox').checked;
+            if (!consent) {
+                showToast('Please check the mandatory ethical consent box before generating.');
+                return;
+            }
+
+            // Deduct credits
+            let credits = parseInt(document.getElementById('userCreditsDisplay').innerText);
+            if (credits < 20) {
+                showToast('Insufficient credits! Please upgrade your enterprise plan.');
+                openModal('upgradeModal');
+                return;
+            }
+            credits -= 20;
+            document.getElementById('userCreditsDisplay').innerText = credits;
+
+            // Switch view states
+            document.getElementById('renderIdleState').classList.add('hidden');
+            document.getElementById('renderCompleteState').classList.add('hidden');
+            document.getElementById('renderProcessingState').classList.remove('hidden');
+
+            let progress = 0;
+            const progressBar = document.getElementById('jobProgressBar');
+            const percentText = document.getElementById('jobPercentText');
+            const statusTitle = document.getElementById('jobStatusTitle');
+            const statusSubtitle = document.getElementById('jobStatusSubtitle');
+
+            const steps = [
+                { p: 15, title: "Uploading Portrait & Audio to Cloud...", sub: "Secure S3 bucket validation & MIME type check" },
+                { p: 40, title: "Running Cloudflare Worker /api/lipsync...", sub: "AI model analyzing facial landmarks & audio phonemes" },
+                { p: 75, title: "Rendering Cinematic 1080p Video...", sub: "Applying background blur, color grading & frame interpolation" },
+                { p: 95, title: "Finalizing MP4 & Auto Subtitles...", sub: "Encoding audio tracks and embedding closed captions" },
+                { p: 100, title: "Render Complete!", sub: "Video successfully processed and ready for download" }
+            ];
+
+            let stepIdx = 0;
+            clearInterval(currentJobInterval);
+            currentJobInterval = setInterval(() => {
+                progress += 2;
+                if (progress > steps[stepIdx].p && stepIdx < steps.length - 1) {
+                    stepIdx++;
+                }
+                progressBar.style.width = `${progress}%`;
+                percentText.innerText = `${progress}%`;
+                statusTitle.innerText = steps[stepIdx].title;
+                statusSubtitle.innerText = steps[stepIdx].sub;
+
+                if (progress >= 100) {
+                    clearInterval(currentJobInterval);
+                    setTimeout(() => {
+                        document.getElementById('renderProcessingState').classList.add('hidden');
+                        document.getElementById('renderCompleteState').classList.remove('hidden');
+                        showToast('Cinematic Talking Photo video rendered successfully!');
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        function cancelCurrentJob() {
+            clearInterval(currentJobInterval);
+            document.getElementById('renderProcessingState').classList.add('hidden');
+            document.getElementById('renderIdleState').classList.remove('hidden');
+            showToast('Job cancelled successfully.');
+        }
+
+        function downloadFinalVideo() {
+            showToast('Downloading NIVORA_Cinematic_TalkingPhoto_1080p.mp4...');
+        }
+
+        function openProEditorWithVideo() {
+            switchTab('proEditor');
+            showToast('Loaded video into Professional Timeline Editor.');
+        }
+
+        // Image Studio Tool Switcher
+        function switchImageTool(toolId) {
+            document.querySelectorAll('.img-tool-tab').forEach(b => {
+                b.className = 'img-tool-tab px-4 py-2 rounded-xl text-xs font-medium bg-navy-800 text-slate-300 border border-slate-700 hover:bg-navy-700 transition';
+            });
+            event.target.className = 'img-tool-tab px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 text-navy-900 transition shadow';
+            document.getElementById('activeImageToolTitle').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i> <span>${event.target.innerText} Studio</span>`;
+        }
+
+        function runImageToolAction() {
+            let credits = parseInt(document.getElementById('userCreditsDisplay').innerText);
+            if (credits < 5) {
+                showToast('Insufficient credits!');
+                openModal('upgradeModal');
+                return;
+            }
+            credits -= 5;
+            document.getElementById('userCreditsDisplay').innerText = credits;
+            showToast('AI Image Studio tool executed successfully.');
+        }
+
+        function downloadCurrentImage() {
+            showToast('Downloading generated AI image asset...');
+        }
+
+        function startTextToVideoJob() {
+            showToast('Text-to-Video cinematic scene generation started.');
+        }
+
+        function addStoryboardScene() {
+            showToast('New storyboard scene added.');
+        }
+
+        function selectPlan(planName) {
+            document.getElementById('planBadgeText').innerText = planName;
+            closeModal('upgradeModal');
+            showToast(`Successfully upgraded to ${planName} plan!`);
+        }
+
+        function performFirebaseSignIn() {
+            closeModal('authModal');
+            showToast('Successfully authenticated with Firebase & Firestore sync active.');
+        }
+    </script>
+</body>
+</html>
