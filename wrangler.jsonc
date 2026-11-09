@@ -1,4 +1,4 @@
-```json
+
 {
   "$schema": "https://developers.cloudflare.com/workers/wrangler/schema.json",
   "name": "nivora",
@@ -19,4 +19,3 @@
     "RUNWAY_VIDEO_MODEL": "gen4.5"
   }
 }
-```
