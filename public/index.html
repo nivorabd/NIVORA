@@ -7,6 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101a35">
 <title>NIVORA WORLD — One World. Unlimited Tools.</title>
+<meta name="description" content="NIVORA WORLD — One World. Unlimited Tools. Endless Possibilities.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -14,609 +18,554 @@
 
 <style>
 :root{
---bg:#081225;--panel:#111f38;--panel2:#192b49;
---text:#f1f5ff;--muted:#a9b8d0;--line:#2a3d5d;
---primary:#3975ff;--shadow:0 16px 40px #0005;
+ --bg:#0b1224;--panel:#121e36;--panel2:#172642;--text:#f2f5ff;
+ --muted:#9aabc8;--line:#293957;--primary:#6685ff;--accent:#9b72ff;
+ --green:#22c58b;--red:#ff647c;--shadow:0 12px 35px #0003;
 }
 [data-theme="light"]{
---bg:#f3f6fc;--panel:#fff;--panel2:#edf2fb;
---text:#17233d;--muted:#61718b;--line:#dce4f0;
---primary:#315ee8;--shadow:0 12px 30px #18305a12;
+ --bg:#f3f6fc;--panel:#fff;--panel2:#edf2fb;--text:#17233b;
+ --muted:#64748b;--line:#dce4f1;--primary:#4168e8;--accent:#8056df;
+ --shadow:0 10px 28px #23385b12;
 }
 *{box-sizing:border-box}
-body{
-margin:0;background:var(--bg);color:var(--text);
-font-family:system-ui,-apple-system,"Noto Sans Bengali",Arial,sans-serif;
-min-height:100vh
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans Bengali",sans-serif;min-height:100vh}
 button,input,select{font:inherit}
+button{cursor:pointer}
 a{color:inherit;text-decoration:none}
-.topbar{
-position:sticky;top:0;z-index:20;
-background:var(--panel);border-bottom:1px solid var(--line)
-}
-.top-inner{
-max-width:1280px;margin:auto;padding:11px 16px;
-display:flex;align-items:center;gap:12px;flex-wrap:wrap
-}
-.back{
-width:39px;height:39px;border:1px solid var(--line);
-border-radius:12px;background:var(--panel2);
-color:var(--text);cursor:pointer;font-size:19px
-}
-.brand{display:flex;align-items:center;gap:10px;min-width:180px}
-.logo{
-width:42px;height:42px;border-radius:14px;
-background:linear-gradient(135deg,#2775ff,#a44be6);
-display:grid;place-items:center;color:#fff;font-weight:950;font-size:21px
-}
-.brand-name{font-weight:950;letter-spacing:1px;font-size:15px}
-.brand-tag{font-size:10px;color:var(--muted)}
-.top-actions{
-margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap
-}
-.top-actions select,.top-btn{
-border:1px solid var(--line);background:var(--panel2);
-color:var(--text);border-radius:10px;padding:9px 10px;
-cursor:pointer;font-size:12px;font-weight:750
-}
-.container{max-width:1280px;margin:auto;padding:22px 16px 45px}
-.hero{
-border-radius:24px;padding:clamp(23px,4vw,38px);
-background:linear-gradient(118deg,#10234b,#285fe2 55%,#7943cf);
-color:#fff;box-shadow:var(--shadow)
-}
-.hero h1{font-size:clamp(25px,4vw,39px);margin:0 0 9px}
-.hero p{color:#e5edff;max-width:700px;line-height:1.7;margin:0;font-size:14px}
-.hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-.pill{
-border:1px solid #ffffff55;background:#ffffff18;
-border-radius:99px;padding:8px 12px;font-size:11px;font-weight:800
-}
-.info-strip{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0;align-items:center}
-.chip{
-background:var(--panel);border:1px solid var(--line);
-border-radius:12px;padding:10px 12px;color:var(--muted);font-size:12px
-}
-.wallet{background:#087b50;color:white;border:0;font-weight:850}
-.reward{
-background:#f5c542;color:#241700;border:0;border-radius:12px;
-padding:11px 15px;font-weight:900;cursor:pointer
-}
-.section-head{
-display:flex;align-items:end;justify-content:space-between;
-gap:12px;margin:28px 0 13px
-}
-.section-head h2{font-size:20px;margin:0}
-.section-head p{margin:5px 0 0;color:var(--muted);font-size:12px}
-.search{
-max-width:420px;width:100%;padding:12px 14px;
-border:1px solid var(--line);background:var(--panel);
-color:var(--text);border-radius:12px;outline:none
-}
-.tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 13px}
-.tab{
-white-space:nowrap;border:1px solid var(--line);
-background:var(--panel);color:var(--muted);
-padding:9px 13px;border-radius:999px;cursor:pointer;
-font-size:12px;font-weight:800
-}
-.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
-.card{
-position:relative;background:var(--panel);border:1px solid var(--line);
-border-radius:18px;padding:16px;display:flex;flex-direction:column;
-min-height:190px;transition:.2s;overflow:hidden
-}
-.card:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:var(--shadow)}
-.card:before{
-content:"";position:absolute;inset:0 0 auto;height:3px;
-background:var(--accent,var(--primary))
-}
-.ico{
-width:45px;height:45px;border-radius:14px;
-background:var(--panel2);display:grid;place-items:center;
-font-size:23px;margin-bottom:12px
-}
-.card h3{font-size:14px;margin:0 0 6px}
-.card p{
-font-size:11px;color:var(--muted);line-height:1.55;
-margin:0 0 14px;flex:1
-}
-.open{
-display:flex;align-items:center;justify-content:center;gap:8px;
-border-radius:11px;padding:10px 12px;
-background:linear-gradient(110deg,var(--accent),#7547e8);
-color:#fff;font-size:12px;font-weight:900
-}
-.empty{
-display:none;text-align:center;padding:25px;color:var(--muted);
-background:var(--panel);border:1px dashed var(--line);border-radius:15px
-}
-.ad-slot{
-background:var(--panel2);border:1px dashed var(--line);
-border-radius:15px;padding:22px;text-align:center;
-margin-top:25px;color:var(--muted);font-size:12px
-}
-.ad-slot strong{display:block;color:var(--text);margin-bottom:7px}
-.notice{
-margin-top:16px;padding:12px 14px;border:1px solid var(--line);
-border-radius:12px;color:var(--muted);font-size:11px;
-line-height:1.6;background:var(--panel)
-}
-.footer{text-align:center;color:var(--muted);font-size:11px;padding:25px 8px 5px}
-@media(max-width:950px){
-.grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-}
-@media(max-width:680px){
-.top-actions{width:100%;margin-left:0}
-.top-actions select{flex:1;min-width:0}
-.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.card{padding:13px;min-height:190px}
-.section-head{align-items:stretch;flex-direction:column}
-.search{max-width:none}
-.container{padding:15px 11px 35px}
-}
-@media(max-width:370px){
-.grid{grid-template-columns:1fr}
-.top-actions .top-btn{flex:1}
+.topbar{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 4%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.4px}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;color:white;font-weight:900}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.control,.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 12px}
+.btn-primary{background:linear-gradient(120deg,var(--primary),var(--accent));color:white;border:0;font-weight:700}
+.container{width:min(1200px,92%);margin:24px auto}
+.hero{padding:32px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(120deg,#172c55,#28204d);color:white;box-shadow:var(--shadow)}
+.hero h1{font-size:clamp(26px,5vw,42px);margin:0 0 12px}
+.hero p{color:#d5def9;line-height:1.7;margin:0}
+.hero-bottom{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-top:22px}
+.clock{font-size:14px;color:#e0e8ff;line-height:1.8}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.stat{background:var(--panel);border:1px solid var(--line);padding:16px;border-radius:15px}
+.stat small{color:var(--muted)}
+.stat strong{display:block;font-size:20px;margin-top:7px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:28px 0 14px}
+.section-head h2{font-size:21px;margin:0}
+.search{width:min(340px,100%);padding:11px 14px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:11px}
+.categories{display:flex;gap:8px;overflow:auto;padding-bottom:8px;margin-bottom:16px}
+.category{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 14px;border-radius:30px}
+.category.active{background:var(--primary);color:white;border-color:var(--primary)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.tool{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:18px;display:flex;flex-direction:column;min-height:190px;box-shadow:var(--shadow);transition:.2s}
+.tool:hover{transform:translateY(-3px);border-color:var(--primary)}
+.tool-top{display:flex;align-items:center;gap:12px}
+.tool-icon{width:46px;height:46px;border-radius:13px;background:var(--panel2);display:grid;place-items:center;font-size:23px}
+.tool h3{font-size:16px;margin:0}
+.tool p{color:var(--muted);font-size:13px;line-height:1.6;flex:1}
+.tool-action{margin-top:10px}
+.open-tool{width:100%;border:0;border-radius:10px;padding:11px;background:linear-gradient(120deg,var(--primary),var(--accent));color:white;font-weight:700}
+.status{font-size:11px;color:var(--green)}
+.notice{margin-top:22px;padding:15px;border-radius:13px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.7}
+.footer{text-align:center;color:var(--muted);padding:30px 12px;font-size:12px}
+.modal-backdrop{position:fixed;inset:0;background:#0009;z-index:50;display:none;align-items:center;justify-content:center;padding:15px}
+.modal{width:min(420px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
+.modal h2{margin-top:0}
+.modal input{width:100%;padding:12px;margin:7px 0;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--text)}
+.modal-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#172642;color:white;padding:12px 18px;border-radius:12px;z-index:100;display:none;max-width:90%;text-align:center}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){
+ .topbar{padding:10px 4%}.brand{font-size:16px}.controls{width:100%}
+ .control{flex:1;min-width:90px}.container{width:94%;margin:15px auto}
+ .hero{padding:23px}.stats{grid-template-columns:1fr}
+ .grid{grid-template-columns:1fr}.section-head{align-items:stretch}
+ .search{width:100%}
 }
 </style>
 </head>
 
 <body>
-
 <header class="topbar">
-<div class="top-inner">
-
-<button class="back" id="backBtn" type="button">←</button>
-
-<a class="brand" href="https://nivora.mdabuzar192.workers.dev/">
-<span class="logo">N</span>
-<span>
-<span class="brand-name">NIVORA WORLD</span>
-<span class="brand-tag" style="display:block">One World. Unlimited Tools.</span>
-</span>
-</a>
-
-<div class="top-actions">
-
-<select id="languageSelect">
-<option value="bn">বাংলা</option>
-<option value="en">English</option>
-<option value="hi">हिन्दी</option>
-<option value="ur">اردو</option>
-<option value="ar">العربية</option>
-</select>
-
-<select id="currencySelect">
-<option value="BDT">BDT ৳</option>
-<option value="INR">INR ₹</option>
-<option value="PKR">PKR ₨</option>
-<option value="NPR">NPR रु</option>
-<option value="LKR">LKR Rs</option>
-<option value="USD">USD $</option>
-<option value="EUR">EUR €</option>
-<option value="GBP">GBP £</option>
-</select>
-
-<button class="top-btn" id="themeBtn">☀ থিম</button>
-<button class="top-btn" id="loginBtn">লগইন</button>
-<button class="top-btn" id="registerBtn">রেজিস্টার</button>
-<button class="top-btn" id="logoutBtn" hidden>লগআউট</button>
-
-</div>
-</div>
+ <a class="brand" href="/">
+  <span class="logo">N</span>
+  <span>NIVORA <span style="color:var(--primary)">WORLD</span></span>
+ </a>
+ <div class="controls">
+  <button class="control" onclick="history.length>1?history.back():location.href='/'">← <span data-i18n="back">ফিরে যান</span></button>
+  <select class="control" id="languageSelect" aria-label="Language">
+   <option value="bn">বাংলা</option>
+   <option value="en">English</option>
+   <option value="hi">हिन्दी</option>
+   <option value="ur">اردو</option>
+   <option value="ar">العربية</option>
+  </select>
+  <select class="control" id="currencySelect" aria-label="Currency">
+   <option value="BDT">BDT ৳</option><option value="INR">INR ₹</option>
+   <option value="PKR">PKR ₨</option><option value="NPR">NPR रू</option>
+   <option value="LKR">LKR Rs</option><option value="USD">USD $</option>
+   <option value="EUR">EUR €</option><option value="GBP">GBP £</option>
+  </select>
+  <button class="control" onclick="toggleTheme()">☀ / ☾</button>
+  <button class="btn btn-primary" id="authButton" onclick="openAuth()">লগইন / রেজিস্টার</button>
+ </div>
 </header>
 
 <main class="container">
+ <section class="hero">
+  <h1 data-i18n="heroTitle">এক প্ল্যাটফর্মে অসীম সম্ভাবনা</h1>
+  <p>One World. Unlimited Tools. Endless Possibilities.</p>
+  <div class="hero-bottom">
+   <div class="clock">
+    <div id="dateText">তারিখ লোড হচ্ছে...</div>
+    <strong id="timeText">সময় লোড হচ্ছে...</strong>
+    <div id="timezoneText"></div>
+   </div>
+   <div id="userWelcome">NIVORA WORLD-এ আপনাকে স্বাগতম</div>
+  </div>
+ </section>
 
-<section class="hero">
-<h1 data-i18n="welcome">NIVORA WORLD-এ স্বাগতম</h1>
-<p data-i18n="intro">
-এক প্ল্যাটফর্মে প্রয়োজনীয় ডিজিটাল টুল, ক্রিয়েটিভ স্টুডিও,
-ভিডিও ও দৈনন্দিন সেবা।
-</p>
-<div class="hero-pills">
-<span class="pill">✦ All-in-One Platform</span>
-<span class="pill">🎬 Video & Creator Hub</span>
-<span class="pill">🌍 International Access</span>
-</div>
-</section>
+ <section class="stats">
+  <div class="stat"><small data-i18n="account">অ্যাকাউন্ট</small><strong id="accountValue">Guest</strong></div>
+  <div class="stat"><small data-i18n="credits">ক্রেডিট</small><strong id="creditValue">—</strong></div>
+  <div class="stat"><small data-i18n="currency">নির্বাচিত মুদ্রা</small><strong id="currencyValue">BDT ৳</strong></div>
+ </section>
 
-<div class="info-strip">
-<div class="chip" id="dateTime">📅 সময় লোড হচ্ছে...</div>
-<div class="chip" id="authStatus">👤 Guest Mode</div>
-<div class="chip wallet" id="userWallet">💎 Credit: লগইন প্রয়োজন</div>
-<div class="chip" id="currencyDisplay">💱 BDT ৳</div>
-<button class="reward" id="earnBtn">💰 আয় করার সুযোগ দেখুন</button>
-</div>
+ <div class="section-head">
+  <h2 data-i18n="toolsTitle">আমাদের ডিজিটাল স্টুডিও</h2>
+  <input class="search" id="searchInput" type="search" placeholder="টুল খুঁজুন..." data-i18n-placeholder="search">
+ </div>
 
-<div class="section-head">
-<div>
-<h2 data-i18n="toolsTitle">আপনার ডিজিটাল স্টুডিও</h2>
-<p data-i18n="toolsSub">যে সেবাটি ব্যবহার করতে চান সেটি নির্বাচন করুন।</p>
-</div>
-<input class="search" id="toolSearch" type="search"
-placeholder="টুলের নাম লিখে খুঁজুন…">
-</div>
+ <nav class="categories" id="categoryBar">
+  <button class="category active" data-category="all" data-i18n="all">সবগুলো</button>
+  <button class="category" data-category="ai" data-i18n="ai">AI Studio</button>
+  <button class="category" data-category="media" data-i18n="media">Audio & Video</button>
+  <button class="category" data-category="design" data-i18n="design">Design</button>
+  <button class="category" data-category="islamic" data-i18n="islamic">Islamic</button>
+  <button class="category" data-category="business" data-i18n="business">Business</button>
+  <button class="category" data-category="utility" data-i18n="utility">Utilities</button>
+ </nav>
 
-<nav class="tabs" id="categoryTabs">
-<button class="tab active" data-cat="all">সব টুল</button>
-<button class="tab" data-cat="ai">AI Studios</button>
-<button class="tab" data-cat="audio">Audio & Voice</button>
-<button class="tab" data-cat="video">Video & Design</button>
-<button class="tab" data-cat="business">Business</button>
-<button class="tab" data-cat="utility">Daily Tools</button>
-<button class="tab" data-cat="islamic">Islamic</button>
-<button class="tab" data-cat="earning">Earning</button>
-</nav>
+ <section class="grid" id="toolGrid" aria-live="polite"></section>
 
-<section class="grid" id="toolGrid" aria-live="polite"></section>
-<div class="empty" id="emptyState">কোনো টুল পাওয়া যায়নি।</div>
-
-<div class="ad-slot">
-<strong>Sponsored Advertisement</strong>
-<span>অনুমোদিত Adsterra বিজ্ঞাপনের আসল কোড এখানে বসান।</span>
-</div>
-
-<div class="notice">
-Firebase ব্যবহার করতে নিজের প্রকৃত Firebase configuration বসাতে হবে।
-ভিডিও আপলোডের জন্য Firebase Storage ও Security Rules প্রয়োজন।
-বিজ্ঞাপন দেখলেই আয় বা ক্রেডিট নিশ্চিত হয় না।
-মুদ্রা নির্বাচন শুধু প্রদর্শনের পছন্দ; স্বয়ংক্রিয় বিনিময় হার প্রয়োগ করে না।
-</div>
+ <div class="notice" data-i18n="notice">
+  ড্যাশবোর্ডে ১৯টি টুলের URL সংযুক্ত। কোনো টুলের HTML ফাইল GitHub-এ না থাকলে সেই পেজ খুলবে না।
+ </div>
+</main>
 
 <footer class="footer">
-© <span id="year"></span> NIVORA WORLD • All Rights Reserved.
+ <div>NIVORA WORLD • One World. Unlimited Tools. Endless Possibilities.</div>
+ <div>© <span id="yearText"></span> NIVORA WORLD</div>
 </footer>
 
-</main>
+<div class="modal-backdrop" id="authModal">
+ <div class="modal">
+  <h2 id="authTitle">লগইন / রেজিস্টার</h2>
+  <input id="emailInput" type="email" placeholder="ইমেইল ঠিকানা" autocomplete="email">
+  <input id="passwordInput" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password">
+  <div class="modal-actions">
+   <button class="btn btn-primary" onclick="signIn()">লগইন</button>
+   <button class="btn" onclick="signUp()">নতুন অ্যাকাউন্ট</button>
+   <button class="btn" onclick="resetPassword()">পাসওয়ার্ড ভুলে গেছেন?</button>
+   <button class="btn" onclick="closeAuth()">বন্ধ</button>
+  </div>
+  <p id="authMessage" style="color:var(--muted);font-size:12px"></p>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
 
 <script>
 "use strict";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBiu3pj9P3MpY6d0juL1-pfCarkrI2eZ54",
-  authDomain: "taskearn-bd-fa040.firebaseapp.com",
-  projectId: "taskearn-bd-fa040",
-  storageBucket: "taskearn-bd-fa040.firebasestorage.app",
-  messagingSenderId: "177026495081",
-  appId: "1:177026495081:web:48bfaaf8e2e7688e3e68f8",
-  measurementId: "G-RDSLSLBP0Q"
+/* =====================================================
+   NIVORA WORLD — 19 TOOL URLS
+   Base URL: https://nivora.mdabuzar192.workers.dev
+   ===================================================== */
+
+const BASE_URL = "https://nivora.mdabuzar192.workers.dev";
+
+const TOOL_URLS = {
+ voiceClone:         "/tools-voice-clone-studio.html",
+ voiceRecitation:    "/tools-voice-recitation-studio.html",
+ digitalSound:       "/tools-digital-sound-studio.html",
+ hybridStudio:       "/tools-hybrid-professional-studio.html",
+ videoEditor:        "/tools-video-editor-studio.html",
+ videoWorld:         "/tools-nivora-video-world.html",
+ audioEditor:        "/tools-audio-editor.html",
+ designStudio:       "/tools-design-studio.html",
+ bannerPoster:       "/tools-banner-poster.html",
+ businessCard:       "/tools-business-card.html",
+ aiStudio:           "/tools-ai-studio.html",
+ aiMedia:            "/tools-ai-media-generator.html",
+ quranHub:           "/tools-quran-hub.html",
+ businessManagement: "/tools-business-management.html",
+ tallyKhata:         "/tools-tally-khata.html",
+ stockManagement:    "/tools-stock-management.html",
+ excelGrid:          "/tools-excel-grid.html",
+ calculator:         "/tools-calculator.html",
+ earnMoney:          "/tools-nivora-earn-money.html"
 };
 
-let auth=null,db=null,unsubscribeUser=null;
-
-const firebaseConfigured=
-Object.values(firebaseConfig).every(v=>v&&!String(v).includes("YOUR_"));
-
-const $=id=>document.getElementById(id);
-
-function setAuthStatus(s){$("authStatus").textContent=s;}
-
-function initFirebase(){
-if(!firebaseConfigured){
-setAuthStatus("Firebase সেটআপ বাকি");
-return;
-}
-if(!window.firebase){
-setAuthStatus("Firebase SDK লোড হয়নি");
-return;
-}
-try{
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-auth=firebase.auth();
-db=firebase.firestore();
-
-auth.onAuthStateChanged(user=>{
-$("loginBtn").hidden=!!user;
-$("registerBtn").hidden=!!user;
-$("logoutBtn").hidden=!user;
-
-setAuthStatus(user?"👤 "+(user.email||"ব্যবহারকারী"):"👤 Guest Mode");
-
-if(unsubscribeUser){
-unsubscribeUser();
-unsubscribeUser=null;
-}
-
-$("userWallet").textContent=user?
-"💎 Credit: অ্যাকাউন্ট ডেটা লোড হচ্ছে":
-"💎 Credit: লগইন প্রয়োজন";
-
-if(user)watchUserDocument(user.uid);
-});
-}catch(e){
-console.error(e);
-setAuthStatus("Firebase কনফিগারেশন ভুল");
-}
-}
-
-function watchUserDocument(uid){
-unsubscribeUser=db.collection("users").doc(uid).onSnapshot(doc=>{
-const credits=doc.exists?Number(doc.data().credits||0):0;
-$("userWallet").textContent="💎 Credit: "+credits;
-},err=>{
-console.error(err);
-$("userWallet").textContent="💎 Credit: unavailable";
-});
-}
-
-async function authAction(mode){
-if(!auth){
-alert("প্রথমে নিজের Firebase configuration বসিয়ে Firebase Authentication চালু করুন।");
-return;
-}
-const email=prompt("আপনার ইমেইল লিখুন:");
-if(!email)return;
-const password=prompt("পাসওয়ার্ড লিখুন (কমপক্ষে ৬ অক্ষর):");
-if(!password)return;
-
-try{
-if(mode==="register"){
-await auth.createUserWithEmailAndPassword(email.trim(),password);
-}else{
-await auth.signInWithEmailAndPassword(email.trim(),password);
-}
-}catch(e){
-alert("অ্যাকাউন্ট প্রক্রিয়া সম্পন্ন হয়নি: "+e.message);
-}
-}
-
-$("loginBtn").addEventListener("click",()=>authAction("login"));
-$("registerBtn").addEventListener("click",()=>authAction("register"));
-
-$("logoutBtn").addEventListener("click",async()=>{
-if(auth){
-try{await auth.signOut();}
-catch(e){alert(e.message);}
-}
-});
-
-/* সব ১৯টি টুলের সম্পূর্ণ URL */
-const BASE="https://nivora.mdabuzar192.workers.dev/tools/";
-
-const TOOLS=[
-{name:"Voice Clone Studio",desc:"Voice cloning workspace.",icon:"🎙️",cat:"audio",file:"voice-clone.html",color:"#db2777"},
-{name:"Voice & Recitation Studio",desc:"Voice, recitation and audio tools.",icon:"🗣️",cat:"audio",file:"voice-recitation.html",color:"#c026d3"},
-{name:"Digital Sound Studio",desc:"Text to Voice, microphone recording, echo and audio export.",icon:"🎤",cat:"audio",file:"nivora-digital-sound-studio.html",color:"#e11d48",featured:true},
-{name:"Hybrid Professional Studio",desc:"Professional audio and video workspace.",icon:"🎚️",cat:"video",file:"hybrid-professional-studio.html",color:"#0d9488"},
-{name:"Video Editor",desc:"Video editing and project workspace.",icon:"🎬",cat:"video",file:"video-editor.html",color:"#2563eb"},
-{name:"NIVORA Video World",desc:"Upload, organize and play videos.",icon:"📺",cat:"video",file:"nivora-video-world.html",color:"#e11d48",featured:true},
-{name:"Audio Editor",desc:"Cut, trim, mix and export audio.",icon:"🎧",cat:"audio",file:"audio-editor.html",color:"#9333ea"},
-{name:"Design Studio",desc:"Graphic design and canvas workspace.",icon:"🎨",cat:"video",file:"design-studio.html",color:"#d97706"},
-{name:"Banner & Poster Maker",desc:"Create banners and social graphics.",icon:"🖼️",cat:"video",file:"banner-poster.html",color:"#0891b2"},
-{name:"Business Card Maker",desc:"Digital and printable business cards.",icon:"💳",cat:"video",file:"business-card.html",color:"#0f766e"},
-{name:"AI Chat Studio",desc:"AI conversation and split editor.",icon:"🤖",cat:"ai",file:"ai-studio.html",color:"#4f46e5"},
-{name:"AI Media Generator",desc:"AI image and media generation.",icon:"✨",cat:"ai",file:"ai-media.html",color:"#7c3aed"},
-{name:"Quran Hub",desc:"Quran, translation and tafsir.",icon:"📖",cat:"islamic",file:"quran-hub.html",color:"#15803d"},
-{name:"Business Management",desc:"Sales, purchases and reports.",icon:"🏪",cat:"business",file:"business-management.html",color:"#0284c7"},
-{name:"Tally Khata",desc:"Customer balances and dues.",icon:"📒",cat:"business",file:"tally-khata.html",color:"#0d9488"},
-{name:"Stock Management",desc:"Products, inventory and stock alerts.",icon:"📦",cat:"business",file:"stock-management.html",color:"#ca8a04"},
-{name:"Excel Grid",desc:"Spreadsheet and calculations.",icon:"📊",cat:"business",file:"excel-grid.html",color:"#16a34a"},
-{name:"Calculator",desc:"Daily calculator, VAT and profit.",icon:"🧮",cat:"utility",file:"calculator.html",color:"#475569"},
-{name:"NIVORA Earning Center",desc:"Explore legitimate earning opportunities.",icon:"💰",cat:"earning",file:"nivora-earn-money.html",color:"#d97706",featured:true}
+/* ১৯টি টুলের নাম, ক্যাটাগরি ও বাটন */
+const TOOLS = [
+ {key:"voiceClone",icon:"🎙️",category:"media",name:"Voice Clone Studio",bn:"ভয়েস ক্লোন স্টুডিও",desc:"AI voice cloning workspace.",bnDesc:"AI প্রযুক্তিতে ভয়েস ক্লোনিংয়ের স্টুডিও।"},
+ {key:"voiceRecitation",icon:"🕌",category:"islamic",name:"Voice & Recitation Studio",bn:"ভয়েস ও তিলাওয়াত স্টুডিও",desc:"Voice recording and recitation workspace.",bnDesc:"ভয়েস রেকর্ডিং ও তিলাওয়াতের স্টুডিও।"},
+ {key:"digitalSound",icon:"🎚️",category:"media",name:"Digital Sound Studio",bn:"ডিজিটাল সাউন্ড স্টুডিও",desc:"Record and control digital audio.",bnDesc:"অডিও রেকর্ডিং ও সাউন্ড নিয়ন্ত্রণ।"},
+ {key:"hybridStudio",icon:"🎛️",category:"media",name:"Hybrid Professional Studio",bn:"হাইব্রিড প্রফেশনাল স্টুডিও",desc:"Professional audio and video workspace.",bnDesc:"প্রফেশনাল অডিও ও ভিডিও কাজের স্টুডিও।"},
+ {key:"videoEditor",icon:"🎬",category:"media",name:"Video Editor Studio",bn:"ভিডিও এডিটর স্টুডিও",desc:"Video editing workspace.",bnDesc:"ভিডিও সম্পাদনার স্টুডিও।"},
+ {key:"videoWorld",icon:"🌍",category:"media",name:"NIVORA Video World",bn:"নিভোরা ভিডিও ওয়ার্ল্ড",desc:"Video publishing and discovery platform.",bnDesc:"ভিডিও প্রকাশ ও দেখার প্ল্যাটফর্ম।"},
+ {key:"audioEditor",icon:"🎧",category:"media",name:"Audio Editor",bn:"অডিও এডিটর",desc:"Audio editing tools.",bnDesc:"অডিও সম্পাদনার টুল।"},
+ {key:"designStudio",icon:"🎨",category:"design",name:"Design Studio",bn:"ডিজাইন স্টুডিও",desc:"Creative design workspace.",bnDesc:"সৃজনশীল ডিজাইনের স্টুডিও।"},
+ {key:"bannerPoster",icon:"🖼️",category:"design",name:"Banner & Poster Maker",bn:"ব্যানার ও পোস্টার মেকার",desc:"Create banners and posters.",bnDesc:"ব্যানার ও পোস্টার তৈরি করুন।"},
+ {key:"businessCard",icon:"💳",category:"design",name:"Business Card Maker",bn:"বিজনেস কার্ড মেকার",desc:"Create business cards.",bnDesc:"বিজনেস কার্ড তৈরি করুন।"},
+ {key:"aiStudio",icon:"🤖",category:"ai",name:"NIVORA AI Chat Studio",bn:"নিভোরা AI চ্যাট স্টুডিও",desc:"AI assistant and chat workspace.",bnDesc:"AI সহকারী ও চ্যাটের স্টুডিও।"},
+ {key:"aiMedia",icon:"✨",category:"ai",name:"AI Media Generator",bn:"AI মিডিয়া জেনারেটর",desc:"AI media creation workspace.",bnDesc:"AI দিয়ে মিডিয়া তৈরির স্টুডিও।"},
+ {key:"quranHub",icon:"📖",category:"islamic",name:"Quran Hub",bn:"কুরআন হাব",desc:"Quran reading and learning.",bnDesc:"কুরআন পড়া ও শেখার কেন্দ্র।"},
+ {key:"businessManagement",icon:"🏢",category:"business",name:"Business Management",bn:"ব্যবসা ব্যবস্থাপনা",desc:"Manage business operations.",bnDesc:"ব্যবসার হিসাব ও পরিচালনা করুন।"},
+ {key:"tallyKhata",icon:"📒",category:"business",name:"Tally Khata",bn:"টালি খাতা",desc:"Digital customer ledger.",bnDesc:"ডিজিটাল বাকি ও লেনদেনের খাতা।"},
+ {key:"stockManagement",icon:"📦",category:"business",name:"Stock Management",bn:"স্টক ম্যানেজমেন্ট",desc:"Inventory and stock tracking.",bnDesc:"পণ্য ও স্টক ব্যবস্থাপনা।"},
+ {key:"excelGrid",icon:"📊",category:"business",name:"Enterprise Excel Grid",bn:"এক্সেল গ্রিড",desc:"Spreadsheet-style data workspace.",bnDesc:"স্প্রেডশিটের মতো তথ্য ব্যবস্থাপনা।"},
+ {key:"calculator",icon:"🧮",category:"utility",name:"Smart Calculator",bn:"স্মার্ট ক্যালকুলেটর",desc:"Everyday and business calculations.",bnDesc:"সাধারণ ও ব্যবসায়িক হিসাব।"},
+ {key:"earnMoney",icon:"💰",category:"business",name:"NIVORA Earning Center",bn:"নিভোরা আর্নিং সেন্টার",desc:"Earning and rewards center.",bnDesc:"আয় ও রিওয়ার্ড ব্যবস্থাপনা।"}
 ];
 
-TOOLS.forEach(tool=>tool.href=BASE+tool.file);
-
-/* নিরাপদ HTML প্রদর্শন */
-function escapeHTML(value){
-return String(value).replace(/[&<>"']/g,c=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[c]));
-}
-
-/* ভাষা */
-const translations={
-bn:{
-welcome:"NIVORA WORLD-এ স্বাগতম",
-intro:"এক প্ল্যাটফর্মে প্রয়োজনীয় ডিজিটাল টুল, ক্রিয়েটিভ স্টুডিও, ভিডিও ও দৈনন্দিন সেবা।",
-toolsTitle:"আপনার ডিজিটাল স্টুডিও",
-toolsSub:"যে সেবাটি ব্যবহার করতে চান সেটি নির্বাচন করুন।",
-search:"টুলের নাম লিখে খুঁজুন…",open:"টুল খুলুন",
-all:"সব টুল",ai:"AI Studios",audio:"অডিও ও ভয়েস",
-video:"ভিডিও ও ডিজাইন",business:"ব্যবসা",
-utility:"দৈনন্দিন টুল",islamic:"ইসলামিক",earning:"আয়ের সুযোগ",
-login:"লগইন",register:"রেজিস্টার",logout:"লগআউট",
-theme:"থিম",earn:"💰 আয় করার সুযোগ দেখুন",
-empty:"কোনো টুল পাওয়া যায়নি।"
-},
-en:{
-welcome:"Welcome to NIVORA WORLD",
-intro:"Essential digital tools, creative studios, video and everyday services in one platform.",
-toolsTitle:"Your Digital Studios",
-toolsSub:"Choose the service you want to use.",
-search:"Search tools…",open:"Open tool",
-all:"All tools",ai:"AI Studios",audio:"Audio & Voice",
-video:"Video & Design",business:"Business",
-utility:"Daily Tools",islamic:"Islamic",earning:"Earning",
-login:"Login",register:"Register",logout:"Log out",
-theme:"Theme",earn:"💰 Explore earning options",
-empty:"No tools found."
-},
-hi:{
-welcome:"NIVORA WORLD में आपका स्वागत है",
-intro:"डिजिटल टूल, क्रिएटिव स्टूडियो, वीडियो और दैनिक सेवाएँ एक मंच पर।",
-toolsTitle:"आपके डिजिटल स्टूडियो",
-toolsSub:"उपयोग करने के लिए सेवा चुनें।",
-search:"टूल खोजें…",open:"टूल खोलें",
-all:"सभी टूल",ai:"AI स्टूडियो",audio:"ऑडियो और वॉइस",
-video:"वीडियो और डिज़ाइन",business:"व्यवसाय",
-utility:"दैनिक टूल",islamic:"इस्लामिक",earning:"कमाई",
-login:"लॉगिन",register:"रजिस्टर",logout:"लॉगआउट",
-theme:"थीम",earn:"💰 कमाई के विकल्प देखें",
-empty:"कोई टूल नहीं मिला।"
-},
-ur:{
-welcome:"NIVORA WORLD میں خوش آمدید",
-intro:"ڈیجیٹل ٹولز، تخلیقی اسٹوڈیوز، ویڈیو اور روزمرہ خدمات ایک پلیٹ فارم پر۔",
-toolsTitle:"آپ کے ڈیجیٹل اسٹوڈیوز",
-toolsSub:"استعمال کے لیے سروس منتخب کریں۔",
-search:"ٹول تلاش کریں…",open:"ٹول کھولیں",
-all:"تمام ٹولز",ai:"AI اسٹوڈیوز",audio:"آڈیو اور آواز",
-video:"ویڈیو اور ڈیزائن",business:"کاروبار",
-utility:"روزمرہ ٹولز",islamic:"اسلامی",earning:"آمدنی",
-login:"لاگ اِن",register:"رجسٹر",logout:"لاگ آؤٹ",
-theme:"تھیم",earn:"💰 آمدنی کے مواقع دیکھیں",
-empty:"کوئی ٹول نہیں ملا۔"
-},
-ar:{
-welcome:"مرحباً بك في NIVORA WORLD",
-intro:"أدوات رقمية واستوديوهات إبداعية وفيديو وخدمات يومية في منصة واحدة.",
-toolsTitle:"استوديوهاتك الرقمية",
-toolsSub:"اختر الخدمة التي تريد استخدامها.",
-search:"ابحث عن أداة…",open:"افتح الأداة",
-all:"كل الأدوات",ai:"استوديوهات الذكاء الاصطناعي",
-audio:"الصوت والتسجيل",video:"الفيديو والتصميم",
-business:"الأعمال",utility:"أدوات يومية",
-islamic:"إسلامي",earning:"الربح",
-login:"تسجيل الدخول",register:"إنشاء حساب",
-logout:"تسجيل الخروج",theme:"السمة",
-earn:"💰 استكشف فرص الربح",empty:"لم يتم العثور على أدوات."
-}
+const LANG = {
+ bn:{
+  back:"ফিরে যান",heroTitle:"এক প্ল্যাটফর্মে অসীম সম্ভাবনা",
+  account:"অ্যাকাউন্ট",credits:"ক্রেডিট",currency:"নির্বাচিত মুদ্রা",
+  toolsTitle:"আমাদের ডিজিটাল স্টুডিও",search:"টুল খুঁজুন...",
+  all:"সবগুলো",ai:"AI Studio",media:"Audio & Video",design:"Design",
+  islamic:"Islamic",business:"Business",utility:"Utilities",
+  notice:"ড্যাশবোর্ডে ১৯টি টুলের URL সংযুক্ত। কোনো টুলের HTML ফাইল GitHub-এ না থাকলে সেই পেজ খুলবে না।",
+  guest:"অতিথি",welcome:"NIVORA WORLD-এ আপনাকে স্বাগতম",login:"লগইন / রেজিস্টার",
+  searchEmpty:"কোনো টুল পাওয়া যায়নি।"
+ },
+ en:{
+  back:"Back",heroTitle:"Unlimited Possibilities in One Platform",
+  account:"Account",credits:"Credits",currency:"Selected Currency",
+  toolsTitle:"Our Digital Studios",search:"Search tools...",
+  all:"All",ai:"AI Studio",media:"Audio & Video",design:"Design",
+  islamic:"Islamic",business:"Business",utility:"Utilities",
+  notice:"All 19 tool URLs are configured. A tool page will only open if its HTML file exists on GitHub.",
+  guest:"Guest",welcome:"Welcome to NIVORA WORLD",login:"Login / Register",
+  searchEmpty:"No tools found."
+ },
+ hi:{
+  back:"वापस",heroTitle:"एक मंच पर असीम संभावनाएँ",
+  account:"खाता",credits:"क्रेडिट",currency:"चुनी गई मुद्रा",
+  toolsTitle:"हमारे डिजिटल स्टूडियो",search:"टूल खोजें...",
+  all:"सभी",ai:"AI Studio",media:"Audio & Video",design:"Design",
+  islamic:"Islamic",business:"Business",utility:"Utilities",
+  notice:"सभी 19 टूल URL जोड़े गए हैं। पेज तभी खुलेगा जब उसकी HTML फ़ाइल GitHub पर मौजूद होगी।",
+  guest:"अतिथि",welcome:"NIVORA WORLD में आपका स्वागत है",login:"लॉगिन / रजिस्टर",
+  searchEmpty:"कोई टूल नहीं मिला।"
+ },
+ ur:{
+  back:"واپس",heroTitle:"ایک پلیٹ فارم، لامحدود امکانات",
+  account:"اکاؤنٹ",credits:"کریڈٹس",currency:"منتخب کرنسی",
+  toolsTitle:"ہمارے ڈیجیٹل اسٹوڈیوز",search:"ٹول تلاش کریں...",
+  all:"تمام",ai:"AI Studio",media:"Audio & Video",design:"Design",
+  islamic:"Islamic",business:"Business",utility:"Utilities",
+  notice:"تمام 19 ٹول URLs شامل ہیں۔ صفحہ تبھی کھلے گا جب اس کی HTML فائل GitHub پر موجود ہو۔",
+  guest:"مہمان",welcome:"NIVORA WORLD میں خوش آمدید",login:"لاگ ان / رجسٹر",
+  searchEmpty:"کوئی ٹول نہیں ملا۔"
+ },
+ ar:{
+  back:"رجوع",heroTitle:"إمكانات غير محدودة في منصة واحدة",
+  account:"الحساب",credits:"الرصيد",currency:"العملة المختارة",
+  toolsTitle:"استوديوهاتنا الرقمية",search:"ابحث عن الأدوات...",
+  all:"الكل",ai:"AI Studio",media:"Audio & Video",design:"Design",
+  islamic:"Islamic",business:"Business",utility:"Utilities",
+  notice:"تم إعداد روابط الأدوات الـ19. لن تفتح الصفحة إلا إذا كان ملف HTML موجوداً على GitHub.",
+  guest:"زائر",welcome:"مرحباً بك في NIVORA WORLD",login:"تسجيل الدخول / التسجيل",
+  searchEmpty:"لم يتم العثور على أدوات."
+ }
 };
 
-let activeCategory="all";
+let currentLang=localStorage.getItem("nivora_language")||"bn";
+if(!LANG[currentLang])currentLang="bn";
+let currentCategory="all";
+let currentCurrency=localStorage.getItem("nivora_currency")||"BDT";
 
-function getLang(){
-return localStorage.getItem("nivora_lang")||"bn";
+function tr(key){return LANG[currentLang][key]||LANG.en[key]||key;}
+
+function applyLanguage(){
+ document.documentElement.lang=currentLang;
+ document.documentElement.dir=(currentLang==="ur"||currentLang==="ar")?"rtl":"ltr";
+ document.querySelectorAll("[data-i18n]").forEach(el=>{
+  const key=el.dataset.i18n;
+  if(LANG[currentLang][key])el.textContent=tr(key);
+ });
+ document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+  const key=el.dataset.i18nPlaceholder;
+  if(LANG[currentLang][key])el.placeholder=tr(key);
+ });
+ document.getElementById("authButton").textContent=currentUser?"Logout":tr("login");
+ renderTools();
 }
 
+document.getElementById("languageSelect").value=currentLang;
+document.getElementById("languageSelect").addEventListener("change",e=>{
+ currentLang=e.target.value;
+ localStorage.setItem("nivora_language",currentLang);
+ applyLanguage();
+});
+
+/* ১৯টি বাটন ও URL-এর কাজ */
 function renderTools(){
-const q=$("toolSearch").value.trim().toLocaleLowerCase();
-const filtered=TOOLS.filter(t=>
-(activeCategory==="all"||t.cat===activeCategory)&&
-(`${t.name} ${t.desc} ${t.file}`).toLocaleLowerCase().includes(q)
-);
+ const grid=document.getElementById("toolGrid");
+ const query=document.getElementById("searchInput").value.trim().toLowerCase();
 
-$("toolGrid").innerHTML=filtered.map(t=>`
-<article class="card" style="--accent:${t.color}">
-<div class="ico">${t.icon}</div>
-<h3>${escapeHTML(t.name)}${t.featured?' <span style="font-size:9px;color:#eab308">NEW</span>':""}</h3>
-<p>${escapeHTML(t.desc)}</p>
-<a class="open" href="${t.href}" target="_self" rel="noopener">
-${translations[getLang()].open} ↗
-</a>
-</article>
-`).join("");
+ const filtered=TOOLS.filter(tool=>{
+  const categoryMatch=currentCategory==="all"||tool.category===currentCategory;
+  const textMatch=(tool.name+" "+tool.bn+" "+tool.desc+" "+tool.bnDesc).toLowerCase().includes(query);
+  return categoryMatch&&textMatch;
+ });
 
-$("emptyState").style.display=filtered.length?"none":"block";
+ if(!filtered.length){
+  grid.innerHTML='<div class="notice">'+tr("searchEmpty")+'</div>';
+  return;
+ }
+
+ grid.innerHTML=filtered.map(tool=>{
+  const title=currentLang==="bn"?tool.bn:tool.name;
+  const description=currentLang==="bn"?tool.bnDesc:tool.desc;
+  const buttonLabel=currentLang==="bn"?tool.bn+" খুলুন":"Open "+tool.name;
+
+  return `
+   <article class="tool">
+    <div class="tool-top">
+     <div class="tool-icon">${tool.icon}</div>
+     <div>
+      <h3>${escapeHTML(title)}</h3>
+      <span class="status">● URL Configured</span>
+     </div>
+    </div>
+    <p>${escapeHTML(description)}</p>
+    <div class="tool-action">
+     <button class="open-tool" type="button" onclick="openTool('${tool.key}')">
+      ${escapeHTML(buttonLabel)} ↗
+     </button>
+    </div>
+   </article>`;
+ }).join("");
 }
 
-/* সব দৃশ্যমান প্রধান লেখা অনুবাদ */
-function applyLanguage(lang){
-if(!translations[lang])lang="en";
-
-localStorage.setItem("nivora_lang",lang);
-document.documentElement.lang=lang;
-document.documentElement.dir=["ur","ar"].includes(lang)?"rtl":"ltr";
-
-const u=translations[lang];
-
-document.querySelectorAll("[data-i18n]").forEach(el=>{
-const k=el.dataset.i18n;
-if(u[k])el.textContent=u[k];
-});
-
-$("toolSearch").placeholder=u.search;
-
-document.querySelectorAll("#categoryTabs button").forEach(btn=>{
-btn.textContent=u[btn.dataset.cat]||btn.dataset.cat;
-});
-
-$("loginBtn").textContent=u.login;
-$("registerBtn").textContent=u.register;
-$("logoutBtn").textContent=u.logout;
-$("themeBtn").textContent=(document.documentElement.dataset.theme==="dark"?"☀ ":"☾ ")+u.theme;
-$("earnBtn").textContent=u.earn;
-$("emptyState").textContent=u.empty;
-
-updateClock();
-renderTools();
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
 }
 
-$("languageSelect").addEventListener("change",e=>applyLanguage(e.target.value));
+function openTool(key){
+ const path=TOOL_URLS[key];
+ if(!path){showToast("এই টুলের URL পাওয়া যায়নি।");return;}
+ const target=new URL(path,BASE_URL);
+ if(target.origin!==BASE_URL){showToast("URL নিরাপত্তা যাচাই ব্যর্থ হয়েছে।");return;}
+ window.location.assign(target.href);
+}
 
-$("toolSearch").addEventListener("input",renderTools);
-
-$("categoryTabs").addEventListener("click",e=>{
-const btn=e.target.closest("button[data-cat]");
-if(!btn)return;
-activeCategory=btn.dataset.cat;
-document.querySelectorAll(".tab").forEach(x=>
-x.classList.toggle("active",x===btn)
-);
-renderTools();
+document.getElementById("searchInput").addEventListener("input",renderTools);
+document.querySelectorAll(".category").forEach(button=>{
+ button.addEventListener("click",()=>{
+  document.querySelectorAll(".category").forEach(b=>b.classList.remove("active"));
+  button.classList.add("active");
+  currentCategory=button.dataset.category;
+  renderTools();
+ });
 });
+
+/* Currency preference — no automatic conversion */
+const CURRENCIES={
+ BDT:"BDT ৳",INR:"INR ₹",PKR:"PKR ₨",NPR:"NPR रू",
+ LKR:"LKR Rs",USD:"USD $",EUR:"EUR €",GBP:"GBP £"
+};
+const currencySelect=document.getElementById("currencySelect");
+currencySelect.value=CURRENCIES[currentCurrency]?currentCurrency:"BDT";
+currentCurrency=currencySelect.value;
+
+function updateCurrency(){
+ document.getElementById("currencyValue").textContent=CURRENCIES[currentCurrency];
+ localStorage.setItem("nivora_currency",currentCurrency);
+}
+currencySelect.addEventListener("change",e=>{
+ currentCurrency=e.target.value;
+ updateCurrency();
+ showToast("Currency preference updated. No exchange conversion applied.");
+});
+updateCurrency();
 
 /* Theme */
-$("themeBtn").addEventListener("click",()=>{
-const next=document.documentElement.dataset.theme==="dark"?"light":"dark";
-document.documentElement.dataset.theme=next;
-localStorage.setItem("nivora_theme",next);
-applyLanguage(getLang());
-});
-
-/* Currency */
-const currencies={
-BDT:"৳",INR:"₹",PKR:"₨",NPR:"रु",
-LKR:"Rs",USD:"$",EUR:"€",GBP:"£"
-};
-
-$("currencySelect").addEventListener("change",e=>{
-localStorage.setItem("nivora_curr",e.target.value);
-$("currencyDisplay").textContent=
-"💱 "+e.target.value+" "+currencies[e.target.value];
-});
-
-/* Back */
-$("backBtn").addEventListener("click",()=>{
-if(document.referrer){
-try{
-if(new URL(document.referrer).origin===location.origin&&history.length>1){
-history.back();
-return;
+function toggleTheme(){
+ const next=document.documentElement.dataset.theme==="dark"?"light":"dark";
+ document.documentElement.dataset.theme=next;
+ localStorage.setItem("nivora_theme",next);
 }
-}catch(e){}
-}
-location.href="https://nivora.mdabuzar192.workers.dev/";
-});
+document.documentElement.dataset.theme=localStorage.getItem("nivora_theme")||"dark";
 
-/* Earning */
-$("earnBtn").addEventListener("click",()=>{
-location.href=TOOLS.find(t=>t.cat==="earning").href;
-});
-
-/* Live date/time */
+/* Local clock and timezone */
 function updateClock(){
-const lang=getLang();
-$("dateTime").textContent="📅 "+
-new Intl.DateTimeFormat(lang,{
-dateStyle:"medium",timeStyle:"medium"
-}).format(new Date());
+ const now=new Date();
+ const locales={bn:"bn-BD",en:"en-US",hi:"hi-IN",ur:"ur-PK",ar:"ar"};
+ const locale=locales[currentLang]||"en-US";
+ document.getElementById("dateText").textContent=
+  new Intl.DateTimeFormat(locale,{dateStyle:"full"}).format(now);
+ document.getElementById("timeText").textContent=
+  new Intl.DateTimeFormat(locale,{timeStyle:"medium"}).format(now);
+ document.getElementById("timezoneText").textContent=
+  "Timezone: "+Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
-
-/* Startup */
-const savedTheme=localStorage.getItem("nivora_theme")||"dark";
-document.documentElement.dataset.theme=savedTheme;
-
-const savedLang=getLang();
-$("languageSelect").value=savedLang;
-
-const savedCurrency=localStorage.getItem("nivora_curr")||"BDT";
-$("currencySelect").value=savedCurrency;
-$("currencySelect").dispatchEvent(new Event("change"));
-
-$("year").textContent=new Date().getFullYear();
-
-applyLanguage(savedLang);
 updateClock();
 setInterval(updateClock,1000);
-initFirebase();
+document.getElementById("yearText").textContent=new Date().getFullYear();
 
+/* Firebase */
+const firebaseConfig={
+ apiKey:"AIzaSyBiu3pj9P3MpY6d0juL1-pfCarkrI2eZ54",
+ authDomain:"taskearn-bd-fa040.firebaseapp.com",
+ projectId:"taskearn-bd-fa040",
+ storageBucket:"taskearn-bd-fa040.firebasestorage.app",
+ messagingSenderId:"177026495081",
+ appId:"1:177026495081:web:48bfaaf8e2e7688e3e68f8",
+ measurementId:"G-RDSLSLBP0Q"
+};
+
+let auth=null,db=null,currentUser=null,creditUnsubscribe=null;
+
+try{
+ if(window.firebase){
+  if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+  auth=firebase.auth();
+  db=firebase.firestore();
+
+  auth.onAuthStateChanged(user=>{
+   currentUser=user||null;
+   updateAuthUI();
+
+   if(creditUnsubscribe){
+    creditUnsubscribe();
+    creditUnsubscribe=null;
+   }
+
+   if(user&&db){
+    creditUnsubscribe=db.collection("users").doc(user.uid).onSnapshot(doc=>{
+     const value=doc.exists?Number(doc.data().credits):0;
+     document.getElementById("creditValue").textContent=
+      Number.isFinite(value)?value.toLocaleString():"—";
+    },error=>{
+     console.error("Credit listener:",error);
+     document.getElementById("creditValue").textContent="—";
+    });
+   }else{
+    document.getElementById("creditValue").textContent="—";
+   }
+  });
+ }else{
+  showToast("Firebase SDK লোড হয়নি।");
+ }
+}catch(error){
+ console.error("Firebase initialization:",error);
+ showToast("Firebase সংযোগে সমস্যা হয়েছে।");
+}
+
+function updateAuthUI(){
+ const button=document.getElementById("authButton");
+ if(currentUser){
+  document.getElementById("accountValue").textContent=currentUser.email||"Logged in";
+  document.getElementById("userWelcome").textContent=currentUser.email||tr("welcome");
+  button.textContent="Logout";
+  button.onclick=signOutUser;
+ }else{
+  document.getElementById("accountValue").textContent=tr("guest");
+  document.getElementById("userWelcome").textContent=tr("welcome");
+  button.textContent=tr("login");
+  button.onclick=openAuth;
+ }
+}
+
+function openAuth(){
+ document.getElementById("authMessage").textContent="";
+ document.getElementById("authModal").style.display="flex";
+}
+function closeAuth(){document.getElementById("authModal").style.display="none";}
+
+function authValues(){
+ return {
+  email:document.getElementById("emailInput").value.trim(),
+  password:document.getElementById("passwordInput").value
+ };
+}
+function authMessage(message){
+ document.getElementById("authMessage").textContent=message;
+}
+function friendlyError(error){
+ const messages={
+  "auth/invalid-email":"ইমেইল ঠিকানা সঠিক নয়।",
+  "auth/user-not-found":"এই ইমেইলে অ্যাকাউন্ট পাওয়া যায়নি।",
+  "auth/wrong-password":"পাসওয়ার্ড সঠিক নয়।",
+  "auth/invalid-credential":"ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।",
+  "auth/email-already-in-use":"এই ইমেইল দিয়ে অ্যাকাউন্ট আছে।",
+  "auth/weak-password":"কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড দিন।",
+  "auth/network-request-failed":"ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+  "auth/too-many-requests":"পরে আবার চেষ্টা করুন।"
+ };
+ return messages[error.code]||error.message||"একটি সমস্যা হয়েছে।";
+}
+
+async function signIn(){
+ if(!auth){authMessage("Firebase সংযুক্ত নয়।");return;}
+ const {email,password}=authValues();
+ if(!email||!password){authMessage("ইমেইল ও পাসওয়ার্ড লিখুন।");return;}
+ try{
+  await auth.signInWithEmailAndPassword(email,password);
+  closeAuth();showToast("লগইন সফল হয়েছে।");
+ }catch(error){authMessage(friendlyError(error));}
+}
+
+async function signUp(){
+ if(!auth){authMessage("Firebase সংযুক্ত নয়।");return;}
+ const {email,password}=authValues();
+ if(!email||!password){authMessage("ইমেইল ও পাসওয়ার্ড লিখুন।");return;}
+ if(password.length<6){authMessage("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");return;}
+ try{
+  await auth.createUserWithEmailAndPassword(email,password);
+  closeAuth();showToast("অ্যাকাউন্ট তৈরি হয়েছে।");
+ }catch(error){authMessage(friendlyError(error));}
+}
+
+async function resetPassword(){
+ if(!auth){authMessage("Firebase সংযুক্ত নয়।");return;}
+ const email=document.getElementById("emailInput").value.trim();
+ if(!email){authMessage("আগে ইমেইল লিখুন।");return;}
+ try{
+  await auth.sendPasswordResetEmail(email);
+  authMessage("পাসওয়ার্ড রিসেট লিংক ইমেইলে পাঠানো হয়েছে।");
+ }catch(error){authMessage(friendlyError(error));}
+}
+
+async function signOutUser(){
+ if(!auth)return;
+ try{
+  await auth.signOut();
+  showToast("লগআউট হয়েছে।");
+ }catch(error){showToast(friendlyError(error));}
+}
+
+document.getElementById("authModal").addEventListener("click",e=>{
+ if(e.target.id==="authModal")closeAuth();
+});
+
+let toastTimer;
+function showToast(message){
+ const toast=document.getElementById("toast");
+ toast.textContent=message;
+ toast.style.display="block";
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>toast.style.display="none",3000);
+}
+
+/* Start dashboard */
+applyLanguage();
+renderTools();
+updateAuthUI();
 </script>
 </body>
 </html>
