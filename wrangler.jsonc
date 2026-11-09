@@ -1,3 +1,4 @@
+```json
 {
   "$schema": "https://developers.cloudflare.com/workers/wrangler/schema.json",
   "name": "nivora",
@@ -6,7 +7,7 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "404-page"
   },
   "observability": {
     "enabled": true
@@ -18,3 +19,4 @@
     "RUNWAY_VIDEO_MODEL": "gen4.5"
   }
 }
+```
