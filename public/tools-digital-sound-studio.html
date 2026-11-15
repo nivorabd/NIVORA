@@ -1,442 +1,189 @@
-<!DOCTYPE html>
-<html lang="bn" class="dark">
+<!doctype html>
+<html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#050811">
-<title>NIVORA PRO STUDIO — Digital Audio Workstation</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>NIVORA PRO STUDIO</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#050811;color:#f1f5f9;font-family:Inter,'Noto Sans Bengali',sans-serif}
-.panel{background:#111827;border:1px solid #263449;border-radius:17px;padding:16px;box-shadow:0 0 25px #06b6d411}
-.control{background:#0b1220;border:1px solid #263449;border-radius:12px;padding:12px}
-.action{border-radius:11px;padding:11px 13px;font-weight:700;display:flex;justify-content:center;align-items:center;gap:8px;transition:.2s;touch-action:manipulation}
-button:disabled{opacity:.4;cursor:not-allowed}input[type=range]{width:100%;accent-color:#06b6d4}
-.value{color:#22d3ee;font-weight:700}audio{width:100%;margin-top:8px}canvas{width:100%;height:100%;display:block}
-.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,100px);opacity:0;transition:.25s;z-index:99;background:#111827;border:1px solid #06b6d4;border-radius:12px;padding:12px 16px;width:max-content;max-width:92%;box-shadow:0 5px 30px #0008}
-.toast.show{transform:translate(-50%,0);opacity:1}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ef4444;margin-right:6px}
-small{color:#94a3b8}.hidden{display:none!important}
-@media(max-width:640px){.panel{padding:13px}h1{font-size:15px!important}}
+:root{color-scheme:dark;--bg:#07111f;--panel:#101e30;--field:#091626;--line:#263b52;--text:#edf6ff;--muted:#9db0c5;--cyan:#22d3ee;--blue:#2563eb;--pink:#e11d48}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#102d49 0,transparent 38%),var(--bg);color:var(--text);font:15px system-ui,"Noto Sans Bengali",sans-serif}
+header{position:sticky;top:0;z-index:5;background:#07111fee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px}
+.head{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#06b6d4,#1d4ed8);display:grid;place-items:center;font-size:23px;font-weight:900}.brand h1{font-size:17px;margin:0;color:var(--cyan)}.brand small{color:var(--muted)}
+main{max-width:1100px;margin:18px auto;padding:0 12px 36px;display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.stack{display:grid;gap:16px;align-content:start}
+.panel{background:linear-gradient(145deg,#13243a,#0d1929);border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:0 12px 35px #0003}
+h2{font-size:17px;margin:0 0 13px;color:var(--cyan)}h3{font-size:14px;margin:0 0 9px;color:#c4d8ed}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.between{display:flex;justify-content:space-between;align-items:center;gap:10px}
+button,.btn{border:0;border-radius:11px;padding:11px 14px;color:white;font-weight:700;background:linear-gradient(135deg,#0891b2,#1d4ed8);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px}
+button.secondary,.btn.secondary{background:#26384e}button.danger{background:linear-gradient(135deg,#be123c,#e11d48)}button:disabled{opacity:.4;cursor:not-allowed}
+input,select,textarea{accent-color:var(--cyan)}input[type=file],select,textarea{width:100%;background:var(--field);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px}
+textarea{min-height:110px;resize:vertical}.control{background:var(--field);border:1px solid var(--line);padding:12px;border-radius:12px;margin:9px 0}
+label{font-size:13px;color:#c6d6e7}.val{color:var(--cyan);font-weight:700}input[type=range]{width:100%;margin-top:9px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.status{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}.pill{font-size:12px;padding:7px 10px;border:1px solid var(--line);border-radius:30px;color:#fca5a5}.pill.on{color:#86efac;border-color:#166534}
+audio{width:100%;margin-top:9px}canvas{width:100%;height:150px;background:#030912;border-radius:12px;border:1px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}.muted{color:var(--muted);font-size:12px}.hidden{display:none!important}
+.toast{position:fixed;z-index:20;bottom:18px;left:50%;transform:translate(-50%,120px);transition:.2s;background:#14263b;border:1px solid var(--cyan);border-radius:12px;padding:12px 16px;max-width:92%;box-shadow:0 8px 30px #0009}.toast.show{transform:translate(-50%,0)}
+@media(max-width:760px){main{grid-template-columns:1fr}.presets{grid-template-columns:1fr 1fr}.brand h1{font-size:15px}}
 </style>
 </head>
-<body class="min-h-screen">
-<header class="sticky top-0 z-40 bg-[#0b0f19ee] backdrop-blur-xl border-b border-slate-800 p-3">
- <div class="max-w-7xl mx-auto flex justify-between items-center gap-2">
-  <div class="flex items-center gap-3">
-   <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-700 flex items-center justify-center"><i class="fa-solid fa-microphone-lines text-xl"></i></div>
-   <div><h1 class="font-extrabold text-cyan-300">NIVORA PRO STUDIO</h1><p class="text-[10px] text-slate-400">Digital Mic • EQ • Echo • Reverb • Recorder</p></div>
-  </div>
-  <div id="micStatus" class="text-xs px-3 py-2 rounded-full border border-red-900 bg-red-950 text-red-300"><span class="dot"></span>মাইক বন্ধ</div>
- </div>
-</header>
-
-<main class="max-w-7xl mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
-<section class="lg:col-span-7 flex flex-col gap-5">
- <div class="panel border-cyan-900">
-  <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-4">✨ সাউন্ড প্রিসেট</h2>
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-   <button class="action bg-slate-800 text-cyan-300 text-xs" data-preset="boyan">বয়ান / লেকচার</button>
-   <button class="action bg-slate-800 text-cyan-300 text-xs" data-preset="quran">তিলাওয়াত</button>
-   <button class="action bg-slate-800 text-cyan-300 text-xs" data-preset="nasheed">নাসিদ</button>
-   <button class="action bg-slate-800 text-cyan-300 text-xs" data-preset="ghazal">গজল</button>
-  </div>
- </div>
-
- <div class="panel border-purple-900">
-  <h2 class="font-bold text-purple-400 border-b border-slate-700 pb-3 mb-4">🎚️ Pitch ও ভয়েস টোন</h2>
-  <div class="control">
-   <div class="flex justify-between text-sm"><label for="pitch">Pitch (ফাইল প্রসেসিংয়ে)</label><b class="value" id="pitchVal">1.00x</b></div>
-   <input id="pitch" type="range" min=".5" max="2" value="1" step=".05">
-   <small>নোট: এই কন্ট্রোল আপলোড করা অডিও প্রসেসিংয়ে কাজ করে। লাইভ মাইকে প্রকৃত pitch-shifting আলাদা DSP প্রক্রিয়া, তাই এখানে সেটি চালু বলে দাবি করা হচ্ছে না।</small>
-  </div>
- </div>
-
- <div class="panel border-indigo-900">
-  <h2 class="font-bold text-indigo-400 border-b border-slate-700 pb-3 mb-4">🎛️ মাল্টি-ব্যান্ড Equalizer</h2>
-  <div class="grid gap-3">
-   <div class="control"><div class="flex justify-between text-sm"><label for="bass">Bass</label><b class="value" id="bassVal">+4 dB</b></div><input id="bass" type="range" min="-15" max="15" value="4"></div>
-   <div class="control"><div class="flex justify-between text-sm"><label for="mid">Mid</label><b class="value" id="midVal">+3 dB</b></div><input id="mid" type="range" min="-15" max="15" value="3"></div>
-   <div class="control"><div class="flex justify-between text-sm"><label for="treble">Treble</label><b class="value" id="trebleVal">+5 dB</b></div><input id="treble" type="range" min="-15" max="15" value="5"></div>
-  </div>
- </div>
-
+<body>
+<header><div class="head">
+ <div class="brand"><div class="logo">N</div><div><h1>NIVORA PRO STUDIO</h1><small>Audio recording • Processing • Voice studio</small></div></div>
+ <span id="micStatus" class="pill">● মাইক বন্ধ</span>
+</div></header>
+<main>
+<section class="stack">
  <div class="panel">
-  <div class="flex justify-between items-center gap-2 flex-wrap border-b border-slate-700 pb-3 mb-4">
-   <h2 class="font-bold text-cyan-400">🎙️ মাইক্রোফোন ও Master Control</h2>
-   <button id="micBtn" class="action bg-gradient-to-r from-cyan-600 to-blue-700"><i class="fa-solid fa-power-off"></i> মাইক চালু করুন</button>
+  <h2>✨ সাউন্ড প্রিসেট</h2>
+  <div class="presets">
+   <button class="secondary" data-preset="speech">বয়ান / বক্তৃতা</button><button class="secondary" data-preset="quran">তিলাওয়াত</button><button class="secondary" data-preset="nasheed">নাশিদ</button><button class="secondary" data-preset="neutral">Natural</button>
   </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-   <label class="control flex justify-between items-center gap-2 text-sm">Noise Suppression <input id="noise" type="checkbox" checked class="w-5 h-5 accent-cyan-500"></label>
-   <label class="control flex justify-between items-center gap-2 text-sm">Direct Monitor <input id="monitor" type="checkbox" class="w-5 h-5 accent-cyan-500"></label>
-  </div>
-  <div class="control">
-   <div class="flex justify-between text-sm"><label for="gain">Master Gain</label><b class="value" id="gainVal">100%</b></div>
-   <input id="gain" type="range" min="0" max="200" value="100">
-  </div>
-  <p class="text-xs text-slate-400 mt-3">মাইক চালু করার আগে ফোনের Camera, WhatsApp call, Voice Recorder এবং Screen Recorder বন্ধ রাখুন।</p>
  </div>
-
  <div class="panel">
-  <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-4">🌊 Echo ও Reverb</h2>
-  <div class="grid gap-4">
-   <div><div class="flex justify-between text-sm"><label for="feedback">Echo Feedback</label><b class="value" id="feedbackVal">25%</b></div><input id="feedback" type="range" min="0" max="75" value="25"></div>
-   <div><div class="flex justify-between text-sm"><label for="delay">Delay Time</label><b class="value" id="delayVal">240 ms</b></div><input id="delay" type="range" min="50" max="800" value="240" step="10"></div>
-   <div><div class="flex justify-between text-sm"><label for="wet">Echo Mix</label><b class="value" id="wetVal">20%</b></div><input id="wet" type="range" min="0" max="100" value="20"></div>
-   <div><div class="flex justify-between text-sm"><label for="reverb">Reverb</label><b class="value" id="reverbVal">15%</b></div><input id="reverb" type="range" min="0" max="60" value="15"></div>
+  <h2>🎙️ মাইক্রোফোন ও রেকর্ডিং</h2>
+  <div class="row">
+   <button id="micBtn">মাইক্রোফোন চালু</button><button id="recBtn" class="danger" disabled>● রেকর্ড</button><button id="pauseBtn" class="secondary" disabled>Ⅱ বিরতি</button><button id="stopBtn" class="secondary" disabled>■ শেষ</button>
   </div>
+  <div class="between control"><span>রেকর্ডিং সময়</span><b class="val" id="timer">00:00</b></div>
+  <div class="grid2">
+   <label>Browser noise suppression <input id="noise" type="checkbox" checked> চালু</label>
+   <label>Direct monitor <input id="monitor" type="checkbox"> চালু (ইয়ারফোন ব্যবহার করুন)</label>
+  </div>
+  <audio id="recPlayer" controls></audio>
+  <a id="recDownload" class="btn secondary hidden" download>রেকর্ডিং ডাউনলোড</a>
+  <p class="muted">রেকর্ডিং ব্রাউজারের সমর্থিত WebM/Opus বা Ogg/Opus ফরম্যাটে হবে; এটি MP3 নয়। মাইক ব্যবহারে HTTPS ও Android-এর মাইক্রোফোন অনুমতি প্রয়োজন।</p>
  </div>
-
- <div class="panel border-amber-900">
-  <h2 class="font-bold text-amber-400 border-b border-slate-700 pb-3 mb-4">📁 অডিও ফাইল প্রসেসর</h2>
-  <input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac" class="w-full text-xs text-slate-300">
-  <p id="fileInfo" class="text-xs text-slate-400 mt-2">MP3, WAV, M4A বা সমর্থিত অডিও ফাইল নির্বাচন করুন।</p>
-  <audio id="filePreview" controls class="hidden"></audio>
-  <button id="processBtn" class="action bg-amber-600 w-full mt-3"><i class="fa-solid fa-wand-magic-sparkles"></i> অডিও প্রসেস করুন</button>
-  <p id="processStatus" class="text-xs text-slate-400 mt-3" aria-live="polite">প্রসেসিংয়ের পর WAV ডাউনলোড পাওয়া যাবে।</p>
+ <div class="panel">
+  <h2>🎚️ Equalizer ও Master</h2>
+  <div class="control"><div class="between"><label>Bass</label><b id="bassV" class="val">+3 dB</b></div><input id="bass" type="range" min="-15" max="15" value="3"></div>
+  <div class="control"><div class="between"><label>Mid</label><b id="midV" class="val">+2 dB</b></div><input id="mid" type="range" min="-15" max="15" value="2"></div>
+  <div class="control"><div class="between"><label>Treble</label><b id="trebleV" class="val">+2 dB</b></div><input id="treble" type="range" min="-15" max="15" value="2"></div>
+  <div class="control"><div class="between"><label>Master gain</label><b id="gainV" class="val">100%</b></div><input id="gain" type="range" min="0" max="150" value="100"></div>
+ </div>
+ <div class="panel">
+  <h2>🌊 Echo ও Reverb</h2>
+  <div class="control"><div class="between"><label>Echo mix</label><b id="wetV" class="val">10%</b></div><input id="wet" type="range" min="0" max="50" value="10"></div>
+  <div class="control"><div class="between"><label>Delay</label><b id="delayV" class="val">220 ms</b></div><input id="delay" type="range" min="50" max="700" step="10" value="220"></div>
+  <div class="control"><div class="between"><label>Feedback</label><b id="feedbackV" class="val">15%</b></div><input id="feedback" type="range" min="0" max="60" value="15"></div>
+  <div class="control"><div class="between"><label>Reverb (simple room reflections)</label><b id="reverbV" class="val">8%</b></div><input id="reverb" type="range" min="0" max="35" value="8"></div>
+  <p class="muted">এটি lightweight delay-based ambience; convolutional hall reverb নয়।</p>
+ </div>
+ <div class="panel">
+  <h2>📁 অডিও ফাইল প্রসেসর</h2>
+  <input id="audioFile" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac">
+  <p id="fileInfo" class="status">সমর্থিত ব্রাউজার কোডেক অনুযায়ী অডিও ফাইল ডিকোড হবে।</p>
+  <audio id="filePlayer" controls class="hidden"></audio>
+  <button id="processBtn" class="secondary" style="width:100%;margin-top:10px">অডিও প্রসেস করে WAV তৈরি করুন</button>
+  <p id="processStatus" class="status" aria-live="polite">ফলাফল WAV PCM হিসেবে তৈরি হবে। দীর্ঘ/বড় ফাইলে ফোনের RAM সীমা প্রযোজ্য।</p>
+  <audio id="resultPlayer" controls></audio>
+  <a id="resultDownload" class="btn hidden" download="NIVORA_Processed.wav">প্রসেসড WAV ডাউনলোড</a>
  </div>
 </section>
-
-<section class="lg:col-span-5 flex flex-col gap-5">
+<section class="stack">
  <div class="panel">
-  <div class="flex justify-between mb-3"><h2 class="font-bold text-cyan-400">Live Sound Visualizer</h2><span class="text-xs text-emerald-400">REALTIME</span></div>
-  <div class="h-44 bg-black rounded-xl overflow-hidden border border-slate-700"><canvas id="visualizer"></canvas></div>
+  <h2>🌊 Live Visualizer</h2><canvas id="visualizer" width="900" height="300"></canvas>
+  <p class="muted">মাইক্রোফোন চালু থাকলে লাইভ waveform দেখা যাবে।</p>
  </div>
-
  <div class="panel">
-  <h2 class="font-bold text-cyan-400 border-b border-slate-700 pb-3 mb-4">⏺️ ভয়েস রেকর্ডার</h2>
-  <div class="grid grid-cols-3 gap-2">
-   <button id="recordBtn" disabled class="action bg-pink-600 text-xs">● শুরু</button>
-   <button id="pauseBtn" disabled class="action bg-amber-600 text-xs">Ⅱ বিরতি</button>
-   <button id="stopBtn" disabled class="action bg-slate-700 text-xs">■ শেষ</button>
+  <h2>🗣️ Text-to-Speech (Cloudflare Worker)</h2>
+  <label>Cloudflare Worker TTS URL</label><input id="ttsUrl" value="https://nivora.mdabuzar192.workers.dev/api/tts" inputmode="url">
+  <div class="grid2" style="margin-top:9px">
+   <div><label>ভাষা</label><select id="ttsLang"><option value="bn">বাংলা</option><option value="en">English</option><option value="hi">हिन्दी</option><option value="ur">اردو</option><option value="ar">العربية</option></select></div>
+   <div><label>Voice</label><select id="voice"><option>Kore</option><option>Puck</option><option>Charon</option><option>Fenrir</option><option>Aoede</option><option>Leda</option><option>Orus</option><option>Zephyr</option></select></div>
   </div>
-  <div class="control flex justify-between mt-4"><span class="text-sm text-slate-400">রেকর্ডিং সময়</span><b id="timer" class="value font-mono">00:00</b></div>
-  <label class="text-xs text-slate-400 block mt-4">রেকর্ডিং শুনুন</label>
-  <audio id="recordPlayer" controls></audio>
-  <a id="recordDownload" class="action bg-cyan-700 mt-3 opacity-40 pointer-events-none" aria-disabled="true" href="#"><i class="fa-solid fa-download"></i> রেকর্ডিং ডাউনলোড</a>
-  <p class="text-xs text-slate-500 mt-2">রেকর্ডিংয়ের ফরম্যাট ব্রাউজার অনুযায়ী WebM বা Ogg হতে পারে। ফাইলের প্রকৃত ফরম্যাট অনুযায়ী নাম দেওয়া হবে।</p>
+  <div class="control"><label for="ttsText">যে লেখা থেকে কণ্ঠ তৈরি করবেন</label><textarea id="ttsText" maxlength="4000" placeholder="এখানে বাংলা বা অন্য ভাষার লেখা লিখুন..."></textarea><div class="muted">সর্বোচ্চ ৪০০০ অক্ষর</div></div>
+  <button id="ttsBtn" style="width:100%">TTS তৈরি করুন</button>
+  <p id="ttsStatus" class="status" aria-live="polite">এই ফিচারের জন্য Worker-এ POST /api/tts রুট চালু থাকতে হবে।</p>
+  <audio id="ttsPlayer" controls></audio>
+  <a id="ttsDownload" class="btn secondary hidden" download="NIVORA_TTS.wav">TTS WAV ডাউনলোড</a>
+  <p class="muted">Gemini TTS সাধারণত WAV/PCM অডিও ফেরত দেয়। এখানে সেটিকে MP3 বলা হচ্ছে না। API key কখনো এই HTML-এ রাখবেন না।</p>
  </div>
-
  <div class="panel">
-  <h2 class="font-bold text-cyan-400 mb-3">প্রসেস করা অডিও</h2>
-  <audio id="resultPlayer" controls></audio>
-  <a id="resultDownload" href="#" class="action bg-cyan-700 mt-3 opacity-40 pointer-events-none" aria-disabled="true"><i class="fa-solid fa-download"></i> প্রসেসড WAV ডাউনলোড</a>
+  <h2>ℹ️ গুরুত্বপূর্ণ সীমাবদ্ধতা</h2>
+  <p class="muted">Browser noise suppression কেবল মাইক্রোফোনের ক্ষেত্রে ব্রাউজার/ডিভাইস সমর্থন করলে কাজ করে। আপলোড করা ফাইলে এই পেজ প্রকৃত AI/RNNoise denoising করে না। EQ, compressor, echo ও ambience প্রয়োগ করা হয়। Pitch slider আগের সংস্করণে প্রকৃত pitch-shift না করায় বাদ রাখা হয়েছে।</p>
+  <p class="muted">এই HTML নিজে Android native permission দিতে পারে না। স্বতন্ত্র APK-তে AndroidManifest ও runtime permission এবং Native audio modules প্রয়োজন।</p>
  </div>
 </section>
 </main>
-<div id="toast" class="toast"><span id="toastText"></span></div>
-
+<div id="toast" class="toast"></div>
 <script>
 'use strict';
-const $ = id => document.getElementById(id);
-let audioCtx = null, micStream = null, micSource = null, nodes = {};
-let recorder = null, recChunks = [], recTimer = null, recSeconds = 0;
-let recUrl = null, resultUrl = null, selectedFile = null, visualFrame = 0;
-let recording = false, paused = false;
-
-function toast(message){
- $('toastText').textContent = message;
- $('toast').classList.add('show');
- clearTimeout(toast._t);
- toast._t = setTimeout(()=>$('toast').classList.remove('show'),4200);
+const $=id=>document.getElementById(id);
+let ctx=null,stream=null,source=null,n={},raf=0,mediaRec=null,chunks=[],recBlobUrl=null,processedUrl=null,fileUrl=null,ttsUrl=null,timer=null,seconds=0,paused=false;
+function say(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(say.t);say.t=setTimeout(()=>$('toast').classList.remove('show'),3500)}
+function status(s,err=false){$('processStatus').textContent=s;$('processStatus').style.color=err?'#fca5a5':''}
+function ensureEngine(){
+ if(ctx&&ctx.state!=='closed')return;
+ const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw Error('এই ব্রাউজারে Web Audio API নেই');
+ ctx=new AC();n.input=ctx.createGain();n.hp=ctx.createBiquadFilter();n.hp.type='highpass';n.hp.frequency.value=75;
+ n.comp=ctx.createDynamicsCompressor();n.comp.threshold.value=-22;n.comp.knee.value=18;n.comp.ratio.value=3;n.comp.attack.value=.008;n.comp.release.value=.18;
+ n.bass=ctx.createBiquadFilter();n.bass.type='lowshelf';n.bass.frequency.value=160;
+ n.mid=ctx.createBiquadFilter();n.mid.type='peaking';n.mid.frequency.value=1300;n.mid.Q.value=1;
+ n.treble=ctx.createBiquadFilter();n.treble.type='highshelf';n.treble.frequency.value=4200;
+ n.dry=ctx.createGain();n.delay=ctx.createDelay(1);n.fb=ctx.createGain();n.wet=ctx.createGain();
+ n.r1=ctx.createDelay(.2);n.r2=ctx.createDelay(.3);n.rev=ctx.createGain();n.master=ctx.createGain();n.an=ctx.createAnalyser();n.an.fftSize=2048;
+ n.dest=ctx.createMediaStreamDestination();n.monitor=ctx.createGain();
+ n.input.connect(n.hp);n.hp.connect(n.comp);n.comp.connect(n.bass);n.bass.connect(n.mid);n.mid.connect(n.treble);
+ n.treble.connect(n.dry);n.dry.connect(n.master);n.treble.connect(n.delay);n.delay.connect(n.fb);n.fb.connect(n.delay);n.delay.connect(n.wet);n.wet.connect(n.master);
+ n.treble.connect(n.r1);n.treble.connect(n.r2);n.r1.connect(n.rev);n.r2.connect(n.rev);n.rev.connect(n.master);
+ n.master.connect(n.an);n.master.connect(n.dest);n.master.connect(n.monitor);n.monitor.connect(ctx.destination);settings();
 }
-function setStatus(message,error=false){
- $('processStatus').textContent = message;
- $('processStatus').className = 'text-xs mt-3 '+(error?'text-red-400':'text-slate-400');
+function settings(){
+ const pairs=[['bass','dB'],['mid','dB'],['treble','dB']];
+ pairs.forEach(([id,u])=>$(id+'V').textContent=(+$ (id).value>0?'+':'')+$ (id).value+' '+u);
+ $('gainV').textContent=$('gain').value+'%';$('wetV').textContent=$('wet').value+'%';$('delayV').textContent=$('delay').value+' ms';$('feedbackV').textContent=$('feedback').value+'%';$('reverbV').textContent=$('reverb').value+'%';
+ if(!ctx||!n.master)return;const t=ctx.currentTime;
+ n.bass.gain.setTargetAtTime(+$('bass').value,t,.025);n.mid.gain.setTargetAtTime(+$('mid').value,t,.025);n.treble.gain.setTargetAtTime(+$('treble').value,t,.025);
+ n.master.gain.setTargetAtTime(+$('gain').value/100,t,.025);n.delay.delayTime.setTargetAtTime(+$('delay').value/1000,t,.025);
+ n.fb.gain.setTargetAtTime(+$('feedback').value/100,t,.025);n.wet.gain.setTargetAtTime(+$('wet').value/100,t,.025);
+ n.rev.gain.setTargetAtTime(+$('reverb').value/100*.2,t,.025);n.r1.delayTime.setTargetAtTime(.029,t,.025);n.r2.delayTime.setTargetAtTime(.043,t,.025);
+ n.monitor.gain.setTargetAtTime($('monitor').checked?1:0,t,.025);
 }
-function setMicStatus(on){
- $('micStatus').innerHTML = on ? '<span class="dot" style="background:#22c55e"></span>মাইক চালু' : '<span class="dot"></span>মাইক বন্ধ';
- $('micBtn').innerHTML = on ? '<i class="fa-solid fa-power-off"></i> মাইক বন্ধ করুন' : '<i class="fa-solid fa-power-off"></i> মাইক চালু করুন';
- $('micBtn').className = on ? 'action bg-gradient-to-r from-red-600 to-pink-600' : 'action bg-gradient-to-r from-cyan-600 to-blue-700';
+['bass','mid','treble','gain','wet','delay','feedback','reverb'].forEach(id=>$(id).addEventListener('input',settings));$('monitor').addEventListener('change',settings);
+async function startMic(){
+ $('micBtn').disabled=true;let s=null;
+ try{if(!window.isSecureContext)throw Error('মাইক্রোফোনের জন্য HTTPS প্রয়োজন');if(!navigator.mediaDevices?.getUserMedia)throw Error('এই পরিবেশে মাইক্রোফোন API নেই');
+ ensureEngine();if(ctx.state==='suspended')await ctx.resume();
+ try{s=await navigator.mediaDevices.getUserMedia({audio:{channelCount:{ideal:1},echoCancellation:true,noiseSuppression:$('noise').checked,autoGainControl:false},video:false})}
+ catch(e){if(['OverconstrainedError','ConstraintNotSatisfiedError'].includes(e.name))s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});else throw e}
+ if(!s.getAudioTracks().length)throw Error('মাইক্রোফোন ট্র্যাক পাওয়া যায়নি');stream=s;source=ctx.createMediaStreamSource(s);source.connect(n.input);
+ $('micStatus').textContent='● মাইক চালু';$('micStatus').classList.add('on');$('micBtn').textContent='মাইক্রোফোন বন্ধ';$('recBtn').disabled=false;draw();say('মাইক্রোফোন চালু হয়েছে');
+ }catch(e){if(s)s.getTracks().forEach(t=>t.stop());say((e.name==='NotAllowedError'?'মাইক্রোফোন অনুমতি দিন: ': '')+e.message)}
+ finally{$('micBtn').disabled=false}
 }
-function createEngine(){
- if(audioCtx && audioCtx.state !== 'closed') return;
- const AC = window.AudioContext || window.webkitAudioContext;
- if(!AC) throw new Error('এই ব্রাউজারে Web Audio API সমর্থিত নয়।');
- audioCtx = new AC();
- nodes.input = audioCtx.createGain();
- nodes.hp = audioCtx.createBiquadFilter(); nodes.hp.type='highpass'; nodes.hp.frequency.value=75;
- nodes.comp = audioCtx.createDynamicsCompressor();
- nodes.comp.threshold.value=-20; nodes.comp.knee.value=18; nodes.comp.ratio.value=3;
- nodes.bass=audioCtx.createBiquadFilter(); nodes.bass.type='lowshelf'; nodes.bass.frequency.value=180;
- nodes.mid=audioCtx.createBiquadFilter(); nodes.mid.type='peaking'; nodes.mid.frequency.value=1400; nodes.mid.Q.value=1;
- nodes.treble=audioCtx.createBiquadFilter(); nodes.treble.type='highshelf'; nodes.treble.frequency.value=4200;
- nodes.dry=audioCtx.createGain();
- nodes.delay=audioCtx.createDelay(1.2); nodes.feedback=audioCtx.createGain(); nodes.wet=audioCtx.createGain();
- nodes.revDelay1=audioCtx.createDelay(.2); nodes.revDelay2=audioCtx.createDelay(.3);
- nodes.revMix=audioCtx.createGain();
- nodes.master=audioCtx.createGain(); nodes.monitor=audioCtx.createGain();
- nodes.analyser=audioCtx.createAnalyser(); nodes.analyser.fftSize=2048;
- nodes.recordDest=audioCtx.createMediaStreamDestination();
-
- nodes.input.connect(nodes.hp); nodes.hp.connect(nodes.comp);
- nodes.comp.connect(nodes.bass); nodes.bass.connect(nodes.mid); nodes.mid.connect(nodes.treble);
- nodes.treble.connect(nodes.dry); nodes.dry.connect(nodes.master);
- nodes.treble.connect(nodes.delay); nodes.delay.connect(nodes.feedback); nodes.feedback.connect(nodes.delay);
- nodes.delay.connect(nodes.wet); nodes.wet.connect(nodes.master);
- nodes.treble.connect(nodes.revDelay1); nodes.treble.connect(nodes.revDelay2);
- nodes.revDelay1.connect(nodes.revMix); nodes.revDelay2.connect(nodes.revMix); nodes.revMix.connect(nodes.master);
- nodes.master.connect(nodes.analyser); nodes.master.connect(nodes.recordDest);
- nodes.master.connect(nodes.monitor); nodes.monitor.connect(audioCtx.destination);
- updateAudioSettings();
-}
-function updateAudioSettings(){
- const ids=['bass','mid','treble','gain','feedback','delay','wet','reverb','pitch'];
- $('pitchVal').textContent=Number($('pitch').value).toFixed(2)+'x';
- for(const id of ['bass','mid','treble']) $(id+'Val').textContent=(Number($(id).value)>0?'+':'')+$(id).value+' dB';
- $('gainVal').textContent=$('gain').value+'%';
- $('feedbackVal').textContent=$('feedback').value+'%';
- $('delayVal').textContent=$('delay').value+' ms';
- $('wetVal').textContent=$('wet').value+'%';
- $('reverbVal').textContent=$('reverb').value+'%';
- if(!audioCtx || !nodes.master) return;
- const now=audioCtx.currentTime;
- nodes.bass.gain.setTargetAtTime(+$('bass').value,now,.03);
- nodes.mid.gain.setTargetAtTime(+$('mid').value,now,.03);
- nodes.treble.gain.setTargetAtTime(+$('treble').value,now,.03);
- nodes.master.gain.setTargetAtTime(+$('gain').value/100,now,.03);
- nodes.delay.delayTime.setTargetAtTime(+$('delay').value/1000,now,.03);
- nodes.feedback.gain.setTargetAtTime(+$('feedback').value/100,now,.03);
- nodes.wet.gain.setTargetAtTime(+$('wet').value/100,now,.03);
- nodes.revMix.gain.setTargetAtTime(+$('reverb').value/100*.22,now,.03);
- nodes.revDelay1.delayTime.setTargetAtTime(.031,now,.03);
- nodes.revDelay2.delayTime.setTargetAtTime(.047,now,.03);
- nodes.monitor.gain.setTargetAtTime($('monitor').checked?1:0,now,.03);
-}
-['bass','mid','treble','gain','feedback','delay','wet','reverb','pitch'].forEach(id=>$(id).addEventListener('input',updateAudioSettings));
-$('monitor').addEventListener('change',updateAudioSettings);
-
-async function startMicrophone(){
- if(!window.isSecureContext){toast('মাইক্রোফোনের জন্য HTTPS Live URL ব্যবহার করুন।');return;}
- if(!navigator.mediaDevices?.getUserMedia){toast('এই ব্রাউজারে মাইক্রোফোন API পাওয়া যাচ্ছে না। Chrome-এ চেষ্টা করুন।');return;}
- $('micBtn').disabled=true;
- let stream=null;
- try{
-  // Start/resume AudioContext only after the user's tap.
-  createEngine();
-  if(audioCtx.state==='suspended') await audioCtx.resume();
-  // Request a normal mono microphone first. Do not force a device or sample rate.
-  const base={audio:{channelCount:{ideal:1},echoCancellation:true,noiseSuppression:$('noise').checked,autoGainControl:false},video:false};
-  try{
-   stream=await navigator.mediaDevices.getUserMedia(base);
-  }catch(err){
-   // Retry with browser defaults only for unsupported constraints.
-   if(err.name==='OverconstrainedError' || err.name==='ConstraintNotSatisfiedError'){
-    stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
-   }else{
-    throw err;
-   }
-  }
-  if(!stream.getAudioTracks().length) throw new Error('মাইক্রোফোন অডিও ট্র্যাক পাওয়া যায়নি।');
-  micStream=stream;
-  micSource=audioCtx.createMediaStreamSource(stream);
-  micSource.connect(nodes.input);
-  stream.getAudioTracks()[0].addEventListener('ended',()=>{
-   if(micStream===stream){stopMicrophone(false);toast('মাইক্রোফোন সংযোগ বিচ্ছিন্ন হয়েছে।');}
-  });
-  setMicStatus(true); $('recordBtn').disabled=false;
-  startVisualizer(); toast('মাইক্রোফোন চালু হয়েছে।');
- }catch(err){
-  if(stream) stream.getTracks().forEach(t=>t.stop());
-  console.error('NIVORA microphone:',err.name,err.message);
-  const messages={
-   NotAllowedError:'মাইক্রোফোন Permission Block করা আছে। Chrome Site Settings থেকে Microphone Allow করুন।',
-   PermissionDeniedError:'মাইক্রোফোন ব্যবহারের অনুমতি দিন।',
-   NotFoundError:'ফোনে ব্যবহারযোগ্য মাইক্রোফোন পাওয়া যায়নি।',
-   NotReadableError:'Android মাইক্রোফোন খুলতে পারছে না। Camera, WhatsApp Call, Recorder ও Screen Recorder বন্ধ করুন; এরপর Chrome বন্ধ করে আবার খুলুন বা ফোন Restart দিন।',
-   SecurityError:'HTTPS ঠিকানা থেকে পেজটি খুলুন।',
-   AbortError:'মাইক্রোফোন চালু করার সময় সিস্টেম বাধা দিয়েছে। আবার চেষ্টা করুন।',
-   InvalidStateError:'ব্রাউজার/ট্যাবের অবস্থা ঠিক নেই। পেজ Reload করুন।'
-  };
-  toast(messages[err.name] || ('মাইক্রোফোন চালু হয়নি: '+(err.message||err.name)));
- }finally{$('micBtn').disabled=false;}
-}
-function stopMicrophone(showMessage=true){
- if(recording) stopRecording();
- if(micSource){try{micSource.disconnect();}catch(e){} micSource=null;}
- if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
- setMicStatus(false); $('recordBtn').disabled=true; stopVisualizer();
- if(showMessage) toast('মাইক্রোফোন বন্ধ করা হয়েছে।');
-}
-$('micBtn').addEventListener('click',()=>micStream?stopMicrophone():startMicrophone());
-
-function startVisualizer(){
- const canvas=$('visualizer'), c=canvas.getContext('2d');
- const draw=()=>{
-  if(!nodes.analyser)return;
-  const dpr=Math.max(1,window.devicePixelRatio||1);
-  const w=canvas.clientWidth,h=canvas.clientHeight;
-  if(canvas.width!==Math.floor(w*dpr)||canvas.height!==Math.floor(h*dpr)){canvas.width=Math.floor(w*dpr);canvas.height=Math.floor(h*dpr);}
-  c.setTransform(dpr,0,0,dpr,0,0);
-  const data=new Uint8Array(nodes.analyser.fftSize);nodes.analyser.getByteTimeDomainData(data);
-  c.fillStyle='#050811';c.fillRect(0,0,w,h);c.strokeStyle='#22d3ee';c.lineWidth=2;c.beginPath();
-  const step=w/data.length;
-  data.forEach((v,i)=>{const y=(v/255)*h;if(i===0)c.moveTo(0,y);else c.lineTo(i*step,y);});
-  c.stroke();visualFrame=requestAnimationFrame(draw);
- };
- cancelAnimationFrame(visualFrame);draw();
-}
-function stopVisualizer(){cancelAnimationFrame(visualFrame);const c=$('visualizer').getContext('2d');c.clearRect(0,0,$('visualizer').width,$('visualizer').height);}
-
-function supportedRecorderType(){
- if(!window.MediaRecorder) return '';
- return ['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/webm','audio/ogg'].find(t=>MediaRecorder.isTypeSupported(t))||'';
-}
-function startRecording(){
- if(!micStream||!nodes.recordDest){toast('আগে মাইক্রোফোন চালু করুন।');return;}
- if(!window.MediaRecorder){toast('এই ব্রাউজারে MediaRecorder সমর্থিত নয়।');return;}
- try{
-  const type=supportedRecorderType();
-  recorder=type?new MediaRecorder(nodes.recordDest.stream,{mimeType:type}):new MediaRecorder(nodes.recordDest.stream);
-  recChunks=[];
-  recorder.ondataavailable=e=>{if(e.data&&e.data.size)recChunks.push(e.data);};
-  recorder.onerror=e=>toast('রেকর্ডিং ত্রুটি: '+(e.error?.message||'অজানা সমস্যা'));
-  recorder.onstop=()=>{
-   const mime=recorder.mimeType||recChunks[0]?.type||'audio/webm';
-   const blob=new Blob(recChunks,{type:mime});
-   if(!blob.size){toast('রেকর্ডিং খালি হয়েছে। আবার চেষ্টা করুন।');return;}
-   if(recUrl)URL.revokeObjectURL(recUrl);
-   recUrl=URL.createObjectURL(blob);
-   $('recordPlayer').src=recUrl;
-   const ext=mime.includes('ogg')?'ogg':'webm';
-   $('recordDownload').href=recUrl;$('recordDownload').download='NIVORA_Recording.'+ext;
-   $('recordDownload').classList.remove('opacity-40','pointer-events-none');$('recordDownload').setAttribute('aria-disabled','false');
-   toast('রেকর্ডিং তৈরি হয়েছে। শুনে ডাউনলোড করুন।');
-  };
-  recorder.start(1000);recording=true;paused=false;recSeconds=0;
-  $('recordBtn').disabled=true;$('pauseBtn').disabled=false;$('stopBtn').disabled=false;
-  $('pauseBtn').textContent='Ⅱ বিরতি';
-  $('timer').textContent='00:00';
-  clearInterval(recTimer);recTimer=setInterval(()=>{if(!paused){recSeconds++;$('timer').textContent=String(Math.floor(recSeconds/60)).padStart(2,'0')+':'+String(recSeconds%60).padStart(2,'0');}},1000);
- }catch(e){toast('রেকর্ডার চালু হয়নি: '+e.message);}
-}
-function pauseRecording(){
- if(!recorder||!recording)return;
- if(!paused&&recorder.state==='recording'){recorder.pause();paused=true;$('pauseBtn').textContent='▶ চালু';}
- else if(paused&&recorder.state==='paused'){recorder.resume();paused=false;$('pauseBtn').textContent='Ⅱ বিরতি';}
-}
-function stopRecording(){
- if(!recorder||!recording)return;
- recording=false;paused=false;clearInterval(recTimer);
- if(recorder.state!=='inactive')recorder.stop();
- $('recordBtn').disabled=!micStream;$('pauseBtn').disabled=true;$('stopBtn').disabled=true;
- $('pauseBtn').textContent='Ⅱ বিরতি';
-}
-$('recordBtn').addEventListener('click',startRecording);
-$('pauseBtn').addEventListener('click',pauseRecording);
-$('stopBtn').addEventListener('click',stopRecording);
-
-const presets={
- boyan:{pitch:1,bass:3,mid:3,treble:2,feedback:20,delay:220,wet:15,reverb:10,gain:110},
- quran:{pitch:1,bass:2,mid:2,treble:3,feedback:28,delay:280,wet:20,reverb:18,gain:105},
- nasheed:{pitch:1.05,bass:4,mid:1,treble:2,feedback:22,delay:230,wet:18,reverb:12,gain:105},
- ghazal:{pitch:1,bass:2,mid:3,treble:2,feedback:25,delay:260,wet:20,reverb:15,gain:105}
-};
-document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
- const p=presets[b.dataset.preset];Object.keys(p).forEach(k=>$(k).value=p[k]);updateAudioSettings();toast('প্রিসেট সেটিংস প্রয়োগ হয়েছে।');
-}));
-
-$('file').addEventListener('change',()=>{
- selectedFile=$('file').files?.[0]||null;
- if(resultUrl){URL.revokeObjectURL(resultUrl);resultUrl=null;}
- $('resultPlayer').removeAttribute('src');$('resultDownload').href='#';
- $('resultDownload').classList.add('opacity-40','pointer-events-none');
- if(!selectedFile){$('fileInfo').textContent='কোনো ফাইল নির্বাচন করা হয়নি।';$('filePreview').classList.add('hidden');return;}
- if(!selectedFile.type.startsWith('audio/')&&!/\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(selectedFile.name)){
-  selectedFile=null;$('file').value='';$('fileInfo').textContent='এই ফাইলটি অডিও ফাইল নয়।';return;
- }
- if(selectedFile.size>150*1024*1024){selectedFile=null;$('file').value='';$('fileInfo').textContent='ফাইল ১৫০ MB-এর বেশি। ছোট ফাইল ব্যবহার করুন।';return;}
- const u=URL.createObjectURL(selectedFile);
- $('filePreview').src=u;$('filePreview').classList.remove('hidden');
- $('fileInfo').textContent=selectedFile.name+' • '+(selectedFile.size/1024/1024).toFixed(2)+' MB';
- setStatus('ফাইল নির্বাচন হয়েছে। প্রসেস বাটনে চাপুন।');
-});
-
-function audioBufferToWav(buffer){
- const channels=buffer.numberOfChannels, frames=buffer.length, sampleRate=buffer.sampleRate;
- const bytesPerSample=2, dataSize=frames*channels*bytesPerSample;
- const ab=new ArrayBuffer(44+dataSize),v=new DataView(ab);
- const str=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
- str(0,'RIFF');v.setUint32(4,36+dataSize,true);str(8,'WAVE');str(12,'fmt ');
- v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,channels,true);
- v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*channels*2,true);
- v.setUint16(32,channels*2,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,dataSize,true);
- const ch=Array.from({length:channels},(_,i)=>buffer.getChannelData(i));let offset=44;
- for(let i=0;i<frames;i++)for(let c=0;c<channels;c++){
-  const s=Math.max(-1,Math.min(1,ch[c][i]));
-  v.setInt16(offset,s<0?s*32768:s*32767,true);offset+=2;
- }
- return new Blob([ab],{type:'audio/wav'});
-}
-$('processBtn').addEventListener('click',async()=>{
- if(!selectedFile){setStatus('প্রথমে একটি অডিও ফাইল নির্বাচন করুন।',true);toast('প্রথমে অডিও ফাইল নির্বাচন করুন।');return;}
- const btn=$('processBtn');btn.disabled=true;
- let temp=null;
- try{
-  setStatus('ফাইল পড়া হচ্ছে...');
-  const AC=window.AudioContext||window.webkitAudioContext;
-  const ctx=new AC();temp=ctx;
-  const array=await selectedFile.arrayBuffer();
-  const decoded=await ctx.decodeAudioData(array.slice(0));
-  const pitch=Math.max(.5,Math.min(2,Number($('pitch').value)||1));
-  const delay=Number($('delay').value)/1000;
-  const fb=Math.min(.75,Number($('feedback').value)/100);
-  const tail=Math.min(5,fb>0?delay*Math.ceil(Math.log(.02)/Math.log(Math.max(.05,fb))):.15);
-  const duration=decoded.duration/pitch+tail+.1;
-  if(duration>480)throw new Error('আট মিনিটের বেশি আউটপুট মোবাইলের মেমোরির জন্য বড় হতে পারে। ছোট ফাইল ব্যবহার করুন।');
-  const rate=Math.min(48000,Math.max(22050,decoded.sampleRate));
-  const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
-  const off=new Offline(Math.min(2,decoded.numberOfChannels),Math.ceil(duration*rate),rate);
-  const src=off.createBufferSource();src.buffer=decoded;src.playbackRate.value=pitch;
-  const hp=off.createBiquadFilter();hp.type='highpass';hp.frequency.value=75;
-  const bass=off.createBiquadFilter();bass.type='lowshelf';bass.frequency.value=180;bass.gain.value=+$('bass').value;
-  const mid=off.createBiquadFilter();mid.type='peaking';mid.frequency.value=1400;mid.Q.value=1;mid.gain.value=+$('mid').value;
-  const treble=off.createBiquadFilter();treble.type='highshelf';treble.frequency.value=4200;treble.gain.value=+$('treble').value;
-  const comp=off.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=3;
-  const master=off.createGain();master.gain.value=Math.min(2,Number($('gain').value)/100);
-  const dry=off.createGain();dry.gain.value=1;
-  const d=off.createDelay(1);d.delayTime.value=delay;
-  const f=off.createGain();f.gain.value=fb;
-  const w=off.createGain();w.gain.value=Number($('wet').value)/100;
-  const rv1=off.createDelay(.2);rv1.delayTime.value=.031;
-  const rv2=off.createDelay(.3);rv2.delayTime.value=.047;
-  const rv=off.createGain();rv.gain.value=Number($('reverb').value)/100*.2;
-  src.connect(hp);hp.connect(bass);bass.connect(mid);mid.connect(treble);treble.connect(comp);
-  comp.connect(dry);dry.connect(master);
-  comp.connect(d);d.connect(f);f.connect(d);d.connect(w);w.connect(master);
-  comp.connect(rv1);comp.connect(rv2);rv1.connect(rv);rv2.connect(rv);rv.connect(master);
-  master.connect(off.destination);src.start(0);
-  setStatus('অডিও রেন্ডার হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।');
-  const rendered=await off.startRendering();
-  const blob=audioBufferToWav(rendered);
-  if(!blob.size)throw new Error('WAV আউটপুট তৈরি হয়নি।');
-  if(resultUrl)URL.revokeObjectURL(resultUrl);
-  resultUrl=URL.createObjectURL(blob);
-  $('resultPlayer').src=resultUrl;$('resultPlayer').load();
-  $('resultDownload').href=resultUrl;$('resultDownload').download='NIVORA_Processed_Audio.wav';
-  $('resultDownload').classList.remove('opacity-40','pointer-events-none');
-  $('resultDownload').setAttribute('aria-disabled','false');
-  setStatus('সম্পন্ন! WAV ফাইল তৈরি হয়েছে • '+(blob.size/1024/1024).toFixed(2)+' MB');
-  toast('অডিও প্রসেস সম্পন্ন। এখন শুনুন বা WAV ডাউনলোড করুন।');
- }catch(err){
-  console.error('NIVORA file processing:',err);
-  setStatus('প্রসেসিং ব্যর্থ: '+(err.message||'ফাইলটি ডিকোড করা যায়নি।'),true);
-  toast('প্রসেসিং ব্যর্থ: '+(err.message||'অজানা সমস্যা'));
- }finally{
-  if(temp&&temp.state!=='closed')try{await temp.close();}catch(e){}
-  btn.disabled=false;
- }
-});
-
-// Release object URLs and microphone tracks when leaving the page.
-window.addEventListener('pagehide',()=>{
- if(micStream)micStream.getTracks().forEach(t=>t.stop());
- if(recUrl)URL.revokeObjectURL(recUrl);
- if(resultUrl)URL.revokeObjectURL(resultUrl);
-});
-updateAudioSettings();
-setMicStatus(false);
+function stopMic(){if(mediaRec&&mediaRec.state!=='inactive')stopRec();if(source){try{source.disconnect()}catch{}}source=null;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;$('micStatus').textContent='● মাইক বন্ধ';$('micStatus').classList.remove('on');$('micBtn').textContent='মাইক্রোফোন চালু';$('recBtn').disabled=true;cancelAnimationFrame(raf)}
+$('micBtn').onclick=()=>stream?stopMic():startMic();
+function draw(){const c=$('visualizer'),g=c.getContext('2d');const loop=()=>{if(!n.an)return;const w=c.width,h=c.height,a=new Uint8Array(n.an.fftSize);n.an.getByteTimeDomainData(a);g.fillStyle='#030912';g.fillRect(0,0,w,h);g.strokeStyle='#22d3ee';g.lineWidth=3;g.beginPath();a.forEach((v,i)=>{const x=i*w/a.length,y=v/255*h;i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();raf=requestAnimationFrame(loop)};cancelAnimationFrame(raf);loop()}
+function recType(){if(!window.MediaRecorder)return '';return ['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/webm','audio/ogg'].find(t=>MediaRecorder.isTypeSupported(t))||''}
+function startRec(){try{if(!stream)throw Error('আগে মাইক্রোফোন চালু করুন');ensureEngine();const mt=recType();mediaRec=mt?new MediaRecorder(n.dest.stream,{mimeType:mt}):new MediaRecorder(n.dest.stream);chunks=[];
+ mediaRec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};mediaRec.onerror=e=>say('রেকর্ডিং সমস্যা: '+(e.error?.message||'unknown'));
+ mediaRec.onstop=()=>{const mime=mediaRec.mimeType||chunks[0]?.type||'audio/webm';const b=new Blob(chunks,{type:mime});if(!b.size){say('রেকর্ডিং খালি');return}if(recBlobUrl)URL.revokeObjectURL(recBlobUrl);recBlobUrl=URL.createObjectURL(b);$('recPlayer').src=recBlobUrl;$('recDownload').href=recBlobUrl;$('recDownload').download='NIVORA_Recording.'+(mime.includes('ogg')?'ogg':'webm');$('recDownload').classList.remove('hidden');say('রেকর্ডিং প্রস্তুত')};
+ mediaRec.start(1000);seconds=0;paused=false;$('timer').textContent='00:00';$('recBtn').disabled=true;$('pauseBtn').disabled=false;$('stopBtn').disabled=false;timer=setInterval(()=>{if(!paused){seconds++;$('timer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}},1000);
+ }catch(e){say(e.message)}}
+function stopRec(){if(!mediaRec||mediaRec.state==='inactive')return;mediaRec.stop();clearInterval(timer);$('recBtn').disabled=!stream;$('pauseBtn').disabled=true;$('stopBtn').disabled=true;paused=false}
+$('recBtn').onclick=startRec;$('stopBtn').onclick=stopRec;$('pauseBtn').onclick=()=>{if(!mediaRec)return;if(!paused&&mediaRec.state==='recording'){mediaRec.pause();paused=true;$('pauseBtn').textContent='▶ চালু'}else if(paused&&mediaRec.state==='paused'){mediaRec.resume();paused=false;$('pauseBtn').textContent='Ⅱ বিরতি'}};
+const presets={speech:{bass:2,mid:3,treble:2,gain:105,wet:8,delay:190,feedback:12,reverb:5},quran:{bass:1,mid:1,treble:2,gain:100,wet:12,delay:260,feedback:16,reverb:12},nasheed:{bass:3,mid:0,treble:2,gain:102,wet:15,delay:230,feedback:18,reverb:10},neutral:{bass:0,mid:0,treble:0,gain:100,wet:0,delay:220,feedback:0,reverb:0}};
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{Object.entries(presets[b.dataset.preset]).forEach(([k,v])=>$(k).value=v);settings();say('প্রিসেট প্রয়োগ হয়েছে')});
+$('audioFile').onchange=()=>{const f=$('audioFile').files[0];if(!f)return;if(f.size>100*1024*1024){say('১০০ MB-এর কম ফাইল নির্বাচন করুন');$('audioFile').value='';return}if(!f.type.startsWith('audio/')&&!/\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(f.name)){say('এটি অডিও ফাইল নয়');return}if(fileUrl)URL.revokeObjectURL(fileUrl);fileUrl=URL.createObjectURL(f);$('filePlayer').src=fileUrl;$('filePlayer').classList.remove('hidden');$('fileInfo').textContent=f.name+' • '+(f.size/1048576).toFixed(2)+' MB';status('ফাইল নির্বাচন হয়েছে। প্রসেস বাটনে চাপুন')};
+function wavBlob(b){const ch=b.numberOfChannels,len=b.length,rate=b.sampleRate,size=len*ch*2,ab=new ArrayBuffer(44+size),v=new DataView(ab),write=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};write(0,'RIFF');v.setUint32(4,36+size,true);write(8,'WAVE');write(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,ch,true);v.setUint32(24,rate,true);v.setUint32(28,rate*ch*2,true);v.setUint16(32,ch*2,true);v.setUint16(34,16,true);write(36,'data');v.setUint32(40,size,true);const data=Array.from({length:ch},(_,i)=>b.getChannelData(i));let p=44;for(let i=0;i<len;i++)for(let c=0;c<ch;c++){const x=Math.max(-1,Math.min(1,data[c][i]));v.setInt16(p,x<0?x*32768:x*32767,true);p+=2}return new Blob([ab],{type:'audio/wav'})}
+$('processBtn').onclick=async()=>{const f=$('audioFile').files[0];if(!f){say('আগে অডিও ফাইল নির্বাচন করুন');return}const btn=$('processBtn');btn.disabled=true;let off;
+ try{status('অডিও ডিকোড হচ্ছে...');const AC=window.AudioContext||window.webkitAudioContext;const decodeCtx=new AC();let decoded;try{decoded=await decodeCtx.decodeAudioData(await f.arrayBuffer())}finally{await decodeCtx.close()}
+ if(decoded.duration>300)throw Error('সর্বোচ্চ ৫ মিনিটের অডিও দিয়ে চেষ্টা করুন');const rate=Math.min(48000,decoded.sampleRate),ch=Math.min(2,decoded.numberOfChannels),tail=Math.min(4,(+$('delay').value/1000)*4);
+ const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;off=new Offline(ch,Math.ceil((decoded.duration+tail)*rate),rate);
+ const src=off.createBufferSource();src.buffer=decoded;const hp=off.createBiquadFilter();hp.type='highpass';hp.frequency.value=75;
+ const comp=off.createDynamicsCompressor();comp.threshold.value=-22;comp.knee.value=18;comp.ratio.value=3;comp.attack.value=.008;comp.release.value=.18;
+ const bass=off.createBiquadFilter();bass.type='lowshelf';bass.frequency.value=160;bass.gain.value=+$('bass').value;
+ const mid=off.createBiquadFilter();mid.type='peaking';mid.frequency.value=1300;mid.Q.value=1;mid.gain.value=+$('mid').value;
+ const treble=off.createBiquadFilter();treble.type='highshelf';treble.frequency.value=4200;treble.gain.value=+$('treble').value;
+ const master=off.createGain();master.gain.value=Math.min(1.5,+$('gain').value/100);const delay=off.createDelay(1);delay.delayTime.value=+$('delay').value/1000;const fb=off.createGain();fb.gain.value=+$('feedback').value/100;const wet=off.createGain();wet.gain.value=+$('wet').value/100;const r1=off.createDelay(.2),r2=off.createDelay(.3),rev=off.createGain();r1.delayTime.value=.029;r2.delayTime.value=.043;rev.gain.value=+$('reverb').value/100*.2;
+ src.connect(hp);hp.connect(comp);comp.connect(bass);bass.connect(mid);mid.connect(treble);treble.connect(master);treble.connect(delay);delay.connect(fb);fb.connect(delay);delay.connect(wet);wet.connect(master);treble.connect(r1);treble.connect(r2);r1.connect(rev);r2.connect(rev);rev.connect(master);master.connect(off.destination);
+ status('অডিও প্রসেস হচ্ছে...');src.start(0);const rendered=await off.startRendering();const blob=wavBlob(rendered);if(processedUrl)URL.revokeObjectURL(processedUrl);processedUrl=URL.createObjectURL(blob);$('resultPlayer').src=processedUrl;$('resultDownload').href=processedUrl;$('resultDownload').classList.remove('hidden');status('সম্পন্ন: WAV PCM • '+(blob.size/1048576).toFixed(2)+' MB');say('প্রসেসিং সম্পন্ন');
+ }catch(e){status('ব্যর্থ: '+e.message,true);say('প্রসেসিং ব্যর্থ: '+e.message)}finally{btn.disabled=false}};
+$('ttsBtn').onclick=async()=>{const text=$('ttsText').value.trim(),url=$('ttsUrl').value.trim();if(!text){say('TTS-এর জন্য লেখা দিন');return}if(!/^https:\/\/.+\/api\/tts$/.test(url)){say('সঠিক HTTPS Worker /api/tts URL দিন');return}const btn=$('ttsBtn');btn.disabled=true;$('ttsStatus').textContent='TTS অনুরোধ পাঠানো হচ্ছে...';
+ try{const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,language:$('ttsLang').value,voice:$('voice').value})});if(!res.ok){let msg='HTTP '+res.status;try{const j=await res.json();msg=j.error||msg}catch{}throw Error(msg)}const blob=await res.blob();if(!blob.size)throw Error('Worker খালি অডিও পাঠিয়েছে');if(ttsUrl)URL.revokeObjectURL(ttsUrl);ttsUrl=URL.createObjectURL(blob);$('ttsPlayer').src=ttsUrl;$('ttsDownload').href=ttsUrl;$('ttsDownload').download='NIVORA_TTS.'+(blob.type.includes('wav')?'wav':'audio');$('ttsDownload').classList.remove('hidden');$('ttsStatus').textContent='TTS অডিও তৈরি হয়েছে ('+blob.type+')';say('TTS তৈরি হয়েছে');
+ }catch(e){$('ttsStatus').textContent='TTS ব্যর্থ: '+e.message+' — Worker route/CORS/API key পরীক্ষা করুন';say('TTS ব্যর্থ')}finally{btn.disabled=false}};
+window.addEventListener('pagehide',()=>{stopMic();[recBlobUrl,processedUrl,fileUrl,ttsUrl].forEach(u=>{if(u)URL.revokeObjectURL(u)})});
+settings();
 </script>
-</body>
-</html>
+</body></html>
