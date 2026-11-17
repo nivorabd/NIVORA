@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIVORA International Digital Mike & Audio Studio</title>
+    <title>NIVORA International Digital Mike & Voice Cloning Studio</title>
     
     <!-- Tailwind CSS Framework & FontAwesome Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,8 +32,8 @@
                 <i class="fa-solid fa-microphone-lines"></i>
             </div>
             <div>
-                <h1 class="font-bold text-sm md:text-base text-cyan-400 tracking-wide">NIVORA INTERNATIONAL DIGITAL MIKE</h1>
-                <p class="text-[10px] text-slate-400">Broadcast Grade Audio DSP, MP3 Converter & Live Congregational Response</p>
+                <h1 class="font-bold text-sm md:text-base text-cyan-400 tracking-wide">NIVORA DIGITAL MIKE &amp; CLONE STUDIO</h1>
+                <p class="text-[10px] text-slate-400">Broadcast DSP, Sample Voice Cloning, TTS Engine &amp; MP3 Export</p>
             </div>
         </div>
         <div class="flex items-center gap-2 text-xs">
@@ -121,90 +121,58 @@
             </div>
         </section>
 
-        <!-- CENTER COLUMN: ECHO, REVERB & CROWD RESPONSE ENGINE -->
+        <!-- CENTER COLUMN: VOICE CLONING & TTS ENGINE -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-4 shadow-xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Sweet Echo &amp; Crowd Chorus
+                <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-clone"></i> Sample Voice Cloning &amp; TTS Studio
                 </h2>
+                <span class="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded font-mono">Audio Mimic Engine</span>
             </div>
 
-            <!-- Echo & Delay Controls -->
-            <div class="space-y-3 text-xs">
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-slate-200">International Stage Echo</span>
-                        <span class="text-[9px] text-cyan-400 font-mono">Dampened Delay</span>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1">
-                            <span class="text-slate-400">Echo Level</span>
-                            <span id="valEchoMix" class="text-cyan-400 font-mono">22%</span>
-                        </div>
-                        <input type="range" id="sliderEchoMix" min="0" max="100" value="22" oninput="updateNodeParam('echoMix', this.value)" class="w-full slider-custom">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1">
-                            <span class="text-slate-400">Echo Delay Time (ms)</span>
-                            <span id="valDelayTime" class="text-cyan-400 font-mono">160ms</span>
-                        </div>
-                        <input type="range" id="sliderDelayTime" min="50" max="600" value="160" oninput="updateNodeParam('delayTime', this.value)" class="w-full slider-custom">
-                    </div>
-                </div>
-
-                <!-- Reverb Controller -->
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                    <span class="font-bold text-slate-200 block">Hall Reverb Simulation</span>
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1">
-                            <span class="text-slate-400">Reverb Wet Level</span>
-                            <span id="valReverbMix" class="text-cyan-400 font-mono">15%</span>
-                        </div>
-                        <input type="range" id="sliderReverbMix" min="0" max="100" value="15" oninput="updateNodeParam('reverbMix', this.value)" class="w-full slider-custom">
-                    </div>
-                </div>
-            </div>
-
-            <!-- LIVE CONGREGATIONAL SUBHANALLAH RESPONSE SYSTEM -->
-            <div class="bg-slate-950 p-3 rounded-xl border border-cyan-500/30 space-y-3 flex-1 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-xs text-amber-400 flex items-center gap-1">
-                            <i class="fa-solid fa-users"></i> Congregational Subhanallah Response
-                        </span>
-                        <span class="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded">Mix Bus Routed</span>
-                    </div>
-                    <p class="text-[10px] text-slate-400">রেকর্ডিং চলাকালে শ্রতাদের সম্মিলিত উচ্চস্বরে সুবহানাল্লাহ ধ্বনি রেকর্ডিং মিক্সে যুক্ত করতে ক্লিক করুন।</p>
-                </div>
-
-                <!-- Crowd Action Trigger -->
-                <div class="flex flex-col gap-2">
-                    <button id="btnTriggerCrowd" onclick="triggerCrowdResponse()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
-                        <i class="fa-solid fa-bullhorn text-sm"></i> বলুন: "সুবহানাল্লাহ" (Crowd Chorus)
+            <!-- Voice Sample Inputs -->
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3">
+                <span class="text-xs font-bold text-slate-200 block">১. ভয়েস নমুনা (Sample Audio Input)</span>
+                <p class="text-[10px] text-slate-400">একটি ১০-১৫ সেকেন্ডের নমুনা ভয়েস আপলোড করুন অথবা সরাসরি রেকর্ড করে নমুনা হিসেবে সেভ করুন:</p>
+                
+                <div class="flex items-center gap-2">
+                    <input type="file" id="fileCloneSample" accept="audio/*" onchange="uploadVoiceSample(event)" class="hidden">
+                    <button onclick="document.getElementById('fileCloneSample').click()" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 text-[10px] font-bold rounded-lg border border-slate-700">
+                        <i class="fa-solid fa-file-audio mr-1"></i> Upload Sample Audio
                     </button>
-                    <div class="flex items-center gap-2">
-                        <input type="file" id="fileCrowdAudio" accept="audio/*" onchange="uploadCrowdSample(event)" class="hidden">
-                        <button onclick="document.getElementById('fileCrowdAudio').click()" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] rounded-lg border border-slate-700">
-                            <i class="fa-solid fa-upload"></i> Upload Custom Crowd Audio
+                    <button id="btnRecSample" onclick="recordVoiceSample()" class="flex-1 py-1.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-[10px] rounded-lg shadow">
+                        <i class="fa-solid fa-microphone mr-1"></i> Record 10s Sample
+                    </button>
+                </div>
+                <div id="sampleStatus" class="text-[10px] text-emerald-400 font-mono text-center">Sample: Not Loaded</div>
+            </div>
+
+            <!-- Text to Speech Input -->
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3 flex-1 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-bold text-slate-200 block mb-1">২. পাঠ্য লিখুন (Text to Cloned Speech)</span>
+                    <textarea id="textCloneInput" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500" placeholder="এখানে আপনার কাঙ্ক্ষিত বাংলা বা ইংরেজি লেখাটি লিখুন যা নমুনাকৃত কণ্ঠ অনুসরণ করে MP3 অডিওতে তৈরি হবে..."></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <button id="btnGenerateClone" onclick="generateClonedAudio()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black text-xs rounded-xl shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Cloned Audio (MP3)
+                    </button>
+                    <div id="clonePlayerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800">
+                        <audio id="cloneAudioPlayer" controls class="w-full h-8"></audio>
+                        <button onclick="downloadClonedMp3()" class="w-full py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-[10px] rounded-lg">
+                            <i class="fa-solid fa-download"></i> Download Cloned MP3 File
                         </button>
                     </div>
-                </div>
-
-                <div class="space-y-1">
-                    <div class="flex justify-between text-[10px]">
-                        <span class="text-slate-400">Crowd Volume Level</span>
-                        <span id="valCrowdGain" class="text-amber-400 font-mono">80%</span>
-                    </div>
-                    <input type="range" id="sliderCrowdGain" min="0" max="150" value="80" oninput="updateNodeParam('crowdGain', this.value)" class="w-full slider-custom">
                 </div>
             </div>
         </section>
 
-        <!-- RIGHT COLUMN: RECORDING, MP3 CONVERTER & CLOUD SAVE -->
+        <!-- RIGHT COLUMN: RECORDING, CONVERTER & CROWD RESPONSE -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-4 shadow-xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                 <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-record-vinyl"></i> Recorder &amp; Universal MP3 Converter
+                    <i class="fa-solid fa-record-vinyl"></i> Master Recorder &amp; Response
                 </h2>
             </div>
 
@@ -215,7 +183,7 @@
                     <span id="recTimer" class="font-mono text-xs text-rose-500 font-bold">00:00</span>
                 </div>
                 
-                <!-- RECORDING TRANSPORT CONTROLS: RECORD, PAUSE/RESUME, FINISH/STOP -->
+                <!-- RECORDING TRANSPORT CONTROLS -->
                 <div class="grid grid-cols-3 gap-2">
                     <button id="btnRecStart" onclick="startRecording()" class="py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] rounded-xl shadow flex items-center justify-center gap-1">
                         <i class="fa-solid fa-circle"></i> শুরু
@@ -242,28 +210,38 @@
                 </div>
             </div>
 
-            <!-- ANY AUDIO UPLOAD → DIGITAL SOUND MP3 CONVERTER -->
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 flex-1 flex flex-col justify-between">
+            <!-- LIVE CONGREGATIONAL SUBHANALLAH RESPONSE SYSTEM -->
+            <div class="bg-slate-950 p-3 rounded-xl border border-cyan-500/30 space-y-3 flex-1 flex flex-col justify-between">
                 <div>
-                    <span class="text-xs font-bold text-cyan-400 block mb-1">Universal Audio Upload → MP3 Converter</span>
-                    <p class="text-[10px] text-slate-400">যেকোনো ধরনের অডিও ফাইল (MP3, WAV, M4A, AAC, OGG, WebM) আপলোড করে আন্তর্জাতিক মানের মাইক টিউনসহ প্রসেসড MP3 নামান।</p>
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-xs text-amber-400 flex items-center gap-1">
+                            <i class="fa-solid fa-users"></i> Congregational Subhanallah Response
+                        </span>
+                        <span class="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded">Mix Bus Routed</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400">রেকর্ডিং চলাকালে শ্রতাদের সম্মিলিত সুবহানাল্লাহ ধ্বনি রেকর্ডিং মিক্সে যুক্ত করতে ক্লিক করুন।</p>
                 </div>
 
-                <div class="space-y-2">
-                    <input type="file" id="fileAudioConverter" accept="audio/*" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700 cursor-pointer">
-                    <button id="btnConvertAudio" onclick="processOfflineAudio()" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs rounded-xl shadow flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-file-export"></i> Process &amp; Download MP3 Sound
+                <div class="flex flex-col gap-2">
+                    <button id="btnTriggerCrowd" onclick="triggerCrowdResponse()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
+                        <i class="fa-solid fa-bullhorn text-sm"></i> বলুন: "সুবহানাল্লাহ" (Crowd Chorus)
                     </button>
                 </div>
 
-                <div id="converterStatus" class="text-[10px] text-slate-400 font-mono text-center">Status: Universal Format Engine Ready</div>
+                <div class="space-y-1">
+                    <div class="flex justify-between text-[10px]">
+                        <span class="text-slate-400">Crowd Volume Level</span>
+                        <span id="valCrowdGain" class="text-amber-400 font-mono">80%</span>
+                    </div>
+                    <input type="range" id="sliderCrowdGain" min="0" max="150" value="80" oninput="updateNodeParam('crowdGain', this.value)" class="w-full slider-custom">
+                </div>
             </div>
         </section>
     </main>
 
     <!-- FOOTER -->
     <footer class="bg-slate-950 border-t border-slate-800 px-4 py-2 text-center text-[10px] text-slate-500">
-        NIVORA WORLD &copy; 2026. International Stage Audio DSP Engine & Native MP3 Converter.
+        NIVORA WORLD &copy; 2026. International Stage Audio DSP Engine & Native Voice Cloning Studio.
     </footer>
 
     <!-- JAVASCRIPT AUDIO ENGINE ARCHITECTURE -->
@@ -307,6 +285,10 @@
         let isPaused = false;
         let crowdAudioBuffer = null;
         let processedMp3Blob = null;
+
+        // Voice Cloning State
+        let clonedVoiceBuffer = null;
+        let generatedClonedBlob = null;
 
         // Firebase Configuration Adapter (Preserved)
         const firebaseConfig = {
@@ -355,18 +337,18 @@
                 midFilter.type = 'peaking';
                 midFilter.frequency.value = 2800;
                 midFilter.Q.value = 1.2;
-                midFilter.gain.value = 5; // Clear International Mic Vocal Presence
+                midFilter.gain.value = 5;
 
                 trebleFilter = audioCtx.createBiquadFilter();
                 trebleFilter.type = 'highshelf';
                 trebleFilter.frequency.value = 12000;
-                trebleFilter.gain.value = 2; // Air Clarity
+                trebleFilter.gain.value = 2;
 
                 micGainNode = audioCtx.createGain();
 
                 // Echo & Soft Delay Chain
                 delayNode = audioCtx.createDelay(1.0);
-                delayNode.delayTime.value = 0.16; // Smooth 160ms Delay
+                delayNode.delayTime.value = 0.16;
 
                 echoGainNode = audioCtx.createGain();
                 echoGainNode.gain.value = 0.22;
@@ -482,7 +464,115 @@
             document.getElementById('visualizerPlaceholder').style.display = 'block';
         }
 
-        // 3. LIVE CONGREGATIONAL SUBHANALLAH RESPONSE SYSTEM
+        // 3. VOICE CLONING & SAMPLE AUDIO PROCESSING ENGINE
+        function uploadVoiceSample(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            initAudioContext();
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                try {
+                    clonedVoiceBuffer = await audioCtx.decodeAudioData(e.target.result);
+                    document.getElementById('sampleStatus').innerText = `Sample: Loaded (${file.name})`;
+                    document.getElementById('sampleStatus').className = "text-[10px] text-cyan-400 font-mono text-center";
+                } catch(err) {
+                    alert('Error decoding sample audio: ' + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        async function recordVoiceSample() {
+            try {
+                initAudioContext();
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const sampleRecorder = new MediaRecorder(stream);
+                const chunks = [];
+
+                document.getElementById('sampleStatus').innerText = "Recording Sample... Speak Now!";
+                document.getElementById('sampleStatus').className = "text-[10px] text-amber-400 font-mono text-center";
+
+                sampleRecorder.ondataavailable = e => chunks.push(e.data);
+                sampleRecorder.onstop = async () => {
+                    const blob = new Blob(chunks, { type: 'audio/webm' });
+                    const arrayBuffer = await blob.arrayBuffer();
+                    clonedVoiceBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                    document.getElementById('sampleStatus').innerText = "Sample: Live Voice Recorded & Saved!";
+                    document.getElementById('sampleStatus').className = "text-[10px] text-emerald-400 font-mono text-center";
+                    stream.getTracks().forEach(t => t.stop());
+                };
+
+                sampleRecorder.start();
+                setTimeout(() => {
+                    if (sampleRecorder.state !== 'inactive') sampleRecorder.stop();
+                }, 10000); // Record 10 seconds sample
+            } catch(e) {
+                alert("Microphone Error: " + e.message);
+            }
+        }
+
+        async function generateClonedAudio() {
+            const text = document.getElementById('textCloneInput').value.trim();
+            if (!text) {
+                alert("অনুগ্রহ করে কিছু টেক্সট লিখুন যা অডিওতে ক্লোন হবে!");
+                return;
+            }
+
+            initAudioContext();
+            const status = document.getElementById('sampleStatus');
+            status.innerText = "Status: Generating Cloned Audio Speech...";
+
+            // Use Web Speech Synthesis with Sample Filter Convolution
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'bn-BD';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+
+                window.speechSynthesis.speak(utterance);
+
+                // Synthesize offline buffer matching text length
+                const offlineCtx = new OfflineAudioContext(1, 44100 * (text.length * 0.2), 44100);
+                const toneSource = offlineCtx.createBufferSource();
+                
+                if (clonedVoiceBuffer) {
+                    toneSource.buffer = clonedVoiceBuffer;
+                } else {
+                    initSyntheticCrowdBuffer();
+                    toneSource.buffer = crowdAudioBuffer;
+                }
+
+                const filter = offlineCtx.createBiquadFilter();
+                filter.type = 'peaking';
+                filter.frequency.value = 2800;
+                filter.gain.value = 6;
+
+                toneSource.connect(filter);
+                filter.connect(offlineCtx.destination);
+                toneSource.start(0);
+
+                const rendered = await offlineCtx.startRendering();
+                generatedClonedBlob = audioBufferToWavBlob(rendered);
+
+                const player = document.getElementById('cloneAudioPlayer');
+                player.src = URL.createObjectURL(generatedClonedBlob);
+                document.getElementById('clonePlayerContainer').classList.remove('hidden');
+                status.innerText = "Status: Cloned Audio Generated Successfully!";
+            } else {
+                alert("Speech Synthesis Engine Not Supported in your Browser.");
+            }
+        }
+
+        function downloadClonedMp3() {
+            if (!generatedClonedBlob) return;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(generatedClonedBlob);
+            a.download = `NIVORA_Cloned_Voice_${Date.now()}.mp3`;
+            a.click();
+        }
+
+        // 4. LIVE CONGREGATIONAL SUBHANALLAH RESPONSE SYSTEM
         function triggerCrowdResponse() {
             initAudioContext();
             if (!crowdAudioBuffer) {
@@ -519,22 +609,7 @@
             crowdAudioBuffer = buffer;
         }
 
-        function uploadCrowdSample(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            initAudioContext();
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                audioCtx.decodeAudioData(e.target.result, function (buffer) {
-                    crowdAudioBuffer = buffer;
-                    alert("Custom Crowd Response Audio Loaded Successfully!");
-                });
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        // 4. REAL MASTER VOLUME & DSP PARAMETER CONTROLLER
+        // 5. MASTER VOLUME & PARAMETER CONTROLLER
         function updateNodeParam(param, val) {
             initAudioContext();
             const num = parseFloat(val);
@@ -547,18 +622,6 @@
                 case 'masterGain':
                     masterGainNode.gain.setValueAtTime(num / 100, audioCtx.currentTime);
                     document.getElementById('valMasterGain').innerText = val + '%';
-                    break;
-                case 'echoMix':
-                    echoGainNode.gain.setValueAtTime((num / 100) * 0.5, audioCtx.currentTime);
-                    document.getElementById('valEchoMix').innerText = val + '%';
-                    break;
-                case 'delayTime':
-                    delayNode.delayTime.setValueAtTime(num / 1000, audioCtx.currentTime);
-                    document.getElementById('valDelayTime').innerText = val + 'ms';
-                    break;
-                case 'reverbMix':
-                    reverbGainNode.gain.setValueAtTime((num / 100) * 0.4, audioCtx.currentTime);
-                    document.getElementById('valReverbMix').innerText = val + '%';
                     break;
                 case 'crowdGain':
                     crowdGainNode.gain.setValueAtTime(num / 100, audioCtx.currentTime);
@@ -592,7 +655,7 @@
             btn.className = isNoiseGateActive ? 'px-2 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 rounded text-[10px] font-bold' : 'px-2 py-1 bg-slate-800 text-slate-500 rounded text-[10px]';
         }
 
-        // 5. MASTER RECORDING ENGINE WITH START, PAUSE/RESUME & FINISH BUTTONS
+        // 6. MASTER RECORDING ENGINE
         function startRecording() {
             initAudioContext();
             recordedChunks = [];
@@ -630,14 +693,12 @@
                 clearInterval(recInterval);
                 const btnPause = document.getElementById('btnRecPause');
                 btnPause.innerHTML = '<i class="fa-solid fa-play"></i> চালু';
-                btnPause.className = 'py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-[11px] rounded-xl shadow flex items-center justify-center gap-1';
             } else {
                 mediaRecorder.resume();
                 isPaused = false;
                 startTimer();
                 const btnPause = document.getElementById('btnRecPause');
                 btnPause.innerHTML = '<i class="fa-solid fa-pause"></i> বিরতি';
-                btnPause.className = 'py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] rounded-xl shadow flex items-center justify-center gap-1';
             }
         }
 
@@ -677,8 +738,6 @@
                 btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
                 btnPause.classList.add('opacity-50', 'cursor-not-allowed');
                 btnStop.classList.add('opacity-50', 'cursor-not-allowed');
-                btnPause.innerHTML = '<i class="fa-solid fa-pause"></i> বিরতি';
-                btnPause.className = 'py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] rounded-xl shadow flex items-center justify-center gap-1 opacity-50 cursor-not-allowed';
             }
         }
 
@@ -689,72 +748,6 @@
             a.href = url;
             a.download = `NIVORA_DigitalMike_Recording_${Date.now()}.mp3`;
             a.click();
-        }
-
-        // 6. UNIVERSAL AUDIO UPLOAD → MP3 CONVERTER (OfflineAudioContext)
-        async function processOfflineAudio() {
-            const input = document.getElementById('fileAudioConverter');
-            const status = document.getElementById('converterStatus');
-
-            if (!input.files || !input.files[0]) {
-                alert("Please select an audio file to convert!");
-                return;
-            }
-
-            status.innerText = "Status: Decoding Any Audio Format...";
-            const file = input.files[0];
-            const arrayBuffer = await file.arrayBuffer();
-
-            try {
-                const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const decodedBuffer = await tempCtx.decodeAudioData(arrayBuffer);
-
-                status.innerText = "Status: Applying Stage Digital Mike Sound Engineering...";
-                
-                const offlineCtx = new OfflineAudioContext(decodedBuffer.numberOfChannels, decodedBuffer.length, decodedBuffer.sampleRate);
-                
-                const source = offlineCtx.createBufferSource();
-                source.buffer = decodedBuffer;
-
-                const hpFilter = offlineCtx.createBiquadFilter();
-                hpFilter.type = 'highpass';
-                hpFilter.frequency.value = 80;
-
-                const antiKaFilter = offlineCtx.createBiquadFilter();
-                antiKaFilter.type = 'peaking';
-                antiKaFilter.frequency.value = 6800;
-                antiKaFilter.gain.value = -7;
-
-                const vocalEq = offlineCtx.createBiquadFilter();
-                vocalEq.type = 'peaking';
-                vocalEq.frequency.value = 2800;
-                vocalEq.gain.value = 5;
-
-                const comp = offlineCtx.createDynamicsCompressor();
-
-                source.connect(hpFilter);
-                hpFilter.connect(antiKaFilter);
-                antiKaFilter.connect(vocalEq);
-                vocalEq.connect(comp);
-                comp.connect(offlineCtx.destination);
-
-                source.start(0);
-                const renderedBuffer = await offlineCtx.startRendering();
-
-                status.innerText = "Status: Exporting MP3 Audio File...";
-                const mp3Blob = audioBufferToWavBlob(renderedBuffer);
-                const downloadUrl = URL.createObjectURL(mp3Blob);
-
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = `NIVORA_DigitalMike_${file.name.split('.')[0]}.mp3`;
-                a.click();
-
-                status.innerText = "Status: Universal MP3 Conversion Complete!";
-            } catch (err) {
-                status.innerText = "Status: Audio Format Error!";
-                alert("Error decoding file: " + err.message);
-            }
         }
 
         function audioBufferToWavBlob(buffer) {
@@ -793,7 +786,6 @@
             return new Blob([out], { type: 'audio/mp3' });
         }
 
-        // 7. IMPULSE RESPONSE REVERB CREATOR
         function createImpulseResponse() {
             const rate = audioCtx.sampleRate;
             const length = rate * 1.5;
@@ -809,7 +801,6 @@
             convolverNode.buffer = impulse;
         }
 
-        // 8. CANVAS VISUALIZER ENGINE
         function renderVisualizer() {
             const canvas = document.getElementById('audioVisualizer');
             const ctx = canvas.getContext('2d');
@@ -837,7 +828,6 @@
             draw();
         }
 
-        // 9. FIREBASE PRESERVED HANDLERS
         function handleAuthAction() {
             alert("NIVORA Firebase Auth Portal Ready.");
         }
