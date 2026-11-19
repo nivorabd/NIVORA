@@ -2,10 +2,6 @@
 <!DOCTYPE html>
 <html lang="bn" dir="ltr" data-theme="dark">
 <head>
- <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#07152D">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="monetag" content="00c6defbb8dcf61d27bfb473f4218ef1">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -151,7 +147,7 @@ a{color:inherit;text-decoration:none}
  <section class="grid" id="toolGrid" aria-live="polite"></section>
 
  <div class="notice" data-i18n="notice">
-  ড্যাশবোর্ডে ১৯টি টুলের URL সংযুক্ত। কোনো টুলের HTML ফাইল GitHub-এ না থাকলে সেই পেজ খুলবে না।
+  ড্যাশবোর্ডে ২০টি টুলের URL সংযুক্ত। কোনো টুলের HTML ফাইল GitHub-এ না থাকলে সেই পেজ খুলবে না।
  </div>
 </main>
 
@@ -180,35 +176,36 @@ a{color:inherit;text-decoration:none}
 "use strict";
 
 /* =====================================================
-   NIVORA WORLD — 19 TOOL URLS
+   NIVORA WORLD — 20 TOOL URLS
    Base URL: https://nivora.mdabuzar192.workers.dev
    ===================================================== */
 
 const BASE_URL = "https://nivora.mdabuzar192.workers.dev";
 
 const TOOL_URLS = {
- voiceClone:         "/tools-voice-clone-studio.html",
- voiceRecitation:    "/tools-voice-recitation-studio.html",
- digitalSound:       "/tools-digital-sound-studio.html",
- hybridStudio:       "/tools-hybrid-professional-studio.html",
- videoEditor:        "/tools-video-editor-studio.html",
- videoWorld:         "/tools-nivora-video-world.html",
- audioEditor:        "/tools-audio-editor.html",
- designStudio:       "/tools-design-studio.html",
- bannerPoster:       "/tools-banner-poster.html",
- businessCard:       "/tools-business-card.html",
- aiStudio:           "/tools-ai-studio.html",
- aiMedia:            "/tools-ai-media-generator.html",
- quranHub:           "/tools-quran-hub.html",
- businessManagement: "/tools-business-management.html",
- tallyKhata:         "/tools-tally-khata.html",
- stockManagement:    "/tools-stock-management.html",
- excelGrid:          "/tools-excel-grid.html",
- calculator:         "/tools-calculator.html",
- earnMoney:          "/tools-nivora-earn-money.html"
+  voiceClone:         "/tools/voice-clone.html",
+  voiceRecitation:    "/tools/voice-recitation.html",
+  digitalSound:       "/tools/nivora-digital-sound-studio.html",
+  hybridStudio:       "/tools/hybrid-professional-studio.html",
+  videoEditor:        "/tools/video-editor.html",
+  videoWorld:         "/tools/nivora-video-world.html",
+  audioEditor:        "/tools/audio-editor.html",
+  designStudio:       "/tools/design-studio.html",
+  bannerPoster:       "/tools/banner-poster.html",
+  businessCard:       "/tools/business-card.html",
+  aiStudio:           "/tools/ai-studio.html",
+  aiMedia:            "/tools/ai-media.html",
+  aiAdvertisement:    "/tools/nivora-ai-advertisement-studio.html",
+  quranHub:           "/tools/quran-hub.html",
+  businessManagement: "/tools/business-management.html",
+  tallyKhata:         "/tools/tally-khata.html",
+  stockManagement:    "/tools/stock-management.html",
+  excelGrid:          "/tools/excel-grid.html",
+  calculator:         "/tools/calculator.html",
+  earnMoney:          "/tools/nivora-earn-money.html"
 };
 
-/* ১৯টি টুলের নাম, ক্যাটাগরি ও বাটন */
+/* ২০টি টুলের নাম, ক্যাটাগরি ও বাটন */
 const TOOLS = [
  {key:"voiceClone",icon:"🎙️",category:"media",name:"Voice Clone Studio",bn:"ভয়েস ক্লোন স্টুডিও",desc:"AI voice cloning workspace.",bnDesc:"AI প্রযুক্তিতে ভয়েস ক্লোনিংয়ের স্টুডিও।"},
  {key:"voiceRecitation",icon:"🕌",category:"islamic",name:"Voice & Recitation Studio",bn:"ভয়েস ও তিলাওয়াত স্টুডিও",desc:"Voice recording and recitation workspace.",bnDesc:"ভয়েস রেকর্ডিং ও তিলাওয়াতের স্টুডিও।"},
@@ -222,6 +219,7 @@ const TOOLS = [
  {key:"businessCard",icon:"💳",category:"design",name:"Business Card Maker",bn:"বিজনেস কার্ড মেকার",desc:"Create business cards.",bnDesc:"বিজনেস কার্ড তৈরি করুন।"},
  {key:"aiStudio",icon:"🤖",category:"ai",name:"NIVORA AI Chat Studio",bn:"নিভোরা AI চ্যাট স্টুডিও",desc:"AI assistant and chat workspace.",bnDesc:"AI সহকারী ও চ্যাটের স্টুডিও।"},
  {key:"aiMedia",icon:"✨",category:"ai",name:"AI Media Generator",bn:"AI মিডিয়া জেনারেটর",desc:"AI media creation workspace.",bnDesc:"AI দিয়ে মিডিয়া তৈরির স্টুডিও।"},
+ {key:"aiAdvertisement",icon:"🎬",category:"ai",name:"AI Advertisement Studio",bn:"AI বিজ্ঞাপন ভিডিও স্টুডিও",desc:"Create complete AI presenter and product advertisement videos.",bnDesc:"ছবি ও পণ্যের তথ্য দিয়ে AI উপস্থাপকসহ সম্পূর্ণ বিজ্ঞাপনী ভিডিও তৈরি করুন।"},
  {key:"quranHub",icon:"📖",category:"islamic",name:"Quran Hub",bn:"কুরআন হাব",desc:"Quran reading and learning.",bnDesc:"কুরআন পড়া ও শেখার কেন্দ্র।"},
  {key:"businessManagement",icon:"🏢",category:"business",name:"Business Management",bn:"ব্যবসা ব্যবস্থাপনা",desc:"Manage business operations.",bnDesc:"ব্যবসার হিসাব ও পরিচালনা করুন।"},
  {key:"tallyKhata",icon:"📒",category:"business",name:"Tally Khata",bn:"টালি খাতা",desc:"Digital customer ledger.",bnDesc:"ডিজিটাল বাকি ও লেনদেনের খাতা।"},
@@ -238,7 +236,7 @@ const LANG = {
   toolsTitle:"আমাদের ডিজিটাল স্টুডিও",search:"টুল খুঁজুন...",
   all:"সবগুলো",ai:"AI Studio",media:"Audio & Video",design:"Design",
   islamic:"Islamic",business:"Business",utility:"Utilities",
-  notice:"ড্যাশবোর্ডে ১৯টি টুলের URL সংযুক্ত। কোনো টুলের HTML ফাইল GitHub-এ না থাকলে সেই পেজ খুলবে না।",
+  notice:"ড্যাশবোর্ডে ২০টি টুলের URL সংযুক্ত। কোনো টুলের HTML ফাইল GitHub-এ না থাকলে সেই পেজ খুলবে না।",
   guest:"অতিথি",welcome:"NIVORA WORLD-এ আপনাকে স্বাগতম",login:"লগইন / রেজিস্টার",
   searchEmpty:"কোনো টুল পাওয়া যায়নি।"
  },
@@ -248,7 +246,7 @@ const LANG = {
   toolsTitle:"Our Digital Studios",search:"Search tools...",
   all:"All",ai:"AI Studio",media:"Audio & Video",design:"Design",
   islamic:"Islamic",business:"Business",utility:"Utilities",
-  notice:"All 19 tool URLs are configured. A tool page will only open if its HTML file exists on GitHub.",
+  notice:"All 20 tool URLs are configured. A tool page will only open if its HTML file exists on GitHub.",
   guest:"Guest",welcome:"Welcome to NIVORA WORLD",login:"Login / Register",
   searchEmpty:"No tools found."
  },
@@ -258,7 +256,7 @@ const LANG = {
   toolsTitle:"हमारे डिजिटल स्टूडियो",search:"टूल खोजें...",
   all:"सभी",ai:"AI Studio",media:"Audio & Video",design:"Design",
   islamic:"Islamic",business:"Business",utility:"Utilities",
-  notice:"सभी 19 टूल URL जोड़े गए हैं। पेज तभी खुलेगा जब उसकी HTML फ़ाइल GitHub पर मौजूद होगी।",
+  notice:"सभी 20 टूल URL जोड़े गए हैं। पेज तभी खुलेगा जब उसकी HTML फ़ाइल GitHub पर मौजूद होगी।",
   guest:"अतिथि",welcome:"NIVORA WORLD में आपका स्वागत है",login:"लॉगिन / रजिस्टर",
   searchEmpty:"कोई टूल नहीं मिला।"
  },
@@ -268,7 +266,7 @@ const LANG = {
   toolsTitle:"ہمارے ڈیجیٹل اسٹوڈیوز",search:"ٹول تلاش کریں...",
   all:"تمام",ai:"AI Studio",media:"Audio & Video",design:"Design",
   islamic:"Islamic",business:"Business",utility:"Utilities",
-  notice:"تمام 19 ٹول URLs شامل ہیں۔ صفحہ تبھی کھلے گا جب اس کی HTML فائل GitHub پر موجود ہو۔",
+  notice:"تمام 20 ٹول URLs شامل ہیں۔ صفحہ تبھی کھلے گا جب اس کی HTML فائل GitHub پر موجود ہو۔",
   guest:"مہمان",welcome:"NIVORA WORLD میں خوش آمدید",login:"لاگ ان / رجسٹر",
   searchEmpty:"کوئی ٹول نہیں ملا۔"
  },
@@ -570,18 +568,6 @@ function showToast(message){
 applyLanguage();
 renderTools();
 updateAuthUI();
-</script>
- <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register(
-      "/service-worker.js",
-      { updateViaCache: "none" }
-    ).catch(error => {
-      console.error("NIVORA SW Error:", error);
-    });
-  });
-}
 </script>
 </body>
 </html>
