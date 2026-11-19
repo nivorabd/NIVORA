@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d20">
+<title>NIVORA AI Advertisement Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080d20;color:#f4f7ff;font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#101e40,#34206c);padding:23px 15px;text-align:center}
+header h1{font-size:23px;margin:0;color:white}
+header p{color:#c4d3f7;font-size:13px}
+main{max-width:850px;margin:auto;padding:14px}
+.card{background:#111c34;border:1px solid #293d62;border-radius:15px;padding:17px;margin:14px 0}
+h3{color:#9ec5ff;margin-top:0}
+label{display:block;font-size:14px;margin:14px 0 7px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #344a70;border-radius:9px;background:#081327;color:white;font-size:15px}
+textarea{resize:vertical}
+input[type=file]{font-size:13px}
+button{border:0;border-radius:10px;padding:14px;font-weight:bold;cursor:pointer}
+.primary{width:100%;color:white;background:linear-gradient(90deg,#176cff,#913df4);font-size:16px;margin-top:18px}
+.secondary{background:#263e64;color:white}
+button:disabled{opacity:.5}
+.preview{max-width:100%;max-height:300px;display:block;margin:12px auto;border-radius:10px}
+small{color:#a9b9d5;line-height:1.7}
+#status{padding:15px;background:#081327;border-radius:10px;margin-top:15px;white-space:pre-wrap;line-height:1.6;color:#b9d5ff}
+video{width:100%;margin-top:15px;border-radius:12px;background:#000}
+.hidden{display:none!important}
+.tag{display:inline-block;padding:6px 10px;background:#1b3155;border-radius:20px;font-size:12px;margin:3px}
+.check{display:flex;gap:9px;align-items:flex-start;margin-top:14px}
+.check input{width:auto;margin-top:3px}
+.check label{margin:0;line-height:1.5}
+</style>
+</head>
+<body>
+
+<header>
+<h1>✦ NIVORA AI ADVERTISEMENT STUDIO</h1>
+<p>One Photo • One Click • Complete AI Video Advertisement</p>
+<span class="tag">AI Presenter</span>
+<span class="tag">Bangla Voice</span>
+<span class="tag">Lip Sync</span>
+<span class="tag">Cinematic Video</span>
+</header>
+
+<main>
+
+<section class="card">
+<h3>01. Presenter Photo</h3>
+<small>যে ব্যক্তিকে বিজ্ঞাপনে কথা বলাতে চান তার পরিষ্কার ছবি আপলোড করুন। অনুমতি থাকা ছবি ব্যবহার করুন।</small>
+<label>উপস্থাপকের ছবি *</label>
+<input type="file" id="person" accept="image/jpeg,image/png,image/webp">
+<img id="personPreview" class="preview hidden">
+</section>
+
+<section class="card">
+<h3>02. Product / Business Information</h3>
+
+<label>পণ্যের নাম অথবা প্রতিষ্ঠানের নাম *</label>
+<input id="product" placeholder="যেমন: NIVORA Digital Sound Studio">
+
+<label>পণ্যের বিবরণ *</label>
+<textarea id="description" rows="4" placeholder="পণ্য বা প্রতিষ্ঠানের বিস্তারিত লিখুন"></textarea>
+
+<label>মূল্য / বিশেষ অফার</label>
+<input id="price" placeholder="যেমন: বিশেষ অফার ২০% ছাড়">
+
+<label>যোগাযোগ নম্বর / ওয়েবসাইট</label>
+<input id="contact" placeholder="মোবাইল নম্বর অথবা ওয়েবসাইট">
+
+<label>পণ্যের ছবি (ঐচ্ছিক)</label>
+<input type="file" id="productPhoto" accept="image/jpeg,image/png,image/webp">
+<img id="productPreview" class="preview hidden">
+</section>
+
+<section class="card">
+<h3>03. AI Advertisement Settings</h3>
+
+<label>ভিডিওর ভাষা</label>
+<select id="language">
+<option value="bn">বাংলা</option>
+<option value="en">English</option>
+<option value="hi">Hindi</option>
+<option value="ur">Urdu</option>
+<option value="ar">Arabic</option>
+</select>
+
+<label>উপস্থাপকের কণ্ঠস্বর</label>
+<select id="voice">
+<option value="male">পুরুষ কণ্ঠ</option>
+<option value="female">নারী কণ্ঠ</option>
+<option value="energetic">উদ্দীপনামূলক কণ্ঠ</option>
+<option value="professional">প্রফেশনাল কণ্ঠ</option>
+</select>
+
+<label>বিজ্ঞাপনের ধরন</label>
+<select id="style">
+<option value="cinematic">Cinematic Professional Advertisement</option>
+<option value="business">Business Promotion</option>
+<option value="product">Product Commercial</option>
+<option value="news">News Presenter Style</option>
+<option value="islamic">Islamic Event Promotion</option>
+<option value="social">Social Media Viral Style</option>
+</select>
+
+<label>ভিডিওর দৈর্ঘ্য</label>
+<select id="duration">
+<option value="15">১৫ সেকেন্ড</option>
+<option value="30" selected>৩০ সেকেন্ড</option>
+<option value="60">৬০ সেকেন্ড</option>
+<option value="90">৯০ সেকেন্ড</option>
+</select>
+
+<label>ভিডিও ফরম্যাট</label>
+<select id="format">
+<option value="9:16">Facebook Reels / Stories (9:16)</option>
+<option value="4:5">Facebook Feed (4:5)</option>
+<option value="16:9">YouTube / Landscape (16:9)</option>
+<option value="1:1">Square Advertisement (1:1)</option>
+</select>
+
+<label>ব্যাকগ্রাউন্ড ও মিউজিক</label>
+<select id="music">
+<option value="cinematic">Cinematic Background Music</option>
+<option value="corporate">Corporate Music</option>
+<option value="energetic">Energetic Promotional Music</option>
+<option value="soft">Soft Background Music</option>
+<option value="none">No Music</option>
+</select>
+
+<label>অতিরিক্ত নির্দেশনা (ঐচ্ছিক)</label>
+<textarea id="instructions" rows="3" placeholder="যেমন: উপস্থাপক হাসিমুখে কথা বলবেন, হাত দিয়ে পণ্য দেখাবেন, ক্যামেরার দিকে তাকাবেন।"></textarea>
+</section>
+
+<section class="card">
+<h3>04. AI Motion & Quality</h3>
+<div>
+<span class="tag">Natural Lip Sync</span>
+<span class="tag">Head Movement</span>
+<span class="tag">Eye Blinking</span>
+<span class="tag">Facial Expression</span>
+<span class="tag">Hand Gestures</span>
+<span class="tag">Body Movement</span>
+<span class="tag">Scene Transition</span>
+</div>
+
+<label>ভিডিও কোয়ালিটি</label>
+<select id="quality">
+<option value="480p">480p</option>
+<option value="720p" selected>720p</option>
+<option value="1080p">1080p (API সমর্থন করলে)</option>
+</select>
+
+<div class="check">
+<input type="checkbox" id="permission">
+<label for="permission">আমি আপলোড করা ব্যক্তির ছবি ও কণ্ঠস্বর ব্যবহারের অনুমতি পেয়েছি।</label>
+</div>
+
+<button class="primary" id="generate">✦ CREATE COMPLETE AI VIDEO</button>
+<div id="status">প্রথমে প্রয়োজনীয় তথ্য পূরণ করুন। তারপর Generate চাপুন।</div>
+</section>
+
+<section class="card hidden" id="result">
+<h3>05. Your Complete Advertisement Video</h3>
+<video id="video" controls playsinline></video>
+<a id="download" download="NIVORA-Advertisement.mp4">
+<button class="primary">⬇ DOWNLOAD COMPLETE MP4</button>
+</a>
+</section>
+
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+
+let busy=false;
+let timer=null;
+
+function preview(input,target){
+$(input).addEventListener("change",e=>{
+const f=e.target.files[0];
+if(!f)return;
+if(!["image/jpeg","image/png","image/webp"].includes(f.type)){
+alert("JPG, PNG অথবা WEBP ছবি দিন");
+e.target.value="";
+return;
+}
+if(f.size>8*1024*1024){
+alert("ছবির সাইজ ৮ MB-এর কম রাখুন");
+e.target.value="";
+return;
+}
+$(target).src=URL.createObjectURL(f);
+$(target).classList.remove("hidden");
+});
+}
+
+preview("person","personPreview");
+preview("productPhoto","productPreview");
+
+function readFile(file){
+return new Promise((resolve,reject)=>{
+const r=new FileReader();
+r.onload=()=>resolve({
+data:r.result.split(",")[1],
+type:file.type
+});
+r.onerror=()=>reject(new Error("ফাইল পড়া যায়নি"));
+r.readAsDataURL(file);
+});
+}
+
+function status(msg){
+$("status").textContent=msg;
+}
+
+async function checkStatus(id){
+for(let i=0;i<240;i++){
+await new Promise(r=>timer=setTimeout(r,5000));
+
+const r=await fetch("/api/ads/status/"+encodeURIComponent(id));
+const d=await r.json();
+
+if(!r.ok)throw new Error(d.error||"Status check failed");
+
+status("AI সম্পূর্ণ ভিডিও তৈরি করছে...\nঅবস্থা: "+d.status+
+"\nঅনুগ্রহ করে অপেক্ষা করুন।");
+
+if(d.status==="COMPLETED"){
+if(!d.video_url)throw new Error("ভিডিও URL পাওয়া যায়নি");
+$("video").src=d.video_url;
+$("download").href=d.video_url;
+$("result").classList.remove("hidden");
+status("✓ সম্পূর্ণ বিজ্ঞাপনী ভিডিও তৈরি হয়েছে!");
+return;
+}
+
+if(d.status==="FAILED"||d.status==="CANCELLED"){
+throw new Error(d.error||"ভিডিও তৈরি ব্যর্থ হয়েছে");
+}
+}
+throw new Error("সময় শেষ হয়েছে। আবার চেষ্টা করুন।");
+}
+
+async function generate(){
+if(busy)return;
+
+const person=$("person").files[0];
+const productPhoto=$("productPhoto").files[0];
+
+if(!person){
+alert("উপস্থাপকের ছবি আপলোড করুন");
+return;
+}
+
+if(!$("product").value.trim()||!$("description").value.trim()){
+alert("পণ্যের নাম ও বিবরণ লিখুন");
+return;
+}
+
+if(!$("permission").checked){
+alert("ছবি ব্যবহারের অনুমতি নিশ্চিত করুন");
+return;
+}
+
+busy=true;
+$("generate").disabled=true;
+$("result").classList.add("hidden");
+
+try{
+status("ছবি প্রস্তুত করা হচ্ছে...");
+
+const personData=await readFile(person);
+const productData=productPhoto?await readFile(productPhoto):null;
+
+const payload={
+presenter_image:personData,
+product_image:productData,
+product_name:$("product").value.trim(),
+description:$("description").value.trim(),
+price:$("price").value.trim(),
+contact:$("contact").value.trim(),
+language:$("language").value,
+voice:$("voice").value,
+style:$("style").value,
+duration:Number($("duration").value),
+aspect_ratio:$("format").value,
+music:$("music").value,
+quality:$("quality").value,
+instructions:$("instructions").value.trim(),
+
+requirements:{
+auto_script:true,
+auto_voiceover:true,
+lip_sync:true,
+facial_expression:true,
+eye_blink:true,
+head_movement:true,
+hand_gestures:true,
+body_movement:true,
+product_scenes:true,
+cinematic_editing:true,
+background_music:true,
+subtitles:true,
+transitions:true,
+final_mp4:true
+}
+};
+
+status("AI বিজ্ঞাপনী ভিডিওর কাজ শুরু হচ্ছে...");
+
+const response=await fetch("/api/ads/generate",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(payload)
+});
+
+const job=await response.json();
+
+if(!response.ok||!job.request_id){
+throw new Error(job.error||"AI request failed");
+}
+
+status("✓ অনুরোধ গ্রহণ করা হয়েছে।\nAI স্ক্রিপ্ট, ভয়েস ও ভিডিও তৈরি করছে...");
+
+await checkStatus(job.request_id);
+
+}catch(e){
+console.error(e);
+status("সমস্যা: "+e.message);
+alert(e.message);
+}finally{
+clearTimeout(timer);
+timer=null;
+busy=false;
+$("generate").disabled=false;
+}
+}
+
+$("generate").addEventListener("click",generate);
+</script>
+</body>
+</html>
