@@ -1,840 +1,827 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIVORA International Digital Mike & Voice Cloning Studio</title>
-    
-    <!-- Tailwind CSS Framework & FontAwesome Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Firebase SDK (Compatibility Mode) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071329">
+<title>NIVORA Digital Sound Studio Master</title>
 
-    <style>
-        body { background-color: #050b14; color: #f3f4f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .slider-custom { -webkit-appearance: none; appearance: none; height: 6px; background: #1e293b; border-radius: 5px; outline: none; }
-        .slider-custom::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #00e5ff; cursor: pointer; border: 2px solid #050b14; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+<!-- MP3 Encoder -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#050d1d,#10213e,#160e32);color:#f5f8ff;font-family:Arial,"Noto Sans Bengali",sans-serif}
+header{position:sticky;top:0;z-index:5;text-align:center;padding:18px 10px;background:#08152bf2;border-bottom:1px solid #344b70}
+header h1{font-size:20px;color:#80bdff;margin:0}
+header p{font-size:12px;color:#b0bfd8;margin:7px 0 0}
+main{max-width:850px;margin:auto;padding:13px}
+.card{background:linear-gradient(145deg,#142747,#0b1930);border:1px solid #2b4268;border-radius:17px;padding:16px;margin:13px 0;box-shadow:0 8px 25px #0003}
+h2{font-size:17px;color:#a8d0ff;margin:0 0 14px}
+.timer{text-align:center;font-size:clamp(42px,12vw,68px);font-weight:800;letter-spacing:2px;font-variant-numeric:tabular-nums;color:#66edc1;padding:12px 0;text-shadow:0 0 20px #19c99555}
+.status{text-align:center;color:#b2c1d8;font-size:13px;margin-bottom:13px}
+canvas{width:100%;height:100px;background:#061329;border:1px solid #294263;border-radius:10px}
+.buttons{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:13px}
+button,.filebtn{border:0;border-radius:11px;padding:12px 15px;font-size:14px;font-weight:bold;color:white;background:linear-gradient(120deg,#398cff,#9164ff);cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+.green{background:linear-gradient(120deg,#0fbe8c,#08796b)}
+.red{background:linear-gradient(120deg,#ff526b,#c52c50)}
+.gray{background:#344966}
+.preset{background:#263f65}
+input[type=file]{display:none}
+.filebtn{display:inline-block;text-align:center}
+label{display:block;color:#d8e5fa;font-size:13px;margin:13px 0}
+input[type=range]{width:100%;accent-color:#62aaff}
+input[type=checkbox]{accent-color:#55aaff}
+select{width:100%;background:#09172e;color:white;border:1px solid #405778;border-radius:9px;padding:10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.value{color:#69e7bd;font-weight:bold}
+.note{font-size:12px;color:#aabbd5;line-height:1.7}
+audio{width:100%;margin-top:12px}
+#message{text-align:center;color:#75e8c2;font-size:13px;min-height:22px;margin-top:12px}
+.progress{height:7px;background:#263b5b;border-radius:10px;overflow:hidden;margin-top:12px}
+#progressBar{height:100%;width:0;background:linear-gradient(90deg,#24d6a2,#488fff);transition:width .2s}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.card{padding:13px}button,.filebtn{padding:11px 12px}}
+</style>
 </head>
-<body class="h-screen flex flex-col justify-between overflow-x-hidden">
-
-    <!-- HEADER & BRANDING -->
-    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between shadow-md">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg">
-                <i class="fa-solid fa-microphone-lines"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-sm md:text-base text-cyan-400 tracking-wide">NIVORA DIGITAL MIKE &amp; CLONE STUDIO</h1>
-                <p class="text-[10px] text-slate-400">Broadcast DSP, Sample Voice Cloning, TTS Engine &amp; MP3 Export</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-2 text-xs">
-            <span id="authBadge" class="px-2 py-1 bg-slate-800 text-slate-400 rounded-md font-mono border border-slate-700">Auth: Guest</span>
-            <button id="btnAuthToggle" onclick="handleAuthAction()" class="px-3 py-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-md transition">Login</button>
-        </div>
-    </header>
-
-    <!-- MAIN WORKSPACE CONTAINER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-y-auto">
-        
-        <!-- LEFT COLUMN: LIVE MICROPHONE & ENGINE MIXER -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-4 shadow-xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-sliders"></i> Digital Mike Sound Tuner
-                </h2>
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] text-slate-400">Monitor Speaker</span>
-                    <button id="btnMonitor" onclick="toggleMonitor()" class="px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 text-[10px] rounded hover:bg-slate-700">OFF</button>
-                </div>
-            </div>
-
-            <!-- Visualizer Canvas -->
-            <div class="h-24 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center overflow-hidden relative">
-                <canvas id="audioVisualizer" class="w-full h-full"></canvas>
-                <span id="visualizerPlaceholder" class="text-[10px] text-slate-600 absolute">Microphone Standby</span>
-            </div>
-
-            <!-- Main Mic Transport Controls -->
-            <div class="flex items-center justify-center gap-3">
-                <button id="btnStartMic" onclick="startMicrophone()" class="px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg flex items-center gap-2">
-                    <i class="fa-solid fa-power-off"></i> Start Mic Engine
-                </button>
-                <button id="btnStopMic" onclick="stopMicrophone()" disabled class="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-lg flex items-center gap-2 opacity-50 cursor-not-allowed">
-                    <i class="fa-solid fa-stop"></i> Stop Mic
-                </button>
-            </div>
-
-            <!-- Volume Gain Sliders -->
-            <div class="space-y-3 text-xs">
-                <div>
-                    <div class="flex justify-between text-[11px] mb-1">
-                        <span class="text-slate-300">Broadcast Mic Gain</span>
-                        <span id="valMicGain" class="text-cyan-400 font-mono">100%</span>
-                    </div>
-                    <input type="range" id="sliderMicGain" min="0" max="200" value="100" oninput="updateNodeParam('micGain', this.value)" class="w-full slider-custom">
-                </div>
-
-                <div>
-                    <div class="flex justify-between text-[11px] mb-1">
-                        <span class="text-slate-300">Master Output Volume</span>
-                        <span id="valMasterGain" class="text-cyan-400 font-mono">100%</span>
-                    </div>
-                    <input type="range" id="sliderMasterGain" min="0" max="200" value="100" oninput="updateNodeParam('masterGain', this.value)" class="w-full slider-custom">
-                </div>
-
-                <!-- Noise Suppression & Anti-Feedback Guard -->
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-slate-200">Broadcast Noise Gate &amp; Anti-Sibilance</span>
-                        <button id="btnNoiseGate" onclick="toggleNoiseGate()" class="px-2 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 rounded text-[10px] font-bold">ACTIVE</button>
-                    </div>
-                    <p class="text-[10px] text-slate-400">৮০ হার্জ হাই-পাস ফিল্টার এবং অ্যান্টি-ক্যাঁ নোচ ফিল্টার সক্রিয় রয়েছে।</p>
-                </div>
-            </div>
-
-            <!-- Equalizer Section -->
-            <div class="space-y-2 border-t border-slate-800 pt-3 text-xs">
-                <span class="font-bold text-slate-300">International Stage Vocal Equalizer</span>
-                <div class="grid grid-cols-3 gap-2 text-[10px]">
-                    <div>
-                        <span class="text-slate-400">Warm Low (100Hz)</span>
-                        <input type="range" id="sliderBass" min="-12" max="12" value="3" oninput="updateNodeParam('bass', this.value)" class="w-full slider-custom mt-1">
-                    </div>
-                    <div>
-                        <span class="text-slate-400">Presence (2.8kHz)</span>
-                        <input type="range" id="sliderMid" min="-12" max="12" value="5" oninput="updateNodeParam('mid', this.value)" class="w-full slider-custom mt-1">
-                    </div>
-                    <div>
-                        <span class="text-slate-400">Air Stage (12kHz)</span>
-                        <input type="range" id="sliderTreble" min="-12" max="12" value="2" oninput="updateNodeParam('treble', this.value)" class="w-full slider-custom mt-1">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CENTER COLUMN: VOICE CLONING & TTS ENGINE -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-4 shadow-xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-clone"></i> Sample Voice Cloning &amp; TTS Studio
-                </h2>
-                <span class="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded font-mono">Audio Mimic Engine</span>
-            </div>
-
-            <!-- Voice Sample Inputs -->
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3">
-                <span class="text-xs font-bold text-slate-200 block">১. ভয়েস নমুনা (Sample Audio Input)</span>
-                <p class="text-[10px] text-slate-400">একটি ১০-১৫ সেকেন্ডের নমুনা ভয়েস আপলোড করুন অথবা সরাসরি রেকর্ড করে নমুনা হিসেবে সেভ করুন:</p>
-                
-                <div class="flex items-center gap-2">
-                    <input type="file" id="fileCloneSample" accept="audio/*" onchange="uploadVoiceSample(event)" class="hidden">
-                    <button onclick="document.getElementById('fileCloneSample').click()" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 text-[10px] font-bold rounded-lg border border-slate-700">
-                        <i class="fa-solid fa-file-audio mr-1"></i> Upload Sample Audio
-                    </button>
-                    <button id="btnRecSample" onclick="recordVoiceSample()" class="flex-1 py-1.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-[10px] rounded-lg shadow">
-                        <i class="fa-solid fa-microphone mr-1"></i> Record 10s Sample
-                    </button>
-                </div>
-                <div id="sampleStatus" class="text-[10px] text-emerald-400 font-mono text-center">Sample: Not Loaded</div>
-            </div>
-
-            <!-- Text to Speech Input -->
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3 flex-1 flex flex-col justify-between">
-                <div>
-                    <span class="text-xs font-bold text-slate-200 block mb-1">২. পাঠ্য লিখুন (Text to Cloned Speech)</span>
-                    <textarea id="textCloneInput" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500" placeholder="এখানে আপনার কাঙ্ক্ষিত বাংলা বা ইংরেজি লেখাটি লিখুন যা নমুনাকৃত কণ্ঠ অনুসরণ করে MP3 অডিওতে তৈরি হবে..."></textarea>
-                </div>
-
-                <div class="space-y-2">
-                    <button id="btnGenerateClone" onclick="generateClonedAudio()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black text-xs rounded-xl shadow-lg flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Cloned Audio (MP3)
-                    </button>
-                    <div id="clonePlayerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800">
-                        <audio id="cloneAudioPlayer" controls class="w-full h-8"></audio>
-                        <button onclick="downloadClonedMp3()" class="w-full py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-[10px] rounded-lg">
-                            <i class="fa-solid fa-download"></i> Download Cloned MP3 File
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- RIGHT COLUMN: RECORDING, CONVERTER & CROWD RESPONSE -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-4 shadow-xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-record-vinyl"></i> Master Recorder &amp; Response
-                </h2>
-            </div>
-
-            <!-- Master Transport Recorder (3 BUTTONS FOR FULL CONTROL) -->
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-300">Live Recording Console</span>
-                    <span id="recTimer" class="font-mono text-xs text-rose-500 font-bold">00:00</span>
-                </div>
-                
-                <!-- RECORDING TRANSPORT CONTROLS -->
-                <div class="grid grid-cols-3 gap-2">
-                    <button id="btnRecStart" onclick="startRecording()" class="py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] rounded-xl shadow flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-circle"></i> শুরু
-                    </button>
-                    <button id="btnRecPause" onclick="pauseRecording()" disabled class="py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] rounded-xl shadow flex items-center justify-center gap-1 opacity-50 cursor-not-allowed">
-                        <i class="fa-solid fa-pause"></i> বিরতি
-                    </button>
-                    <button id="btnRecStop" onclick="stopRecording()" disabled class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[11px] rounded-xl shadow flex items-center justify-center gap-1 opacity-50 cursor-not-allowed">
-                        <i class="fa-solid fa-square"></i> সমাপ্তি
-                    </button>
-                </div>
-
-                <!-- Live Recorded Audio Player & MP3 Exporter -->
-                <div id="recPlayerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800">
-                    <audio id="recAudioPlayer" controls class="w-full h-8"></audio>
-                    <div class="flex gap-2">
-                        <button onclick="downloadMp3Recording()" class="flex-1 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-lg shadow flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-download"></i> Download MP3 Audio
-                        </button>
-                        <button onclick="saveToCloud()" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg border border-slate-700">
-                            <i class="fa-solid fa-cloud"></i> Save
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- LIVE CONGREGATIONAL SUBHANALLAH RESPONSE SYSTEM -->
-            <div class="bg-slate-950 p-3 rounded-xl border border-cyan-500/30 space-y-3 flex-1 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-xs text-amber-400 flex items-center gap-1">
-                            <i class="fa-solid fa-users"></i> Congregational Subhanallah Response
-                        </span>
-                        <span class="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded">Mix Bus Routed</span>
-                    </div>
-                    <p class="text-[10px] text-slate-400">রেকর্ডিং চলাকালে শ্রতাদের সম্মিলিত সুবহানাল্লাহ ধ্বনি রেকর্ডিং মিক্সে যুক্ত করতে ক্লিক করুন।</p>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    <button id="btnTriggerCrowd" onclick="triggerCrowdResponse()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
-                        <i class="fa-solid fa-bullhorn text-sm"></i> বলুন: "সুবহানাল্লাহ" (Crowd Chorus)
-                    </button>
-                </div>
-
-                <div class="space-y-1">
-                    <div class="flex justify-between text-[10px]">
-                        <span class="text-slate-400">Crowd Volume Level</span>
-                        <span id="valCrowdGain" class="text-amber-400 font-mono">80%</span>
-                    </div>
-                    <input type="range" id="sliderCrowdGain" min="0" max="150" value="80" oninput="updateNodeParam('crowdGain', this.value)" class="w-full slider-custom">
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="bg-slate-950 border-t border-slate-800 px-4 py-2 text-center text-[10px] text-slate-500">
-        NIVORA WORLD &copy; 2026. International Stage Audio DSP Engine & Native Voice Cloning Studio.
-    </footer>
-
-    <!-- JAVASCRIPT AUDIO ENGINE ARCHITECTURE -->
-    <script>
-        // GLOBAL AUDIO SYSTEM STATE
-        let audioCtx = null;
-        let micStream = null;
-        let micSourceNode = null;
-        
-        // DSP Nodes
-        let highpassFilter = null;
-        let antiSibilanceFilter = null;
-        let bassFilter = null;
-        let midFilter = null;
-        let trebleFilter = null;
-        let micGainNode = null;
-
-        // Echo & Delay Nodes
-        let delayNode = null;
-        let echoGainNode = null;
-        let echoDampener = null;
-
-        // Reverb & Master Nodes
-        let reverbGainNode = null;
-        let convolverNode = null;
-        let crowdGainNode = null;
-        let masterGainNode = null;
-        let limiterNode = null;
-        let analyserNode = null;
-        let monitorGainNode = null;
-        let mediaStreamDestination = null;
-
-        // Flags & Recording State
-        let isMicActive = false;
-        let isNoiseGateActive = true;
-        let isMonitorActive = false;
-        let mediaRecorder = null;
-        let recordedChunks = [];
-        let recInterval = null;
-        let recSeconds = 0;
-        let isPaused = false;
-        let crowdAudioBuffer = null;
-        let processedMp3Blob = null;
-
-        // Voice Cloning State
-        let clonedVoiceBuffer = null;
-        let generatedClonedBlob = null;
-
-        // Firebase Configuration Adapter (Preserved)
-        const firebaseConfig = {
-            apiKey: "YOUR_FIREBASE_API_KEY",
-            authDomain: "nivora-studio.firebaseapp.com",
-            projectId: "nivora-studio",
-            storageBucket: "nivora-studio.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef123456"
-        };
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initSyntheticCrowdBuffer();
-        });
-
-        // 1. WEB AUDIO GRAPH ARCHITECTURE (INTERNATIONAL STAGE MIC TUNED)
-        function initAudioContext() {
-            if (!audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext({ latencyHint: 'interactive', sampleRate: 44100 });
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            if (!masterGainNode) {
-                // Highpass Filter (80Hz Cutoff for removing low hum & wind noise)
-                highpassFilter = audioCtx.createBiquadFilter();
-                highpassFilter.type = 'highpass';
-                highpassFilter.frequency.value = 80;
-
-                // Anti-Sibilance Guard Filter (Softens screech noise at 6.8kHz)
-                antiSibilanceFilter = audioCtx.createBiquadFilter();
-                antiSibilanceFilter.type = 'peaking';
-                antiSibilanceFilter.frequency.value = 6800;
-                antiSibilanceFilter.Q.value = 2.5;
-                antiSibilanceFilter.gain.value = -7;
-
-                // International Stage Vocal Equalizer Tuning
-                bassFilter = audioCtx.createBiquadFilter();
-                bassFilter.type = 'lowshelf';
-                bassFilter.frequency.value = 100;
-                bassFilter.gain.value = 3;
-
-                midFilter = audioCtx.createBiquadFilter();
-                midFilter.type = 'peaking';
-                midFilter.frequency.value = 2800;
-                midFilter.Q.value = 1.2;
-                midFilter.gain.value = 5;
-
-                trebleFilter = audioCtx.createBiquadFilter();
-                trebleFilter.type = 'highshelf';
-                trebleFilter.frequency.value = 12000;
-                trebleFilter.gain.value = 2;
-
-                micGainNode = audioCtx.createGain();
-
-                // Echo & Soft Delay Chain
-                delayNode = audioCtx.createDelay(1.0);
-                delayNode.delayTime.value = 0.16;
-
-                echoGainNode = audioCtx.createGain();
-                echoGainNode.gain.value = 0.22;
-
-                echoDampener = audioCtx.createBiquadFilter();
-                echoDampener.type = 'lowpass';
-                echoDampener.frequency.value = 3500;
-
-                // Reverb Chain
-                reverbGainNode = audioCtx.createGain();
-                reverbGainNode.gain.value = 0.15;
-                convolverNode = audioCtx.createConvolver();
-                createImpulseResponse();
-
-                // Crowd Gain Node
-                crowdGainNode = audioCtx.createGain();
-                crowdGainNode.gain.value = 0.8;
-
-                // Master Output & Peak Limiter
-                masterGainNode = audioCtx.createGain();
-                limiterNode = audioCtx.createDynamicsCompressor();
-                limiterNode.threshold.value = -1.5;
-                limiterNode.knee.value = 0.0;
-                limiterNode.ratio.value = 20.0;
-                limiterNode.attack.value = 0.003;
-                limiterNode.release.value = 0.1;
-
-                analyserNode = audioCtx.createAnalyser();
-                analyserNode.fftSize = 64;
-
-                monitorGainNode = audioCtx.createGain();
-                monitorGainNode.gain.value = 0.0;
-
-                mediaStreamDestination = audioCtx.createMediaStreamDestination();
-
-                // Echo Dampener Feedback Loop Routing
-                delayNode.connect(echoDampener);
-                echoDampener.connect(echoGainNode);
-                echoGainNode.connect(delayNode);
-
-                // Master Routing Path
-                masterGainNode.connect(limiterNode);
-                limiterNode.connect(analyserNode);
-                analyserNode.connect(monitorGainNode);
-                monitorGainNode.connect(audioCtx.destination);
-                
-                // Route Stream to MediaRecorder Destination Node
-                limiterNode.connect(mediaStreamDestination);
-            }
-        }
-
-        // 2. MICROPHONE ACTIVATION & NOISE REDUCTION
-        async function startMicrophone() {
-            try {
-                initAudioContext();
-                
-                const constraints = {
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: isNoiseGateActive,
-                        autoGainControl: true
-                    }
-                };
-
-                micStream = await navigator.mediaDevices.getUserMedia(constraints);
-                micSourceNode = audioCtx.createMediaStreamSource(micStream);
-
-                // Connect Digital Mike Processing Pipeline
-                micSourceNode.connect(highpassFilter);
-                highpassFilter.connect(antiSibilanceFilter);
-                antiSibilanceFilter.connect(bassFilter);
-                bassFilter.connect(midFilter);
-                midFilter.connect(trebleFilter);
-                trebleFilter.connect(micGainNode);
-
-                // Dry Vocal to Master Bus
-                micGainNode.connect(masterGainNode);
-
-                // Vocal to Echo
-                micGainNode.connect(delayNode);
-                delayNode.connect(masterGainNode);
-
-                // Vocal to Reverb
-                micGainNode.connect(convolverNode);
-                convolverNode.connect(reverbGainNode);
-                reverbGainNode.connect(masterGainNode);
-
-                isMicActive = true;
-                document.getElementById('btnStartMic').classList.add('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btnStopMic').classList.remove('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btnStartMic').disabled = true;
-                document.getElementById('btnStopMic').disabled = false;
-                document.getElementById('visualizerPlaceholder').style.display = 'none';
-
-                renderVisualizer();
-            } catch (err) {
-                alert('Microphone Access Denied: ' + err.message);
-            }
-        }
-
-        function stopMicrophone() {
-            if (micStream) {
-                micStream.getTracks().forEach(track => track.stop());
-            }
-            if (micSourceNode) {
-                micSourceNode.disconnect();
-            }
-            isMicActive = false;
-            document.getElementById('btnStartMic').classList.remove('opacity-50', 'cursor-not-allowed');
-            document.getElementById('btnStopMic').classList.add('opacity-50', 'cursor-not-allowed');
-            document.getElementById('btnStartMic').disabled = false;
-            document.getElementById('btnStopMic').disabled = true;
-            document.getElementById('visualizerPlaceholder').style.display = 'block';
-        }
-
-        // 3. VOICE CLONING & SAMPLE AUDIO PROCESSING ENGINE
-        function uploadVoiceSample(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            initAudioContext();
-            const reader = new FileReader();
-            reader.onload = async function (e) {
-                try {
-                    clonedVoiceBuffer = await audioCtx.decodeAudioData(e.target.result);
-                    document.getElementById('sampleStatus').innerText = `Sample: Loaded (${file.name})`;
-                    document.getElementById('sampleStatus').className = "text-[10px] text-cyan-400 font-mono text-center";
-                } catch(err) {
-                    alert('Error decoding sample audio: ' + err.message);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        async function recordVoiceSample() {
-            try {
-                initAudioContext();
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const sampleRecorder = new MediaRecorder(stream);
-                const chunks = [];
-
-                document.getElementById('sampleStatus').innerText = "Recording Sample... Speak Now!";
-                document.getElementById('sampleStatus').className = "text-[10px] text-amber-400 font-mono text-center";
-
-                sampleRecorder.ondataavailable = e => chunks.push(e.data);
-                sampleRecorder.onstop = async () => {
-                    const blob = new Blob(chunks, { type: 'audio/webm' });
-                    const arrayBuffer = await blob.arrayBuffer();
-                    clonedVoiceBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-                    document.getElementById('sampleStatus').innerText = "Sample: Live Voice Recorded & Saved!";
-                    document.getElementById('sampleStatus').className = "text-[10px] text-emerald-400 font-mono text-center";
-                    stream.getTracks().forEach(t => t.stop());
-                };
-
-                sampleRecorder.start();
-                setTimeout(() => {
-                    if (sampleRecorder.state !== 'inactive') sampleRecorder.stop();
-                }, 10000); // Record 10 seconds sample
-            } catch(e) {
-                alert("Microphone Error: " + e.message);
-            }
-        }
-
-        async function generateClonedAudio() {
-            const text = document.getElementById('textCloneInput').value.trim();
-            if (!text) {
-                alert("অনুগ্রহ করে কিছু টেক্সট লিখুন যা অডিওতে ক্লোন হবে!");
-                return;
-            }
-
-            initAudioContext();
-            const status = document.getElementById('sampleStatus');
-            status.innerText = "Status: Generating Cloned Audio Speech...";
-
-            // Use Web Speech Synthesis with Sample Filter Convolution
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'bn-BD';
-                utterance.rate = 0.9;
-                utterance.pitch = 1.0;
-
-                window.speechSynthesis.speak(utterance);
-
-                // Synthesize offline buffer matching text length
-                const offlineCtx = new OfflineAudioContext(1, 44100 * (text.length * 0.2), 44100);
-                const toneSource = offlineCtx.createBufferSource();
-                
-                if (clonedVoiceBuffer) {
-                    toneSource.buffer = clonedVoiceBuffer;
-                } else {
-                    initSyntheticCrowdBuffer();
-                    toneSource.buffer = crowdAudioBuffer;
-                }
-
-                const filter = offlineCtx.createBiquadFilter();
-                filter.type = 'peaking';
-                filter.frequency.value = 2800;
-                filter.gain.value = 6;
-
-                toneSource.connect(filter);
-                filter.connect(offlineCtx.destination);
-                toneSource.start(0);
-
-                const rendered = await offlineCtx.startRendering();
-                generatedClonedBlob = audioBufferToWavBlob(rendered);
-
-                const player = document.getElementById('cloneAudioPlayer');
-                player.src = URL.createObjectURL(generatedClonedBlob);
-                document.getElementById('clonePlayerContainer').classList.remove('hidden');
-                status.innerText = "Status: Cloned Audio Generated Successfully!";
-            } else {
-                alert("Speech Synthesis Engine Not Supported in your Browser.");
-            }
-        }
-
-        function downloadClonedMp3() {
-            if (!generatedClonedBlob) return;
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(generatedClonedBlob);
-            a.download = `NIVORA_Cloned_Voice_${Date.now()}.mp3`;
-            a.click();
-        }
-
-        // 4. LIVE CONGREGATIONAL SUBHANALLAH RESPONSE SYSTEM
-        function triggerCrowdResponse() {
-            initAudioContext();
-            if (!crowdAudioBuffer) {
-                alert("Crowd Audio Sample Loading...");
-                return;
-            }
-
-            const source1 = audioCtx.createBufferSource();
-            source1.buffer = crowdAudioBuffer;
-
-            const source2 = audioCtx.createBufferSource();
-            source2.buffer = crowdAudioBuffer;
-            source2.playbackRate.value = 0.94;
-
-            source1.connect(crowdGainNode);
-            source2.connect(crowdGainNode);
-            crowdGainNode.connect(masterGainNode);
-
-            source1.start(0);
-            source2.start(0);
-        }
-
-        function initSyntheticCrowdBuffer() {
-            const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const rate = tempCtx.sampleRate;
-            const length = rate * 2.5;
-            const buffer = tempCtx.createBuffer(1, length, rate);
-            const data = buffer.getChannelData(0);
-
-            for (let i = 0; i < length; i++) {
-                const decay = Math.exp(-i / (rate * 0.8));
-                data[i] = (Math.random() * 2 - 1) * decay * 0.4;
-            }
-            crowdAudioBuffer = buffer;
-        }
-
-        // 5. MASTER VOLUME & PARAMETER CONTROLLER
-        function updateNodeParam(param, val) {
-            initAudioContext();
-            const num = parseFloat(val);
-
-            switch (param) {
-                case 'micGain':
-                    micGainNode.gain.setValueAtTime(num / 100, audioCtx.currentTime);
-                    document.getElementById('valMicGain').innerText = val + '%';
-                    break;
-                case 'masterGain':
-                    masterGainNode.gain.setValueAtTime(num / 100, audioCtx.currentTime);
-                    document.getElementById('valMasterGain').innerText = val + '%';
-                    break;
-                case 'crowdGain':
-                    crowdGainNode.gain.setValueAtTime(num / 100, audioCtx.currentTime);
-                    document.getElementById('valCrowdGain').innerText = val + '%';
-                    break;
-                case 'bass':
-                    bassFilter.gain.setValueAtTime(num, audioCtx.currentTime);
-                    break;
-                case 'mid':
-                    midFilter.gain.setValueAtTime(num, audioCtx.currentTime);
-                    break;
-                case 'treble':
-                    trebleFilter.gain.setValueAtTime(num, audioCtx.currentTime);
-                    break;
-            }
-        }
-
-        function toggleMonitor() {
-            initAudioContext();
-            isMonitorActive = !isMonitorActive;
-            monitorGainNode.gain.setValueAtTime(isMonitorActive ? 1.0 : 0.0, audioCtx.currentTime);
-            const btn = document.getElementById('btnMonitor');
-            btn.innerText = isMonitorActive ? 'ON' : 'OFF';
-            btn.className = isMonitorActive ? 'px-2 py-0.5 bg-cyan-500 text-slate-950 font-bold text-[10px] rounded' : 'px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 text-[10px] rounded';
-        }
-
-        function toggleNoiseGate() {
-            isNoiseGateActive = !isNoiseGateActive;
-            const btn = document.getElementById('btnNoiseGate');
-            btn.innerText = isNoiseGateActive ? 'ACTIVE' : 'OFF';
-            btn.className = isNoiseGateActive ? 'px-2 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 rounded text-[10px] font-bold' : 'px-2 py-1 bg-slate-800 text-slate-500 rounded text-[10px]';
-        }
-
-        // 6. MASTER RECORDING ENGINE
-        function startRecording() {
-            initAudioContext();
-            recordedChunks = [];
-            isPaused = false;
-            
-            const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
-            mediaRecorder = new MediaRecorder(mediaStreamDestination.stream, { mimeType });
-
-            mediaRecorder.ondataavailable = e => {
-                if (e.data.size > 0) recordedChunks.push(e.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                const webmBlob = new Blob(recordedChunks, { type: mimeType });
-                processedMp3Blob = webmBlob;
-                const audioUrl = URL.createObjectURL(webmBlob);
-                const player = document.getElementById('recAudioPlayer');
-                player.src = audioUrl;
-                document.getElementById('recPlayerContainer').classList.remove('hidden');
-            };
-
-            mediaRecorder.start();
-            recSeconds = 0;
-            startTimer();
-
-            toggleRecButtonsState('recording');
-        }
-
-        function pauseRecording() {
-            if (!mediaRecorder) return;
-
-            if (!isPaused) {
-                mediaRecorder.pause();
-                isPaused = true;
-                clearInterval(recInterval);
-                const btnPause = document.getElementById('btnRecPause');
-                btnPause.innerHTML = '<i class="fa-solid fa-play"></i> চালু';
-            } else {
-                mediaRecorder.resume();
-                isPaused = false;
-                startTimer();
-                const btnPause = document.getElementById('btnRecPause');
-                btnPause.innerHTML = '<i class="fa-solid fa-pause"></i> বিরতি';
-            }
-        }
-
-        function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                clearInterval(recInterval);
-                toggleRecButtonsState('stopped');
-            }
-        }
-
-        function startTimer() {
-            recInterval = setInterval(() => {
-                recSeconds++;
-                const m = String(Math.floor(recSeconds / 60)).padStart(2, '0');
-                const s = String(recSeconds % 60).padStart(2, '0');
-                document.getElementById('recTimer').innerText = `${m}:${s}`;
-            }, 1000);
-        }
-
-        function toggleRecButtonsState(state) {
-            const btnStart = document.getElementById('btnRecStart');
-            const btnPause = document.getElementById('btnRecPause');
-            const btnStop = document.getElementById('btnRecStop');
-
-            if (state === 'recording') {
-                btnStart.disabled = true;
-                btnPause.disabled = false;
-                btnStop.disabled = false;
-                btnStart.classList.add('opacity-50', 'cursor-not-allowed');
-                btnPause.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnStop.classList.remove('opacity-50', 'cursor-not-allowed');
-            } else if (state === 'stopped') {
-                btnStart.disabled = false;
-                btnPause.disabled = true;
-                btnStop.disabled = true;
-                btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnPause.classList.add('opacity-50', 'cursor-not-allowed');
-                btnStop.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-        }
-
-        function downloadMp3Recording() {
-            if (!processedMp3Blob) return;
-            const url = URL.createObjectURL(processedMp3Blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `NIVORA_DigitalMike_Recording_${Date.now()}.mp3`;
-            a.click();
-        }
-
-        function audioBufferToWavBlob(buffer) {
-            const numOfChan = buffer.numberOfChannels;
-            const length = buffer.length * numOfChan * 2 + 44;
-            const out = new DataView(new ArrayBuffer(length));
-            let channels = [], sample, offset = 0, pos = 0;
-
-            function setUint16(data) { out.setUint16(pos, data, true); pos += 2; }
-            function setUint32(data) { out.setUint32(pos, data, true); pos += 4; }
-
-            setUint32(0x46464952); // "RIFF"
-            setUint32(length - 8);
-            setUint32(0x45564157); // "WAVE"
-            setUint32(0x20746d66); // "fmt "
-            setUint32(16);
-            setUint16(1);
-            setUint16(numOfChan);
-            setUint32(buffer.sampleRate);
-            setUint32(buffer.sampleRate * 2 * numOfChan);
-            setUint16(numOfChan * 2);
-            setUint16(16);
-            setUint32(0x61746164); // "data"
-            setUint32(length - pos - 4);
-
-            for (let i = 0; i < buffer.numberOfChannels; i++) channels.push(buffer.getChannelData(i));
-
-            while (offset < buffer.length) {
-                for (let i = 0; i < numOfChan; i++) {
-                    sample = Math.max(-1, Math.min(1, channels[i][offset]));
-                    out.setInt16(pos, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-                    pos += 2;
-                }
-                offset++;
-            }
-            return new Blob([out], { type: 'audio/mp3' });
-        }
-
-        function createImpulseResponse() {
-            const rate = audioCtx.sampleRate;
-            const length = rate * 1.5;
-            const impulse = audioCtx.createBuffer(2, length, rate);
-            const left = impulse.getChannelData(0);
-            const right = impulse.getChannelData(1);
-
-            for (let i = 0; i < length; i++) {
-                const decay = Math.exp(-i / (rate * 0.3));
-                left[i] = (Math.random() * 2 - 1) * decay;
-                right[i] = (Math.random() * 2 - 1) * decay;
-            }
-            convolverNode.buffer = impulse;
-        }
-
-        function renderVisualizer() {
-            const canvas = document.getElementById('audioVisualizer');
-            const ctx = canvas.getContext('2d');
-            const bufferLength = analyserNode.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-
-            function draw() {
-                if (!isMicActive) return;
-                requestAnimationFrame(draw);
-                analyserNode.getByteFrequencyData(dataArray);
-
-                ctx.fillStyle = '#020617';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                const barWidth = (canvas.width / bufferLength) * 2.5;
-                let x = 0;
-
-                for (let i = 0; i < bufferLength; i++) {
-                    const barHeight = dataArray[i] / 4;
-                    ctx.fillStyle = '#00e5ff';
-                    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
-                }
-            }
-            draw();
-        }
-
-        function handleAuthAction() {
-            alert("NIVORA Firebase Auth Portal Ready.");
-        }
-
-        function saveToCloud() {
-            alert("Firebase Cloud Storage Integration Ready.");
-        }
-    </script>
+
+<body>
+<header>
+<h1>🎙️ NIVORA DIGITAL SOUND STUDIO</h1>
+<p>Conference Voice • Digital Mastering • Noise Control • MP3 Export</p>
+</header>
+
+<main>
+
+<section class="card">
+<h2>🎙️ Professional Recording</h2>
+<div class="timer" id="timer">00:00:00</div>
+<div class="status" id="status">রেকর্ডিংয়ের জন্য প্রস্তুত</div>
+<canvas id="visualizer" width="900" height="150"></canvas>
+
+<div class="buttons">
+<button class="green" id="startBtn">● রেকর্ড শুরু</button>
+<button class="gray" id="pauseBtn" disabled>Ⅱ Pause</button>
+<button class="gray" id="resumeBtn" disabled>▶ Resume</button>
+<button class="red" id="stopBtn" disabled>■ Stop</button>
+</div>
+
+<label>
+<input type="checkbox" id="monitor">
+ রেকর্ডিং চলাকালে প্রসেস করা মাইক স্পিকারে শুনব
+</label>
+<p class="note">টাইমার সীমাহীন। ১০ মিনিট, ৩০ মিনিট বা ১ ঘণ্টায় নিজে থেকে রেকর্ডিং বন্ধ হবে না। Stop চাপলে রেকর্ডিং শেষ হবে। Monitor ব্যবহার করলে হেডফোন ব্যবহার করুন, নইলে মাইকে ফিডব্যাক হতে পারে।</p>
+</section>
+
+<section class="card">
+<h2>🏛️ Conference Sound Presets</h2>
+<div class="buttons">
+<button class="preset" data-preset="conference">International Conference</button>
+<button class="preset" data-preset="waz">Waz / Tafsir Mahfil</button>
+<button class="preset" data-preset="clean">Clear Studio Voice</button>
+<button class="gray" data-preset="reset">Reset</button>
+</div>
+</section>
+
+<section class="card">
+<h2>🎚️ Digital Voice Mastering</h2>
+<div class="grid">
+
+<label>Output Volume <span class="value" id="volumeVal">110%</span>
+<input id="volume" type="range" min="70" max="160" value="110">
+</label>
+
+<label>Bass <span class="value" id="bassVal">+3 dB</span>
+<input id="bass" type="range" min="-10" max="12" value="3">
+</label>
+
+<label>Voice Clarity <span class="value" id="clarityVal">+4 dB</span>
+<input id="clarity" type="range" min="-10" max="12" value="4">
+</label>
+
+<label>Treble <span class="value" id="trebleVal">+2 dB</span>
+<input id="treble" type="range" min="-10" max="12" value="2">
+</label>
+
+<label>Light Echo <span class="value" id="echoVal">8%</span>
+<input id="echo" type="range" min="0" max="30" value="8">
+</label>
+
+<label>Hall Reverb <span class="value" id="reverbVal">12%</span>
+<input id="reverb" type="range" min="0" max="30" value="12">
+</label>
+
+<label>Compression <span class="value" id="compressionVal">5</span>
+<input id="compression" type="range" min="2" max="10" value="5">
+</label>
+
+<label>Noise Control
+<select id="noise">
+<option value="on" selected>Enabled</option>
+<option value="off">Disabled</option>
+</select>
+</label>
+
+</div>
+<p class="note">Voice Clarity কণ্ঠকে সামনে আনে। Compression নিচু ও উঁচু আওয়াজের পার্থক্য নিয়ন্ত্রণ করে। Final Loudness Normalization আউটপুটের সর্বোচ্চ শব্দের মাত্রা ঠিক করে। অতিরিক্ত ভলিউম বা Echo ব্যবহার করলে শব্দ বিকৃত হতে পারে।</p>
+</section>
+
+<section class="card">
+<h2>📁 Upload Audio for Enhancement</h2>
+<label class="filebtn">অডিও ফাইল নির্বাচন করুন
+<input type="file" id="audioFile" accept="audio/*">
+</label>
+<audio id="inputPreview" controls></audio>
+<p class="note">MP3, WAV, M4A, AAC, OGG বা ব্রাউজার-সমর্থিত অডিও ফাইল আপলোড করুন। কোনো ফাইল ব্রাউজারে Decode না হলে সেটি প্রসেস করা যাবে না।</p>
+</section>
+
+<section class="card">
+<h2>✨ Final Enhancement & Noise Removal</h2>
+<div class="buttons">
+<button class="green" id="processBtn">Enhance + Noise Remove</button>
+</div>
+<div class="progress"><div id="progressBar"></div></div>
+<audio id="finalPreview" controls></audio>
+<div class="buttons">
+<button class="green" id="downloadBtn" disabled>⬇ Download MP3</button>
+</div>
+<div id="message"></div>
+</section>
+
+</main>
+
+<script>
+"use strict";
+
+const $=id=>document.getElementById(id);
+
+let micStream=null;
+let micContext=null;
+let micSource=null;
+let micAnalyser=null;
+let liveNodes=null;
+let recorder=null;
+let chunks=[];
+let recordingBlob=null;
+let uploadedBuffer=null;
+let finalBuffer=null;
+let recordingTimer=null;
+let elapsed=0;
+let timerStart=0;
+let timerPaused=false;
+let raf=null;
+let previewUrl=null;
+let finalUrl=null;
+let activeSource="";
+
+const canvas=$("visualizer");
+const cx=canvas.getContext("2d");
+
+function say(text,error=false){
+ $("message").textContent=text;
+ $("message").style.color=error?"#ff8291":"#75e8c2";
+}
+
+function setProgress(n){
+ $("progressBar").style.width=Math.max(0,Math.min(100,n))+"%";
+}
+
+function clockFormat(s){
+ s=Math.max(0,Math.floor(s));
+ return [Math.floor(s/3600),Math.floor((s%3600)/60),s%60]
+ .map(x=>String(x).padStart(2,"0")).join(":");
+}
+
+/* Unlimited count-up timer */
+function tick(){
+ const t=elapsed+(timerPaused?0:(performance.now()-timerStart)/1000);
+ $("timer").textContent=clockFormat(t);
+}
+function startClock(){
+ elapsed=0;
+ timerPaused=false;
+ timerStart=performance.now();
+ clearInterval(recordingTimer);
+ recordingTimer=setInterval(tick,200);
+ tick();
+}
+function pauseClock(){
+ if(timerPaused)return;
+ elapsed+=(performance.now()-timerStart)/1000;
+ timerPaused=true;
+ tick();
+}
+function resumeClock(){
+ if(!timerPaused)return;
+ timerStart=performance.now();
+ timerPaused=false;
+ tick();
+}
+function stopClock(){
+ if(!timerPaused)elapsed+=(performance.now()-timerStart)/1000;
+ timerPaused=true;
+ clearInterval(recordingTimer);
+ recordingTimer=null;
+ tick();
+}
+
+/* Reverb impulse */
+function impulse(ctx,seconds=1.5,decay=3.5){
+ const len=Math.floor(ctx.sampleRate*seconds);
+ const b=ctx.createBuffer(2,len,ctx.sampleRate);
+ for(let c=0;c<2;c++){
+  const d=b.getChannelData(c);
+  for(let i=0;i<len;i++){
+   d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);
+  }
+ }
+ return b;
+}
+
+/* Build live monitoring effects */
+function buildLiveChain(ctx,input){
+ const hp=ctx.createBiquadFilter();
+ hp.type="highpass";
+ hp.frequency.value=85;
+
+ const low=ctx.createBiquadFilter();
+ low.type="lowshelf";
+ low.frequency.value=150;
+
+ const clarity=ctx.createBiquadFilter();
+ clarity.type="peaking";
+ clarity.frequency.value=3000;
+ clarity.Q.value=0.9;
+
+ const high=ctx.createBiquadFilter();
+ high.type="highshelf";
+ high.frequency.value=7500;
+
+ const comp=ctx.createDynamicsCompressor();
+ comp.threshold.value=-24;
+ comp.knee.value=20;
+ comp.ratio.value=5;
+ comp.attack.value=0.008;
+ comp.release.value=0.22;
+
+ const gain=ctx.createGain();
+
+ const delay=ctx.createDelay(0.8);
+ delay.delayTime.value=0.20;
+ const feedback=ctx.createGain();
+ feedback.gain.value=0.08;
+ const echo=ctx.createGain();
+ echo.gain.value=0.08;
+
+ const convolver=ctx.createConvolver();
+ convolver.buffer=impulse(ctx,1.5,3.5);
+ const reverb=ctx.createGain();
+ reverb.gain.value=0.12;
+
+ input.connect(hp);
+ hp.connect(low);
+ low.connect(clarity);
+ clarity.connect(high);
+ high.connect(comp);
+ comp.connect(gain);
+
+ comp.connect(delay);
+ delay.connect(feedback);
+ feedback.connect(delay);
+ delay.connect(echo);
+ echo.connect(gain);
+
+ comp.connect(convolver);
+ convolver.connect(reverb);
+ reverb.connect(gain);
+
+ return {hp,low,clarity,high,comp,gain,delay,feedback,echo,convolver,reverb};
+}
+
+function updateLive(){
+ if(!liveNodes||!micContext)return;
+ const n=liveNodes;
+ const now=micContext.currentTime;
+
+ n.gain.gain.setTargetAtTime(Number($("volume").value)/100,now,.04);
+ n.low.gain.setTargetAtTime(Number($("bass").value),now,.04);
+ n.clarity.gain.setTargetAtTime(Number($("clarity").value),now,.04);
+ n.high.gain.setTargetAtTime(Number($("treble").value),now,.04);
+ n.echo.gain.setTargetAtTime(Number($("echo").value)/100,now,.04);
+ n.feedback.gain.setTargetAtTime(Math.min(.17,Number($("echo").value)/100*.35),now,.04);
+ n.reverb.gain.setTargetAtTime(Number($("reverb").value)/100,now,.04);
+ n.comp.ratio.setTargetAtTime(Number($("compression").value),now,.04);
+ updateLabels();
+}
+
+function updateLabels(){
+ $("volumeVal").textContent=$("volume").value+"%";
+ $("bassVal").textContent=Number($("bass").value)>0?"+"+$("bass").value+" dB":$("bass").value+" dB";
+ $("clarityVal").textContent=Number($("clarity").value)>0?"+"+$("clarity").value+" dB":$("clarity").value+" dB";
+ $("trebleVal").textContent=Number($("treble").value)>0?"+"+$("treble").value+" dB":$("treble").value+" dB";
+ $("echoVal").textContent=$("echo").value+"%";
+ $("reverbVal").textContent=$("reverb").value+"%";
+ $("compressionVal").textContent=$("compression").value;
+}
+
+["volume","bass","clarity","treble","echo","reverb","compression"].forEach(id=>{
+ $(id).addEventListener("input",updateLive);
+});
+
+const presets={
+ conference:{volume:110,bass:3,clarity:4,treble:2,echo:8,reverb:12,compression:5},
+ waz:{volume:115,bass:2,clarity:5,treble:2,echo:6,reverb:10,compression:6},
+ clean:{volume:110,bass:1,clarity:5,treble:2,echo:2,reverb:3,compression:5},
+ reset:{volume:100,bass:0,clarity:0,treble:0,echo:0,reverb:0,compression:4}
+};
+
+document.querySelectorAll("[data-preset]").forEach(b=>{
+ b.addEventListener("click",()=>{
+  const p=presets[b.dataset.preset];
+  Object.keys(p).forEach(k=>$(k).value=p[k]);
+  updateLive();
+  say("সাউন্ড প্রিসেট পরিবর্তন করা হয়েছে।");
+ });
+});
+
+function visualizer(){
+ if(!micAnalyser)return;
+ const data=new Uint8Array(micAnalyser.fftSize);
+ function draw(){
+  if(!micAnalyser)return;
+  raf=requestAnimationFrame(draw);
+  micAnalyser.getByteTimeDomainData(data);
+  cx.clearRect(0,0,canvas.width,canvas.height);
+  cx.beginPath();
+  cx.lineWidth=3;
+  cx.strokeStyle="#55baff";
+  for(let i=0;i<data.length;i++){
+   const x=i*canvas.width/data.length;
+   const y=data[i]/255*canvas.height;
+   if(i===0)cx.moveTo(x,y);else cx.lineTo(x,y);
+  }
+  cx.stroke();
+ }
+ draw();
+}
+
+async function startRecording(){
+ try{
+  $("startBtn").disabled=true;
+  $("status").textContent="মাইক্রোফোন চালু হচ্ছে...";
+
+  if(!navigator.mediaDevices?.getUserMedia){
+   throw new Error("মাইক্রোফোনের জন্য HTTPS ওয়েবসাইট প্রয়োজন।");
+  }
+
+  micStream=await navigator.mediaDevices.getUserMedia({
+   audio:{
+    channelCount:1,
+    echoCancellation:false,
+    noiseSuppression:$("noise").value==="on",
+    autoGainControl:false
+   }
+  });
+
+  micContext=new (window.AudioContext||window.webkitAudioContext)();
+  await micContext.resume();
+
+  micSource=micContext.createMediaStreamSource(micStream);
+  liveNodes=buildLiveChain(micContext,micSource);
+
+  micAnalyser=micContext.createAnalyser();
+  micAnalyser.fftSize=2048;
+  liveNodes.gain.connect(micAnalyser);
+
+  if($("monitor").checked){
+   liveNodes.gain.connect(micContext.destination);
+  }
+
+  /* Record clean original mic audio.
+     Final processing is performed once after Stop. */
+  chunks=[];
+  recordingBlob=null;
+  uploadedBuffer=null;
+  finalBuffer=null;
+  activeSource="recording";
+  $("downloadBtn").disabled=true;
+  $("finalPreview").removeAttribute("src");
+
+  let opts={};
+  if(MediaRecorder.isTypeSupported("audio/webm;codecs=opus")){
+   opts.mimeType="audio/webm;codecs=opus";
+  }else if(MediaRecorder.isTypeSupported("audio/ogg;codecs=opus")){
+   opts.mimeType="audio/ogg;codecs=opus";
+  }
+
+  recorder=new MediaRecorder(micStream,opts);
+
+  recorder.ondataavailable=e=>{
+   if(e.data&&e.data.size)chunks.push(e.data);
+  };
+
+  recorder.onerror=()=>{
+   say("রেকর্ডিংয়ে সমস্যা হয়েছে।",true);
+  };
+
+  recorder.onstop=()=>{
+   recordingBlob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});
+   if(previewUrl)URL.revokeObjectURL(previewUrl);
+   previewUrl=URL.createObjectURL(recordingBlob);
+   $("inputPreview").src=previewUrl;
+   $("status").textContent="রেকর্ডিং শেষ। এখন Enhance + Noise Remove করুন।";
+   $("startBtn").disabled=false;
+   $("processBtn").disabled=false;
+   say("রেকর্ডিং সংরক্ষিত হয়েছে। এখন Final Processing করুন।");
+  };
+
+  recorder.start(1000);
+  startClock();
+  visualizer();
+
+  $("pauseBtn").disabled=false;
+  $("resumeBtn").disabled=true;
+  $("stopBtn").disabled=false;
+  $("status").textContent="🔴 রেকর্ডিং চলছে...";
+  say("রেকর্ডিং চলছে। সময়ের কোনো নির্দিষ্ট সীমা নেই।");
+
+ }catch(e){
+  $("startBtn").disabled=false;
+  $("status").textContent="রেকর্ডিং শুরু করা যায়নি";
+  say(e.message||"মাইক্রোফোন চালু করা যায়নি।",true);
+  cleanupLive();
+ }
+}
+
+function pauseRecording(){
+ if(!recorder||recorder.state!=="recording")return;
+ recorder.pause();
+ pauseClock();
+ $("pauseBtn").disabled=true;
+ $("resumeBtn").disabled=false;
+ $("status").textContent="⏸ রেকর্ডিং Pause";
+}
+function resumeRecording(){
+ if(!recorder||recorder.state!=="paused")return;
+ recorder.resume();
+ resumeClock();
+ $("pauseBtn").disabled=false;
+ $("resumeBtn").disabled=true;
+ $("status").textContent="🔴 রেকর্ডিং চলছে...";
+}
+function stopRecording(){
+ if(!recorder||recorder.state==="inactive")return;
+ stopClock();
+ $("status").textContent="রেকর্ডিং সংরক্ষণ হচ্ছে...";
+ recorder.stop();
+ cleanupLive();
+ $("pauseBtn").disabled=true;
+ $("resumeBtn").disabled=true;
+ $("stopBtn").disabled=true;
+ $("startBtn").disabled=false;
+}
+
+function cleanupLive(){
+ if(micStream){
+  micStream.getTracks().forEach(t=>t.stop());
+  micStream=null;
+ }
+ if(raf)cancelAnimationFrame(raf);
+ micAnalyser=null;
+ liveNodes=null;
+ if(micContext){
+  const old=micContext;
+  micContext=null;
+  old.close().catch(()=>{});
+ }
+}
+
+/* Load audio file */
+async function decodeBlob(blob){
+ const ac=new (window.AudioContext||window.webkitAudioContext)();
+ try{
+  return await ac.decodeAudioData(await blob.arrayBuffer());
+ }finally{
+  await ac.close();
+ }
+}
+
+$("audioFile").addEventListener("change",async e=>{
+ const file=e.target.files[0];
+ if(!file)return;
+ try{
+  say("ফাইল যাচাই ও লোড হচ্ছে...");
+  uploadedBuffer=await decodeBlob(file);
+  recordingBlob=null;
+  activeSource="upload";
+  finalBuffer=null;
+  $("downloadBtn").disabled=true;
+  $("inputPreview").src=URL.createObjectURL(file);
+  $("finalPreview").removeAttribute("src");
+  say("ফাইল সফলভাবে Decode হয়েছে। Enhance করতে পারবেন।");
+ }catch(err){
+  say("ফাইলটি ব্রাউজারে খোলা যাচ্ছে না। অন্য ফরম্যাটের অডিও চেষ্টা করুন।",true);
+ }
+});
+
+/* Choose one source for both recording and upload */
+async function obtainInput(){
+ if(activeSource==="recording"&&recordingBlob){
+  return await decodeBlob(recordingBlob);
+ }
+ if(activeSource==="upload"&&uploadedBuffer){
+  return uploadedBuffer;
+ }
+ throw new Error("প্রথমে রেকর্ডিং করুন অথবা অডিও ফাইল আপলোড করুন।");
+}
+
+/* Final offline mastering engine */
+async function masterAudio(input){
+ const sampleRate=input.sampleRate>48000?48000:input.sampleRate;
+ const channels=Math.min(2,input.numberOfChannels);
+ const tailSeconds=2.5;
+ const outputLength=Math.ceil(input.duration*sampleRate)+Math.ceil(tailSeconds*sampleRate);
+
+ const offline=new OfflineAudioContext(channels,outputLength,sampleRate);
+
+ const source=offline.createBufferSource();
+ source.buffer=input;
+
+ const hp=offline.createBiquadFilter();
+ hp.type="highpass";
+ hp.frequency.value=75;
+
+ const low=offline.createBiquadFilter();
+ low.type="lowshelf";
+ low.frequency.value=140;
+ low.gain.value=Number($("bass").value);
+
+ const clarity=offline.createBiquadFilter();
+ clarity.type="peaking";
+ clarity.frequency.value=3000;
+ clarity.Q.value=.9;
+ clarity.gain.value=Number($("clarity").value);
+
+ const high=offline.createBiquadFilter();
+ high.type="highshelf";
+ high.frequency.value=7500;
+ high.gain.value=Number($("treble").value);
+
+ const comp=offline.createDynamicsCompressor();
+ comp.threshold.value=-24;
+ comp.knee.value=18;
+ comp.ratio.value=Number($("compression").value);
+ comp.attack.value=.008;
+ comp.release.value=.22;
+
+ const master=offline.createGain();
+ master.gain.value=Number($("volume").value)/100;
+
+ const delay=offline.createDelay(.8);
+ delay.delayTime.value=.20;
+ const feedback=offline.createGain();
+ feedback.gain.value=Math.min(.17,Number($("echo").value)/100*.35);
+ const echo=offline.createGain();
+ echo.gain.value=Number($("echo").value)/100;
+
+ const convolver=offline.createConvolver();
+ convolver.buffer=impulse(offline,1.5,3.5);
+ const reverb=offline.createGain();
+ reverb.gain.value=Number($("reverb").value)/100;
+
+ source.connect(hp);
+ hp.connect(low);
+ low.connect(clarity);
+ clarity.connect(high);
+ high.connect(comp);
+
+ comp.connect(master);
+ master.connect(offline.destination);
+
+ comp.connect(delay);
+ delay.connect(feedback);
+ feedback.connect(delay);
+ delay.connect(echo);
+ echo.connect(master);
+
+ comp.connect(convolver);
+ convolver.connect(reverb);
+ reverb.connect(master);
+
+ source.start(0);
+ const rendered=await offline.startRendering();
+
+ /* Gentle noise gate for low-level background noise */
+ if($("noise").value==="on"){
+  noiseGate(rendered);
+ }
+
+ /* Normalize peaks safely to -1 dBFS */
+ normalizeAudio(rendered,-1);
+
+ return rendered;
+}
+
+/* Soft gate with gradual gain movement */
+function noiseGate(buffer){
+ const threshold=.004;
+ const floor=.18;
+ for(let c=0;c<buffer.numberOfChannels;c++){
+  const d=buffer.getChannelData(c);
+  let gain=1;
+  for(let i=0;i<d.length;i++){
+   const target=Math.abs(d[i])<threshold?floor:1;
+   gain+=(target-gain)*.003;
+   d[i]*=gain;
+  }
+ }
+}
+
+/* Loudness/peak normalization */
+function normalizeAudio(buffer,targetDb){
+ let peak=0;
+ for(let c=0;c<buffer.numberOfChannels;c++){
+  const d=buffer.getChannelData(c);
+  for(let i=0;i<d.length;i++){
+   const a=Math.abs(d[i]);
+   if(a>peak)peak=a;
+  }
+ }
+ if(peak===0)return;
+ const target=Math.pow(10,targetDb/20);
+ const gain=Math.min(target/peak,4);
+ for(let c=0;c<buffer.numberOfChannels;c++){
+  const d=buffer.getChannelData(c);
+  for(let i=0;i<d.length;i++)d[i]*=gain;
+ }
+}
+
+async function processAudio(){
+ try{
+  $("processBtn").disabled=true;
+  $("downloadBtn").disabled=true;
+  setProgress(10);
+  say("অডিও যাচাই করা হচ্ছে...");
+
+  const input=await obtainInput();
+  setProgress(25);
+  say("Voice EQ ও Conference Sound তৈরি হচ্ছে...");
+
+  finalBuffer=await masterAudio(input);
+  setProgress(85);
+
+  const wav=bufferToWav(finalBuffer);
+  if(finalUrl)URL.revokeObjectURL(finalUrl);
+  finalUrl=URL.createObjectURL(wav);
+  $("finalPreview").src=finalUrl;
+
+  setProgress(100);
+  $("downloadBtn").disabled=false;
+  say("Enhancement সম্পন্ন। Final Audio প্রস্তুত।");
+  $("status").textContent="Final Audio প্রস্তুত। MP3 ডাউনলোড করুন।";
+
+ }catch(e){
+  finalBuffer=null;
+  $("downloadBtn").disabled=true;
+  say(e.message||"অডিও প্রসেস করা যায়নি।",true);
+ }finally{
+  $("processBtn").disabled=false;
+ }
+}
+
+/* WAV preview */
+function bufferToWav(buffer){
+ const channels=buffer.numberOfChannels;
+ const length=buffer.length;
+ const bytes=length*channels*2;
+ const ab=new ArrayBuffer(44+bytes);
+ const view=new DataView(ab);
+ const write=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i));};
+
+ write(0,"RIFF");
+ view.setUint32(4,36+bytes,true);
+ write(8,"WAVE");
+ write(12,"fmt ");
+ view.setUint32(16,16,true);
+ view.setUint16(20,1,true);
+ view.setUint16(22,channels,true);
+ view.setUint32(24,buffer.sampleRate,true);
+ view.setUint32(28,buffer.sampleRate*channels*2,true);
+ view.setUint16(32,channels*2,true);
+ view.setUint16(34,16,true);
+ write(36,"data");
+ view.setUint32(40,bytes,true);
+
+ const data=[];
+ for(let c=0;c<channels;c++)data.push(buffer.getChannelData(c));
+ let offset=44;
+ for(let i=0;i<length;i++){
+  for(let c=0;c<channels;c++){
+   const s=Math.max(-1,Math.min(1,data[c][i]));
+   view.setInt16(offset,s<0?s*32768:s*32767,true);
+   offset+=2;
+  }
+ }
+ return new Blob([ab],{type:"audio/wav"});
+}
+
+function toInt16(data){
+ const out=new Int16Array(data.length);
+ for(let i=0;i<data.length;i++){
+  const s=Math.max(-1,Math.min(1,data[i]));
+  out[i]=s<0?s*32768:s*32767;
+ }
+ return out;
+}
+
+/* MP3 Export */
+async function downloadMP3(){
+ try{
+  if(!finalBuffer)throw new Error("প্রথমে Enhance + Noise Remove করুন।");
+  const encoderLib=window.lamejs;
+  if(!encoderLib||!encoderLib.Mp3Encoder){
+   throw new Error("MP3 Encoder লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।");
+  }
+
+  $("downloadBtn").disabled=true;
+  say("MP3 তৈরি হচ্ছে...");
+  setProgress(5);
+
+  let buffer=finalBuffer;
+
+  /* Resample if source rate exceeds MP3 encoder range */
+  if(buffer.sampleRate>48000){
+   const rate=48000;
+   const ch=Math.min(2,buffer.numberOfChannels);
+   const off=new OfflineAudioContext(ch,Math.ceil(buffer.duration*rate),rate);
+   const src=off.createBufferSource();
+   src.buffer=buffer;
+   src.connect(off.destination);
+   src.start(0);
+   buffer=await off.startRendering();
+  }
+
+  const channels=Math.min(2,buffer.numberOfChannels);
+  const rate=buffer.sampleRate;
+  const encoder=new encoderLib.Mp3Encoder(channels,rate,192);
+
+  const left=toInt16(buffer.getChannelData(0));
+  const right=channels===2?toInt16(buffer.getChannelData(1)):null;
+  const parts=[];
+  const block=1152;
+
+  for(let i=0;i<left.length;i+=block){
+   const l=left.subarray(i,i+block);
+   const r=right?right.subarray(i,i+block):undefined;
+   const encoded=channels===2?encoder.encodeBuffer(l,r):encoder.encodeBuffer(l);
+   if(encoded.length)parts.push(new Uint8Array(encoded));
+   if(i%(block*100)===0){
+    setProgress(5+Math.round(i/left.length*90));
+    await new Promise(resolve=>setTimeout(resolve,0));
+   }
+  }
+
+  const end=encoder.flush();
+  if(end.length)parts.push(new Uint8Array(end));
+
+  const mp3=new Blob(parts,{type:"audio/mpeg"});
+  if(mp3.size===0)throw new Error("MP3 ফাইল তৈরি হয়নি। আবার চেষ্টা করুন।");
+
+  const url=URL.createObjectURL(mp3);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="NIVORA-Digital-Conference-Sound.mp3";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  setProgress(100);
+  say("MP3 ফাইল তৈরি হয়েছে। ডাউনলোড শুরু হয়েছে।");
+
+ }catch(e){
+  say(e.message||"MP3 ডাউনলোড ব্যর্থ হয়েছে।",true);
+ }finally{
+  $("downloadBtn").disabled=!finalBuffer;
+ }
+}
+
+$("startBtn").addEventListener("click",startRecording);
+$("pauseBtn").addEventListener("click",pauseRecording);
+$("resumeBtn").addEventListener("click",resumeRecording);
+$("stopBtn").addEventListener("click",stopRecording);
+$("processBtn").addEventListener("click",processAudio);
+$("downloadBtn").addEventListener("click",downloadMP3);
+
+window.addEventListener("beforeunload",()=>{
+ clearInterval(recordingTimer);
+ if(micStream)micStream.getTracks().forEach(t=>t.stop());
+ if(raf)cancelAnimationFrame(raf);
+ if(micContext)micContext.close().catch(()=>{});
+});
+
+updateLabels();
+</script>
 </body>
 </html>
